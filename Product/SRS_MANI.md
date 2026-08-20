@@ -173,6 +173,31 @@ Los siguientes requerimientos corresponden a funcionalidades previstas para un *
 | **RF-27** | Proporcionar una consola para la comercialización y publicación del tenant. | Baja | 8 | RF-01 |
 | **RF-28** | Proporcionar métricas operativas por tenant y permitir la administración del estado de los tenants. | Baja | 8 | RF-01 |
 
+
+### 4.8 Resumen por módulo
+
+| Módulo / capacidad | Requerimientos | Alcance |
+
+|---|---|---|
+
+| **Plataforma multi-tenant y acceso** | RF-01 – RF-04 | MVP |
+
+| **Directorio de actores** | RF-05 – RF-09 | MVP |
+
+| **Catálogo y cobertura** | RF-10 – RF-11 | MVP |
+
+| **Ciclo del servicio** | RF-12 – RF-19 | MVP |
+
+| **Comunicación** | RF-20 – RF-21 | MVP |
+
+| **Tarifario** | RF-22 – RF-23 | MVP |
+
+| **Pagos y liquidación** | RF-24 – RF-25 | 2.º incremento |
+
+| **Quejas, comercialización y administración** | RF-26 – RF-28 | 2.º incremento |
+
+
+
 ## 5. Requerimientos no funcionales
 
 

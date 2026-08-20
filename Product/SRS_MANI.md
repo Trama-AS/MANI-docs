@@ -102,8 +102,6 @@ tecnología:
 
 ## 4. Requerimientos funcionales identificados
 
-## 4. Requerimientos funcionales
-
 Los siguientes requerimientos funcionales consolidan las capacidades identificadas para MANI. Cada requerimiento está asociado a un identificador único (**RF-01 a RF-28**) y se organiza de acuerdo con los principales módulos funcionales del producto.
 
 Las prioridades y estimaciones corresponden a la propuesta inicial del Análisis de Requerimientos y deberán validarse durante el refinamiento del Product Backlog. Las estimaciones están expresadas en puntos de historia.
@@ -177,7 +175,6 @@ Los siguientes requerimientos corresponden a funcionalidades previstas para un *
 
 ## 5. Requerimientos no funcionales
 
-## 5. Requerimientos no funcionales
 
 Los requerimientos no funcionales establecen las características de calidad, restricciones y condiciones que debe cumplir MANI, independientemente de las tecnologías utilizadas para su implementación.
 

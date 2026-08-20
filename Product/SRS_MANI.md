@@ -177,23 +177,68 @@ Los siguientes requerimientos corresponden a funcionalidades previstas para un *
 
 ## 5. Requerimientos no funcionales
 
-Consolidados desde el Análisis de Requerimientos (RNF-01..RNF-11):
+## 5. Requerimientos no funcionales
 
-- **Seguridad / Multi-tenancy (RNF-01, RNF-06):** aislamiento estricto entre tenants; PCI DSS
-  delegado al operador de pagos.
-- **Modificabilidad / Configurabilidad (RNF-02, RNF-10):** reglas, documentos, tiempos y
-  comisiones configurables por tenant, sin código específico.
-- **Fiabilidad / Resiliencia (RNF-03, RNF-05):** idempotencia en operaciones críticas;
-  resolución determinista de aceptaciones concurrentes.
-- **Auditabilidad (RNF-04):** trazabilidad operativa; registro inmutable financiero *(2º
-  incremento)*.
-- **Rendimiento / Escalabilidad (RNF-07):** soporte de concurrencia en búsqueda y mensajería.
-- **Usabilidad (RNF-08, RNF-09):** operable en dispositivos móviles; cobertura declarada por
-  zonas.
-- **Cumplimiento (RNF-11):** modelo de pagos centralizado con operador certificado.
+Los requerimientos no funcionales establecen las características de calidad, restricciones y condiciones que debe cumplir MANI, independientemente de las tecnologías utilizadas para su implementación.
 
-Estas características de calidad no se convierten aquí en soluciones tecnológicas; su
-resolución técnica corresponde a la arquitectura, los Spikes y los ADR correspondientes.
+Estos requerimientos se mantienen tecnológicamente neutrales. Las decisiones relacionadas con su implementación deberán ser evaluadas mediante Spikes técnicos y, cuando corresponda, formalizadas mediante ADR en la Mesa de Arquitectura.
+
+### 5.1 Seguridad y aislamiento multi-tenant
+
+| ID | Requerimiento no funcional | Atributo de calidad | Prioridad |
+|---|---|---|:---:|
+| **RNF-01** | Los datos de un tenant deben estar estrictamente aislados de los demás. Un usuario o mecanismo de acceso asociado a un tenant no podrá acceder a información perteneciente a otro tenant. | Seguridad / Multi-tenancy | **Crítica** |
+| **RNF-06** | La responsabilidad relacionada con el cumplimiento de PCI DSS deberá recaer en el operador de pagos certificado y no en la plataforma MANI. | Seguridad / Cumplimiento | Alta |
+| **RNF-11** | El modelo de pagos deberá ser centralizado y utilizar un operador certificado, priorizando la integración con un servicio existente sobre la construcción de un sistema propio. | Seguridad / Cumplimiento | Media |
+
+### 5.2 Configurabilidad y modificabilidad
+
+| ID | Requerimiento no funcional | Atributo de calidad | Prioridad |
+|---|---|---|:---:|
+| **RNF-02** | Cada tenant debe poder configurar sus propias reglas sin requerir código específico ni un nuevo despliegue de la plataforma. | Modificabilidad / Configurabilidad | **Crítica** |
+| **RNF-10** | Los documentos de verificación (KYC), tiempos y comisiones deben ser configurables por tenant y no estar definidos de forma fija o codificados en el sistema. | Modificabilidad / Configurabilidad | Alta |
+
+### 5.3 Fiabilidad, resiliencia y concurrencia
+
+| ID | Requerimiento no funcional | Atributo de calidad | Prioridad |
+|---|---|---|:---:|
+| **RNF-03** | Las operaciones críticas, como aceptar una solicitud, aceptar una cotización o realizar una calificación, deben ser resistentes a reintentos y no generar operaciones duplicadas. | Fiabilidad / Resiliencia | Alta |
+| **RNF-05** | El proceso de despacho debe resolver de forma determinista las aceptaciones concurrentes, garantizando que exactamente una asignación válida quede asociada a una solicitud. | Fiabilidad / Concurrencia | Alta |
+| **RNF-07** | La plataforma debe soportar concurrencia de usuarios realizando búsquedas de aliados y utilizando los mecanismos de comunicación asociados a los servicios. | Rendimiento / Escalabilidad | Media |
+
+### 5.4 Auditabilidad y trazabilidad
+
+| ID | Requerimiento no funcional | Atributo de calidad | Prioridad |
+|---|---|---|:---:|
+| **RNF-04** | La operación debe contar con trazabilidad y auditabilidad suficientes para reconstruir los eventos relevantes del ciclo del servicio. El registro de operaciones financieras deberá ser inmutable en el segundo incremento. | Auditabilidad | Alta |
+
+### 5.5 Usabilidad y modelo de cobertura
+
+| ID | Requerimiento no funcional | Atributo de calidad | Prioridad |
+|---|---|---|:---:|
+| **RNF-08** | La interfaz debe ser utilizable desde dispositivos móviles por parte de clientes y aliados. | Usabilidad | Media |
+| **RNF-09** | La cobertura de los aliados debe declararse y gestionarse mediante zonas geográficas y no mediante un radio de distancia. | Usabilidad / Modelo de datos | Alta |
+
+### 5.6 Resumen de requerimientos no funcionales
+
+| Categoría | Requerimientos | Prioridad destacada |
+|---|---|---|
+| **Seguridad / Multi-tenancy** | RNF-01, RNF-06, RNF-11 | RNF-01: **Crítica** |
+| **Configurabilidad / Modificabilidad** | RNF-02, RNF-10 | RNF-02: **Crítica** |
+| **Fiabilidad / Resiliencia / Concurrencia** | RNF-03, RNF-05, RNF-07 | Alta |
+| **Auditabilidad** | RNF-04 | Alta |
+| **Usabilidad / Modelo de datos** | RNF-08, RNF-09 | RNF-09: Alta |
+
+### 5.7 Drivers arquitectónicos y riesgos
+
+De acuerdo con el Análisis de Requerimientos, los siguientes requerimientos son candidatos a convertirse en **drivers arquitectónicos** de MANI:
+
+- **RNF-01 — Aislamiento multi-tenant:** el aislamiento estricto de datos es una condición crítica del producto y debe mantenerse en todas sus funcionalidades.
+- **RNF-02 — Configurabilidad:** cada tenant debe poder modificar sus reglas sin requerir desarrollos o despliegues específicos.
+- **RNF-03 — Idempotencia:** las operaciones críticas deben tolerar reintentos sin generar duplicidad.
+- **RNF-05 — Concurrencia en el despacho:** el sistema debe resolver de manera determinista las aceptaciones simultáneas de una solicitud.
+
+Adicionalmente, **RNF-07** constituye un posible riesgo crítico de diseño debido a la necesidad de soportar concurrencia en las búsquedas de aliados y en la comunicación.
 
 ## 6. Restricciones del proyecto
 

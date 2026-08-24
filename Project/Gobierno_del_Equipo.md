@@ -45,9 +45,10 @@ Políticas de Trabajo DevSecOps. Cubre **Gestión del Proyecto** y **Gestión de
 Arquitectos y forman parte de la **Mesa de Arquitectura**, con independencia de su rol
 principal o secundario (ADR-0003).
 
-🔴 **PREGUNTA PARA EL EQUIPO — titularidad DevOps:** confirmar que Daniel Ávila es DevOps
-**titular** para toda decisión de repositorio/CI-CD/release, y que Nicolás León (DevOps
-secundario) apoya sin ser el titular de esas decisiones.
+**Titularidad DevOps — confirmado (2026-08-23):** Daniel Ávila es DevOps **titular** para toda
+decisión de repositorio/CI-CD/release; Nicolás León (DevOps secundario) apoya sin ser titular
+de esas decisiones. Cierra la pregunta que estaba abierta; consistente con lo ya asumido en
+ADR-0004 y ADR-0006.
 
 ### 1.1.2 Definiciones operativas de los roles
 
@@ -299,28 +300,39 @@ Políticas técnicas y de **DevSecOps**. Responsable de construcción/ajuste: Da
 | Etapa | Actividad | Responsable | Herramienta (estado) |
 | --- | --- | --- | --- |
 | Plan | Backlog, sprint, tablero | PO / SM | Jira (adoptada) |
-| Code | Desarrollo backend/frontend | Backend / Frontend | 🔴 stack en evaluación (ver Matriz de Herramientas) |
-| Build | Compilación/empaquetado | DevOps | Docker / Compose (probar); GitHub Actions |
+| Code | Desarrollo backend/frontend | Backend / Frontend | Java y .NET son requerimiento de proyecto para algún módulo del backend (PROY-07); 🔴 alcance exacto por módulo y vigencia de NestJS para el resto del backend sin ratificar — ver Matriz de Herramientas, incompatibilidad 6bis |
+| Build | Compilación/empaquetado | DevOps | Docker / Compose (probar); GitHub Actions (ADR-0004) |
 | Test | Pruebas funcionales y de carga | QA | Postman + Newman (func.), k6 (carga) |
-| **Security** | **Security Testing** | QA + DevOps | 🔴 sin herramienta definida (ver §2.4) |
-| Release | Liberación a `main` | DevOps titular | GitHub Actions |
-| Deploy | Despliegue a ambientes | DevOps | Docker; 🔴 Kubernetes en evaluación |
-| Operate/Monitor | Operación y observabilidad | DevOps | OpenTelemetry (evaluar) |
+| **Security** | **Security Testing** | QA + DevOps | SonarQube (SAST) + OWASP ZAP (DAST) — ADR-0005. Análisis de dependencias y gestión de secretos siguen 🔴 sin definir (ver §2.4) |
+| Release | Liberación a `main` | DevOps titular | GitHub Actions (ADR-0004) |
+| Deploy | Despliegue a ambientes | DevOps | Docker; promoción Devs→Test→Prod en Azure (ADR-0004); **Kubernetes obligatorio (requisito del profesor, PROY-08)** — 🔴 falta ADR de la distribución/config concreta (candidato natural: AKS, por Azure ya fijado en ADR-0004) |
+| Operate/Monitor | Operación y observabilidad | DevOps | 🔴 pendiente de ratificar (texto de ADR-0006 propone Prometheus + Grafana + Datadog, pero el equipo confirma que la decisión sigue abierta; OpenTelemetry sigue en evaluación mientras tanto) |
 
 ## 2.2 Ambientes
 
 Ambientes contemplados: **DEV, QA, PROD**. Configuración y promoción entre ambientes a cargo
 de DevOps.
 
-🔴 **PROPUESTA PARA LA MESA DE ARQUITECTURA:** definir el driver de orquestación/escalado
-antes de decidir sobre **Kubernetes**. Docker Compose no realiza autoescalado; si el
-atributo de calidad lo exige, se evalúa Kubernetes con su ADR cuando la Mesa lo decida.
+🔴 **INCONSISTENCIA DE NOMBRES — en curso de resolución:** ADR-0004/0005/0006 nombran los
+mismos tres ambientes como **Development (Devs), Testing (Test), Production (Prod)**. Es la
+misma secuencia que DEV/QA/PROD de este documento (QA = Testing/Test), pero con nombres
+distintos en cada artefacto. **Responsable de la propuesta: Daniel Ávila (DevOps titular)**;
+la nomenclatura definitiva se ratifica en Mesa de Arquitectura antes de que el instructivo de
+configuración (GitHub `/docs`) y los pipelines queden escritos con nombres que no calcen entre
+sí.
+
+**Kubernetes — confirmado como obligatorio (2026-08-23, PROY-08):** requisito del profesor
+(curricular), no depende de un atributo de calidad del producto. Docker Compose no realiza
+autoescalado, pero eso ya no es el motivo de fondo. 🔴 **Sigue pendiente el ADR de la
+distribución/configuración concreta** (candidato natural: AKS, dado que ADR-0004 ya fija
+Azure como proveedor) — eso sí requiere Mesa antes de Sprint 1.
 
 ## 2.3 Repositorio, ramas y Pull Requests
 
 - **Ramas:** `main` (release), `develop` (integración), `feature/US-xx-descripcion`,
-  `fix/…`, `spike/SP-xx-…`. 🔴 **PROPUESTA PARA DEVOPS:** confirmar nomenclatura exacta antes
-  del Sprint 1 (la DoD exige que la rama cumpla la nomenclatura).
+  `fix/…`, `spike/SP-xx-…`. ADR-0004 confirma la convención `feature/*`, `fix/*`, `develop`,
+  `main` como neutra de disparo de CI; queda 🔴 confirmar formalmente si incluye también
+  `spike/SP-xx-…` con el mismo tratamiento antes del Sprint 1.
 - **Pull Request:** todo cambio entra por PR aprobado; CI en verde; al menos una revisión de
   otro integrante.
 - Un fallo de CI en `develop` se atiende de inmediato (< 4 h) por el autor del último merge.

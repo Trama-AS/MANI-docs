@@ -96,16 +96,29 @@ identificadas para el producto.
 | RNF-04 | Trazabilidad y auditabilidad de la operación; registro inmutable de operaciones financieras (2º incremento) | Auditabilidad | Alta |
 | RNF-05 | El despacho debe resolver aceptaciones concurrentes dejando exactamente una asignación válida | Fiabilidad / Concurrencia | Alta |
 | RNF-06 | La responsabilidad PCI DSS recae en el operador de pagos certificado, no en la plataforma | Seguridad / Cumplimiento | Alta |
-| RNF-07 | La plataforma debe soportar concurrencia de usuarios buscando aliado y comunicándose | Rendimiento / Escalabilidad | Media |
+| RNF-07 | La plataforma debe soportar, sin degradar el servicio, la concurrencia de: (a) múltiples clientes creando solicitudes y consultando aliados válidos por cobertura/categoría al mismo tiempo (RF-12, RF-13); (b) múltiples aliados intentando aceptar la misma solicitud en la misma ventana de tiempo (RF-14, ligado directo a RNF-05 — el despacho debe resolver esas aceptaciones concurrentes en exactamente una asignación); y (c) mensajería/notificaciones activas simultáneas por servicio en curso (RF-20). Sin umbral numérico todavía — ver vacío §7 | Rendimiento / Escalabilidad | Media |
 | RNF-08 | Interfaz utilizable en dispositivos móviles del cliente y del aliado | Usabilidad | Media |
 | RNF-09 | Cobertura declarada por **zonas**, no por radio geográfico | Usabilidad / Modelo de datos | Alta |
 | RNF-10 | KYC/documentos y tiempos/comisiones **configurables por tenant**, no fijos ni codificados | Modificabilidad / Configurabilidad | Alta |
 | RNF-11 | El modelo de pagos es **centralizado**, con operador certificado (integrar antes que construir) | Seguridad / Cumplimiento | Media |
 
 🔴 **PROPUESTA PARA LA MESA DE ARQUITECTURA:** RNF-01, RNF-02, RNF-03 y RNF-05 son
-candidatos fuertes a **drivers arquitectónicos** del diseño de solución. RNF-07 es candidato a
-**riesgo crítico de diseño** si se subestima la concurrencia del despacho. Confirmar en la
-Mesa al iniciar el diseño de arquitectura.
+candidatos fuertes a **drivers arquitectónicos** del diseño de solución.
+
+🔴 **RNF-07 — aclaración de la aparente contradicción Media/riesgo crítico.** La columna
+"Prior." mide orden de atención en el backlog (cuándo se trabaja), no severidad de riesgo de
+diseño (qué tan caro es equivocarse). RNF-07 tiene prioridad **Media** de backlog porque no es
+una historia que se implemente aislada, pero es **riesgo crítico de diseño** porque:
+- El despacho concurrente (RF-14) ya depende de RNF-05 (exactamente una asignación válida);
+  si el diseño de datos no soporta bien la concurrencia de RNF-07 desde el inicio, RNF-05 se
+  vuelve imposible de cumplir sin rediseñar el modelo de datos completo — el mismo riesgo que
+  ya identifica el Product Backlog §4 para multi-tenancy tardío.
+- No hay umbral de volumen (vacío §7): sin saber cuántos aliados/clientes concurrentes se
+  esperan, no se puede dimensionar ni el modelo de concurrencia ni la infraestructura (afecta
+  directamente el presupuesto de producto, Perfil de Proyecto §7).
+**Para Mesa:** decidir si RNF-07 debe elevarse a prioridad Alta (para que se diseñe junto con
+RNF-01/02/03/05 y no después), y confirmar con el cliente el umbral de concurrencia esperado
+al iniciar el diseño de arquitectura de Sprint 1.
 
 ## 6. Requerimientos del proyecto
 
@@ -120,6 +133,8 @@ constituyen funcionalidades directas del producto.
 | PROY-04 | El equipo cuenta con roles y responsabilidades definidos, incluida la responsabilidad transversal de Arquitecto (ver documento de Gobierno del Equipo) | Alta |
 | PROY-05 | Toda decisión técnica costosa de revertir se discute en la Mesa de Arquitectura y se registra como ADR antes de implementarse | Alta |
 | PROY-06 | Las herramientas de gestión, documentación y calidad usadas por el equipo son las definidas en la Matriz de Herramientas vigente; no se incorporan herramientas adicionales sin justificación | Media |
+| PROY-07 | El proyecto exige el uso de **Java** y **.NET** en algún módulo del backend (constraint externo de proyecto, no una elección tecnológica evaluable); el diseño de arquitectura y el reparto de módulos deben partir de esta base. Alcance exacto (qué módulo en Java, cuál en .NET, y si algo más queda fuera de estos dos) pendiente de ratificar en Mesa de Arquitectura — ver Matriz de Herramientas §Incompatibilidades, punto 6bis | **Crítica** |
+| PROY-08 | El proyecto exige el uso de **Kubernetes** como orquestador — requisito del profesor (curricular), no una decisión evaluable por atributo de calidad. Cierra la pregunta de "¿se justifica Kubernetes?" de la Matriz de Herramientas (incompatibilidad #4); sigue abierto el **cómo** (qué distribución/config concreta, ligado a Azure por ADR-0004 ⇒ candidato natural AKS) — eso sí requiere ADR | **Crítica** |
 
 No se agrega trazabilidad de estos requerimientos.
 

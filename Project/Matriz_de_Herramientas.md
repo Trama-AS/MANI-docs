@@ -47,9 +47,26 @@ Stack con el que eventualmente se construirá el producto. Ninguna está adoptad
 | **MongoDB** | Motor de persistencia (documental) | **Evaluar** | SP-01.1.1 |
 | **Supabase** | Backend-as-a-service sobre PostgreSQL (auth, RLS, storage) | **Evaluar** | SP-01.1.1, SP-01.2.1 |
 | **Flutter + Dart** | Aplicación cliente multiplataforma | **Evaluar** | 🔴 sin spike de frontend asignado todavía |
-| **Kubernetes** | Orquestación de contenedores y escalado | **Evaluar** | 🔴 pendiente definir driver (§ Tech Radar) |
+| **Kubernetes** | Orquestación de contenedores y escalado | **Adoptar** (requisito de proyecto, PROY-08) | 🔴 sin spike propio; falta ADR de la distribución/config concreta (candidato: AKS, por Azure ya fijado en ADR-0004) |
 | **Docker / Docker Compose** | Contenerización de ambientes DEV/QA | **Probar** | — |
 | **OpenTelemetry** | Observabilidad | **Evaluar** | 🔴 sin spike de observabilidad asignado todavía |
+
+🔴 **OBSERVABILIDAD — PENDIENTE (actualizado 2026-08-23):** el texto de ADR-0006 adopta
+Prometheus + Grafana + Datadog, pero el equipo confirma que la decisión de observabilidad
+**sigue pendiente en la práctica** — no se trata como cerrada. OpenTelemetry se mantiene en
+"Evaluar" mientras esto no se ratifique. No planificar instrumentación de Sprint 1 dando por
+hecho ninguna de las dos opciones hasta que la Mesa lo confirme explícitamente.
+
+**Adoptadas vía ADR-0004/0005 (no estaban en esta tabla; se listan para trazabilidad — ver
+también sección de incompatibilidades más abajo):**
+
+| Tecnología | Rol | ADR | Anillo |
+| --- | --- | --- | --- |
+| Java + Maven | Backend (Repo B) — requerimiento de proyecto, ver 6bis | ADR-0004 | Adoptar |
+| .NET | Backend (Repo C) — requerimiento de proyecto, ver 6bis | ADR-0004 | Adoptar |
+| Microsoft Azure (+ Azure Container Registry) | Infraestructura / despliegue | ADR-0004 | Adoptar |
+| SonarQube | SAST | ADR-0005 | Adoptar |
+| OWASP ZAP | DAST | ADR-0005 | Adoptar |
 
 Ninguna tecnología pasa a "Adoptar" ni se le asigna número de ADR hasta que la Mesa de
 Arquitectura tome la decisión correspondiente. Este documento no anticipa ADR.
@@ -67,7 +84,7 @@ como clasificación de trabajo:
 - **Adoptar** — decisión tomada y respaldada por ADR. *(Hoy vacío en tecnologías de producto.)*
 - **Probar** — se usará en un spike/PoC controlado. *(Docker/Compose.)*
 - **Evaluar** — candidata; requiere spike y ADR antes de avanzar. *(NestJS, MongoDB,
-  Supabase, Flutter, Kubernetes, OpenTelemetry.)*
+  Supabase, Flutter, OpenTelemetry.)*
 - **Contener** — evitar o limitar su expansión.
 
 Regla vigente del equipo (aún no formalizada como ADR): **una tecnología no pasa a
@@ -92,15 +109,35 @@ Se registran aquí, no dentro de los requerimientos ni de las historias.
 3. **Tres rastreadores propuestos (GitHub Projects, GitLab Issues, Jira).** Resuelto por
    ADR-0002: Jira gestión, GitHub técnico/ADR, GitLab descartado.
 
-4. **Docker Compose vs. escalado automático.** Docker Compose **no realiza autoescalado**.
-   La tecnología en evaluación para orquestación y escalado es **Kubernetes**.
-   🔴 **PROPUESTA / PUNTO PENDIENTE PARA LA MESA DE ARQUITECTURA:** definir el **driver o
-   atributo de calidad** (¿escalabilidad? ¿disponibilidad? ¿elasticidad de carga?) que
-   justifique formalmente Kubernetes. Sin driver, Kubernetes sería sobrearquitectura. No se
-   cierra ni se asigna ADR hasta que la Mesa lo decida.
+4. **Docker Compose vs. escalado automático — resuelto por requisito externo (2026-08-23).**
+   Docker Compose no realiza autoescalado; la pregunta era si eso justificaba Kubernetes por
+   atributo de calidad. Ya no aplica: **Kubernetes es requisito curricular del profesor**
+   (PROY-08), no una decisión de arquitectura evaluable por driver técnico. Lo que sigue
+   🔴 pendiente es el ADR de **cómo** (distribución concreta — candidato natural AKS, dado
+   que ADR-0004 ya fija Azure — y su configuración de nodos/escalado), no el **si**.
 
 5. **Confluence/Jira (documentación, propuesta PO) vs. OneDrive + GitHub.** Resuelto por
    ADR-0001/0002: OneDrive documentos formales, GitHub ADR/código, Confluence descartado.
+
+6bis. **🔴 Java y .NET son requerimiento de proyecto (constraint externo), no elección
+   arquitectónica libre.** Confirmado por el equipo (2026-08-23): el proyecto exige usar
+   Java y .NET en algún módulo del backend; el diseño de solución parte de esa base, no la
+   evalúa como una alternativa más frente a NestJS. Esto es lo que explica el Repo B
+   (Java/Maven) y Repo C (.NET) de ADR-0004. **Lo que sigue sin cerrar es el alcance
+   exacto, no "cuál stack":**
+   - Esta tabla sigue listando **NestJS** en "Evaluar", ligado a SP-01.1.1 (aislamiento
+     multi-tenant, crítico, bloquea Sprint 1), sin que ningún documento aclare si NestJS
+     sigue vigente para algún módulo adicional o si queda retirado del Tech Radar porque el
+     requerimiento de proyecto ya cubre Java+.NET.
+   - Ningún documento de requerimientos (Análisis de Requerimientos, SRS) registra este
+     constraint como requisito de proyecto trazable — solo vive en el contexto de
+     ADR-0004. Debe documentarse como requerimiento de proyecto (Análisis de Requerimientos,
+     nueva entrada PROY-07) para que quede escrito y no dependa de que alguien lo recuerde.
+   - SP-01.1.1 (aislamiento multi-tenant) debe re-dirigirse explícitamente a Java+.NET (o a
+     cuál de los dos, si el aislamiento vive en una sola capa) antes de que su resultado
+     alimente el diseño de datos de Sprint 1.
+   **Para Mesa:** ratificar el alcance de NestJS (¿queda para algún módulo o se retira del
+   Tech Radar?) y confirmar a qué módulo(s) exactos aplica Java y a cuáles .NET.
 
 6. **Herramientas de diagramación (Miro/Mermaid/Figma) vs. modelo C4.** Para el SDD se usará
    un framework de modelado (C4 / 4+1). 🔴 **PREGUNTA PARA LA MESA:** ¿herramienta de C4
@@ -111,21 +148,20 @@ Se registran aquí, no dentro de los requerimientos ni de las historias.
 
 ## Observación DevSecOps / Security Testing
 
-El proyecto establece un enfoque **DevSecOps** y las actividades de QA incluyen **Security
-Testing**, pero **actualmente no existen herramientas de seguridad propuestas**. Postman
-cubre pruebas funcionales de API y k6 pruebas de carga; ninguna resuelve por sí sola el
-Security Testing.
+**Actualización (ADR-0005, 2026-08-19):** SAST y DAST quedan resueltos — **SonarQube**
+(análisis estático, en los flujos de GitHub Actions) y **OWASP ZAP** (análisis dinámico
+automatizado sobre el ambiente de Testing). Postman + Newman cubren pruebas funcionales y k6
+pruebas de carga; ninguna de las dos resuelve Security Testing, de ahí la necesidad de
+SonarQube/ZAP.
 
-🔴 **PREGUNTA PARA QA / DEVOPS / MESA DE ARQUITECTURA:** ¿qué herramientas o mecanismos se
-usarán para cubrir, como mínimo?
+🔴 **PENDIENTE — sigue sin cerrar (no lo resuelve ADR-0005):**
 
-- **SAST** (análisis estático de código).
-- **Análisis de dependencias** (vulnerabilidades en librerías).
-- **Gestión de secretos** (no exponer credenciales en el repositorio ni en pipelines).
+- **Análisis de dependencias** (vulnerabilidades en librerías) — sin herramienta definida.
+- **Gestión de secretos** (no exponer credenciales en repositorio ni pipelines) — sin
+  herramienta definida.
 
-No se selecciona todavía ninguna herramienta definitiva: queda como **evaluación pendiente
-del equipo**. El ADR correspondiente se crea únicamente cuando la Mesa de Arquitectura tome
-la decisión.
+Queda como evaluación pendiente del equipo; el ADR correspondiente se crea únicamente cuando
+la Mesa de Arquitectura tome la decisión.
 
 ---
 
@@ -138,5 +174,5 @@ la decisión.
 | Camila Beltrán | Frontend | Code / Build | Flutter + Dart (+ Figma) | Producto — **Evaluar** |
 | Nicolás Álvarez | Frontend | Code / Build | Flutter + Dart | Producto — **Evaluar** |
 | Santiago | QA | Test / Security Testing | Postman + Newman + k6 + emulador | Proceso — adoptada; 🔴 falta Security Testing |
-| Daniel Ávila | DevOps | Release/Deploy/Operate/Monitor | GitHub Actions + Docker/Compose + OpenTelemetry (+ 🔴 Kubernetes) | Mixto — proceso adoptado; orquestación en evaluación |
+| Daniel Ávila | DevOps | Release/Deploy/Operate/Monitor | GitHub Actions + Docker/Compose + Kubernetes (obligatorio, PROY-08) + observabilidad 🔴 pendiente | Mixto — proceso adoptado; orquestación obligatoria (falta ADR de distribución); observabilidad sin ratificar |
 | Nicolás León | Product Owner | Requirements/MockUps | Jira + Figma + Miro + Mermaid | Proceso — adoptada |

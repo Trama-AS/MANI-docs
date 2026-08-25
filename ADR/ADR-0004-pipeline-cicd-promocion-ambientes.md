@@ -12,7 +12,7 @@ El proyecto MANI adopta una arquitectura desacoplada multi-repositorio compuesta
 
 1. Automatizar el ciclo de vida de compilación, ejecución de pruebas unitarias y empaquetado de artefactos para cada repositorio de forma independiente.
 2. Mantener sincronizada la gestión del trabajo en Jira (Backlog con épicas, historias y bugs) con el código fuente mediante la creación automatizada de issues y ramas en GitHub al mover ítems en los tableros.
-3. Establecer una estrategia formal y controlada de promoción de artefactos inmutables contenerizados (Docker / Azure Container Registry) a través de tres ambientes secuenciales: **Development (Devs)**, **Testing (Test)** y **Production (Prod)** alojados sobre infraestructura Azure.
+3. Establecer una estrategia formal y controlada de promoción de artefactos inmutables contenerizados (Docker / Azure Container Registry) a través de tres ambientes secuenciales: **Development (develop)**, **Testing (release)** y **Production (main)** alojados sobre infraestructura Azure.
 4. Garantizar que ningún artefacto llegue a producción sin haber sido probado y promovido a través de los entornos previos con pipelines en estado satisfactorio (CI en verde).
 
 ## Alternativas evaluadas

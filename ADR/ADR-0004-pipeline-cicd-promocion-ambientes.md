@@ -1,4 +1,4 @@
-# ADR-0004: Pipeline de CI/CD Multi-Repositorio y Promoción de Ambientes (Devs -> Test -> Prod)
+# ADR-0004: Pipeline de CI/CD Multi-Repositorio y Promoción de Ambientes (develop -> release -> main)
 
 - Fecha: 2026-08-19
 - Sprint: 1
@@ -44,5 +44,5 @@ Aceptado — última actualización: 2026-08-19
   - Mayor consumo de minutos de ejecución concurrentes en GitHub Actions.
   - Mantenimiento duplicado de configuraciones, secretos y variables de entorno segregadas por cada ambiente en los repositorios de GitHub.
 - Neutras:
-  - Todo desarrollador debe apegarse a la convención de ramas (`feature/*`, `fix/*`, `develop`, `main`) para no disparar ejecuciones innecesarias de CI/CD.
+  - Todo desarrollador debe apegarse a la convención de ramas (`feature/*`, `fix/*`, `develop`, `release`, `main`) para no disparar ejecuciones innecesarias de CI/CD.
   - Las promociones a Testing y Producción requieren la aprobación manual (Environment Protection Rules / Gates) del rol de QA y DevOps titular respectivamente.

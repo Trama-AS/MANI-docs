@@ -19,11 +19,11 @@ El proyecto MANI adopta una arquitectura desacoplada multi-repositorio compuesta
 
 1. **Monorepositorio con pipeline monolítico unificado.** Descartada porque acopla fuertemente el ciclo de vida y los despliegues de tecnologías heterogéneas (Flutter, Java, .NET), incrementa exponencialmente los tiempos de ejecución de CI y dificulta el versionado semántico independiente de cada microservicio.
 2. **Servidor de integración continua auto-hospedado con Jenkins.** Descartada porque introduce una carga operativa considerable en aprovisionamiento, mantenimiento de agentes, parches de seguridad y administración de infraestructura que el equipo no puede absorber en este sprint frente a la integración nativa y gestionada de GitHub Actions.
-3. **Pipelines independientes en GitHub Actions con sincronización de Jira vía Webhooks y promoción de imágenes contenerizadas a ambientes Devs, Test y Prod en Azure.** Elegida.
+3. **Pipelines independientes en GitHub Actions con sincronización de Jira vía Webhooks y promoción de imágenes contenerizadas a ambientes develop, release y main en Azure.** Elegida.
 
 ## Decisión
 
-Usaremos GitHub Actions como motor de CI/CD multi-repositorio integrado bidireccionalmente con Jira mediante Webhooks, promoviendo artefactos inmutables contenerizados a través de los entornos secuenciales Development (Devs), Testing (Test) y Production (Prod) desplegados en Microsoft Azure.
+Usaremos GitHub Actions como motor de CI/CD multi-repositorio integrado bidireccionalmente con Jira mediante Webhooks, promoviendo artefactos inmutables contenerizados a través de los entornos secuenciales Development (develop), Testing (release) y Production (main) desplegados en Microsoft Azure.
 
 ## Trade-off asumido
 
@@ -32,6 +32,7 @@ El equipo asume el esfuerzo de mantener tres flujos de trabajo (`workflows`) ind
 ## Estado
 
 Aceptado — última actualización: 2026-08-19
+Aceptado - última actualización: 2026-08-24
 
 ## Consecuencias
 

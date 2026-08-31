@@ -1,0 +1,118 @@
+# ADR-0011: Backend en Dart, motor de persistencia y aislamiento multi-tenant
+
+- Fecha: 2026-08-30
+- Sprint: 1
+- Autor: Juan Sebastián Álvarez Rodríguez
+- Origen: Spike SP-01.1.1 
+- Revisor: Scrum Master
+
+## Contexto
+
+MANI es una plataforma SaaS multi-tenant. El RNF-01 (Seguridad y aislamiento multi-tenant)
+está clasificado como driver arquitectónico crítico: los datos de un tenant deben estar
+estrictamente aislados de los demás, y ningún usuario o mecanismo de acceso asociado a un
+tenant puede acceder a información de otro tenant.
+
+Esta decisión también resuelve el motor de persistencia, porque ambas están acopladas: el
+mecanismo de aislamiento elegido depende directamente del tipo de motor de base de datos.
+
+Existe una contradicción abierta entre dos propuestas del equipo:
+
+- Backend propuso **MongoDB** (motor documental) como motor de persistencia.
+- El plan de pruebas de QA asume **Supabase (PostgreSQL) con Row-Level Security (RLS)**
+  como mecanismo de aislamiento.
+
+MongoDB no soporta RLS de forma nativa. RLS es una característica propia de bases de datos
+relacionales. Elegir MongoDB como motor primario **excluye** RLS como mecanismo de
+aislamiento; ambas no pueden coexistir como decisión primaria. El plan de pruebas de QA no
+puede fijar su verificación de aislamiento hasta que esta ADR se apruebe.
+
+El volumen esperado de tenants en el lanzamiento todavía no se conoce (vacío identificado en
+el Análisis de Requerimientos), lo cual condiciona qué tan estricto/costoso debe ser el
+mecanismo de aislamiento elegido.
+
+Adicionalmente, el equipo está evaluando desplazar el backend hacia **Dart** (mismo lenguaje
+que el cliente Flutter) apoyándose en un **BaaS**, en lugar de la propuesta original de
+NestJS + MongoDB. Esto cambia el marco de la decisión: la elección de motor de persistencia
+queda ligada a qué BaaS se adopte, y **Supabase (PostgreSQL)** habilita Row-Level Security de
+forma nativa, lo cual elimina la incompatibilidad original entre MongoDB y RLS.
+
+## Alternativas evaluadas
+
+**Framework de backend:**
+
+1. **NestJS + MongoDB (propuesta original de Backend).** Descartada como recomendación de
+   este spike: introduce un segundo lenguaje (TypeScript) además de Dart ya usado en el
+   cliente Flutter, y MongoDB no habilita RLS nativo, dejando el aislamiento de RNF-01
+   dependiendo solo de disciplina en la capa de aplicación.
+2. **Serverpod (framework backend en Dart) sobre PostgreSQL gestionado por Supabase.**
+   Permite un único lenguaje de extremo a extremo (Dart en cliente y servidor), con modelos y
+   cliente tipado generados automáticamente para Flutter, y persistencia sobre un motor que
+   sí soporta RLS.
+3. **BaaS puro sin backend propio (Flutter hablando directo a Supabase).** Descartada para
+   este spike: la lógica del ciclo del servicio (RF-12 a RF-19), en particular la resolución
+   determinista de aceptaciones concurrentes (RNF-05), requeriría implementarse dentro de
+   funciones de base de datos o Edge Functions, dificultando pruebas unitarias, versionado y
+   separación de responsabilidades del equipo de Backend.
+
+**Mecanismo de aislamiento (condicionado al motor Postgres/Supabase resultante):**
+
+1. **Row-Level Security (RLS) nativo de PostgreSQL/Supabase**, filtrando automáticamente por
+   `tenant_id` a nivel de motor. El aislamiento no depende solo de que cada consulta del
+   backend lo aplique correctamente, sino que queda reforzado por la base de datos.
+2. **Filtrado manual por `tenant_id` en cada consulta desde Serverpod, sin RLS.** Descartada
+   como mecanismo primario: reintroduce el mismo riesgo ya identificado con MongoDB (un
+   error de filtrado en un solo endpoint rompe el aislamiento estricto exigido por RNF-01),
+   desaprovechando que el motor elegido sí soporta RLS.
+3. **Base de datos o esquema separado por tenant.** Descartada para el MVP por el mismo
+   motivo que antes: costo operativo de aprovisionar una base/esquema por tenant sin conocer
+   aún el volumen esperado de tenants.
+
+## Decisión
+
+Usaremos **Serverpod** como backend en Dart sobre **PostgreSQL gestionado por Supabase**,
+con **Row-Level Security nativo** como mecanismo de aislamiento entre tenants.
+
+## Trade-off asumido
+
+Se abandona la propuesta original de NestJS + MongoDB. El equipo asume la curva de
+aprendizaje de Serverpod (framework más joven y con comunidad más pequeña que NestJS) y el
+acoplamiento a Supabase como proveedor gestionado de Postgres/Auth/Storage, a cambio de un
+único lenguaje (Dart) en todo el stack y de RLS nativo reforzando RNF-01 a nivel de motor en
+lugar de depender solo de disciplina de código.
+
+## Estado
+
+Aceptado — última actualización: 2026-08-29 (Mesa de Arquitectura)
+
+## Consecuencias
+
+- Positivas:
+  - Un solo lenguaje (Dart) en frontend y backend; Serverpod genera cliente y modelos
+    tipados compartidos con Flutter, reduciendo desajustes de contrato entre capas.
+  - RLS nativo resuelve RNF-01 a nivel de motor, no solo por disciplina de código.
+  - Supabase aporta Auth, Storage y Realtime ya construidos, reduciendo el alcance por
+    construir a mano en el backend propio.
+  - Se resuelve de raíz la contradicción documentada entre Backend (MongoDB) y el plan de
+    pruebas de QA (Supabase + RLS): ambos quedan apuntando al mismo motor.
+  - Se desbloquea EP-01 completa y el resto de historias de persistencia del MVP.
+- Negativas:
+  - Serverpod tiene menor madurez y comunidad que NestJS: menos documentación y menos
+    referencias para resolver problemas del equipo.
+  - Dependencia de un proveedor gestionado (Supabase) para Postgres, Auth y Storage.
+- Neutras:
+  - Requiere actualizar la Matriz de Herramientas: retirar NestJS y MongoDB de "Evaluar",
+    agregar Serverpod y Supabase.
+  - El plan de pruebas de QA puede mantener su supuesto original de Supabase + RLS sin
+    cambios.
+  - Si el volumen de tenants crece significativamente después del MVP, la Mesa podría
+    necesitar reevaluar hacia bases/esquemas separados por tenant.
+
+## Trazabilidad
+
+- Issues: SCRUM-441, SCRUM-502, SCRUM-698
+- Pull requests: 🔴 <completar al abrir el PR>
+- Componentes del modelo C4 afectados: capa de persistencia / backend NestJS
+- Documentos que deben actualizarse: Matriz de Herramientas (Tech Radar: retirar NestJS y
+  MongoDB de "Evaluar"; agregar Serverpod y Supabase), plan de pruebas de QA (sin cambios,
+  ya asumía Supabase + RLS), SRS si corresponde

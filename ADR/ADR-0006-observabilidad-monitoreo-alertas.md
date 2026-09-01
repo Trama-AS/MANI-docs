@@ -2,7 +2,7 @@
 
 - Fecha: 2026-08-19
 - Sprint: 1
-- Autor: Daniel Ávila (DevOps titular)
+- Autor: Daniel Avila (DevOps titular)
 - Origen: Mesa de Arquitectura
 - Revisor: Sara Albarracín (Scrum Master)
 

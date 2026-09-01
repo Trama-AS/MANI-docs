@@ -10,32 +10,6 @@
 
 ---
 
-## 0. Nota de revisión
-
-Esta versión corrige tres clases de error de la anterior, además de completar el contenido
-exigido para SAD V1 que faltaba por completo.
-
-1. **Renumeración de ADR (bloqueante A1).** La versión previa citó "ADR-0011" para
-   Serverpod/Supabase/RLS sin haber confirmado que ese número ya estaba tomado por la
-   decisión de cobertura por zonas. Corrección aplicada en todo el documento:
-   - **ADR-0011 = Modelo de cobertura** (Zona, CoberturaAliado, Sitio) — Aceptado.
-   - **ADR-0012 = Backend Dart, persistencia y aislamiento multi-tenant** (Serverpod +
-     Supabase + RLS) — el archivo correspondiente conserva un encabezado interno que dice
-     "ADR-0011"; queda señalado como pendiente de corrección de nombre de archivo/encabezado,
-     no de contenido.
-   - Las citas a "ADR-0008" como origen de la decisión de cobertura en la versión anterior
-     eran incorrectas: ADR-0008 es la carpeta de diagramas. Corregidas a ADR-0011.
-2. **Contradicciones internas corregidas (B1, B2, B5).** Detalladas en cada sección.
-3. **Contenido faltante agregado (A3):** Arquitectura de Alto Nivel (§6), Arquitectura de
-   Negocio (§7) y Arquitectura de Infraestructura (§8). Esta última **se declara
-   explícitamente bloqueada**, no se rellena con supuestos — ver §8.
-4. Los hallazgos sobre el SRS (RF de cierre faltante, RF de catálogo de zonas faltante,
-   restricciones sin identificador, RNF mal tipificados) **no se corrigen en este
-   documento**: pertenecen al SRS y al Product Backlog, con dueños distintos al SAD. Quedan
-   listados en §9 para que se les dé seguimiento donde corresponde.
-
----
-
 ## 1. Drivers y killers arquitectónicos
 
 **Nota de terminología:** el SRS §5.7 usa "riesgo crítico de diseño"; este documento usaba

@@ -358,22 +358,74 @@ presiona negativamente a la columna, **[ ]** sin interacción relevante detectad
 
 ---
 
-## 5. Trazabilidad: de Objetivo de Diseño a Escenario
+## 5. ADR Consolidados
 
-| Objetivo de Diseño | Atributo(s) de Calidad | Escenario(s) de Calidad |
+Los 15 ADR reales del repositorio `Trama-AS/MANI-docs` (rama `main`, carpeta `/ADR`; no
+existe un ADR-0014). Cada uno se conecta explícitamente con su(s) Objetivo(s) de Diseño
+(§1), su Atributo/Escenario de Calidad (§2–3) y su Trade-off (§4), para que la trazabilidad
+del SAD sea verificable de punta a punta.
+
+**Convención de Estado:** 🟢 Aceptado · 🟡 Propuesto · 🔴 Aceptado pero en contradicción activa
+con otro ADR también Aceptado (ver KI-02).
+
+### 5.1 Tabla maestra de ADR
+
+| ADR | Título | Estado | Decisión (resumen) | Alternativas descartadas | Objetivo de Diseño | AC / Escenario | Trade-off |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **ADR-0001** | Gestión documental | 🟢 Aceptado | GitHub (código/ADR) + OneDrive (documentos formales), dividido por tipo de contenido | Todo en GitHub; Confluence + Jira | DR-11 | — | — |
+| **ADR-0002** | Herramientas de gestión: Jira | 🟢 Aceptado | Jira para gestión de proyecto + GitHub para lo técnico, separados | Todo en GitHub Projects; GitLab Issues | DR-08 | — | — |
+| **ADR-0003** | Mesa de Arquitectura | 🟢 Aceptado | Mesa con Arquitecto transversal y rotación de autoría de ADR; quórum 5/7, disenso documentado | Responsable único (SM); sin reglamento formal | DR-09 | — | — |
+| **ADR-0004** | Pipeline CI/CD multi-repositorio | 🔴 Aceptado (en contradicción) | GitHub Actions + Webhooks Jira↔GitHub + promoción de contenedores en Azure, sobre 3 repos (Flutter/Java/.NET) | Monorepositorio; Jenkins auto-hospedado | DR-08 | — | Base de KI-02 |
+| **ADR-0005** | DevSecOps: SAST + DAST | 🔴 Aceptado (en contradicción) | SonarQube (SAST) + OWASP ZAP (DAST) en GitHub Actions, sobre Flutter/Java/.NET | Revisión manual; plataformas comerciales unificadas | DR-07 | — | Base de KI-02 |
+| **ADR-0006** | Observabilidad | 🔴 Aceptado (en contradicción) | Prometheus + Grafana + Datadog, instrumentando Java Spring/.NET en Azure | Stack ELK auto-alojado; Azure Monitor/App Insights exclusivo | KI-11 | AC-11 / QS-09 | TO-04 |
+| **ADR-0007** | Documentación en el repositorio | 🟢 Aceptado | Carpeta `/docs` versionada junto al código, reemplaza Confluence/Drive/Discord | Confluence como fuente única; Google Drive compartido | DR-11 | — | — |
+| **ADR-0008** | Carpeta de diagramas | 🟢 Aceptado | `/docs/diagramas` con subcarpetas por tipo; Mermaid versionado como texto (`.mmd`) | Solo en herramientas de origen (Figma/Miro); imágenes sueltas en Confluence | DR-11 | — | — |
+| **ADR-0009** | Política de uso de IA | 🟢 Aceptado | Uso de IA permitido bajo lineamientos del equipo; ninguna sugerencia de IA es decisión válida sin pasar por la Mesa | Prohibición total; uso libre sin lineamientos | DR-09 | — | — |
+| **ADR-0010** | Tech Radar del proyecto | 🟢 Aceptado | Radar visual consolidado (círculos de confianza, cuadrantes por categoría); Kubernetes en "Tal vez" por costo | Mantener disperso en ADR individuales | KI-03 | — | — |
+| **ADR-0011** | Modelo de cobertura geográfica | 🟢 Aceptado | Catálogo de zonas administrativas, relación N:M aliado↔zona, sin geometría propia | Radio de cobertura; polígonos dibujados; catálogo con geometría asociada | DR-02, DR-03 | — | KI-07, KI-08 |
+| **ADR-0012** | Backend Dart, motor de persistencia y aislamiento multi-tenant | 🔴 Aceptado (en contradicción) | Serverpod (Dart) + Supabase (PostgreSQL) + RLS nativo | NestJS+MongoDB; BaaS puro; filtrado manual sin RLS; base/esquema separado por tenant | DR-01 | AC-01, AC-02 / QS-01 | TO-01, TO-02 · resuelve KI-01 · abre KI-02, KI-06 |
+| **ADR-0013** | Almacenamiento de documentos KYC | 🟡 Propuesto | Bucket único de Storage con ruta `tenant_id/aliado_id/archivo` + RLS sobre `storage.objects` | Bucket privado por tenant; aislamiento solo en capa de aplicación | DR-05, DR-01 | AC-01 | KI-05 |
+| **ADR-0015** | Estrategia de pruebas de aislamiento multi-tenant | 🟡 Propuesto | Colección Postman con 6 casos de acceso cruzado, automatizada con Newman en GitHub Actions | Revisión manual periódica; k6 u OWASP ZAP | DR-06 | AC-10 / QS-08 | TO-05, TO-08 · mitiga KI-04 |
+| **ADR-0016** | Estrategia de despacho de solicitudes | 🟡 Propuesto, incompleto | Despacho simultáneo (broadcast) con `UPDATE` condicional atómico | Despacho secuencial según orden de RF-13 | DR-04 | AC-04 / QS-03 | TO-03 · pendiente en KI-10 |
+| **ADR-0017** | Mensajería y notificaciones en tiempo real | 🟡 Propuesto, incompleto, condicionado | Supabase Realtime (Broadcast) + push notifications (FCM/APNs) | WebSockets propios (Socket.io); Polling | — | AC-13 / QS-10 | TO-06 · pendiente en KI-10 |
+
+### 5.2 Hallazgo transversal: contradicción activa entre bloques de ADR
+
+**ADR-0004, ADR-0005 y ADR-0006** (Aceptados, 2026-08-19/24) construyen pipeline, seguridad y
+observabilidad completos sobre el supuesto de tres repositorios en **Flutter + Java + .NET**,
+desplegados en Azure. **ADR-0012** (Aceptado, 2026-08-29) decide un backend distinto —
+**Dart/Serverpod sobre Supabase** — sin declarar `supersedes` sobre ninguno de los tres.
+Ambos bloques están formalmente vigentes (Aceptados) y son mutuamente excluyentes: es
+KI-02, el killer más severo del conjunto. Ningún ADR posterior lo resuelve; el Tech Radar
+(ADR-0010) tampoco lo refleja, pese a ratificarse 4 días antes que ADR-0012.
+
+### 5.3 ADR sin ratificar formalmente (checklist de cierre incompleto)
+
+| ADR | Campos pendientes | Impacto |
 | --- | --- | --- |
-| DR-01 (Aislamiento multi-tenant) | AC-01, AC-02 | QS-01 |
-| DR-04 (Concurrencia en despacho) | AC-04 | QS-03 |
-| DR-05 (Escalabilidad operativa) | AC-06, AC-09 | QS-05 |
-| DR-06 (Verificación repetible) | AC-10 | QS-08 |
-| DR-09 (Defendibilidad ante auditor) | AC-03 | QS-02 |
-| DR-10 (Configurabilidad sin redeploy) | AC-07, AC-12 | QS-06 |
-| KI-09 (Volumen concurrente sin cifra) | AC-08 | QS-07 |
-| KI-11 (Observabilidad en riesgo) | AC-11 | QS-09 |
-| — (RF-20/RF-21 mensajería) | AC-13 | QS-10 |
-| — (multiplataforma) | AC-14 | QS-11 |
-| — (adopción de usuarios no técnicos) | AC-15 | QS-12 |
-| — (idempotencia, RNF-03) | AC-05 | QS-04 |
+| ADR-0013 | Estado formal aún Propuesto | KI-05 permanece como riesgo residual sin cobertura de pruebas ratificada |
+| ADR-0015 | Redactor/Disenso/Quórum sin confirmar en algunas versiones | KI-04 (ventana de riesgo) mitigado en diseño, no en gobernanza |
+| ADR-0016 | Redactor, Disenso y Quórum marcados `[completar]` | No cumple Gobierno del Equipo §2.6 pese a ya usarse como base de diseño (KI-10) |
+| ADR-0017 | Redactor, Disenso y Quórum marcados `[completar]`; condición de activación (adopción de Supabase) ya se cumplió con ADR-0012 pero el texto sigue redactado como pendiente | KI-10; requiere actualización de su autor |
+
+---
+
+## 6. Trazabilidad: de Objetivo de Diseño a Escenario
+
+| Objetivo de Diseño | Atributo(s) de Calidad | Escenario(s) de Calidad | ADR relacionado |
+| --- | --- | --- | --- |
+| DR-01 (Aislamiento multi-tenant) | AC-01, AC-02 | QS-01 | ADR-0012, ADR-0013, ADR-0015 |
+| DR-04 (Concurrencia en despacho) | AC-04 | QS-03 | ADR-0016 |
+| DR-05 (Escalabilidad operativa) | AC-06, AC-09 | QS-05 | ADR-0013 (parcial) — sin ADR propio para AC-06/AC-09 |
+| DR-06 (Verificación repetible) | AC-10 | QS-08 | ADR-0015 |
+| DR-09 (Defendibilidad ante auditor) | AC-03 | QS-02 | ADR-0003 (gobernanza) — sin ADR propio de auditoría de datos |
+| DR-10 (Configurabilidad sin redeploy) | AC-07, AC-12 | QS-06 | Sin ADR |
+| KI-09 (Volumen concurrente sin cifra) | AC-08 | QS-07 | ADR-0017 (parcial) |
+| KI-11 (Observabilidad en riesgo) | AC-11 | QS-09 | ADR-0006 |
+| — (RF-20/RF-21 mensajería) | AC-13 | QS-10 | ADR-0017 |
+| — (multiplataforma) | AC-14 | QS-11 | Sin ADR |
+| — (adopción de usuarios no técnicos) | AC-15 | QS-12 | Sin ADR |
+| — (idempotencia, RNF-03) | AC-05 | QS-04 | Sin ADR propio (mención lateral en ADR-0016) |
 
 ---
 

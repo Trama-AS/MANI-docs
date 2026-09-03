@@ -176,3 +176,25 @@
 | TO-08 | QS-17 (Verificabilidad) vs. QS-08 (Capacidad) | Ejecutar 6+ casos de prueba en cada PR que toque auth/RLS/esquema añade tiempo al pipeline de CI, no al sistema en producción | Aceptado — el costo se paga en CI, no en producción; ADR-0015 no lo considera bloqueante |
 
 ---
+## 7. Vista de Contenedores
+ 
+**Diagrama C4 — Nivel 2 (Contenedores)**
+ 
+*Vista de alto nivel de la arquitectura de MANI: cliente móvil, backend principal, infraestructura
+compartida de CI/CD y observabilidad, y los módulos adicionales exigidos por el enunciado del
+proyecto (PROY-07).*
+ 
+
+ 
+*Fuente: `/<img width="3744" height="1150" alt="c4-contenedores_arquitectura-alto-nivel_v1" src="https://github.com/user-attachments/assets/7fa5707d-79d8-4284-b7f0-f04e8a90f2a5" />
+diagramas/c4/c4-contenedores_arquitectura-alto-nivel_v1.jpg` — ver ADR-0008 para
+convención de versionado.*
+ 
+### Lectura del diagrama
+ 
+| Bloque | Contenido | ADR / requerimiento relacionado |
+|---|---|---|
+| Cliente | Flutter App (Android/iOS) | PROY-07 (constraint de plataforma), RNF-08 |
+| Backend principal | Serverpod (Dart) + Supabase PostgreSQL/RLS + Supabase Storage (KYC) + Supabase Realtime Broadcast | ADR-0012, ADR-0013, ADR-0017 |
+| Infraestructura compartida | SonarQube + OWASP ZAP (SAST/DAST) ×2, Prometheus + Grafana + Datadog, GitHub Actions CI/CD multi-repositorio, FCM/APNs | ADR-0004, ADR-0005, ADR-0006 |
+| Módulos adicionales | Módulo en Java Spring, Módulo en .NET, persistencia del módulo (pendiente de definir) | PROY-07 (constraint crítico), ADR-0004 |

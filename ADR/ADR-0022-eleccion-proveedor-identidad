@@ -1,0 +1,41 @@
+# ADR-0022: Elección de Supabase Auth como Proveedor de Identidad Multi-Tenant
+
+- Fecha: 2026-08-28
+- Sprint: 1
+- Autor: Nicolás León (PO)
+- Origen: Spike Técnico SP-01.2.1 (SCRUM-503)
+- Revisor: <Pendiente por asignar>
+
+## Contexto
+
+MANI Services es una plataforma Multi-Tenant que debe aislar estrictamente la información y los accesos de diferentes conjuntos (tenants). Se necesita un Proveedor de Identidad (IdP) para gestionar el Login, el registro y el acceso de diferentes perfiles (Clientes, Aliados, Backoffice). Debido al apretado cronograma académico y los recursos limitados del equipo, desarrollar un sistema de autenticación propio desde cero (con JWT, cifrado de claves, reseteo de contraseñas y roles por tenant) representa un riesgo alto de seguridad y un retraso inminente en las entregas del Sprint 1.
+
+## Alternativas evaluadas
+
+1. Auth0 (Okta) — descartada porque la gestión nativa de B2B Multi-Tenant (Auth0 Organizations) tiene un esquema de precios que escala muy rápido fuera de la capa gratuita, y su configuración inicial es excesivamente verbosa para el alcance de este MVP.
+2. Firebase Authentication (GCP Identity Platform) — descartada porque manejar la relación Usuario-Tenant-Rol de forma segura requeriría depender fuertemente de "Custom Claims", lo que obliga a escribir y mantener Cloud Functions complejas solo para gestionar permisos, aumentando el acoplamiento a GCP y la latencia del login.
+
+## Decisión
+
+Usaremos Supabase Auth.
+
+## Trade-off asumido
+
+Asumimos un nivel de acoplamiento (vendor lock-in) moderado con la infraestructura y convenciones de Supabase (específicamente la inyección del JWT en Postgres). Renunciamos a la portabilidad inmediata de la base de datos a un Postgres "vanilla" sin rehacer la capa de autenticación, a cambio de la extrema velocidad de desarrollo que nos da su integración Auth-Database.
+
+## Estado
+
+Aceptado — última actualización: 2026-08-28
+
+## Consecuencias
+
+- Positivas: Habilita el uso de Row Level Security (RLS) en Postgres de forma nativa. La base de datos sabrá automáticamente a qué tenant pertenece el usuario que hace la consulta a través del token de sesión de Supabase Auth, eliminando la necesidad de validar el `tenant_id` manualmente en cada endpoint del Backend.
+- Negativas: Obliga al equipo de desarrollo backend a invertir tiempo de aprendizaje inmediato en la sintaxis de políticas RLS de PostgreSQL, lo cual puede generar cuellos de botella iniciales al crear tablas.
+- Neutras: El frontend (Flutter/Web) tendrá que usar el SDK oficial de Supabase para manejar el estado de la sesión, en lugar de un manejo manual de tokens en LocalStorage.
+
+## Trazabilidad
+
+- Issues: #SCRUM-503 (Spike SP-01.2.1)
+- Pull requests: #<n>
+- Componentes del modelo C4 afectados: Contenedor Identity Provider, Contenedor API Gateway, Contenedor Base de Datos PostgreSQL.
+- Documentos que deben actualizarse: SRS (Requerimientos de Seguridad), SAD (Arquitectura de Infraestructura / Backend).

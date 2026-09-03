@@ -1,10 +1,10 @@
 # ADR-0014: Adopción del patrón Feature Toggle
 
 - Fecha: 2026-09-02
-- Sprint: <n>
-- Autor: <nombre y rol>
-- Origen: <Mesa Técnica | Sprint Planning | issue #NNN>
-- Revisor: <integrante distinto del autor que aprueba el pull request>
+- Sprint: 1
+- Autor: Juan Sebastian Alvarez
+- Origen: Mesa Técnica
+- Revisor: Scrum Master 
 
 ## Contexto
 

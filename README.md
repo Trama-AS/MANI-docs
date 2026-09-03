@@ -83,9 +83,9 @@ El stack del proyecto se define formalmente en el **Tech Radar V2** (ADR-0010) y
 - **Servicios de Backend:**
   - **Repo A:** App móvil cliente y aliados (Flutter / Dart).
   - **Repo B:** Microservicio de reglas de negocio empresariales (Java / Maven / Docker).
-  - **Repo C:** Microservicio transaccional de alta concurrencia (.NET / C# / ACR).
+  - **Repo C:** Microservicio transaccional de alta concurrencia (.NET / C#).
   - **BaaS y Persistencia:** Supabase / PostgreSQL con Row-Level Security (RLS) nativo y Serverpod.
-- **CI/CD y DevOps:** GitHub Actions, Docker, Azure Container Registry (ACR), Kubernetes (AKS).
+- **CI/CD y DevOps:** GitHub Actions, Docker, Docker Hub, Railway, Kubernetes (ADR-0021 — sin Azure).
 - **Seguridad (DevSecOps):** SonarQube (SAST), OWASP ZAP (DAST), Newman / Postman (Pruebas automáticas de RLS en CI).
 - **Observabilidad:** Prometheus (Métricas), Grafana (Dashboards), Datadog (APM, Logs y Alertas automáticas hacia Jira).
 - **Gestión Ágil y Diseño:** Jira Software, Discord, Figma, Excalidraw.

@@ -31,8 +31,10 @@ El equipo asume el esfuerzo de mantener tres flujos de trabajo (`workflows`) ind
 
 ## Estado
 
-Aceptado — última actualización: 2026-08-19
-Aceptado - última actualización: 2026-08-24
+Reemplazado — última actualización: 2026-09-03
+Reemplazado por ADR-0021: la sección de infraestructura Azure/Azure Container Registry
+queda sin efecto; el resto de la decisión (GitHub Actions, Webhooks Jira, promoción
+develop→release→main) sigue vigente.
 
 ## Consecuencias
 

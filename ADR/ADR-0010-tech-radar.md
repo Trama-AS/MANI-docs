@@ -28,13 +28,16 @@ basado en las decisiones ya documentadas en los ADRs previos:
 
 Sí o sí:
 - Lenguajes: Dart, Flutter, .NET, Java
-- Plataformas: GitHub
-- Herramientas: Docker, Jira, Figma, Postman/Newman, GitHub Actions, 
+- Plataformas: GitHub, Railway (ADR-0021)
+- Herramientas: Docker, Docker Hub, Kubernetes (PROY-08, obligatorio y sin costo de
+  licencia — ver SRS_MANI.md §1.4), Jira, Figma, Postman/Newman, GitHub Actions,
   Prometheus, Grafana, Datadog (ver ADR-0006)
 
 Tal vez:
-- Plataformas: Azure, Railway
-- Herramientas: Kubernetes, k6
+- Herramientas: k6
+
+Descartado:
+- Plataformas: Azure / Azure Container Registry (ADR-0021)
 
 Mejor no (por ahora):
 - Técnicas: GitHub Projects como gestor de backlog (se prioriza Jira, 
@@ -49,7 +52,7 @@ se apruebe un nuevo ADR relacionado con tecnología, en lugar de generarlo
 automáticamente.
 
 Estado
-Aceptado — última actualización: 2026-08-25
+Aceptado — última actualización: 2026-09-03 (Kubernetes movido a "Sí o sí"; Azure retirado)
 
 Consecuencias
 Positivas:
@@ -61,6 +64,9 @@ Negativas:
 - Puede quedar desactualizado si no se revisa tras cada nuevo ADR de tecnología.
 
 Neutras:
-- Kubernetes permanece en "Tal vez" dado su costo mensual estimado 
-  (~$450–650 USD, ver diapositiva de Presupuesto) sin un driver de calidad 
-  claro que lo justifique para el alcance actual del MVP.
+- 🔴 Actualización 2026-09-03 (ADR-0021): Azure pasa de "Tal vez" a "Descartado" (se retira
+  como proveedor de infraestructura) y Kubernetes pasa de "Tal vez" a "Sí o sí" — es requisito
+  curricular obligatorio (PROY-08) y no tiene costo de licencia; el costo que antes lo
+  mantenía en "Tal vez" (~$450–650 USD/mes) correspondía al cómputo de Azure AKS, no al
+  orquestador, y ya no aplica al no usarse Azure (ver aclaración en SRS_MANI.md §1.4). Sigue
+  pendiente el ADR de dimensionamiento concreto del clúster (nodos/hosting).

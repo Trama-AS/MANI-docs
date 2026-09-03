@@ -8,6 +8,7 @@
 4. [Atributos_Calidad](#4-atributos-calidad)
 5. [Escenarios_Calidad](#5-escenarios-calidad)
 6. [Trade-offs](#6-trade-offs)
+7. [Arquitectura_de_Negocio](#7-arquitectura-de-negocio)
 
 ---
 
@@ -52,7 +53,7 @@
 | ID | Killer | Categoría | Descripción | Mitigación / Estado |
 |---|---|---|---|---|
 | KI-01 | MongoDB sin RLS nativo | Incompatibilidad técnica | El backend propuesto originalmente (MongoDB) no soporta RLS, quedando incompatible con DR-01 | Resuelto — migración completa a PostgreSQL/Supabase (ADR-0012) |
-| KI-03 | Costo de Kubernetes (~$450–650 USD/mes) sin driver que lo justifique | Restricción económica | Veto explícito por costo-beneficio, no por incapacidad técnica | Abierto, pospuesto deliberadamente (ADR-0010) |
+| KI-03 | Dimensionamiento de cómputo para alojar el clúster Kubernetes, sin proveedor ni configuración de nodos ratificada | Restricción económica | **Resuelto el "si": Kubernetes se adopta** — es requisito curricular no negociable (PROY-08) y no tiene costo de licencia (software open source; ver SRS_MANI.md §1.4). Lo único abierto es el "cómo": dónde y con qué nodos corre el clúster (ya no ligado a Azure/AKS, retirado por ADR-0021) | Kubernetes adoptado (Sí o sí, ADR-0010) — abierto solo el ADR de dimensionamiento/hosting del clúster |
 | KI-04 | Ventana de riesgo entre revisiones manuales de seguridad | Seguridad de proceso | Sin automatización, un cambio que rompa el aislamiento puede llegar a producción sin detectarse, alguien puede pasar devops a main sin revision | Mitigación diseñada, ADR-0015 aún Propuesto |
 | KI-05 | Aislamiento en Storage depende de la disciplina del backend al construir la ruta | Seguridad | La ruta tenant_id/aliado_id/archivo no tiene límite físico de respaldo como un bucket separado Hacer bien las conexiones entre repositorios "Clean Arqui"  para hacer el llamado correcto | Riesgo residual aceptado conscientemente (ADR-0013) |
 | KI-06 | Volumen de tenants desconocido | Escalabilidad | Condiciona si el aislamiento lógico por RLS sobre esquema compartido basta a futuro, o si hará falta separar por base/esquema | No resuelto — deuda declarada (ADR-0012) |
@@ -81,7 +82,7 @@
 | ADR-0007 | Documentación en el repositorio | 🟢 Aceptado | Carpeta /docs versionada junto al código, reemplaza Confluence/Drive/Discord | Confluence como fuente única; Google Drive compartido | DR-11 | — | — |
 | ADR-0008 | Carpeta de diagramas | 🟢 Aceptado | /docs/diagramas con subcarpetas por tipo; Mermaid versionado como texto (.mmd) | Solo en herramientas de origen (Figma/Miro); imágenes sueltas en Confluence | DR-11 | — | — |
 | ADR-0009 | Política de uso de IA | 🟢 Aceptado | Uso de IA permitido bajo lineamientos del equipo; ninguna sugerencia de IA es decisión válida sin pasar por la Mesa | Prohibición total; uso libre sin lineamientos | DR-09 | — | — |
-| ADR-0010 | Tech Radar del proyecto | 🟢 Aceptado | Radar visual consolidado (círculos de confianza, cuadrantes por categoría); Kubernetes en "Tal vez" por costo | Mantener disperso en ADR individuales | KI-03 | — | — |
+| ADR-0010 | Tech Radar del proyecto | 🟢 Aceptado | Radar visual consolidado (círculos de confianza, cuadrantes por categoría); Kubernetes en "Sí o sí" (PROY-08, sin costo de licencia — actualizado 2026-09-03) | Mantener disperso en ADR individuales | KI-03 | — | — |
 | ADR-0011 | Modelo de cobertura geográfica | 🟢 Aceptado | Catálogo de zonas administrativas, relación N:M aliado↔zona, sin geometría propia | Radio de cobertura; polígonos dibujados; catálogo con geometría asociada | DR-02, DR-03 | AC-01 / QS-05 | KI-07, KI-08 |
 | ADR-0012 | Backend Dart, motor de persistencia y aislamiento multi-tenant | 🔴 En contradicción | Serverpod (Dart) + Supabase (PostgreSQL) + RLS nativo | NestJS+MongoDB; BaaS puro; filtrado manual sin RLS; base/esquema separado por tenant | DR-01 | AC-01, AC-02 / QS-02 | TO-01, TO-02, TO-06 · resuelve KI-01 · abre KI-02, KI-06 |
 | ADR-0013 | Almacenamiento de documentos KYC | 🟡 Propuesto | Bucket único de Storage con ruta tenant_id/aliado_id/archivo + RLS sobre storage.objects | Bucket privado por tenant; aislamiento solo en capa de aplicación | DR-05, DR-01 | AC-01 / QS-04 | KI-05 |
@@ -174,6 +175,149 @@
 | TO-06 | QS-02 (Confidencialidad) vs. QS-14 (Interoperabilidad, mensajería) | Reutilizar RLS como mecanismo de autorización de canal en mensajería (ADR-0017) acopla la seguridad del canal en tiempo real a la misma política que protege los datos | Aceptado deliberadamente porque evita duplicar lógica de autorización (ADR-0017), a cambio de concentrar el riesgo en un solo mecanismo |
 | TO-07 | QS-07 (Adaptabilidad) vs. QS-19 (Aprendizaje) | Mientras más configurable es la plataforma para el Admin. tenant, más superficie de interfaz debe aprender un usuario no técnico | Sin decisión tomada — se deja como tensión abierta para que la Mesa la resuelva junto con el diseño de UX |
 | TO-08 | QS-17 (Verificabilidad) vs. QS-08 (Capacidad) | Ejecutar 6+ casos de prueba en cada PR que toque auth/RLS/esquema añade tiempo al pipeline de CI, no al sistema en producción | Aceptado — el costo se paga en CI, no en producción; ADR-0015 no lo considera bloqueante |
+
+---
+
+## 7. Arquitectura_de_Negocio
+
+**Diseño de Arquitectura de Negocio**
+
+*Capacidades, actores, cadena de valor y procesos que sustentan los Drivers (§1) y se
+traducen en los Escenarios de Calidad (§5). Fuente: SRS_MANI.md §2, Analisis_de_
+Requerimientos.md §1-3, Perfil_de_Proyecto_MANI.md §2-3, Glosario_Terminos_MANI.md. No
+introduce actores, procesos ni entidades que no existan ya en esos documentos.*
+
+### 7.0 Diagramas pendientes de esta sección
+
+| # | Diagrama | Ruta prevista | Descrito en |
+|---|---|---|---|
+| 1 | Mapa de capacidades de negocio | `Diagramas/Negocio/negocio-capacidades_mapa-mani_v1.png` | §7.3 |
+| 2 | Cadena de valor del ciclo del servicio | `Diagramas/Negocio/negocio-cadena-valor_ciclo-servicio_v1.png` (+ `.mmd`) | §7.4 |
+| 3 | BPMN — Alta y verificación de aliado | `Diagramas/Negocio/negocio-bpmn_alta-verificacion-aliado_v1.png` | §7.5.1 |
+| 4 | BPMN — Ciclo completo del servicio | `Diagramas/Negocio/negocio-bpmn_ciclo-servicio-completo_v1.png` | §7.5.2 |
+| 5 | Modelo de dominio conceptual | `Diagramas/Negocio/negocio-modelo-dominio_conceptual_v1.png` (+ `.mmd`) | §7.6 |
+
+🔴 Los 5 quedan pendientes de generar. Convención de nombres y carpeta según ADR-0008
+(`[tipo]_[nombre-descriptivo]_v[N]`); se crea `Diagramas/Negocio/` como tercera subcarpeta
+junto a `c4` y `flujos`, porque un mapa de capacidades y un modelo de dominio conceptual no
+son ni diagramas C4 ni diagramas de flujo técnico.
+
+### 7.1 Contexto de negocio
+
+MANI tiene una **doble naturaleza de negocio**: TRAMA opera MANI como plataforma SaaS
+multi-tenant que se ofrece a terceros, y el cliente actual del proyecto opera su propia
+empresa de servicios sobre esa misma plataforma como su **primer tenant**. Cada tenant
+(empresa suscrita) mantiene datos, configuración y usuarios estrictamente aislados de los
+demás (RNF-01). El problema de negocio que resuelve MANI es la formalización digital de una
+operación hoy informal (coordinación por WhatsApp y llamadas, sin trazabilidad ni
+auditabilidad) mediante un ciclo de servicio completo: solicitud, cotización, ejecución,
+calificación y cierre.
+
+### 7.2 Actores de negocio
+
+| Actor | Rol de negocio | Gobierna / configura |
+|---|---|---|
+| Administrador de plataforma | Opera MANI como negocio SaaS; no participa en la operación diaria de un tenant | Alta y estado de tenants |
+| Administrador de tenant | Dueño operativo de la empresa suscrita | Categorías de servicio, tarifas, documentos KYC exigidos, orden del listado, comisión |
+| Aliado (persona natural / empresa / empleado directo) | Presta el servicio | Zonas de cobertura, categorías atendidas, cotización, ejecución |
+| Cliente (persona natural / empresa) | Solicita el servicio; el cliente empresa administra múltiples sitios | Sitios de servicio, aceptación/ajuste de cotización, calificación |
+
+> Matriz completa de actor × función (quién hace qué en cada capacidad): ver
+> `SRS_MANI.md` §2.2.1 — no se duplica aquí para evitar que ambos documentos diverjan.
+
+### 7.3 Mapa de capacidades de negocio
+
+| Dominio de negocio | Capacidad | Módulo | Épica | Incremento |
+|---|---|---|---|---|
+| Plataforma | Gestión de tenants y aislamiento | M-01 | EP-01 | MVP |
+| Identidad | Autenticación y control de acceso por rol/tenant | M-01 | EP-01 | MVP |
+| Directorio | Registro y verificación de aliados (KYC) | M-02 | EP-02 | MVP |
+| Directorio | Registro de clientes y sitios de servicio | M-03 | EP-02 | MVP |
+| Catálogo | Categorías de servicio y reglas de cobertura | M-04 | EP-03 | MVP |
+| Ciclo de servicio | Despacho y asignación de solicitudes | M-05..M-08 | EP-04 | MVP |
+| Ciclo de servicio | Cotización y ajuste | M-05..M-08 | EP-04 | MVP |
+| Ciclo de servicio | Ejecución y trazabilidad (log) | M-05..M-08 | EP-04 | MVP |
+| Ciclo de servicio | Calificación bidireccional | M-05..M-08 | EP-04 | MVP |
+| Comunicación | Mensajería y notificaciones | M-09 | EP-05 | MVP |
+| Tarifario | Tarifas de referencia y reportes de desviación | M-11 | EP-06 | MVP |
+| Financiero | Cobro y liquidación | M-10 | EP-07 | 2º incremento |
+| Operación | Quejas, comercialización, administración avanzada | M-12..M-14 | EP-08 | 2º incremento |
+
+**📊 Diagrama pendiente 1 — Mapa de capacidades de negocio (Business Capability Map).**
+Cuadrícula de las 13 capacidades de la tabla anterior, agrupadas por dominio, con distinción
+visual entre capacidades MVP vigentes y capacidades de 2º incremento fuera de este corte.
+
+### 7.4 Cadena de valor del ciclo del servicio
+
+| Etapa | Actor que dispara | Entrada | Resultado / Salida | RF relacionados |
+|---|---|---|---|---|
+| Solicitud | Cliente | Categoría + sitio con zona | Solicitud visible a aliados válidos (match de cobertura) | RF-12, RF-13 |
+| Despacho | Sistema (broadcast) | Solicitud creada | Exactamente 1 aliado asignado, resto notificado "ya no disponible" | RF-14, RNF-05 |
+| Cotización | Aliado | Solicitud asignada | Cotización (mano de obra + materiales separados) | RF-15, RF-16 |
+| Aceptación de cotización | Cliente | Cotización enviada | Cotización aceptada, rechazada o ajustada | RF-17 |
+| Ejecución | Aliado | Cotización aceptada | Log cronológico de eventos del servicio | RF-18 |
+| Calificación y cierre | Cliente y Aliado | Servicio ejecutado | Calificación bidireccional; el servicio no cierra hasta que ambas partes califiquen | RF-19 |
+
+**📊 Diagrama pendiente 2 — Cadena de valor / Value Stream Map del ciclo del servicio.**
+Flujo horizontal de las 6 etapas de la tabla anterior, con el actor y el artefacto de negocio
+bajo cada etapa; marcar explícitamente el punto de despacho concurrente (broadcast, ver
+ADR-0016) como una bifurcación, no un paso lineal más.
+
+### 7.5 Procesos de negocio clave
+
+#### 7.5.1 Alta y verificación de aliado
+
+El aliado se registra diferenciando persona natural, empresa o empleado directo, y adjunta
+los documentos KYC que exige el tenant (configurables, RF-05). El registro entra a una
+bandeja de verificación del administrador de tenant, quien lo aprueba o rechaza (RF-06); los
+documentos de un aliado nunca son visibles para otro aliado del mismo tenant ni para usuarios
+de otro tenant (REST-02).
+
+**📊 Diagrama pendiente 3 — BPMN: Alta y verificación de aliado.**
+Swimlanes: Aliado / Administrador de tenant / Sistema. Incluir el nodo de decisión
+aprobar/rechazar y los documentos KYC como artefacto adjunto al registro.
+
+#### 7.5.2 Ciclo completo del servicio
+
+Desde la creación de la solicitud hasta el cierre: la solicitud se presenta simultáneamente a
+todos los aliados válidos (broadcast); el sistema resuelve la primera aceptación como
+asignación única y notifica al resto (ADR-0016); el aliado cotiza y el cliente puede aceptar,
+rechazar o pedir ajuste (bucle, RF-17); durante la ejecución se registra cada evento
+(RF-18); el cierre queda condicionado a que ambas partes hayan calificado (join, RF-19).
+
+**📊 Diagrama pendiente 4 — BPMN: Ciclo completo del servicio (solicitud→cierre).**
+Swimlanes: Cliente / Aliado(s) / Sistema. Incluir el gateway paralelo de despacho con
+resolución "primera aceptación válida", el bucle de ajuste de cotización, y el join de
+calificación bidireccional antes del cierre.
+
+### 7.6 Modelo de dominio conceptual
+
+Entidades de negocio y sus relaciones, a nivel conceptual — sin tipos de dato ni claves
+técnicas, eso corresponde al Documento de Diseño (DD), no al SAD:
+
+- **Tenant** (1) —< **Usuario** (con rol: Admin. tenant, Aliado, Cliente)
+- **Tenant** (1) —< **Aliado** ; **Tenant** (1) —< **Cliente**
+- **Cliente** (1) —< **Sitio** de servicio
+- **Aliado** (N) —< **Zona de cobertura** (M) ; **Aliado** (N) —< **Categoría** (M)
+- **Solicitud** (1) → **Cotización** (1) → **Ejecución** (1..N eventos de log) →
+  **Calificación** (1..2, una por parte)
+- **Categoría** (1) —< **Tarifa de referencia**
+
+**📊 Diagrama pendiente 5 — Modelo de dominio conceptual (diagrama de clases de negocio).**
+Entidades: Tenant, Usuario, Aliado, Cliente, Sitio, Categoría, Zona de Cobertura, Solicitud,
+Cotización, Evento, Calificación, Tarifa, con las cardinalidades listadas arriba.
+
+### 7.7 Trazabilidad: negocio → arquitectura técnica
+
+| Capacidad de negocio | Contenedor C4 / Repo | ADR relacionado |
+|---|---|---|
+| Gestión de tenants y aislamiento | Backend Serverpod + Supabase (RLS) | ADR-0012, ADR-0018 |
+| Directorio de aliados / KYC | Supabase Storage + Backend | ADR-0013 |
+| Catálogo y cobertura | Backend / catálogo de zonas en base de datos | ADR-0011 |
+| Despacho de solicitudes | Backend Serverpod (UPDATE condicional atómico) | ADR-0016 |
+| Mensajería y notificaciones | Supabase Realtime + FCM/APNs | ADR-0017 |
+| Reglas de negocio empresariales | Repo B — microservicio Java | ADR-0004, ADR-0019, ADR-0021 |
+| Transaccional de alta concurrencia | Repo C — microservicio .NET | ADR-0004, ADR-0019, ADR-0021 |
 
 ---
 ## 7. Vista de Contenedores

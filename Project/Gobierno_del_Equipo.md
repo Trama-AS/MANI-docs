@@ -305,7 +305,7 @@ Políticas técnicas y de **DevSecOps**. Responsable de construcción/ajuste: Da
 | Test | Pruebas funcionales y de carga | QA | Postman + Newman (func.), k6 (carga) |
 | **Security** | **Security Testing** | QA + DevOps | SonarQube (SAST) + OWASP ZAP (DAST) — ADR-0005. Análisis de dependencias y gestión de secretos siguen 🔴 sin definir (ver §2.4) |
 | Release | Liberación a `main` | DevOps titular | GitHub Actions (ADR-0004) |
-| Deploy | Despliegue a ambientes | DevOps | Docker; promoción Devs→Test→Prod en Azure (ADR-0004); **Kubernetes obligatorio (requisito del profesor, PROY-08)** — 🔴 falta ADR de la distribución/config concreta (candidato natural: AKS, por Azure ya fijado en ADR-0004) |
+| Deploy | Despliegue a ambientes | DevOps | Docker Hub + Railway; promoción Devs→Test→Prod (ADR-0004, ADR-0021 — ya no Azure); **Kubernetes obligatorio y sin costo de licencia (requisito del profesor, PROY-08 — ver SRS_MANI.md §1.4)** — 🔴 falta ADR de la distribución/config concreta del clúster, sin candidato AKS |
 | Operate/Monitor | Operación y observabilidad | DevOps | 🔴 pendiente de ratificar (texto de ADR-0006 propone Prometheus + Grafana + Datadog, pero el equipo confirma que la decisión sigue abierta; OpenTelemetry sigue en evaluación mientras tanto) |
 
 ## 2.2 Ambientes
@@ -323,9 +323,12 @@ sí.
 
 **Kubernetes — confirmado como obligatorio (2026-08-23, PROY-08):** requisito del profesor
 (curricular), no depende de un atributo de calidad del producto. Docker Compose no realiza
-autoescalado, pero eso ya no es el motivo de fondo. 🔴 **Sigue pendiente el ADR de la
-distribución/configuración concreta** (candidato natural: AKS, dado que ADR-0004 ya fija
-Azure como proveedor) — eso sí requiere Mesa antes de Sprint 1.
+autoescalado, pero eso ya no es el motivo de fondo. Kubernetes no tiene costo de licencia; el
+costo que se le atribuía (~$450–650 USD/mes) era de Azure AKS, y Azure ya se retiró como
+proveedor de infraestructura (2026-09-03, ADR-0021; ver aclaración en SRS_MANI.md §1.4).
+🔴 **Sigue pendiente el ADR de
+la distribución/configuración concreta del clúster** (proveedor de cómputo, sin candidato AKS
+ya) — eso sí requiere Mesa antes de Sprint 1.
 
 ## 2.3 Repositorio, ramas y Pull Requests
 

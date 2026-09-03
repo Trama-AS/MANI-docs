@@ -31,7 +31,9 @@ El equipo asume la sobrecarga de instrumentar los microservicios (Java Spring/Ma
 
 ## Estado
 
-Aceptado — última actualización: 2026-08-19
+Reemplazado — última actualización: 2026-09-03
+Reemplazado por ADR-0021: la mención de infraestructura Azure queda sin efecto; el resto
+de la decisión (Prometheus, Grafana, Datadog, feedback loop hacia Jira) sigue vigente.
 
 ## Consecuencias
 

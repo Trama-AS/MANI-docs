@@ -98,8 +98,10 @@ calificación–cierre, con trazabilidad operativa y configuración propia por e
 ### 4.4 Limitaciones del proyecto
 
 - Este corte académico se limita al MVP (EP-01..EP-06); el 2º incremento queda excluido.
-- **Java, .NET, Azure y Kubernetes ya no están en evaluación**: son requerimiento de
-  proyecto (PROY-07, PROY-08) o consecuencia directa de ADR-0004. Siguen en anillo
+- **Java, .NET y Kubernetes ya no están en evaluación**: son requerimiento de
+  proyecto (PROY-07, PROY-08); Kubernetes sin costo de licencia (ver SRS_MANI.md §1.4). 🔴 Azure, que en
+  este corte (2026-08-19) era consecuencia directa de ADR-0004, se retiró de la ecuación el
+  2026-09-03 (ADR-0021) — este bullet queda desactualizado en ese punto, ver §7.2. Siguen en anillo
   **Evaluar**: NestJS (alcance sin ratificar), MongoDB, Supabase, Flutter + Dart y
   OpenTelemetry; Docker/Compose en **Probar**. Nada más pasa a "Adoptar" sin ADR.
 - **Security Testing** parcialmente definido: SAST (SonarQube) y DAST (OWASP ZAP) resueltos
@@ -225,8 +227,10 @@ Notas:
 
 ### 7.2 Presupuesto de Producto
 
-Parte confirmada por requerimiento de proyecto (PROY-07 Java+.NET, PROY-08 Kubernetes) y por
-ADR-0004 (Azure); parte aún en evaluación (Matriz_de_Herramientas.md §B) — se marca cada fila.
+Parte confirmada por requerimiento de proyecto (PROY-07 Java+.NET, PROY-08 Kubernetes, este
+último sin costo de licencia — ver SRS_MANI.md §1.4); Azure ya no aplica como proveedor de
+infraestructura (ADR-0021); parte aún en evaluación (Matriz_de_Herramientas.md §B) — se marca
+cada fila.
 
 | Tecnología | Rol | Escenario mínimo (dev/demo) | Escenario producción pequeña | Nota |
 | --- | --- | --- | --- | --- |
@@ -237,12 +241,14 @@ ADR-0004 (Azure); parte aún en evaluación (Matriz_de_Herramientas.md §B) — 
 | MongoDB Atlas | Persistencia (candidata) | M0 free — $0 | M10 dedicado $57/mes/nodo × 3 nodos (replica set) ≈ **$171/mes** | 🔴 excluye RLS; contradice opción Supabase (incompatibilidad #1) |
 | Supabase | BaaS sobre PostgreSQL (candidata alterna) | Free — $0 | Pro **$25/mes** por proyecto | 🔴 mutuamente excluyente con MongoDB hasta que la Mesa decida (SP-01.1.1) |
 | Docker / Docker Compose | Contenerización DEV/QA | $0 | $0 | Gratis para <250 empleados y <$10M ingresos anuales — el proyecto califica |
-| **Kubernetes (AKS)** | Orquestación — **confirmado obligatorio**, PROY-08; Azure ya fijado por ADR-0004 ⇒ AKS es el candidato natural | No aplica en dev | Control plane $0 (tier estándar) + cómputo 3 nodos (p. ej. Standard_D4s_v5) ≈ $400–600/mes + LB/storage ≈ **$450–650/mes** | 🔴 Falta ADR de la config concreta (tamaño/número de nodos); ya no depende de "si se aprueba" |
-| Azure Container Registry | Registro de imágenes — ADR-0004 | Basic ≈ **$5/mes** (estimado, sin cotizar en calculadora Azure) | Standard ≈ **$20/mes** si se necesita más almacenamiento/replicación | 🔴 cifra aproximada — Azure no publica precio fijo por región en texto estático; confirmar en calculadora antes de comprometer |
+| **Kubernetes** | Orquestación — **confirmado obligatorio**, PROY-08 | $0 | $0 | Software open source, sin costo de licencia (ver SRS_MANI.md §1.4). No incluye el cómputo que aloja el clúster — ver fila siguiente |
+| Cómputo/hosting del clúster | Nodos donde corre Kubernetes | 🔴 sin cifra | 🔴 sin cifra | 🔴 Ya no es AKS (Azure retirado, ADR-0021); falta ADR de distribución concreta (proveedor, nodos) — la estimación previa de $450–650/mes era de Azure AKS y ya no aplica |
+| Docker Hub | Registro de imágenes (Java y .NET unificado) — ADR-0021 | $0 (plan Free/Team básico) | 🔴 sin cotizar si se requiere plan de pago por repos privados | Reemplaza a Azure Container Registry |
+| Railway | Hosting de contenedores — ADR-0021 | 🔴 sin cotizar | 🔴 sin cotizar | Reemplaza a Azure como proveedor de infraestructura |
 | OpenTelemetry | Observabilidad — 🔴 en evaluación | $0 (open source) | $0 + backend opcional | Compite con la fila siguiente; observabilidad sigue sin ratificar (ver Matriz de Herramientas) |
 | Prometheus + Grafana | Observabilidad — 🔴 propuesta ADR-0006, sin ratificar | $0 (open source, self-hosted) | $0 (self-hosted) o Grafana Cloud free hasta 10k series | Sin costo de licencia |
 | Datadog | APM/logs/alertas — 🔴 propuesta ADR-0006, sin ratificar | $0 (free trial 14 días) | Infra ≈ $15/host/mes + APM ≈ $31/host/mes (3 hosts ≈ $138) + logs desde $0.10/GB ≈ **$150–300/mes** | Reportado como frecuente que el costo real termine 2–3× la estimación inicial por logs/APM/métricas custom — no comprometer sin tope de gasto |
-| **Total estimado / mes** | | **≈ $5–30** (Java/.NET/Flutter/Docker en $0; solo ACR con costo en dev) | **≈ $480–1.150** (rango por: persistencia Mongo vs. Supabase, y si además de Prometheus/Grafana se ratifica Datadog) | Kubernetes y Azure ya no son la variable — persistencia y observabilidad sí |
+| **Total estimado / mes** | | **≈ $0–5** (Java/.NET/Flutter/Docker/Kubernetes/Docker Hub en $0) | **≈ $25–471** + 🔴 cómputo del clúster sin cifra (rango por: persistencia Mongo vs. Supabase, y si además de Prometheus/Grafana se ratifica Datadog) | Kubernetes ya no es la variable de costo (ver SRS_MANI.md §1.4); persistencia, observabilidad y el cómputo/hosting del clúster (Railway u otro, ADR-0021) sí lo son |
 
 **Integraciones del 2º incremento** (operador de pagos certificado, proveedor de
 identidad, servicio de notificaciones — SRS_MANI.md §8): 🔴 sin costo estimable, ninguna
@@ -253,17 +259,19 @@ está seleccionada todavía (pendiente de spike y ADR).
 | Rubro | Estimado |
 | --- | --- |
 | Proyecto (proceso, ~16 semanas, incluye SonarQube+ZAP) | ≈ $620 USD |
-| Producto — escenario mínimo (dev/demo, MVP en curso) | ≈ $5–30 USD/mes |
-| Producto — producción pequeña, Supabase + sin Datadog (solo Prometheus/Grafana) | ≈ $480–695 USD/mes |
-| Producto — producción pequeña, MongoDB + sin Datadog (solo Prometheus/Grafana) | ≈ $625–841 USD/mes |
-| Producto — producción pequeña, Supabase + Datadog | ≈ $630–995 USD/mes |
-| Producto — producción pequeña, MongoDB + Datadog | ≈ $775–1.150 USD/mes |
+| Producto — escenario mínimo (dev/demo, MVP en curso) | ≈ $0–5 USD/mes |
+| Producto — producción pequeña, Supabase + sin Datadog (solo Prometheus/Grafana) | ≈ $25 USD/mes + 🔴 cómputo del clúster |
+| Producto — producción pequeña, MongoDB + sin Datadog (solo Prometheus/Grafana) | ≈ $171 USD/mes + 🔴 cómputo del clúster |
+| Producto — producción pequeña, Supabase + Datadog | ≈ $25–325 USD/mes + 🔴 cómputo del clúster |
+| Producto — producción pequeña, MongoDB + Datadog | ≈ $171–471 USD/mes + 🔴 cómputo del clúster |
 
-Kubernetes/AKS y Azure ya no son la variable abierta (PROY-08, ADR-0004): están dentro de
-todos los escenarios de producción. 🔴 Lo que sigue sin decidir y mueve el rango:
-**persistencia** (MongoDB vs. Supabase, SP-01.1.1) y **observabilidad** (Prometheus/Grafana
-solamente, o además Datadog — sin ratificar, ver Matriz de Herramientas). No se recomienda
-fijar presupuesto de producto en firme hasta que ambos ADR/ratificación existan.
+Kubernetes ya no es la variable de costo abierta (PROY-08, ver SRS_MANI.md §1.4): el orquestador en sí es
+$0. Azure se retiró de la ecuación (ADR-0021), así que la antigua cifra de AKS (~$450–650/mes)
+tampoco aplica. 🔴 Lo que sigue sin decidir y mueve el rango real: **persistencia** (MongoDB
+vs. Supabase, SP-01.1.1), **observabilidad** (Prometheus/Grafana solamente, o además Datadog —
+sin ratificar) y, ahora como ítem propio, **dónde y con cuántos nodos corre el clúster de
+Kubernetes** (proveedor de cómputo, sin ADR de dimensionamiento todavía). No se recomienda
+fijar presupuesto de producto en firme hasta que esas decisiones existan.
 
 **Fuentes de precios:**
 

@@ -11,6 +11,7 @@
 ---
 
 ## Bloque 1 — Core: Tenant, Actores, Catálogo y Ciclo del Servicio (EP-01 a EP-06)
+```mermaid
 erDiagram
     TENANT ||--o{ USUARIO : "tiene"
     TENANT ||--o{ ALIADO : "registra"

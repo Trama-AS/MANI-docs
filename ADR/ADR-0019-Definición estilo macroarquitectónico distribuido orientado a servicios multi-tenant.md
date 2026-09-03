@@ -17,7 +17,7 @@ El equipo debe consolidar la línea base del Documento de Arquitectura de Softwa
 ## Alternativas evaluadas
 
 1. Arquitectura Monolítica Modular — descartada porque viola el *killer* arquitectónico fundamental exigido para la entrega, impide el despliegue independiente de módulos especializados (.NET y Java) y restringe la escalabilidad granular de los servicios con mayor demanda.
-2. Arquitectura de Microservicios contenerizados sobre un **clúster gestionado en la nube** (p. ej. Azure Kubernetes Service) — descartada porque los costos operativos de facturación de nodos gestionados violan el límite presupuestal del proyecto (*killer* de costo financiero) y la complejidad de administrar esa infraestructura gestionada excede los plazos académicos de entrega del Sprint 1. Esto descarta el **servicio gestionado en la nube**, no a Kubernetes como orquestador: PROY-08 exige Kubernetes de forma independiente y no evaluable por costo (ver ADR-0010; costo de licencia $0, ver SRS_MANI.md §1.4); esta arquitectura distribuida se despliega igualmente sobre Kubernetes, solo que sin un clúster gestionado por un proveedor cloud.
+2. Arquitectura de Microservicios contenerizados sobre clúster gestionado de Kubernetes — descartada porque los costos operativos de facturación de nodos en la nube violan el límite presupuestal del proyecto (*killer* de costo financiero) y la complejidad de administración de la infraestructura excede los plazos académicos de entrega del Sprint 1.
 3. Arquitectura Serverless pura (BaaS exclusivo sobre servicios administrados) — descartada porque genera un acoplamiento excesivo y dependencia crítica con un único proveedor de nube (*vendor lock-in*), limitando la ejecución de lógica de negocio personalizada en lenguajes de servidor estándar.
 
 ## Decisión
@@ -36,7 +36,7 @@ Aceptado — última actualización: 2026-09-03
 
 - Positivas: Cumple rigurosamente con los *killers* arquitectónicos del curso, permite a los desarrolladores trabajar en paralelo sin colisiones de código en sus respectivos módulos (.NET, Java, Flutter y Base de Datos) y habilita la escalabilidad independiente de cada componente según los atributos de calidad definidos (ISO 25010).
 - Negativas: Introduce latencia inherente a las comunicaciones HTTP/REST entre cliente y servicios, y exige implementar mecanismos rigurosos de trazabilidad distribuida y manejo de fallos en el frontend móvil.
-- Neutras: Requiere estandarizar contratos de API estrictos mediante OpenAPI/Swagger y definir una convención compartida de variables de entorno (`.env`) para la interacción entre repositorios. 🔴 Aclaración 2026-09-03: la alternativa 2 descartada por costo era un clúster **gestionado en la nube**, no Kubernetes como tal — Kubernetes se adopta igual vía PROY-08 (ADR-0010), sin costo de licencia; queda abierto solo el ADR de dónde y con qué nodos corre.
+- Neutras: Requiere estandarizar contratos de API estrictos mediante OpenAPI/Swagger y definir una convención compartida de variables de entorno (`.env`) para la interacción entre repositorios.
 
 ## Trazabilidad
 

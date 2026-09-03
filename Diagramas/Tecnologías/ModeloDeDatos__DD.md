@@ -11,8 +11,6 @@
 ---
 
 ## Bloque 1 — Core: Tenant, Actores, Catálogo y Ciclo del Servicio (EP-01 a EP-06)
-
-```mermaid
 erDiagram
     TENANT ||--o{ USUARIO : "tiene"
     TENANT ||--o{ ALIADO : "registra"
@@ -164,7 +162,7 @@ erDiagram
         datetime fecha
     }
     UBICACION_TIEMPO_REAL {
-        uuid solicitud_id PK_FK
+        uuid solicitud_id PK
         decimal lat
         decimal lng
         datetime ultima_actualizacion
@@ -198,7 +196,6 @@ erDiagram
         string canal "push FCM/APNs | in-app"
         bool leido
     }
-```
 
 ## Bloque 2 — Financiero: Pagos, Escrow y Liquidación (EP-07)
 

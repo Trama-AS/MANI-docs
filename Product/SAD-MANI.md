@@ -184,9 +184,10 @@
 compartida de CI/CD y observabilidad, y los módulos adicionales exigidos por el enunciado del
 proyecto (PROY-07).*
  
+<img width="3744" height="1150" alt="c4-contenedores_arquitectura-alto-nivel_v1" src="https://github.com/user-attachments/assets/c2c0ea8e-9dc2-42b1-b31b-c719c4a693fc" />
 
  
-*Fuente: `/<img width="3744" height="1150" alt="c4-contenedores_arquitectura-alto-nivel_v1" src="https://github.com/user-attachments/assets/7fa5707d-79d8-4284-b7f0-f04e8a90f2a5" />
+
 diagramas/c4/c4-contenedores_arquitectura-alto-nivel_v1.jpg` — ver ADR-0008 para
 convención de versionado.*
  

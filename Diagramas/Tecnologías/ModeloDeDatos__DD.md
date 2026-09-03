@@ -11,6 +11,7 @@
 ---
 
 ## Bloque 1 — Core: Tenant, Actores, Catálogo y Ciclo del Servicio (EP-01 a EP-06)
+
 ```mermaid
 erDiagram
     TENANT ||--o{ USUARIO : "tiene"
@@ -197,10 +198,6 @@ erDiagram
         string canal "push FCM/APNs | in-app"
         bool leido
     }
-
-## Bloque 2 — Financiero: Pagos, Escrow y Liquidación (EP-07)
-
-```mermaid
 erDiagram
     SOLICITUD ||--o| TRANSACCION : "se_paga_con"
     TRANSACCION ||--o| LIQUIDACION : "se_liquida_en"
@@ -225,8 +222,44 @@ erDiagram
         decimal monto_neto
         datetime fecha
     }
-```
+erDiagram
+    SOLICITUD ||--o| QUEJA : "puede_generar"
+    QUEJA ||--o| DISPUTA : "puede_escalar_a"
+    TRANSACCION ||--o| DISPUTA : "se_resuelve_en"
+    TENANT ||--o{ CAMPANA : "crea"
+    CAMPANA ||--o{ CAMPANA_CANJE : "es_canjeada_en"
+    USUARIO ||--o{ CAMPANA_CANJE : "canjea"
 
+    QUEJA {
+        uuid id PK
+        uuid solicitud_id FK
+        uuid cliente_id FK
+        text descripcion
+        enum estado "abierto|en_revision|resuelto"
+        datetime fecha
+    }
+    DISPUTA {
+        uuid id PK
+        uuid queja_id FK
+        uuid transaccion_id FK
+        enum fallo "reembolso_total|reembolso_parcial|pago_aliado"
+        decimal monto_resuelto
+        uuid resuelto_por FK "admin_tenant"
+        datetime fecha_resolucion
+    }
+    CAMPANA {
+        uuid id PK
+        uuid tenant_id FK
+        string codigo_descuento
+        datetime fecha_inicio
+        datetime fecha_fin
+    }
+    CAMPANA_CANJE {
+        uuid id PK
+        uuid campana_id FK
+        uuid usuario_id FK
+        datetime fecha_canje
+    }
 **Nota:** `TRANSACCION` modela el escrow directamente en el `estado` (queda `retenido_garantia`
 al aceptar la cotización, RF-24/US-07.1.4, y pasa a `liberado` tras 24h sin disputa o por
 resolución manual de una `DISPUTA`, ver Bloque 3). El campo `inmutable` es una bandera de

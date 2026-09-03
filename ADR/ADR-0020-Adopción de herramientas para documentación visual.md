@@ -1,4 +1,4 @@
-# ADR-003: Adopción de herramientas para documentación visual, diagramación técnica y presentaciones
+# ADR-0020: Adopción de herramientas para documentación visual, diagramación técnica y presentaciones
 
 - Fecha: 2026-09-03
 - Sprint: 1
@@ -12,9 +12,9 @@ Durante la revisión del Tech Radar y el documento de herramientas del Sprint 1,
 
 ## Alternativas evaluadas
 
-1. Unificar toda la diagramación y presentaciones en Lucidchart — descartada porque la capa gratuita limita los documentos a un máximo de 60 objetos editables y restringe la colaboración simultánea en equipo, forzando un costo de licenciamiento incompatible con el presupuesto del proyecto.
+1. Unificar toda la diagramación y presentaciones en Lucidchart o draw.io — en evaluación porque la capa gratuita limita los documentos a un máximo de 60 objetos editables y restringe la colaboración simultánea en equipo, forzando un costo de licenciamiento incompatible con el presupuesto del proyecto.
 2. Utilizar herramientas de generación automática por IA (como Gamma o asistentes basados en LLM) — descartada porque generan artefactos visuales rígidos, inconsistentes con la identidad gráfica del proyecto y con nula capacidad de edición manual fina sobre diagramas técnicos.
-3. Elaborar los diagramas técnicos directamente dentro de Canva o Paint — descartada porque carecen de soporte nativo para convenciones formales de arquitectura de software (notación C4, UML), no permiten versionado vectorial limpio y producen artefactos de bajo rigor técnico que fueron observados negativamente en revisiones previas.
+3. Elaborar los diagramas técnicos directamente dentro de Canva o Paint — en evaluación pero carecen de soporte nativo para convenciones formales de arquitectura de software (notación C4, UML), no permiten versionado vectorial limpio y producen artefactos de bajo rigor técnico que fueron observados negativamente en revisiones previas.
 
 ## Decisión
 

@@ -3,10 +3,10 @@
 **Proyecto:** MANI — Plataforma Multi-Tenant de Formalización y Gestión de Servicios  
 **Organización:** TRAMA · Ingeniería de Software  
 **Documento:** Herramientas, Políticas y Lineamientos V2 (Entregable Oficial Sprint 1 Review & Planning Sprint 2)  
-**Versión:** 2.0 (Línea Base para Sprint 2)  
+**Versión:** 2.0 (Línea Base para Sprint 2 — Actualizado con ADR-0014, ADR-0018 y Diagrama HLD V2)  
 **Fecha:** Septiembre 2026  
 **Responsables:** Sara Albarracín (Scrum Master), Daniel Ávila (DevOps Titular), Nicolás León (Product Owner), Santiago (QA / Security Testing) y Mesa de Arquitectura.  
-**Fuentes y Trazabilidad:** ADR-0001 a ADR-0017 (Repositorio `Trama-AS/MANI-docs`), SAD V1, SRS V2, Matriz de Herramientas V1, Gobierno del Equipo.
+**Fuentes y Trazabilidad:** ADR-0001 a ADR-0018 (Repositorio `Trama-AS/MANI-docs`), SAD V1, SRS V2, Matriz de Herramientas V1, Gobierno del Equipo.
 
 ---
 
@@ -15,7 +15,8 @@
 | Versión | Fecha | Autor(es) | Descripción del Cambio | Estado |
 | :---: | :---: | :--- | :--- | :---: |
 | **1.0** | 2026-08-20 | Sara Albarracín, Daniel Ávila | Línea base preliminar de herramientas de proceso y desarrollo (Entrega 2 / Sprint 0). Múltiples tecnologías en estado "Evaluar" o pendientes de decisión. | Superada |
-| **2.0** | 2026-09-02 | Daniel Ávila, Santiago, Camila Beltrán, Sara Albarracín, Nicolás León | Consolidación integral V2. Se formaliza el **Tech Radar V2** (ADR-0010), se incorpora la **Arquitectura Tecnológica de Alto Nivel y Flujo de Comunicación** (Jira ↔ GitHub ↔ CI/CD ↔ Ambientes ↔ DevSecOps ↔ Observabilidad ↔ Jira Feedback Loop), se ratifican las políticas de DevSecOps (ADR-0005, ADR-0013, ADR-0015), Observabilidad (ADR-0006), Gobernanza de IA (ADR-0009), y se resuelven las incompatibilidades de persistencia y stack técnico (ADR-0011, ADR-0012). | **Aprobada (Línea Base Sprint 2)** |
+| **2.0** | 2026-09-02 | Daniel Ávila, Santiago, Camila Beltrán, Sara Albarracín, Nicolás León | Consolidación integral V2. Se formaliza el **Tech Radar V2** (ADR-0010), se incorpora la **Arquitectura Tecnológica de Alto Nivel V2** (Jira ↔ GitHub ↔ CI/CD ↔ Ambientes ↔ DevSecOps ↔ Observabilidad ↔ Jira Feedback Loop), se ratifican las políticas de DevSecOps (ADR-0005, ADR-0013, ADR-0015), Observabilidad (ADR-0006), Gobernanza de IA (ADR-0009), y se resuelven las incompatibilidades de persistencia y stack técnico (ADR-0011, ADR-0012). | Superada |
+| **2.1** | 2026-09-02 | Daniel Ávila, Juan Sebastián Álvarez, Santiago, Mesa de Arquitectura | Actualización mayor: Incorporación del nuevo **Diagrama de Tecnologías de Alto Nivel V2** (estandarización de almacenamiento y compilación Docker), integración de **ADR-0014** (Patrón Feature Toggle para desacoplamiento de despliegue y control por tenant) y **ADR-0018** (Identificación criptográfica de tenant mediante JWT claims anti-spoofing y token relay), eliminación de diagramas ASCII en favor de diagramas formales en **Mermaid**, y reubicación centralizada de activos visuales en `/Diagramas/Tecnologías/`. | **Aprobada (Línea Base Sprint 2)** |
 
 ---
 
@@ -34,19 +35,19 @@ El presente documento constituye la especificación vinculante de las herramient
 
 Para garantizar la entrega continua, la trazabilidad sin fisuras y la seguridad por diseño (*Security by Design*), el proyecto MANI implementa un ecosistema de herramientas interconectadas que abarcan desde la concepción de requerimientos hasta la operación y monitoreo en tiempo real.
 
-![Diagrama de Tecnologías de Alto Nivel y Comunicación entre Herramientas](./img/DiagramaTecnologiasAltoNivel.jpg)
-*Figura 1.1: Diagrama de Tecnologías de Alto Nivel — Flujo de integración y comunicación entre herramientas del ciclo DevSecOps de MANI.*
+![Diagrama de Tecnologías de Alto Nivel V2](../../Diagramas/Tecnologías/DiagramaTecnologiasAltoNivel_V2.jpg)
+*Figura 1.1: Diagrama de Tecnologías de Alto Nivel V2 — Flujo de integración, compilación y almacenamiento en registros Docker, promoción de ambientes, DevSecOps y observabilidad con bucle cerrado hacia Jira.*
 
 ### 1.1 Ciclo de Gestión y Trazabilidad Bidireccional (Jira ↔ GitHub)
 - **Rastreador y Backlog Unificado:** Conforme a **ADR-0002**, **Jira** es la herramienta única y oficial para la gestión ágil del proyecto, administración del Product Backlog (Épicas, Historias de Usuario, Tareas y Bugs) y control de tableros Kanban/Scrum para el Product Owner (PO) y Scrum Master (SM).
 - **Sincronización vía Webhooks:** Se establece un canal de integración bidireccional mediante Webhooks entre Jira y la organización de GitHub.
 - **Creación Automatizada de Issues y Ramas:** La transición de ítems en los tableros de Jira (por ejemplo, de *To Do* a *In Progress*) dispara automáticamente la generación de los Issues técnicos correspondientes en los repositorios de GitHub y habilita la creación de ramas normalizadas bajo la convención `feature/US-XX-descripcion` o `fix/BUG-XX-descripcion`.
 
-### 1.2 Estructura Multi-Repositorio
-Siguiendo **ADR-0004**, MANI adopta un modelo desacoplado de múltiples repositorios especializados, evitando cuellos de botella de integración y respetando las naturalezas tecnológicas del producto:
-- **Repo A (`mani-app-flutter`):** Código fuente de la aplicación cliente y portal de aliados desarrollado en **Flutter / Dart**.
-- **Repo B (`mani-backend-java`):** Microservicio backend implementado en **Java** con gestión de dependencias y construcción en **Maven**. Empaqueta imágenes Docker y publica en Docker Hub / Container Registry.
-- **Repo C (`mani-backend-dotnet`):** Microservicio backend implementado en **.NET (C#)**. Automatiza su compilación, pruebas y publicación hacia Azure Container Registry (ACR).
+### 1.2 Estructura Multi-Repositorio y Docker Image Storage
+Siguiendo **ADR-0004** y el diseño consolidado en el Diagrama V2, MANI adopta un modelo desacoplado de múltiples repositorios especializados, estandarizando la compilación y el almacenamiento de imágenes mediante **Docker**:
+- **Repo A (`mani-app-flutter`):** Código fuente de la aplicación cliente y portal de aliados desarrollado en **Flutter / Dart**. Su flujo automatizado compila, ejecuta pruebas y empaqueta el artefacto en el registro correspondiente.
+- **Repo B (`mani-backend-java`):** Microservicio backend implementado en **Java** con gestión de dependencias y construcción en **Maven**. Empaqueta imágenes Docker y las publica en Docker Hub / Container Registry.
+- **Repo C (`mani-backend-dotnet`):** Microservicio backend implementado en **.NET (C#)**. Automatiza su compilación, pruebas y publicación hacia Azure Container Docker Registry (ACR).
 
 ### 1.3 Workflows de Integración Continua (GitHub Actions)
 Cada repositorio posee flujos de trabajo (*workflows*) declarativos e independientes en GitHub Actions:
@@ -56,7 +57,7 @@ Cada repositorio posee flujos de trabajo (*workflows*) declarativos e independie
 
 ### 1.4 Pipeline de Promoción de Ambientes (Promote Build)
 El despliegue hacia infraestructura cloud en **Microsoft Azure** se estructura en tres entornos secuenciales estrictamente segregados (**ADR-0004**):
-1. **Development (Devs / rama `develop`):** Ambiente de integración continua para desarrolladores. Despliegue automático de las imágenes contenerizadas validadas por CI.
+1. **Development (Devs / rama `develop`):** Ambiente de integración continua para desarrolladores. Despliegue automático de las imágenes contenerizadas (`App A`, `Service B`, `Service C`) validadas por CI.
 2. **Testing (Test / rama `release`):** Ambiente de pruebas de QA. Recepción de builds promovidos tras superar las pruebas unitarias y de integración. En este entorno se ejecutan las pruebas de contrato (Newman/Postman), pruebas de carga (k6) y pruebas dinámicas de seguridad (DAST).
 3. **Production (Prod / rama `main`):** Entorno productivo de alta disponibilidad alojado en Azure. Ningún artefacto llega a producción sin haber sido promovido y validado exitosamente en Testing. La liberación requiere aprobación manual (*Environment Protection Rules*) por parte del DevOps titular.
 - **Orquestación con Kubernetes:** Conforme al requerimiento curricular y de arquitectura (PROY-08 / ADR-0004), los contenedores en ambientes superiores se orquestan mediante **Kubernetes** (AKS en Azure), garantizando escalabilidad y alta disponibilidad.
@@ -67,9 +68,9 @@ De acuerdo con **ADR-0005**, la seguridad se integra de forma nativa en el flujo
 - **DAST (Dynamic Application Security Testing) con OWASP ZAP:** Pruebas dinámicas ejecutadas sobre los servicios web y endpoints activos en el ambiente de Testing. Detecta vulnerabilidades en tiempo de ejecución (inyección SQL, XSS, headers inseguros, fallos de autenticación) previo a autorizar el paso a Producción.
 
 ### 1.6 Observabilidad Continua y Bucle de Retroalimentación de Incidentes
-Conforme a **ADR-0006**, la operación del sistema cuenta con telemetría integral y cierre del ciclo de retroalimentación hacia la gestión del proyecto:
+Conforme a **ADR-0006** y reflejado en el Diagrama V2, la telemetría se extrae de todos los ambientes (Devs, Test y Prod), cerrando el ciclo de retroalimentación hacia la gestión del proyecto:
 - **Prometheus:** Recolección continua de métricas a nivel de infraestructura, clúster y endpoints de microservicios (latencias, throughput, uso de recursos).
-- **Grafana:** Cuadros de mando y tableros centralizados para la visualización gráfica de rendimiento por repositorio (Repo A, Repo B, Repo C) y métricas globales.
+- **Grafana:** Cuadros de mando y tableros centralizados para la visualización gráfica de rendimiento por repositorio (Repo A, Repo B, Repo C) y métricas globales de plataforma.
 - **Datadog:** Agregación centralizada de logs estructurados en JSON, monitoreo de rendimiento de aplicaciones (APM) y trazabilidad distribuida entre microservicios.
 - **Cierre del Bucle (Feedback Loop cerrado hacia Jira):** Ante la detección de anomalías operacionales o incidentes críticos en producción, Datadog despacha automáticamente alertas que generan issues de tipo **Bug/Incidente** directamente en el Backlog de Jira, priorizando su atención inmediata por el equipo.
 
@@ -79,7 +80,7 @@ Conforme a **ADR-0006**, la operación del sistema cuenta con telemetría integr
 
 El **Tech Radar V2** consolida y oficializa el portafolio tecnológico de MANI. Conforme a lo establecido en **ADR-0010**, se adopta esta estructura para brindar una visión global del stack, orientar el diseño arquitectónico y prevenir decisiones aisladas o informales.
 
-![Tech Radar V2 del Proyecto MANI](./img/TechRadar.png)
+![Tech Radar V2 del Proyecto MANI](../../Diagramas/Tecnologías/TechRadar.png)
 *Figura 2.1: Tech Radar V2 — Clasificación de tecnologías, plataformas, técnicas y herramientas del proyecto MANI.*
 
 ### 2.1 Metodología y Anillos de Confianza
@@ -113,6 +114,7 @@ El Tech Radar se estructura en tres anillos concéntricos que representan el niv
 | **Gitflow** | **SÍ O SÍ** | Estrategia de ramas obligatoria para el control de versiones: `main`, `develop`, `release/*`, `feature/*`, `fix/*`, `spike/*`. | ADR-0004 |
 | **GitHub Issues** | **SÍ O SÍ** | Trazabilidad técnica de bajo nivel vinculada a Pull Requests, commits y disparada por transiciones de Jira vía webhooks. | ADR-0004 |
 | **GitHub Wiki** | **SÍ O SÍ** | Espacio complementario dentro de los repositorios para guías de instalación rápida (*Getting Started*) y documentación de referencia técnica. | ADR-0007 |
+| **Feature Toggles** | **SÍ O SÍ** | Patrón para desacoplar el despliegue de código de la activación de funcionalidades por tenant (RNF-02), habilitando entrega continua incremental. | ADR-0014 |
 | **GitLab** | **TAL VEZ** | Evaluado en fase inicial; se mantiene como alternativa teórica pero no se adopta para evitar duplicidad frente a GitHub. | ADR-0002, ADR-0010 |
 | **Obsidian** | **TAL VEZ** | Uso personal permitido para toma de notas de ingeniería local en Markdown, sin valor como repositorio oficial. | ADR-0001, ADR-0007 |
 | **GitHub Projects** | **TAL VEZ** | Evaluado para seguimiento puramente técnico interno; descartado para la gestión del producto para no competir con Jira. | ADR-0002, ADR-0010 |
@@ -125,7 +127,7 @@ El Tech Radar se estructura en tres anillos concéntricos que representan el niv
 | **Flutter** | **SÍ O SÍ** | Framework multiplataforma oficial para la construcción de la aplicación cliente y la aplicación de aliados (Repo A). | ADR-0004, ADR-0010 |
 | **.NET (C#)** | **SÍ O SÍ** | Requerimiento de proyecto (PROY-07). Microservicio de backend (Repo C) para lógica de alta concurrencia y contratos transaccionales. | ADR-0004, ADR-0010 |
 | **Java (Maven)** | **SÍ O SÍ** | Requerimiento de proyecto (PROY-07). Microservicio de backend (Repo B) para lógica de negocio empresarial empaquetada con Maven. | ADR-0004, ADR-0010 |
-| **BaaS (Supabase / Serverpod)** | **SÍ O SÍ** | Backend-as-a-Service sobre PostgreSQL gestionado, proveyendo Row-Level Security (RLS) para aislamiento multi-tenant estricto (RNF-01), autenticación y Supabase Storage para documentos KYC. | ADR-0012, ADR-0013, ADR-0017 |
+| **BaaS (Supabase / Serverpod)** | **SÍ O SÍ** | Backend-as-a-Service sobre PostgreSQL gestionado, proveyendo Row-Level Security (RLS) para aislamiento multi-tenant estricto (RNF-01), autenticación JWT y Supabase Storage para documentos KYC. | ADR-0012, ADR-0013, ADR-0017, ADR-0018 |
 | **Rust** | **TAL VEZ** | Lenguaje evaluado para módulos críticos de despacho o criptografía en caso de requerirse optimización extrema de memoria. | ADR-0010 |
 | **C** | **TAL VEZ** | Evaluado únicamente como referencia académica de bajo nivel; sin aplicación directa en el alcance del MVP. | ADR-0010 |
 | **NestJS** | **TAL VEZ** | Framework Node.js/TypeScript evaluado en Sprint 0; desplazado del núcleo de persistencia por ADR-0012 en favor de Serverpod/Supabase Postgres. | ADR-0010, ADR-0012 |
@@ -138,14 +140,14 @@ El Tech Radar se estructura en tres anillos concéntricos que representan el niv
 | Herramienta | Anillo | Justificación y Criterio en MANI | ADR Relacionado |
 | :--- | :---: | :--- | :---: |
 | **SonarQube** | **SÍ O SÍ** | Herramienta oficial de SAST integrada en GitHub Actions. Aplica Quality Gates bloqueantes sobre el código de Flutter, Java y .NET. | ADR-0005 |
-| **Docker** | **SÍ O SÍ** | Estándar de contenerización para todos los microservicios y ambientes locales y cloud. Garantiza reproducibilidad absoluta. | ADR-0004 |
+| **Docker** | **SÍ O SÍ** | Estándar de contenerización y almacenamiento de imágenes para todos los microservicios y ambientes locales y cloud. | ADR-0004 |
 | **Prometheus** | **SÍ O SÍ** | Motor de recolección continua de métricas operacionales de contenedores, nodos y servicios. | ADR-0006 |
-| **Postman + Newman** | **SÍ O SÍ** | Diseño, especificación y ejecución automatizada de pruebas funcionales de API y validación de contratos en el pipeline de CI. | ADR-0004, ADR-0015 |
+| **Postman + Newman** | **SÍ O SÍ** | Diseño, especificación y ejecución automatizada de pruebas funcionales de API y validación de contratos y aislamiento RLS en CI. | ADR-0004, ADR-0015 |
 | **Grafana** | **SÍ O SÍ** | Cuadros de mando centralizados para la visualización de métricas de rendimiento y salud de la plataforma. | ADR-0006 |
 | **Datadog** | **SÍ O SÍ** | Plataforma de APM, centralización de logs distribuidos y despacho automatizado de alertas de incidentes hacia Jira. | ADR-0006 |
 | **Kubernetes** | **SÍ O SÍ** | Orquestador de contenedores requerido curricularmente (PROY-08). Gestiona escalado, auto-recuperación y balanceo en Azure. | ADR-0004, ADR-0010 |
 | **Emuladores Móviles** | **SÍ O SÍ** | Emuladores oficiales Android e iOS para validación funcional de interfaces en QA y desarrollo Frontend. | Gobierno QA |
-| **k6** | **SÍ O SÍ** | Herramienta para pruebas de carga, concurrencia y estrés de endpoints críticos (despacho y mensajería en tiempo real). | ADR-0010, Matriz V1 |
+| **k6** | **SÍ O SÍ** | Herramienta para pruebas de carga, concurrencia determinista y estrés de endpoints críticos (despacho y mensajería en tiempo real). | ADR-0010, Matriz V1 |
 | **IAs: Claude / ChatGPT / Gemini** | **SÍ O SÍ** | Asistentes de ingeniería autorizados bajo la política estricta de gobernanza de IA para aceleración técnica y documentación. | ADR-0009 |
 | **OWASP ZAP** | **TAL VEZ** | Herramienta de DAST para escaneos de seguridad dinámica en Testing. Se encuentra en proceso de calibración de scripts en CI. | ADR-0005, ADR-0010 |
 | **QuickSight / PowerBI** | **TAL VEZ** | Plataformas de Business Intelligence evaluadas para tableros de analítica de negocio futura de los tenants. | ADR-0010 |
@@ -167,7 +169,7 @@ A continuación se resume la matriz operativa unificada del proyecto MANI, clasi
 | **Java (Maven)** | Producto | Code / Build | Microservicio backend de reglas de negocio transaccionales (Repo B). | Juan Sebastián Álvarez / Daniel Ávila | **Adoptada** |
 | **.NET (C#)** | Producto | Code / Build | Microservicio backend para módulos de alto rendimiento (Repo C). | Daniel Ávila / Juan Sebastián Álvarez | **Adoptada** |
 | **Supabase / Postgres** | Producto | Data / Security | Persistencia relacional, RLS multi-tenant, Supabase Storage y Auth. | Juan Sebastián Álvarez | **Adoptada** |
-| **Docker** | Proceso / Producto | Build / Package | Contenerización estándar de microservicios y ambientes. | Daniel Ávila (DevOps) | **Adoptada** |
+| **Docker** | Proceso / Producto | Build / Package | Contenerización estándar de microservicios y almacenamiento de imágenes. | Daniel Ávila (DevOps) | **Adoptada** |
 | **Kubernetes (AKS)** | Producto | Operate / Scale | Orquestación, escalado automático y resiliencia en Azure. | Daniel Ávila (DevOps) | **Adoptada** |
 | **Postman / Newman** | Proceso | Test | Pruebas funcionales de API y verificación automática de RLS en CI. | Santiago (QA) | **Adoptada** |
 | **k6** | Proceso | Test (Perf) | Pruebas de carga, concurrencia determinista y latencia de endpoints. | Santiago (QA) | **Adoptada** |
@@ -178,6 +180,8 @@ A continuación se resume la matriz operativa unificada del proyecto MANI, clasi
 | **Datadog** | Proceso / Producto | APM / Alertas | Trazas distribuidas, logs centralizados y retroalimentación a Jira. | Daniel Ávila (DevOps) | **Adoptada** |
 | **Figma** | Proceso | UX / Design | Prototipos, mockups interactivos y diseño visual de componentes. | Nicolás León / Camila Beltrán | **Adoptada** |
 | **Claude / Codex / Gemini** | Proceso | Cross-Dev | Aceleración asistida de código, pruebas y documentación técnica. | Todo el Equipo | **Regulada (ADR-0009)** |
+| **Feature Toggles** | Técnica / Producto | Release / Deploy | Desacoplamiento de release y activación granular por tenant. | Juan Sebastián Álvarez / Devs | **Adoptada (ADR-0014)** |
+| **Token Relay / JWT Claims** | Técnica / Seguridad | Security / Data | Identificación criptográfica de tenant y propagación inter-servicio. | Daniel Ávila (DevOps) | **Adoptada (ADR-0018)** |
 
 ---
 
@@ -205,21 +209,33 @@ Conforme a **ADR-0004**, todo repositorio de MANI implementa estrictamente el mo
 ---
 
 ## 4.2 Política de Promoción de Ambientes y Despliegues
-Siguiendo el principio *Build Once, Deploy Anywhere* (**ADR-0004**):
+Siguiendo el principio *Build Once, Deploy Anywhere* (**ADR-0004**), el pipeline de promoción entre ambientes se modela formalmente de la siguiente manera:
 
-```
-+---------------------------+       CI Verde + Pruebas Unitarias       +---------------------------+
-|    Development (Devs)     |  ─────────────────────────────────────>  |      Testing (Test)       |
-|      rama 'develop'       |                                          |      rama 'release'       |
-+---------------------------+                                          +---------------------------+
-                                                                                     │
-                                                               QA Passed + DAST ZAP  │
-                                                               + Aprobacion DevOps   │
-                                                                                     ▼
-                                                                       +---------------------------+
-                                                                       |     Production (Prod)     |
-                                                                       |        rama 'main'        |
-                                                                       +---------------------------+
+```mermaid
+flowchart LR
+    subgraph DEV ["Development (Devs)"]
+        D_App["App (A)"]
+        D_B["Service (B)"]
+        D_C["Service (C)"]
+    end
+
+    subgraph TEST ["Testing (Test)"]
+        T_App["App (A)"]
+        T_B["Service (B)"]
+        T_C["Service (C)"]
+    end
+
+    subgraph PROD ["Production (Prod)"]
+        P_App["App (A)"]
+        P_B["Service (B)"]
+        P_C["Service (C)"]
+    end
+
+    DEV -->|"Promote validated builds (CI Verde + Unit Tests)"| TEST
+    TEST -->|"Promote validated builds (QA Passed + DAST ZAP + Aprobación)"| PROD
+
+    classDef envBox fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a;
+    class DEV,TEST,PROD envBox;
 ```
 
 1. **Inmutabilidad del Artefacto:** La misma imagen de contenedor Docker compilada y probada en el pipeline de desarrollo es la que se promueve a Testing y posteriormente a Producción. Queda estrictamente prohibido recompilar código entre ambientes.
@@ -253,13 +269,35 @@ Siguiendo el principio *Build Once, Deploy Anywhere* (**ADR-0004**):
   6. Validación de aislamiento de documentos KYC en Supabase Storage.
 - Si cualquiera de estas pruebas falla, el pipeline se bloquea de inmediato.
 
-### 4.3.4 Almacenamiento Seguro de Documentos KYC (ADR-0013)
+### 4.3.4 Identificación y Propagación Criptográfica de Tenant Anti-Spoofing (ADR-0018)
+Conforme a **ADR-0018**, se erradica la vulnerabilidad de suplantación de tenant mediante un esquema híbrido Token-Driven:
+1. **Pre-Autenticación:** En solicitudes públicas de resolución de empresa o inicio de sesión, el cliente envía la cabecera contextual `X-Tenant-Slug: nombre-empresa`.
+2. **Autenticación y Token JWT:** Tras verificar credenciales y membresía activa, Supabase Auth expide un JWT firmado conteniendo el identificador inmutable en sus claims privados:
+   ```json
+   {
+     "sub": "usr_987654",
+     "role": "authenticated",
+     "app_metadata": {
+       "tenant_id": "b3f2e1a0-4c5d-6e7f-8a9b-0c1d2e3f4a5b",
+       "user_role": "aliado"
+     },
+     "exp": 1756857600
+   }
+   ```
+3. **Validación en Base de Datos (RLS):** Las políticas de PostgreSQL extraen el tenant directamente de la función criptográfica del motor:
+   ```sql
+   (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid = tabla.tenant_id
+   ```
+   **Regla vinculante:** Los servicios nunca confían en cabeceras de tenant editables enviadas por el cliente.
+4. **Propagación Inter-Servicios (*Token Relay*):** Cuando un microservicio invoca a otro (Java ↔ .NET), retransmite la cabecera original `Authorization: Bearer <token>`, garantizando trazabilidad y contexto de seguridad de extremo a extremo.
+
+### 4.3.5 Almacenamiento Seguro de Documentos KYC (ADR-0013)
 - Los documentos de verificación de identidad de aliados (cédula, antecedentes, certificaciones) se almacenan en un **único bucket privado de Supabase Storage**.
 - Cada archivo se almacena bajo una ruta estricta parametrizada:
   `ruta = tenant_id/aliado_id/documento.ext`
 - El acceso se restringe mediante políticas RLS declarativas a nivel de base de datos sobre la tabla `storage.objects`, garantizando que ningún aliado ni tenant pueda consultar documentos ajenos, satisfaciendo **RNF-01** y **RNF-10**.
 
-### 4.3.5 Gestión de Secretos y Dependencias
+### 4.3.6 Gestión de Secretos y Dependencias
 - **Prohibición de Secretos en Repositorio:** Queda prohibido commitear contraseñas, tokens JWT, claves de acceso cloud o cadenas de conexión en el repositorio.
 - **Inyección de Secretos:** Toda credencial se administra a través de **GitHub Repository Secrets** y variables de entorno del servidor.
 - **Auditoría de Dependencias:** El análisis continuo de librerías de terceros se apoya en SonarQube y las alertas automatizadas de GitHub Dependabot para mitigar vulnerabilidades en dependencias de Maven, NuGet y Pub.
@@ -272,7 +310,7 @@ Siguiendo el principio *Build Once, Deploy Anywhere* (**ADR-0004**):
    - Todos los microservicios (Java, .NET y Serverpod) deben emitir registros en formato **JSON estructurado**.
    - Los campos mínimos obligatorios por cada log son: `timestamp` (ISO-8601), `level` (INFO, WARN, ERROR), `service_id` (Repo A, B o C), `trace_id` (identificador único para trazabilidad distribuida), `tenant_id` y `message`.
 2. **Monitoreo Continuo:**
-   - Prometheus recolecta métricas operativas de CPU, memoria, tasa de peticiones y latencia de endpoints cada 15 segundos.
+   - Prometheus recolecta métricas operativas de CPU, memoria, tasa de peticiones y latencia de endpoints cada 15 segundos en todos los ambientes.
    - Grafana centraliza los cuadros de mando para visualización en tiempo real.
 3. **Gestión Automatizada de Incidentes (Feedback Loop):**
    - Datadog supervisa en tiempo real la tasa de errores HTTP 5xx y fallos de infraestructura en Producción.
@@ -311,8 +349,8 @@ Conforme a **ADR-0009**, se autoriza el uso de modelos y herramientas de Intelig
      - `/Diagramas/flujos/`: Diagramas de proceso, flujos de servicio y pipelines.
      - `/Diagramas/Tecnologías/`: Diagramas de tecnologías, arquitectura de herramientas y Tech Radar.
 3. **Nomenclatura y Versionado de Diagramas:**
-   - Los archivos de diagrama deben nombrarse con la convención: `[tipo]_[nombre-descriptivo]_v[N].[ext]` (ej. `diagrama_tecnologias_alto_nivel_v2.jpg`).
-   - Todo diagrama elaborado en Mermaid debe almacenar su código fuente editable con extensión `.mmd` junto a su renderizado gráfico para permitir auditoría de diferencias (*diffs*) en Git.
+   - Los archivos de diagrama deben nombrarse con la convención: `[tipo]_[nombre-descriptivo]_v[N].[ext]` (ej. `DiagramaTecnologiasAltoNivel_V2.jpg`).
+   - Todo diagrama de arquitectura debe elaborarse en **Mermaid** para versionar su código fuente editable directamente en el repositorio Git, erradicando representaciones en ASCII.
 
 ---
 
@@ -339,53 +377,53 @@ Un ítem de trabajo se considera terminado (*Done*) únicamente cuando satisface
 
 ---
 
-# 5. Evolución y Resolución de Inconsistencias (V1 ➔ V2)
+## 4.8 Política de Feature Toggles y Desacoplamiento de Entregas (ADR-0014)
 
-Durante la fase preliminar (V1 / Sprint 0) se identificaron diversas contradicciones y vacíos técnicos en el equipo. A continuación se presenta el estado de resolución formal alcanzado en esta versión V2:
+Conforme a **ADR-0014**, el equipo adopta el patrón de **Feature Toggles** como directriz técnica para habilitar la entrega continua y satisfacer el driver de adaptabilidad **RNF-02** (configuración por tenant sin redespliegue de código):
 
-| # | Inconsistencia Identificada en V1 | Estado en V2 | Resolución Formal y Justificación |
-| :---: | :--- | :---: | :--- |
-| **1** | **MongoDB vs. Row-Level Security (RLS) / Supabase**<br>Backend propuso MongoDB mientras QA requería RLS para RNF-01. | 🟢 **Resuelto** | Se descartó MongoDB y se ratificó **PostgreSQL gestionado por Supabase** con RLS nativo (**ADR-0012**). Se garantiza que el aislamiento multi-tenant vive a nivel de motor de datos y no de código. |
-| **2** | **Contradicción de Stack: Java/.NET vs. Dart/Serverpod**<br>ADR-0004 contemplaba Java y .NET por requisito curricular, mientras ADR-0012 planteaba backend puro en Dart. | 🟢 **Resuelto** | Se consolida la **arquitectura multi-repositorio desacoplada** evidenciada en el Diagrama de Alto Nivel: Repo A (Flutter/Dart en cliente/aliado conectado a BaaS Supabase), Repo B (Microservicio Java/Maven) y Repo C (Microservicio .NET), integrados mediante contratos REST/OpenAPI y eventos. |
-| **3** | **Duplicidad de Rastreadores (Jira vs. GitHub Projects vs. GitLab)**<br>Existían propuestas dispares sobre dónde gestionar el backlog. | 🟢 **Resuelto** | Se formalizó **Jira** como herramienta única y vinculante para el backlog del PO/SM (**ADR-0002**), sincronizada automáticamente con GitHub vía webhooks (**ADR-0004**). GitLab y Notion quedan descartados. |
-| **4** | **Docker Compose frente a Kubernetes**<br>Falta de claridad sobre necesidad de Kubernetes para el alcance del MVP. | 🟢 **Resuelto** | Kubernetes se ratifica como **requisito curricular de infraestructura (PROY-08)** sobre Azure AKS. Docker Compose se preserva exclusivamente para ambientes locales de desarrollo. |
-| **5** | **Vacío en Security Testing (SAST y DAST)**<br>En V1 no había herramientas definidas para seguridad continua. | 🟢 **Resuelto** | Se aprobaron e integraron formalmente **SonarQube** para SAST y **OWASP ZAP** para DAST en pipelines (**ADR-0005**). |
-| **6** | **Falta de Estrategia para Pruebas de Aislamiento Multi-Tenant**<br>Riesgo de fuga de datos entre empresas clientes. | 🟢 **Resuelto** | Se diseñó e implementó la suite automatizada de 6 casos en Postman/Newman dentro de GitHub Actions (**ADR-0015**). |
-| **7** | **Dispersión Documental y de Diagramas**<br>Documentos dispersos entre Confluence, Drive y Figma sin versionado. | 🟢 **Resuelto** | Centralización total en `/docs` en Markdown (**ADR-0007**) y estructura estricta para diagramas en `/docs/diagramas` (**ADR-0008**). |
-| **8** | **Uso no regulado de herramientas de IA**<br>Incertidumbre sobre límites éticos y técnicos al usar IA. | 🟢 **Resuelto** | Se ratificó la política vinculante de gobernanza de IA (**ADR-0009**), exigiendo revisión humana obligatoria y prohibición de subir credenciales o datos reales. |
+1. **Desacoplamiento de Despliegue vs. Activación:** El código de funcionalidades en desarrollo (incluyendo historias del 2º incremento RF-24 a RF-28) puede integrarse y desplegarse a Producción dentro de ramas principales sin exponerse a los usuarios finales hasta que el Product Owner lo autorice.
+2. **Activación Granular por Tenant:** Los toggles permiten encender o apagar funcionalidades de manera independiente para cada empresa cliente (`tenant_id`), facilitando lanzamientos piloto, pruebas A/B y esquemas graduales de activación.
+3. **Ciclo de Vida y Limpieza de Toggles:** Para evitar acumulación de deuda técnica o código muerto:
+   - Todo toggle debe asociarse a una historia de Jira con fecha de caducidad.
+   - Una vez estabilizada una funcionalidad en producción para todos los tenants, el toggle debe retirarse del código fuente en el sprint subsiguiente.
+4. **Verificación en Pruebas:** La configuración de toggles por tenant se incorpora en la suite de pruebas automatizadas de aislamiento (ADR-0015 / QS-17).
 
 ---
 
-# 6. Roles y Responsabilidades del Equipo en el Ciclo de Herramientas
+# 5. Roles y Responsabilidades del Equipo en el Ciclo de Herramientas
 
-Para evitar solapamientos y asegurar la rendición de cuentas (*accountability*), se define la distribución operativa de responsabilidades:
+Para evitar solapamientos y asegurar la rendición de cuentas (*accountability*), la estructura de gobernanza y roles técnicos del equipo MANI se define formalmente mediante el siguiente esquema:
 
-```
-                                  MESA DE ARQUITECTURA
-                           (Todos los integrantes técnicos)
-                                          │
-            ┌─────────────────────────────┼─────────────────────────────┐
-            ▼                             ▼                             ▼
-     PRODUCT OWNER                  SCRUM MASTER                     DEVOPS
-    (Nicolás León)                (Sara Albarracín)              (Daniel Ávila)
-   - Priorización Jira           - Facilitación Daily           - Pipelines CI/CD
-   - Criterios BDD               - Remoción de Issues           - Infraestructura Azure
-   - Aprobación Documental       - Indicadores y Sprints        - SonarQube / Docker
-            │                             │                             │
-            └─────────────────────────────┼─────────────────────────────┘
-                                          │
-            ┌─────────────────────────────┴─────────────────────────────┐
-            ▼                                                           ▼
-       DESARROLLO                                                      QA
- (Alviz, Camila, Nicolás Á.)                                       (Santiago)
- - Implementación Flutter / .NET / Java                        - Plan de Pruebas Newman/k6
- - Pruebas Unitarias                                           - Verificación RLS
- - Pull Requests y Clean Code                                  - Pruebas de Seguridad DAST
+```mermaid
+flowchart TD
+    MESA["MESA DE ARQUITECTURA<br/><i>(Todos los integrantes técnicos como Arquitectos)</i>"]
+
+    PO["PRODUCT OWNER<br/><b>Nicolás León</b><br/>• Priorización Backlog Jira<br/>• Criterios de Aceptación BDD<br/>• Aprobación Documental"]
+    SM["SCRUM MASTER<br/><b>Sara Albarracín</b><br/>• Facilitación Ceremonias y Daily<br/>• Remoción de Issues / Bloqueos<br/>• Métricas e Indicadores de Flujo"]
+    DEVOPS["DEVOPS TITULAR<br/><b>Daniel Ávila Medina</b><br/>• Pipelines CI/CD GitHub Actions<br/>• Infraestructura Azure / K8s<br/>• SonarQube, Registros y Despliegues"]
+
+    DEV_TEAM["DESARROLLO (Frontend & Backend)<br/><b>Alviz, Camila, Nicolás Á.</b><br/>• Flutter / Java Maven / .NET<br/>• Feature Toggles (ADR-0014)<br/>• Pull Requests y Pruebas Unitarias"]
+    QA_TEAM["QA & SECURITY TESTING<br/><b>Santiago</b><br/>• Pruebas Newman (Aislamiento RLS)<br/>• Pruebas de Carga con k6<br/>• DAST con OWASP ZAP"]
+
+    MESA --> PO
+    MESA --> SM
+    MESA --> DEVOPS
+
+    PO -.-> DEV_TEAM
+    SM -.-> DEV_TEAM
+    SM -.-> QA_TEAM
+    DEVOPS --> DEV_TEAM
+    DEVOPS <--> QA_TEAM
+
+    classDef leadBox fill:#f1f5f9,stroke:#059669,stroke-width:2px,color:#0f172a;
+    classDef coreBox fill:#ffffff,stroke:#334155,stroke-width:1.5px,color:#0f172a;
+    class MESA leadBox;
+    class PO,SM,DEVOPS,DEV_TEAM,QA_TEAM coreBox;
 ```
 
 ---
 
-# 7. Resumen de Aprobación y Trazabilidad
+# 6. Resumen de Aprobación y Trazabilidad
 
 El presente **Documento de Herramientas, Políticas y Lineamientos V2** ha sido revisado por los roles líderes y aprobado de forma unánime por la Mesa de Arquitectura como línea base técnica para el Sprint 2:
 
@@ -393,8 +431,8 @@ El presente **Documento de Herramientas, Políticas y Lineamientos V2** ha sido 
 | :--- | :--- | :--- | :---: |
 | **Product Owner** | Nicolás León | Aprobación de alcance, alineación con requerimientos de negocio y prioridades. | **Aprobado** |
 | **Scrum Master** | Sara Albarracín | Aprobación de políticas de proceso, ceremonias, gestión de issues y gobierno. | **Aprobado** |
-| **DevOps Titular** | Daniel Ávila | Aprobación de arquitectura de integración, CI/CD, infraestructura y DevSecOps. | **Aprobado** |
-| **QA Lead / Security** | Santiago | Aprobación de estrategia de pruebas funcionales, k6, SonarQube, ZAP y RLS. | **Aprobado** |
+| **DevOps Titular** | Daniel Ávila | Aprobación de arquitectura de integración, CI/CD, infraestructura, DevSecOps y ADR-0018. | **Aprobado** |
+| **QA Lead / Security** | Santiago | Aprobación de estrategia de pruebas funcionales, k6, SonarQube, ZAP y RLS (ADR-0015). | **Aprobado** |
 | **Frontend Leads** | Camila Beltrán / Nicolás Álvarez | Aprobación de lineamientos de Flutter/Dart, UI/UX en Figma y emuladores. | **Aprobado** |
-| **Backend Lead** | Juan Sebastián Álvarez (Alviz) | Aprobación de persistencia Supabase/Postgres, Serverpod y contratos de API. | **Aprobado** |
-| **Mesa de Arquitectura** | Equipo Pleno (7 de 7 integrantes) | Ratificación técnica y cumplimiento de estándares de arquitectura. | **Ratificado** |
+| **Backend Lead** | Juan Sebastián Álvarez (Alviz) | Aprobación de persistencia Supabase/Postgres, Serverpod, Feature Toggles (ADR-0014) y APIs. | **Aprobado** |
+| **Mesa de Arquitectura** | Equipo Pleno (7 de 7 integrantes) | Ratificación técnica y cumplimiento de estándares de arquitectura (ADR-0001 a ADR-0018). | **Ratificado** |

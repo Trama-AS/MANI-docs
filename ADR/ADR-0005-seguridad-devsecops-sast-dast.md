@@ -32,6 +32,15 @@ El equipo asume el tiempo adicional de cómputo en la ejecución de los pipeline
 
 Aceptado — última actualización: 2026-08-19
 
+**Nota de alcance (2026-09-03, ADR-0021):** esta decisión es independiente del proveedor de
+infraestructura y del lenguaje de cada repositorio — SonarQube y OWASP ZAP se aplican por
+igual sobre Flutter (Repo A), Java (Repo B), .NET (Repo C) y el backend Serverpod en Dart
+(persistencia, ADR-0012). No compite con ADR-0012: ese ADR fija el motor de persistencia y
+el lenguaje del backend principal; este ADR fija las herramientas de seguridad que se
+ejecutan sobre todos los repos por igual, sin importar cuántos backends coexistan. Ver
+ADR-0021 para la aclaración formal de que Java, .NET y Serverpod/Dart coexisten como
+componentes de módulos distintos, ninguno reemplaza a otro.
+
 ## Consecuencias
 
 - Positivas:

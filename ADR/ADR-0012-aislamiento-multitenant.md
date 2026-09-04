@@ -85,6 +85,15 @@ lugar de depender solo de disciplina de código.
 
 Aceptado — última actualización: 2026-08-29 (Mesa de Arquitectura)
 
+**Nota de alcance (2026-09-03, ADR-0021):** "Backend" en esta decisión se refiere
+específicamente al servicio Serverpod que resuelve persistencia, aislamiento multi-tenant
+(RLS) y modelos compartidos con Flutter — **no** reemplaza a los microservicios en Java
+(Repo B, reglas de negocio) ni en .NET (Repo C, transaccional de alta concurrencia) que
+fija ADR-0004 y exige PROY-07. Los tres backends coexisten, cada uno responsable de un
+módulo distinto de la arquitectura: Serverpod es la capa de persistencia/identidad
+consumida por Repo B y Repo C, no un competidor de esos repos. Ver ADR-0021 para el cierre
+formal de esta aclaración (KI-02).
+
 ## Consecuencias
 
 - Positivas:

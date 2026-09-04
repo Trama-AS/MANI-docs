@@ -5,6 +5,8 @@
 - Autor: Sara Albarracín (Scrum Master / Frontend)
 - Origen: Mesa de Arquitectura — cierre del hallazgo transversal KI-02 (SAD-MANI.md, sección 3)
 - Revisor: Daniel Ávila Medina (DevOps)
+- Relacionado con: ADR-0004, ADR-0005, ADR-0006, ADR-0012 (aclara el alcance de los cuatro,
+  no los reemplaza — ver nota de aclaración en la Decisión)
 
 ## Contexto
 
@@ -53,6 +55,17 @@ Supabase/PostgreSQL con RLS de ADR-0012, containerizando los tres servicios con 
 publicándolos en Docker Hub como registro unificado y desplegándolos en Railway como plataforma
 de hosting, eliminando a Microsoft Azure y Azure Container Registry como proveedor de
 infraestructura.
+
+**Aclaración explícita (no es un `supersedes`):** Java (Repo B), .NET (Repo C) y Serverpod/Dart
+no compiten entre sí ni se reemplazan uno a otro — cada uno gobierna un módulo distinto de la
+arquitectura (reglas de negocio empresariales, transaccional de alta concurrencia, y
+persistencia/identidad multi-tenant, respectivamente). ADR-0004/0005/0006 siguen Aceptados tal
+como están, con el alcance acotado por este ADR: gobiernan CI/CD, seguridad y observabilidad de
+los tres repos por igual, incluido el backend Serverpod. ADR-0012 sigue Aceptado sin
+modificarse: fija el motor de persistencia, no el único backend de la plataforma. Este ADR solo
+reemplaza (`Reemplazado por ADR-0021`) la porción de infraestructura de despliegue de
+ADR-0004/0006 que fijaba Microsoft Azure — nunca la elección de lenguaje o framework de ningún
+repo.
 
 ## Trade-off asumido
 

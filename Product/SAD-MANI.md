@@ -18,29 +18,59 @@
 
 *Objetivos de Diseño: qué debe lograr la arquitectura de MANI (Parte 1.1 del SAD)*
 
-| # | Descripción del driver | Prioridad | Fuente (trazabilidad) |
-|---|---|---|---|
-| 1 | Registro y administración de tenants con aislamiento de datos garantizado. | Crítica | RF-01 |
-| 2 | Configuración de reglas propias por tenant (documentos, orden de listado, categorías, tarifas) sin desarrollo específico. | Crítica | RF-02 |
-| 3 | Autenticación y control de acceso restringido por tenant y por rol. | Crítica | RF-03 |
-| 4 | Registro de aliados diferenciando persona natural, empresa y empleado directo, con documentos configurables por tenant. | Crítica | RF-05 |
-| 5 | Declaración de cobertura de aliados por zonas geográficas, no por radio. | Alta | RF-07 |
-| 6 | Creación de solicitudes de servicio y presentación de aliados válidos según categoría y cobertura. | Crítica | RF-12 |
-| 7 | Ordenamiento del listado de aliados según regla configurable por tenant (cobertura, calificación o comisión). | Alta | RF-13 |
-| 8 | Aceptación/rechazo de solicitud por el aliado, sin dobles asignaciones. | Crítica | RF-14 |
-| 9 | Elaboración de cotización (mano de obra y materiales separados) y su aceptación/rechazo/ajuste por el cliente. | Alta | RF-15 / RF-17 |
-| 10 | Registro cronológico de eventos durante la ejecución (log del servicio). | Media | RF-18 |
-| 11 | Calificación bidireccional cliente–aliado al cierre del servicio. | Media | RF-19 |
-| 13 | Aislamiento estricto de datos; un usuario o mecanismo de acceso de un tenant no puede acceder a información de otro. | Crítica | RNF-01 |
-| 14 | Cada tenant configura sus reglas sin requerir código específico ni nuevo despliegue de la plataforma. | Crítica | RNF-02 |
-| 15 | Idempotencia en operaciones críticas (aceptar solicitud, aceptar cotización, calificar) ante reintentos. | Alta | RNF-03 |
-| 16 | El despacho debe resolver aceptaciones concurrentes garantizando exactamente una asignación válida. | Alta | RNF-05 |
-| 17 | Soportar concurrencia de usuarios en búsqueda de aliados y comunicación (candidato a riesgo crítico de diseño). | Media | RNF-07 |
-| 18 | Trazabilidad suficiente para reconstruir eventos del ciclo del servicio; registro financiero inmutable en el 2º incremento. | Alta | RNF-04 |
-| 19 | Interfaz utilizable desde dispositivos móviles por clientes y aliados. | Media | RNF-08 |
-| 20 | Cobertura declarada por zonas, no por radio geográfico. | Alta | RNF-09 |
-| 21 | KYC, tiempos y comisiones configurables por tenant, no codificados. | Alta | RNF-10 |
-| 22 | Responsabilidad PCI-DSS delegada al operador de pagos certificado; modelo de pagos centralizado, priorizando integración sobre construcción propia. | Alta | RNF-06 / RNF-11 |
+**Tabla A — Prioridad y trazabilidad**
+
+| # | Prioridad | Fuente (trazabilidad) |
+|---|---|---|
+| 1 | Crítica | RF-01 |
+| 2 | Crítica | RF-02 |
+| 3 | Crítica | RF-03 |
+| 4 | Crítica | RF-05 |
+| 5 | Alta | RF-07 |
+| 6 | Crítica | RF-12 |
+| 7 | Alta | RF-13 |
+| 8 | Crítica | RF-14 |
+| 9 | Alta | RF-15 / RF-17 |
+| 10 | Media | RF-18 |
+| 11 | Media | RF-19 |
+| 13 | Crítica | RNF-01 |
+| 14 | Crítica | RNF-02 |
+| 15 | Alta | RNF-03 |
+| 16 | Alta | RNF-05 |
+| 17 | Media | RNF-07 |
+| 18 | Alta | RNF-04 |
+| 19 | Media | RNF-08 |
+| 20 | Alta | RNF-09 |
+| 21 | Alta | RNF-10 |
+| 22 | Alta | RNF-06 / RNF-11 |
+
+> No existe el # 12: numeración original del equipo, no se reasigna (ver SRS §4.2).
+
+**Tabla B — Descripción de cada driver**
+
+| # | Descripción del driver |
+|---|---|
+| 1 | Registro y administración de tenants con aislamiento de datos garantizado. |
+| 2 | Configuración de reglas propias por tenant (documentos, orden de listado, categorías, tarifas) sin desarrollo específico. |
+| 3 | Autenticación y control de acceso restringido por tenant y por rol. |
+| 4 | Registro de aliados diferenciando persona natural, empresa y empleado directo, con documentos configurables por tenant. |
+| 5 | Declaración de cobertura de aliados por zonas geográficas, no por radio. |
+| 6 | Creación de solicitudes de servicio y presentación de aliados válidos según categoría y cobertura. |
+| 7 | Ordenamiento del listado de aliados según regla configurable por tenant (cobertura, calificación o comisión). |
+| 8 | Aceptación/rechazo de solicitud por el aliado, sin dobles asignaciones. |
+| 9 | Elaboración de cotización (mano de obra y materiales separados) y su aceptación/rechazo/ajuste por el cliente. |
+| 10 | Registro cronológico de eventos durante la ejecución (log del servicio). |
+| 11 | Calificación bidireccional cliente–aliado al cierre del servicio. |
+| 13 | Aislamiento estricto de datos; un usuario o mecanismo de acceso de un tenant no puede acceder a información de otro. |
+| 14 | Cada tenant configura sus reglas sin requerir código específico ni nuevo despliegue de la plataforma. |
+| 15 | Idempotencia en operaciones críticas (aceptar solicitud, aceptar cotización, calificar) ante reintentos. |
+| 16 | El despacho debe resolver aceptaciones concurrentes garantizando exactamente una asignación válida. |
+| 17 | Soportar concurrencia de usuarios en búsqueda de aliados y comunicación (candidato a riesgo crítico de diseño). |
+| 18 | Trazabilidad suficiente para reconstruir eventos del ciclo del servicio; registro financiero inmutable en el 2º incremento. |
+| 19 | Interfaz utilizable desde dispositivos móviles por clientes y aliados. |
+| 20 | Cobertura declarada por zonas, no por radio geográfico. |
+| 21 | KYC, tiempos y comisiones configurables por tenant, no codificados. |
+| 22 | Responsabilidad PCI-DSS delegada al operador de pagos certificado; modelo de pagos centralizado, priorizando integración sobre construcción propia. |
 
 ---
 
@@ -50,18 +80,50 @@
 
 *Objetivos de Diseño: limitaciones y riesgos que pueden invalidar la arquitectura (Parte 1.2 del SAD)*
 
-| ID | Killer | Categoría | Descripción | Mitigación / Estado |
-|---|---|---|---|---|
-| KI-01 | MongoDB sin RLS nativo | Incompatibilidad técnica | El backend propuesto originalmente (MongoDB) no soporta RLS, quedando incompatible con DR-01 | Resuelto — migración completa a PostgreSQL/Supabase (ADR-0012) |
-| KI-03 | Dimensionamiento de cómputo para alojar el clúster Kubernetes, sin proveedor ni configuración de nodos ratificada | Restricción económica | **Resuelto el "si": Kubernetes se adopta** — es requisito curricular no negociable (PROY-08) y no tiene costo de licencia (software open source; ver SRS_MANI.md §1.4). Lo único abierto es el "cómo": dónde y con qué nodos corre el clúster (ya no ligado a Azure/AKS, retirado por ADR-0021) | Kubernetes adoptado (Sí o sí, ADR-0010) — abierto solo el ADR de dimensionamiento/hosting del clúster |
-| KI-04 | Ventana de riesgo entre revisiones manuales de seguridad | Seguridad de proceso | Sin automatización, un cambio que rompa el aislamiento puede llegar a producción sin detectarse, alguien puede pasar devops a main sin revision | Mitigación diseñada, ADR-0015 aún Propuesto |
-| KI-05 | Aislamiento en Storage depende de la disciplina del backend al construir la ruta | Seguridad | La ruta tenant_id/aliado_id/archivo no tiene límite físico de respaldo como un bucket separado Hacer bien las conexiones entre repositorios "Clean Arqui"  para hacer el llamado correcto | Riesgo residual aceptado conscientemente (ADR-0013) |
-| KI-06 | Volumen de tenants desconocido | Escalabilidad | Condiciona si el aislamiento lógico por RLS sobre esquema compartido basta a futuro, o si hará falta separar por base/esquema | No resuelto — deuda declarada (ADR-0012) |
-| KI-07 | Sin soporte para cobertura parcial de una localidad | Limitación de producto | El modelo de zonas obliga a declarar la localidad completa o nada | Aceptado con condiciones explícitas de reapertura (ADR-0011) |
-| KI-08 | Dependencia de datos oficiales de división político-administrativa | Dependencia externa | El modelo de zonas depende de que exista esa información por ciudad | Degrada a nivel ciudad si no existe (ADR-0011) |
-| KI-09 | Volumen concurrente de búsqueda + mensajería sin cifra conocida | Rendimiento | RNF-07 señalado como riesgo crítico en el SRS pese a prioridad Media, sin volumen definido para fijar umbrales | Sin resolver — Análisis de Requerimientos §7 no fija cifra |
-| KI-10 | ADR-0016/0017 incompletos (Redactor, Disenso, Quórum [completar]) | Gobernanza | No cumplen el checklist de cierre del Gobierno del Equipo §2.6, pese a que ya se están usando como base de diseño | Abierto — requiere sesión formal de la Mesa |
-| KI-11 | Observabilidad instrumentada sobre Java Spring/.NET, en riesgo si prevalece Dart/Serverpod | Mantenibilidad | La instrumentación completa (ADR-0006) quedaría sin destinatario técnico si KI-02 se resuelve a favor de ADR-0012 | Depende directamente de que se cierre KI-02 |
+**Tabla A — Identificación**
+
+| ID | Killer | Categoría |
+|---|---|---|
+| KI-01 | MongoDB sin RLS nativo | Incompatibilidad técnica |
+| KI-03 | Dimensionamiento de cómputo para alojar el clúster Kubernetes, sin proveedor ni configuración de nodos ratificada | Restricción económica |
+| KI-04 | Ventana de riesgo entre revisiones manuales de seguridad | Seguridad de proceso |
+| KI-05 | Aislamiento en Storage depende de la disciplina del backend al construir la ruta | Seguridad |
+| KI-06 | Volumen de tenants desconocido | Escalabilidad |
+| KI-07 | Sin soporte para cobertura parcial de una localidad | Limitación de producto |
+| KI-08 | Dependencia de datos oficiales de división político-administrativa | Dependencia externa |
+| KI-09 | Volumen concurrente de búsqueda + mensajería sin cifra conocida | Rendimiento |
+| KI-10 | ADR-0016/0017 incompletos (Redactor, Disenso, Quórum [completar]) | Gobernanza |
+| KI-11 | Observabilidad instrumentada sobre Java Spring/.NET, en riesgo si prevalece Dart/Serverpod | Mantenibilidad |
+
+**Tabla B — Descripción del riesgo**
+
+| ID | Descripción |
+|---|---|
+| KI-01 | El backend propuesto originalmente (MongoDB) no soporta RLS, quedando incompatible con DR-01 |
+| KI-03 | **Resuelto el "si": Kubernetes se adopta** — es requisito curricular no negociable (PROY-08) y no tiene costo de licencia (software open source; ver SRS_MANI.md §1.4). Lo único abierto es el "cómo": dónde y con qué nodos corre el clúster (ya no ligado a Azure/AKS, retirado por ADR-0021) |
+| KI-04 | Sin automatización, un cambio que rompa el aislamiento puede llegar a producción sin detectarse, alguien puede pasar devops a main sin revision |
+| KI-05 | La ruta tenant_id/aliado_id/archivo no tiene límite físico de respaldo como un bucket separado. Hacer bien las conexiones entre repositorios "Clean Arqui" para hacer el llamado correcto |
+| KI-06 | Condiciona si el aislamiento lógico por RLS sobre esquema compartido basta a futuro, o si hará falta separar por base/esquema |
+| KI-07 | El modelo de zonas obliga a declarar la localidad completa o nada |
+| KI-08 | El modelo de zonas depende de que exista esa información por ciudad |
+| KI-09 | RNF-07 señalado como riesgo crítico en el SRS pese a prioridad Media, sin volumen definido para fijar umbrales |
+| KI-10 | No cumplen el checklist de cierre del Gobierno del Equipo §2.6, pese a que ya se están usando como base de diseño |
+| KI-11 | La instrumentación completa (ADR-0006) quedaría sin destinatario técnico si KI-02 se resolviera eliminando Java/.NET |
+
+**Tabla C — Mitigación / estado**
+
+| ID | Mitigación / Estado |
+|---|---|
+| KI-01 | Resuelto — migración completa a PostgreSQL/Supabase (ADR-0012) |
+| KI-03 | Kubernetes adoptado (Sí o sí, ADR-0010) — abierto solo el ADR de dimensionamiento/hosting del clúster |
+| KI-04 | Mitigación diseñada, ADR-0015 aún Propuesto |
+| KI-05 | Riesgo residual aceptado conscientemente (ADR-0013) |
+| KI-06 | No resuelto — deuda declarada (ADR-0012) |
+| KI-07 | Aceptado con condiciones explícitas de reapertura (ADR-0011) |
+| KI-08 | Degrada a nivel ciudad si no existe (ADR-0011) |
+| KI-09 | Sin resolver — Análisis de Requerimientos §7 no fija cifra |
+| KI-10 | Abierto — requiere sesión formal de la Mesa |
+| KI-11 | Resuelto — KI-02 cerrado por ADR-0021: Java/.NET preservados, ADR-0006 conserva destinatario técnico |
 
 ---
 
@@ -69,28 +131,207 @@
 
 **ADR Consolidados**
 
-*Los 15 ADR reales del repositorio Trama-AS/MANI-docs (no existe ADR-0014)*
+*Los 15 ADR originales del repositorio Trama-AS/MANI-docs (no existe ADR-0014), más
+ADR-0021 (2026-09-03), que cierra el hallazgo transversal KI-02 sin reemplazar ninguno de
+los cuatro ADR que aclara.*
 
-| ADR | Título | Estado | Decisión (resumen) | Alternativas descartadas | Objetivo de Diseño | AC / Escenario | Trade-off |
-|---|---|---|---|---|---|---|---|
-| ADR-0001 | Gestión documental | 🟢 Aceptado | GitHub (código/ADR) + OneDrive (documentos formales), dividido por tipo de contenido | Todo en GitHub; Confluence + Jira | DR-11 | — | — |
-| ADR-0002 | Herramientas de gestión: Jira | 🟢 Aceptado | Jira para gestión de proyecto + GitHub para lo técnico, separados | Todo en GitHub Projects; GitLab Issues | DR-08 | — | — |
-| ADR-0003 | Mesa de Arquitectura | 🟢 Aceptado | Mesa con Arquitecto transversal y rotación de autoría de ADR; quórum 5/7, disenso documentado | Responsable único (SM); sin reglamento formal | DR-09 | — | — |
-| ADR-0004 | Pipeline CI/CD multi-repositorio | 🔴 En contradicción | GitHub Actions + Webhooks Jira↔GitHub + promoción de contenedores en Azure, sobre 3 repos (Flutter/Java/.NET) | Monorepositorio; Jenkins auto-hospedado | DR-08 | — | Base de KI-02 |
-| ADR-0005 | DevSecOps: SAST + DAST | 🔴 En contradicción | SonarQube (SAST) + OWASP ZAP (DAST) en GitHub Actions, sobre Flutter/Java/.NET | Revisión manual; plataformas comerciales unificadas | DR-07 | — | Base de KI-02 |
-| ADR-0006 | Observabilidad | 🔴 En contradicción | Prometheus + Grafana + Datadog, instrumentando Java Spring/.NET en Azure | Stack ELK auto-alojado; Azure Monitor/App Insights exclusivo | KI-11 | AC-11 / QS-18 | TO-04 |
-| ADR-0007 | Documentación en el repositorio | 🟢 Aceptado | Carpeta /docs versionada junto al código, reemplaza Confluence/Drive/Discord | Confluence como fuente única; Google Drive compartido | DR-11 | — | — |
-| ADR-0008 | Carpeta de diagramas | 🟢 Aceptado | /docs/diagramas con subcarpetas por tipo; Mermaid versionado como texto (.mmd) | Solo en herramientas de origen (Figma/Miro); imágenes sueltas en Confluence | DR-11 | — | — |
-| ADR-0009 | Política de uso de IA | 🟢 Aceptado | Uso de IA permitido bajo lineamientos del equipo; ninguna sugerencia de IA es decisión válida sin pasar por la Mesa | Prohibición total; uso libre sin lineamientos | DR-09 | — | — |
-| ADR-0010 | Tech Radar del proyecto | 🟢 Aceptado | Radar visual consolidado (círculos de confianza, cuadrantes por categoría); Kubernetes en "Sí o sí" (PROY-08, sin costo de licencia — actualizado 2026-09-03) | Mantener disperso en ADR individuales | KI-03 | — | — |
-| ADR-0011 | Modelo de cobertura geográfica | 🟢 Aceptado | Catálogo de zonas administrativas, relación N:M aliado↔zona, sin geometría propia | Radio de cobertura; polígonos dibujados; catálogo con geometría asociada | DR-02, DR-03 | AC-01 / QS-05 | KI-07, KI-08 |
-| ADR-0012 | Backend Dart, motor de persistencia y aislamiento multi-tenant | 🔴 En contradicción | Serverpod (Dart) + Supabase (PostgreSQL) + RLS nativo | NestJS+MongoDB; BaaS puro; filtrado manual sin RLS; base/esquema separado por tenant | DR-01 | AC-01, AC-02 / QS-02 | TO-01, TO-02, TO-06 · resuelve KI-01 · abre KI-02, KI-06 |
-| ADR-0013 | Almacenamiento de documentos KYC | 🟡 Propuesto | Bucket único de Storage con ruta tenant_id/aliado_id/archivo + RLS sobre storage.objects | Bucket privado por tenant; aislamiento solo en capa de aplicación | DR-05, DR-01 | AC-01 / QS-04 | KI-05 |
-| ADR-0015 | Estrategia de pruebas de aislamiento multi-tenant | 🟡 Propuesto | Colección Postman con 6 casos de acceso cruzado, automatizada con Newman en GitHub Actions | Revisión manual periódica; k6 u OWASP ZAP | DR-06 | AC-10 / QS-17 | TO-05, TO-08 · mitiga KI-04 |
-| ADR-0016 | Estrategia de despacho de solicitudes | 🟡 Propuesto, incompleto | Despacho simultáneo (broadcast) con UPDATE condicional atómico | Despacho secuencial según orden de RF-13 | DR-04 | AC-04 / QS-09 | TO-03 · pendiente en KI-10 |
-| ADR-0017 | Mensajería y notificaciones en tiempo real | 🟡 Propuesto, condicionado | Supabase Realtime (Broadcast) + push notifications (FCM/APNs) | WebSockets propios (Socket.io); Polling | — | AC-13 / QS-14 | TO-06 · pendiente en KI-10 |
+Cada ADR se presenta como una tabla de 2 columnas (Campo / Valor) en vez de una fila de
+una tabla ancha, para mantener legible el resumen y el detalle a la vez.
 
-> ⚠ Hallazgo transversal: ADR-0004/0005/0006 (Java/.NET/Azure) y ADR-0012 (Dart/Serverpod/Supabase) están Aceptados a la vez y son mutuamente excluyentes — ver KI-02. Ningún ADR posterior declara supersedes sobre el otro.
+**ADR-0001 — Gestión documental**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | GitHub (código/ADR) + OneDrive (documentos formales), dividido por tipo de contenido |
+| Alternativas descartadas | Todo en GitHub; Confluence + Jira |
+| Objetivo de Diseño | DR-11 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0002 — Herramientas de gestión: Jira**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Jira para gestión de proyecto + GitHub para lo técnico, separados |
+| Alternativas descartadas | Todo en GitHub Projects; GitLab Issues |
+| Objetivo de Diseño | DR-08 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0003 — Mesa de Arquitectura**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Mesa con Arquitecto transversal y rotación de autoría de ADR; quórum 5/7, disenso documentado |
+| Alternativas descartadas | Responsable único (SM); sin reglamento formal |
+| Objetivo de Diseño | DR-09 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0004 — Pipeline CI/CD multi-repositorio**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 (Azure reemplazado por Docker Hub + Railway) |
+| Decisión (resumen) | GitHub Actions + Webhooks Jira↔GitHub + promoción de contenedores, sobre 3 repos (Flutter/Java/.NET) + backend Serverpod |
+| Alternativas descartadas | Monorepositorio; Jenkins auto-hospedado |
+| Objetivo de Diseño | DR-08 |
+| AC / Escenario | — |
+| Trade-off | Cierra KI-02 vía ADR-0021 (coexistencia, no reemplazo) |
+
+**ADR-0005 — DevSecOps: SAST + DAST**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 |
+| Decisión (resumen) | SonarQube (SAST) + OWASP ZAP (DAST) en GitHub Actions, sobre Flutter/Java/.NET y backend Serverpod |
+| Alternativas descartadas | Revisión manual; plataformas comerciales unificadas |
+| Objetivo de Diseño | DR-07 |
+| AC / Escenario | — |
+| Trade-off | Cierra KI-02 vía ADR-0021 (coexistencia, no reemplazo) |
+
+**ADR-0006 — Observabilidad**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 (Azure reemplazado por Docker Hub + Railway) |
+| Decisión (resumen) | Prometheus + Grafana + Datadog, instrumentando Java Spring/.NET (y backend Serverpod si aplica) |
+| Alternativas descartadas | Stack ELK auto-alojado; Azure Monitor/App Insights exclusivo |
+| Objetivo de Diseño | KI-11 |
+| AC / Escenario | AC-11 / QS-18 |
+| Trade-off | TO-04 · KI-11 resuelto (Java/.NET preservados, ver ADR-0021) |
+
+**ADR-0007 — Documentación en el repositorio**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Carpeta /docs versionada junto al código, reemplaza Confluence/Drive/Discord |
+| Alternativas descartadas | Confluence como fuente única; Google Drive compartido |
+| Objetivo de Diseño | DR-11 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0008 — Carpeta de diagramas**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | /docs/diagramas con subcarpetas por tipo; Mermaid versionado como texto (.mmd) |
+| Alternativas descartadas | Solo en herramientas de origen (Figma/Miro); imágenes sueltas en Confluence |
+| Objetivo de Diseño | DR-11 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0009 — Política de uso de IA**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Uso de IA permitido bajo lineamientos del equipo; ninguna sugerencia de IA es decisión válida sin pasar por la Mesa |
+| Alternativas descartadas | Prohibición total; uso libre sin lineamientos |
+| Objetivo de Diseño | DR-09 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0010 — Tech Radar del proyecto**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Radar visual consolidado (círculos de confianza, cuadrantes por categoría); Kubernetes en "Sí o sí" (PROY-08, sin costo de licencia — actualizado 2026-09-03) |
+| Alternativas descartadas | Mantener disperso en ADR individuales |
+| Objetivo de Diseño | KI-03 |
+| AC / Escenario | — |
+| Trade-off | — |
+
+**ADR-0011 — Modelo de cobertura geográfica**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Catálogo de zonas administrativas, relación N:M aliado↔zona, sin geometría propia |
+| Alternativas descartadas | Radio de cobertura; polígonos dibujados; catálogo con geometría asociada |
+| Objetivo de Diseño | DR-02, DR-03 |
+| AC / Escenario | AC-01 / QS-05 |
+| Trade-off | KI-07, KI-08 |
+
+**ADR-0012 — Backend Dart, motor de persistencia y aislamiento multi-tenant**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 |
+| Decisión (resumen) | Serverpod (Dart) + Supabase (PostgreSQL) + RLS nativo — capa de persistencia/identidad, coexiste con Java (Repo B) y .NET (Repo C) |
+| Alternativas descartadas | NestJS+MongoDB; BaaS puro; filtrado manual sin RLS; base/esquema separado por tenant |
+| Objetivo de Diseño | DR-01 |
+| AC / Escenario | AC-01, AC-02 / QS-02 |
+| Trade-off | TO-01, TO-02, TO-06 · resuelve KI-01 · KI-02 cerrado (ADR-0021) · abre KI-06 |
+
+**ADR-0013 — Almacenamiento de documentos KYC**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto |
+| Decisión (resumen) | Bucket único de Storage con ruta tenant_id/aliado_id/archivo + RLS sobre storage.objects |
+| Alternativas descartadas | Bucket privado por tenant; aislamiento solo en capa de aplicación |
+| Objetivo de Diseño | DR-05, DR-01 |
+| AC / Escenario | AC-01 / QS-04 |
+| Trade-off | KI-05 |
+
+**ADR-0015 — Estrategia de pruebas de aislamiento multi-tenant**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto |
+| Decisión (resumen) | Colección Postman con 6 casos de acceso cruzado, automatizada con Newman en GitHub Actions |
+| Alternativas descartadas | Revisión manual periódica; k6 u OWASP ZAP |
+| Objetivo de Diseño | DR-06 |
+| AC / Escenario | AC-10 / QS-17 |
+| Trade-off | TO-05, TO-08 · mitiga KI-04 |
+
+**ADR-0016 — Estrategia de despacho de solicitudes**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto, incompleto |
+| Decisión (resumen) | Despacho simultáneo (broadcast) con UPDATE condicional atómico |
+| Alternativas descartadas | Despacho secuencial según orden de RF-13 |
+| Objetivo de Diseño | DR-04 |
+| AC / Escenario | AC-04 / QS-09 |
+| Trade-off | TO-03 · pendiente en KI-10 |
+
+**ADR-0017 — Mensajería y notificaciones en tiempo real**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto, condicionado |
+| Decisión (resumen) | Supabase Realtime (Broadcast) + push notifications (FCM/APNs) |
+| Alternativas descartadas | WebSockets propios (Socket.io); Polling |
+| Objetivo de Diseño | — |
+| AC / Escenario | AC-13 / QS-14 |
+| Trade-off | TO-06 · pendiente en KI-10 |
+
+**ADR-0021 — Consolidación del stack de backend distribuido y eliminación de Azure (cierre de KI-02)**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Java (Repo B), .NET (Repo C) y el backend Serverpod/Supabase de ADR-0012 **coexisten** como módulos distintos (reglas de negocio, transaccional de alta concurrencia, y persistencia/identidad, respectivamente); se elimina Microsoft Azure como proveedor de infraestructura, migrando a Docker Hub + Railway |
+| Alternativas descartadas | Mantener la contradicción sin trazar; declarar ADR-0012 reemplazo total de Java/.NET; mantener Azure como proveedor |
+| Objetivo de Diseño | Cierra KI-02 |
+| AC / Escenario | — |
+| Trade-off | Migración de registro de contenedores (.NET) de Azure Container Registry a Docker Hub; Railway con menor techo de escala que Azure |
+
+✅ **KI-02 — resuelto (2026-09-03).** ADR-0004/0005/0006 (Java/.NET, CI/CD/DevSecOps/
+Observabilidad) y ADR-0012 (Dart/Serverpod/Supabase) **no son mutuamente excluyentes**: la
+contradicción real estaba en el proveedor de infraestructura (Azure, fijado por ADR-0004/0006),
+no en el lenguaje de backend. ADR-0021 lo aclara explícitamente sin declarar `supersedes` sobre
+ninguno de los cuatro: Java, .NET y Serverpod/Dart gobiernan módulos distintos de la
+arquitectura y coexisten; solo la porción de infraestructura Azure de ADR-0004/0006 queda
+reemplazada (Docker Hub + Railway). Ver la nota de alcance agregada en ADR-0005 y ADR-0012.
 
 ---
 
@@ -132,28 +373,268 @@
 
 *24 escenarios organizados por módulo funcional — cubren RF-01 a RF-28 completos, con formato Source/Stimulus/Artifact/Environment/Response/Response Measure*
 
-| ID | Módulo | RF cubiertos | Atributo (Categoría / Subcategoría) | Source (Fuente) | Stimulus (Estímulo) | Artifact (Artefacto) | Environment (Entorno) | Response (Respuesta) | Response Measure (Medida) | Prioridad | Impacto | Complejidad |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| QS-01 | Mód. 1 — Acceso | RF-01 | Seguridad / Confidencialidad | Admin. plataforma | Da de alta una nueva empresa (tenant) en la plataforma | Módulo de administración de tenants | Producción, operación normal | El sistema crea el tenant con su propio espacio de datos, aislado desde el primer momento | El tenant queda operativo en menos de 5 minutos; 0 datos de otros tenants visibles desde su creación | Alta | Alto | Media |
-| QS-02 | Mód. 1 — Acceso | RF-03 | Seguridad / Confidencialidad | Usuario ya registrado (Cliente, Aliado o Admin.) | Inicia sesión y navega la app | Capa de acceso a datos (RLS en Supabase) + módulo de autenticación | Producción, uso normal | El sistema autentica al usuario y solo le muestra datos del tenant al que pertenece | 0 registros de otro tenant visibles en el 100% de 6 pruebas automáticas de acceso cruzado, ejecutadas en cada cambio que toque autenticación, RLS o el esquema | Alta | Alto | Media |
-| QS-03 | Mód. 1 — Acceso | RF-04 | Seguridad / Autenticación | Usuario que olvidó su contraseña | Solicita recuperar el acceso a su cuenta | Flujo de recuperación de contraseña | Producción, cualquier hora | El sistema verifica la identidad del usuario antes de permitir el cambio de contraseña | 0 cambios de contraseña sin verificación exitosa; el código o enlace de verificación expira antes de 15 minutos | Media | Alto | Baja |
-| QS-04 | Mód. 2 — Directorio | RF-05, RF-06 | Idoneidad funcional / Corrección | Admin. tenant revisando la bandeja de verificación | Un aliado envía su registro con los documentos que el tenant exige | Bandeja de verificación de aliados | Producción, operación normal | El sistema muestra el registro pendiente con todos sus documentos, y permite aprobarlo o rechazarlo | 100% de los registros nuevos aparecen en la bandeja en menos de 1 minuto; el aliado ve el resultado sin tener que preguntar | Alta | Alto | Media |
-| QS-05 | Mód. 2 — Directorio | RF-07 | Idoneidad funcional / Corrección | Aliado configurando su perfil | Declara las zonas donde presta servicio | Selector de zonas (catálogo jerárquico ciudad → localidad → barrio) | Producción, primera configuración o edición posterior | El sistema guarda la selección y la usa después para las búsquedas de cobertura de RF-12 | El aliado completa la selección en menos de 2 minutos; 0 errores al guardar | Alta | Medio | Baja |
-| QS-06 | Mód. 2 — Directorio | RF-08, RF-09 | Flexibilidad / Adaptabilidad | Cliente empresa con varios sitios | Registra un nuevo sitio con reglas propias (ej. horario de acceso) | Módulo de gestión de sitios del cliente | Producción, operación normal | El sistema guarda el sitio con sus reglas y se las muestra al aliado antes de que acepte una solicitud de ese sitio | 100% de las reglas del sitio visibles para el aliado antes de aceptar la solicitud | Media | Medio | Media |
-| QS-07 | Mód. 3 — Catálogo | RF-02, RF-10, RF-11 | Flexibilidad / Adaptabilidad | Admin. tenant | Activa o desactiva una categoría de servicio, o ajusta una regla del tenant (documentos, tarifas, orden de listado) | Módulo de configuración de categorías y reglas del tenant | Producción, operación normal | El cambio se refleja de inmediato para clientes y aliados de ese tenant, sin necesidad de desplegar código nuevo | Tiempo entre guardar el cambio y que quede activo < 1 min; 0 despliegues de código requeridos | Alta | Alto | Alta |
-| QS-08 | Mód. 4 — Ciclo servicio | RF-12, RF-13 | Eficiencia de desempeño / Capacidad | Cliente creando una solicitud de servicio | Pide ver los aliados disponibles para su categoría y zona, en hora pico | Módulo de búsqueda y listado de aliados | Producción, pico de tráfico | El sistema muestra el listado de aliados válidos, ordenado según la regla configurada por el tenant | Objetivo propuesto: listado entregado en menos de 1 segundo con 20 usuarios buscando a la vez; pendiente validar con volumen real | Alta | Alto | Alta |
-| QS-09 | Mód. 4 — Ciclo servicio | RF-14 | Fiabilidad / Tolerancia a fallos | Varios aliados recibiendo la misma solicitud a la vez | Dos o más aliados aceptan la solicitud al mismo tiempo | Tabla solicitud (columnas status, aliado_id) | Producción, alta concurrencia (la solicitud se envía a todos los aliados válidos a la vez) | El sistema asigna la solicitud a un solo aliado y avisa "ya no disponible" a los demás | Exactamente 1 asignación válida por solicitud en el 100% de los casos; el aliado recibe respuesta en menos de 500 ms | Alta | Alto | Media |
-| QS-10 | Mód. 4 — Ciclo servicio | RF-15, RF-16 | Idoneidad funcional / Corrección | Aliado elaborando una cotización | Ingresa el valor de mano de obra y materiales, y el total queda fuera del rango de tarifas del tenant | Formulario de cotización + tarifario de referencia | Producción, operación normal | El sistema muestra una alerta visible antes de que el aliado envíe la cotización | 100% de las cotizaciones fuera de rango muestran la alerta antes del envío; el evento queda disponible para el reporte de QS-15 | Media | Medio | Baja |
-| QS-11 | Mód. 4 — Ciclo servicio | RF-17 | Fiabilidad / Tolerancia a fallos (idempotencia) | Cliente revisando una cotización, con conexión inestable | Toca "aceptar" y, por un reintento de red, el sistema recibe la misma acción dos veces | Capa de API con clave de idempotencia por solicitud | Producción, condición de red inestable | El sistema procesa la aceptación una sola vez, sin duplicar el efecto | 0 aceptaciones duplicadas en el 100% de reintentos con la misma clave de idempotencia | Media | Medio | Baja |
-| QS-12 | Mód. 4 — Ciclo servicio | RF-18 | Seguridad / No repudio | Cualquier actor del ciclo de servicio (Cliente, Aliado, Admin. tenant) | Ocurre un evento relevante del servicio (cambio de estado, mensaje, cotización) | Log cronológico del servicio | Producción | El sistema registra el evento con actor, fecha/hora y descripción, visible en la línea de tiempo del servicio | 100% de los eventos del ciclo de servicio quedan registrados; tiempo de escritura < 200 ms adicionales sobre la operación original | Media | Alto | Media |
-| QS-13 | Mód. 4 — Ciclo servicio | RF-19 | Fiabilidad / Tolerancia a fallos (idempotencia) | Cliente o Aliado al cierre del servicio | Envía su calificación del otro actor | Módulo de calificación mutua | Producción, cierre del servicio | El sistema guarda una sola calificación por actor y por servicio, incluso si el botón se toca más de una vez | Máximo 1 calificación registrada por actor y servicio en el 100% de los casos | Media | Medio | Baja |
-| QS-14 | Mód. 5 — Comunicación | RF-20, RF-21 | Compatibilidad / Interoperabilidad | Cliente o Aliado con un servicio activo | Envía un mensaje, o se genera una notificación del ciclo de servicio | Supabase Realtime (Broadcast) + servicio de push (FCM/APNs) | Producción, app en primer o segundo plano | El mensaje llega por WebSocket si el otro actor está conectado, o por notificación push si no lo está | Latencia de entrega < 2 s en clientes conectados; 100% de mensajes con al menos un canal de entrega exitoso | Media | Medio | Media |
-| QS-15 | Mód. 6 — Tarifario | RF-22, RF-23 | Mantenibilidad / Analizabilidad | Admin. tenant | Consulta el reporte de cotizaciones fuera de rango en un período | Módulo de reportes, con filtro por fecha | Producción, operación normal | El sistema entrega la tabla filtrada, apoyada en los eventos registrados en QS-10 | Reporte generado en menos de 3 segundos para un rango de hasta 12 meses | Media | Medio | Baja |
-| QS-16 | Transversal | Transversal (todos los módulos) | Fiabilidad / Disponibilidad | Infraestructura (Supabase, hosting del backend Serverpod) | Falla o cae un componente (base de datos, backend, Storage) | Sistema completo (backend + Supabase) | Producción, horario operativo del tenant | El sistema se recupera automáticamente o entra en modo degradado documentado | Disponibilidad objetivo ≥ 99.5% mensual (≈ 3.6 h de indisponibilidad/mes); tiempo de detección de fallo < 5 min | Media | Alto | Media |
-| QS-17 | Transversal | Transversal (protege RF-01 a RF-28) | Mantenibilidad / Verificabilidad | Cualquier integrante del equipo de desarrollo | Un Pull Request modifica autenticación, políticas RLS o el esquema de datos | Pipeline de CI (GitHub Actions + Newman) | Pipeline de CI, antes de fusionar a la rama principal | GitHub Actions ejecuta automáticamente la colección Postman de aislamiento multi-tenant | 6 casos de prueba ejecutados en el 100% de los PR que tocan auth/RLS/esquema; el pipeline bloquea el merge si algún caso falla | Alta | Alto | Media |
-| QS-18 | Transversal | Transversal (todos los módulos) | Mantenibilidad / Analizabilidad | Cualquier servicio instrumentado | Ocurre una anomalía o error en producción | Stack de observabilidad (Prometheus + Grafana + Datadog) | Producción | El sistema genera una alerta y, para anomalías críticas, crea automáticamente un issue en Jira | Tiempo de detección de la anomalía < 5 min desde que ocurre; tasa de falsos positivos aún sin umbral definido | Media | Alto | Alta |
-| QS-19 | Transversal | RF-12 (flujo crítico) | Usabilidad / Capacidad de aprendizaje | Cliente o Aliado nuevo, primera sesión en la app | Completa su primer flujo crítico (solicitar un servicio / aceptar una solicitud) | Interfaz de usuario (Flutter) | Primer uso, sin capacitación previa | El usuario completa el flujo guiado por la interfaz, sin soporte externo | ≥ 80% de usuarios nuevos completan el flujo crítico sin abandonar en su primera sesión; tiempo promedio < 3 min | Media | Medio | Baja |
-| QS-20 | Transversal | Transversal (todos los módulos) | Portabilidad / Adaptabilidad | Cliente o Aliado instalando/usando la app | Abre la aplicación desde Android o iOS | Cliente Flutter | Dispositivo móvil del usuario final | La aplicación se ejecuta con la misma base de código, sin rama de plataforma específica | 1 sola base de código para Android e iOS; 0 líneas de UI condicionadas por plataforma fuera de lo estrictamente necesario | Baja | Medio | Baja |
+Cada escenario se presenta como una tabla de 2 columnas (Campo / Valor) en vez de una fila
+de una tabla de 13 columnas, para que Source/Stimulus/Response se puedan leer completos.
+
+**QS-01 — Mód. 1 — Acceso (RF-01)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Seguridad / Confidencialidad |
+| Source (Fuente) | Admin. plataforma |
+| Stimulus (Estímulo) | Da de alta una nueva empresa (tenant) en la plataforma |
+| Artifact (Artefacto) | Módulo de administración de tenants |
+| Environment (Entorno) | Producción, operación normal |
+| Response (Respuesta) | El sistema crea el tenant con su propio espacio de datos, aislado desde el primer momento |
+| Response Measure (Medida) | El tenant queda operativo en menos de 5 minutos; 0 datos de otros tenants visibles desde su creación |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Media |
+
+**QS-02 — Mód. 1 — Acceso (RF-03)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Seguridad / Confidencialidad |
+| Source (Fuente) | Usuario ya registrado (Cliente, Aliado o Admin.) |
+| Stimulus (Estímulo) | Inicia sesión y navega la app |
+| Artifact (Artefacto) | Capa de acceso a datos (RLS en Supabase) + módulo de autenticación |
+| Environment (Entorno) | Producción, uso normal |
+| Response (Respuesta) | El sistema autentica al usuario y solo le muestra datos del tenant al que pertenece |
+| Response Measure (Medida) | 0 registros de otro tenant visibles en el 100% de 6 pruebas automáticas de acceso cruzado, ejecutadas en cada cambio que toque autenticación, RLS o el esquema |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Media |
+
+**QS-03 — Mód. 1 — Acceso (RF-04)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Seguridad / Autenticación |
+| Source (Fuente) | Usuario que olvidó su contraseña |
+| Stimulus (Estímulo) | Solicita recuperar el acceso a su cuenta |
+| Artifact (Artefacto) | Flujo de recuperación de contraseña |
+| Environment (Entorno) | Producción, cualquier hora |
+| Response (Respuesta) | El sistema verifica la identidad del usuario antes de permitir el cambio de contraseña |
+| Response Measure (Medida) | 0 cambios de contraseña sin verificación exitosa; el código o enlace de verificación expira antes de 15 minutos |
+| Prioridad / Impacto / Complejidad | Media / Alto / Baja |
+
+**QS-04 — Mód. 2 — Directorio (RF-05, RF-06)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Idoneidad funcional / Corrección |
+| Source (Fuente) | Admin. tenant revisando la bandeja de verificación |
+| Stimulus (Estímulo) | Un aliado envía su registro con los documentos que el tenant exige |
+| Artifact (Artefacto) | Bandeja de verificación de aliados |
+| Environment (Entorno) | Producción, operación normal |
+| Response (Respuesta) | El sistema muestra el registro pendiente con todos sus documentos, y permite aprobarlo o rechazarlo |
+| Response Measure (Medida) | 100% de los registros nuevos aparecen en la bandeja en menos de 1 minuto; el aliado ve el resultado sin tener que preguntar |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Media |
+
+**QS-05 — Mód. 2 — Directorio (RF-07)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Idoneidad funcional / Corrección |
+| Source (Fuente) | Aliado configurando su perfil |
+| Stimulus (Estímulo) | Declara las zonas donde presta servicio |
+| Artifact (Artefacto) | Selector de zonas (catálogo jerárquico ciudad → localidad → barrio) |
+| Environment (Entorno) | Producción, primera configuración o edición posterior |
+| Response (Respuesta) | El sistema guarda la selección y la usa después para las búsquedas de cobertura de RF-12 |
+| Response Measure (Medida) | El aliado completa la selección en menos de 2 minutos; 0 errores al guardar |
+| Prioridad / Impacto / Complejidad | Alta / Medio / Baja |
+
+**QS-06 — Mód. 2 — Directorio (RF-08, RF-09)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Flexibilidad / Adaptabilidad |
+| Source (Fuente) | Cliente empresa con varios sitios |
+| Stimulus (Estímulo) | Registra un nuevo sitio con reglas propias (ej. horario de acceso) |
+| Artifact (Artefacto) | Módulo de gestión de sitios del cliente |
+| Environment (Entorno) | Producción, operación normal |
+| Response (Respuesta) | El sistema guarda el sitio con sus reglas y se las muestra al aliado antes de que acepte una solicitud de ese sitio |
+| Response Measure (Medida) | 100% de las reglas del sitio visibles para el aliado antes de aceptar la solicitud |
+| Prioridad / Impacto / Complejidad | Media / Medio / Media |
+
+**QS-07 — Mód. 3 — Catálogo (RF-02, RF-10, RF-11)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Flexibilidad / Adaptabilidad |
+| Source (Fuente) | Admin. tenant |
+| Stimulus (Estímulo) | Activa o desactiva una categoría de servicio, o ajusta una regla del tenant (documentos, tarifas, orden de listado) |
+| Artifact (Artefacto) | Módulo de configuración de categorías y reglas del tenant |
+| Environment (Entorno) | Producción, operación normal |
+| Response (Respuesta) | El cambio se refleja de inmediato para clientes y aliados de ese tenant, sin necesidad de desplegar código nuevo |
+| Response Measure (Medida) | Tiempo entre guardar el cambio y que quede activo < 1 min; 0 despliegues de código requeridos |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Alta |
+
+**QS-08 — Mód. 4 — Ciclo servicio (RF-12, RF-13)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Eficiencia de desempeño / Capacidad |
+| Source (Fuente) | Cliente creando una solicitud de servicio |
+| Stimulus (Estímulo) | Pide ver los aliados disponibles para su categoría y zona, en hora pico |
+| Artifact (Artefacto) | Módulo de búsqueda y listado de aliados |
+| Environment (Entorno) | Producción, pico de tráfico |
+| Response (Respuesta) | El sistema muestra el listado de aliados válidos, ordenado según la regla configurada por el tenant |
+| Response Measure (Medida) | Objetivo propuesto: listado entregado en menos de 1 segundo con 20 usuarios buscando a la vez; pendiente validar con volumen real |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Alta |
+
+**QS-09 — Mód. 4 — Ciclo servicio (RF-14)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Fiabilidad / Tolerancia a fallos |
+| Source (Fuente) | Varios aliados recibiendo la misma solicitud a la vez |
+| Stimulus (Estímulo) | Dos o más aliados aceptan la solicitud al mismo tiempo |
+| Artifact (Artefacto) | Tabla solicitud (columnas status, aliado_id) |
+| Environment (Entorno) | Producción, alta concurrencia (la solicitud se envía a todos los aliados válidos a la vez) |
+| Response (Respuesta) | El sistema asigna la solicitud a un solo aliado y avisa "ya no disponible" a los demás |
+| Response Measure (Medida) | Exactamente 1 asignación válida por solicitud en el 100% de los casos; el aliado recibe respuesta en menos de 500 ms |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Media |
+
+**QS-10 — Mód. 4 — Ciclo servicio (RF-15, RF-16)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Idoneidad funcional / Corrección |
+| Source (Fuente) | Aliado elaborando una cotización |
+| Stimulus (Estímulo) | Ingresa el valor de mano de obra y materiales, y el total queda fuera del rango de tarifas del tenant |
+| Artifact (Artefacto) | Formulario de cotización + tarifario de referencia |
+| Environment (Entorno) | Producción, operación normal |
+| Response (Respuesta) | El sistema muestra una alerta visible antes de que el aliado envíe la cotización |
+| Response Measure (Medida) | 100% de las cotizaciones fuera de rango muestran la alerta antes del envío; el evento queda disponible para el reporte de QS-15 |
+| Prioridad / Impacto / Complejidad | Media / Medio / Baja |
+
+**QS-11 — Mód. 4 — Ciclo servicio (RF-17)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Fiabilidad / Tolerancia a fallos (idempotencia) |
+| Source (Fuente) | Cliente revisando una cotización, con conexión inestable |
+| Stimulus (Estímulo) | Toca "aceptar" y, por un reintento de red, el sistema recibe la misma acción dos veces |
+| Artifact (Artefacto) | Capa de API con clave de idempotencia por solicitud |
+| Environment (Entorno) | Producción, condición de red inestable |
+| Response (Respuesta) | El sistema procesa la aceptación una sola vez, sin duplicar el efecto |
+| Response Measure (Medida) | 0 aceptaciones duplicadas en el 100% de reintentos con la misma clave de idempotencia |
+| Prioridad / Impacto / Complejidad | Media / Medio / Baja |
+
+**QS-12 — Mód. 4 — Ciclo servicio (RF-18)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Seguridad / No repudio |
+| Source (Fuente) | Cualquier actor del ciclo de servicio (Cliente, Aliado, Admin. tenant) |
+| Stimulus (Estímulo) | Ocurre un evento relevante del servicio (cambio de estado, mensaje, cotización) |
+| Artifact (Artefacto) | Log cronológico del servicio |
+| Environment (Entorno) | Producción |
+| Response (Respuesta) | El sistema registra el evento con actor, fecha/hora y descripción, visible en la línea de tiempo del servicio |
+| Response Measure (Medida) | 100% de los eventos del ciclo de servicio quedan registrados; tiempo de escritura < 200 ms adicionales sobre la operación original |
+| Prioridad / Impacto / Complejidad | Media / Alto / Media |
+
+**QS-13 — Mód. 4 — Ciclo servicio (RF-19)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Fiabilidad / Tolerancia a fallos (idempotencia) |
+| Source (Fuente) | Cliente o Aliado al cierre del servicio |
+| Stimulus (Estímulo) | Envía su calificación del otro actor |
+| Artifact (Artefacto) | Módulo de calificación mutua |
+| Environment (Entorno) | Producción, cierre del servicio |
+| Response (Respuesta) | El sistema guarda una sola calificación por actor y por servicio, incluso si el botón se toca más de una vez |
+| Response Measure (Medida) | Máximo 1 calificación registrada por actor y servicio en el 100% de los casos |
+| Prioridad / Impacto / Complejidad | Media / Medio / Baja |
+
+**QS-14 — Mód. 5 — Comunicación (RF-20, RF-21)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Compatibilidad / Interoperabilidad |
+| Source (Fuente) | Cliente o Aliado con un servicio activo |
+| Stimulus (Estímulo) | Envía un mensaje, o se genera una notificación del ciclo de servicio |
+| Artifact (Artefacto) | Supabase Realtime (Broadcast) + servicio de push (FCM/APNs) |
+| Environment (Entorno) | Producción, app en primer o segundo plano |
+| Response (Respuesta) | El mensaje llega por WebSocket si el otro actor está conectado, o por notificación push si no lo está |
+| Response Measure (Medida) | Latencia de entrega < 2 s en clientes conectados; 100% de mensajes con al menos un canal de entrega exitoso |
+| Prioridad / Impacto / Complejidad | Media / Medio / Media |
+
+**QS-15 — Mód. 6 — Tarifario (RF-22, RF-23)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Mantenibilidad / Analizabilidad |
+| Source (Fuente) | Admin. tenant |
+| Stimulus (Estímulo) | Consulta el reporte de cotizaciones fuera de rango en un período |
+| Artifact (Artefacto) | Módulo de reportes, con filtro por fecha |
+| Environment (Entorno) | Producción, operación normal |
+| Response (Respuesta) | El sistema entrega la tabla filtrada, apoyada en los eventos registrados en QS-10 |
+| Response Measure (Medida) | Reporte generado en menos de 3 segundos para un rango de hasta 12 meses |
+| Prioridad / Impacto / Complejidad | Media / Medio / Baja |
+
+**QS-16 — Transversal (todos los módulos)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Fiabilidad / Disponibilidad |
+| Source (Fuente) | Infraestructura (Supabase, hosting del backend Serverpod) |
+| Stimulus (Estímulo) | Falla o cae un componente (base de datos, backend, Storage) |
+| Artifact (Artefacto) | Sistema completo (backend + Supabase) |
+| Environment (Entorno) | Producción, horario operativo del tenant |
+| Response (Respuesta) | El sistema se recupera automáticamente o entra en modo degradado documentado |
+| Response Measure (Medida) | Disponibilidad objetivo ≥ 99.5% mensual (≈ 3.6 h de indisponibilidad/mes); tiempo de detección de fallo < 5 min |
+| Prioridad / Impacto / Complejidad | Media / Alto / Media |
+
+**QS-17 — Transversal (protege RF-01 a RF-28)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Mantenibilidad / Verificabilidad |
+| Source (Fuente) | Cualquier integrante del equipo de desarrollo |
+| Stimulus (Estímulo) | Un Pull Request modifica autenticación, políticas RLS o el esquema de datos |
+| Artifact (Artefacto) | Pipeline de CI (GitHub Actions + Newman) |
+| Environment (Entorno) | Pipeline de CI, antes de fusionar a la rama principal |
+| Response (Respuesta) | GitHub Actions ejecuta automáticamente la colección Postman de aislamiento multi-tenant |
+| Response Measure (Medida) | 6 casos de prueba ejecutados en el 100% de los PR que tocan auth/RLS/esquema; el pipeline bloquea el merge si algún caso falla |
+| Prioridad / Impacto / Complejidad | Alta / Alto / Media |
+
+**QS-18 — Transversal (todos los módulos)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Mantenibilidad / Analizabilidad |
+| Source (Fuente) | Cualquier servicio instrumentado |
+| Stimulus (Estímulo) | Ocurre una anomalía o error en producción |
+| Artifact (Artefacto) | Stack de observabilidad (Prometheus + Grafana + Datadog) |
+| Environment (Entorno) | Producción |
+| Response (Respuesta) | El sistema genera una alerta y, para anomalías críticas, crea automáticamente un issue en Jira |
+| Response Measure (Medida) | Tiempo de detección de la anomalía < 5 min desde que ocurre; tasa de falsos positivos aún sin umbral definido |
+| Prioridad / Impacto / Complejidad | Media / Alto / Alta |
+
+**QS-19 — Transversal (RF-12, flujo crítico)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Usabilidad / Capacidad de aprendizaje |
+| Source (Fuente) | Cliente o Aliado nuevo, primera sesión en la app |
+| Stimulus (Estímulo) | Completa su primer flujo crítico (solicitar un servicio / aceptar una solicitud) |
+| Artifact (Artefacto) | Interfaz de usuario (Flutter) |
+| Environment (Entorno) | Primer uso, sin capacitación previa |
+| Response (Respuesta) | El usuario completa el flujo guiado por la interfaz, sin soporte externo |
+| Response Measure (Medida) | ≥ 80% de usuarios nuevos completan el flujo crítico sin abandonar en su primera sesión; tiempo promedio < 3 min |
+| Prioridad / Impacto / Complejidad | Media / Medio / Baja |
+
+**QS-20 — Transversal (todos los módulos)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Portabilidad / Adaptabilidad |
+| Source (Fuente) | Cliente o Aliado instalando/usando la app |
+| Stimulus (Estímulo) | Abre la aplicación desde Android o iOS |
+| Artifact (Artefacto) | Cliente Flutter |
+| Environment (Entorno) | Dispositivo móvil del usuario final |
+| Response (Respuesta) | La aplicación se ejecuta con la misma base de código, sin rama de plataforma específica |
+| Response Measure (Medida) | 1 sola base de código para Android e iOS; 0 líneas de UI condicionadas por plataforma fuera de lo estrictamente necesario |
+| Prioridad / Impacto / Complejidad | Baja / Medio / Baja |
 
 > Cobertura funcional: los 24 escenarios cubren RF-01 a RF-28 completos — RF-01 a RF-23 (MVP) en QS-01 a QS-15, y RF-24 a RF-28 (2º incremento) en QS-21 a QS-24. QS-16 a QS-20 son transversales: no prueban un RF puntual, sino una condición de calidad que protege a todos los módulos a la vez.
 
@@ -165,16 +646,44 @@
 
 *Tensiones documentadas entre escenarios de calidad y la decisión tomada o propuesta*
 
-| ID | Escenarios en tensión | Naturaleza de la tensión | Decisión tomada / propuesta |
-|---|---|---|---|
-| TO-01 | QS-02 (Confidencialidad, login) vs. QS-08 (Capacidad, búsqueda) | RLS evalúa una política en cada consulta; a mayor número de políticas y tablas protegidas, mayor costo de cómputo por request, presionando la latencia bajo carga | Se acepta el costo de RLS porque DR-01 es innegociable (Crítica); si QS-08 se degrada, la mitigación es indexación y no relajar RLS (ADR-0012) |
-| TO-02 | QS-02 (Confidencialidad) vs. QS-07 (Adaptabilidad, catálogo/config) | Cuanto más configurable es una regla por tenant, más difícil es garantizar que ninguna combinación de configuración rompa el aislamiento | La configurabilidad (QS-07) debe validarse contra la misma suite de QS-17 antes de habilitarse — no se resuelve, se declara como requisito cruzado |
-| TO-03 | QS-09 (Tolerancia a fallos, despacho) vs. QS-16 (Disponibilidad) | El UPDATE atómico exige que la base de datos esté disponible en el momento exacto del despacho; si la base cae, el despacho completo se detiene | Aceptado — no hay cola de reintento diseñada todavía; queda como deuda técnica declarada (ver KI-06) |
-| TO-04 | QS-16 (Disponibilidad) vs. QS-18 (Analizabilidad) | Más agentes de observabilidad (Prometheus/Datadog) consumen recursos de cómputo que compiten con el servicio principal | Aceptado como costo operativo; ADR-0006 lo reconoce explícitamente como desventaja de la opción elegida |
-| TO-05 | QS-07 (Adaptabilidad) vs. QS-17 (Verificabilidad) | Más puntos de configuración por tenant significan más combinaciones que la suite de pruebas debe cubrir | Se declara que la suite de QS-17 debe crecer junto con cada nueva regla configurable — no queda como pendiente, es una regla del proceso |
-| TO-06 | QS-02 (Confidencialidad) vs. QS-14 (Interoperabilidad, mensajería) | Reutilizar RLS como mecanismo de autorización de canal en mensajería (ADR-0017) acopla la seguridad del canal en tiempo real a la misma política que protege los datos | Aceptado deliberadamente porque evita duplicar lógica de autorización (ADR-0017), a cambio de concentrar el riesgo en un solo mecanismo |
-| TO-07 | QS-07 (Adaptabilidad) vs. QS-19 (Aprendizaje) | Mientras más configurable es la plataforma para el Admin. tenant, más superficie de interfaz debe aprender un usuario no técnico | Sin decisión tomada — se deja como tensión abierta para que la Mesa la resuelva junto con el diseño de UX |
-| TO-08 | QS-17 (Verificabilidad) vs. QS-08 (Capacidad) | Ejecutar 6+ casos de prueba en cada PR que toque auth/RLS/esquema añade tiempo al pipeline de CI, no al sistema en producción | Aceptado — el costo se paga en CI, no en producción; ADR-0015 no lo considera bloqueante |
+**Tabla A — Escenarios en tensión**
+
+| ID | Escenarios en tensión |
+|---|---|
+| TO-01 | QS-02 (Confidencialidad, login) vs. QS-08 (Capacidad, búsqueda) |
+| TO-02 | QS-02 (Confidencialidad) vs. QS-07 (Adaptabilidad, catálogo/config) |
+| TO-03 | QS-09 (Tolerancia a fallos, despacho) vs. QS-16 (Disponibilidad) |
+| TO-04 | QS-16 (Disponibilidad) vs. QS-18 (Analizabilidad) |
+| TO-05 | QS-07 (Adaptabilidad) vs. QS-17 (Verificabilidad) |
+| TO-06 | QS-02 (Confidencialidad) vs. QS-14 (Interoperabilidad, mensajería) |
+| TO-07 | QS-07 (Adaptabilidad) vs. QS-19 (Aprendizaje) |
+| TO-08 | QS-17 (Verificabilidad) vs. QS-08 (Capacidad) |
+
+**Tabla B — Naturaleza de la tensión**
+
+| ID | Naturaleza de la tensión |
+|---|---|
+| TO-01 | RLS evalúa una política en cada consulta; a mayor número de políticas y tablas protegidas, mayor costo de cómputo por request, presionando la latencia bajo carga |
+| TO-02 | Cuanto más configurable es una regla por tenant, más difícil es garantizar que ninguna combinación de configuración rompa el aislamiento |
+| TO-03 | El UPDATE atómico exige que la base de datos esté disponible en el momento exacto del despacho; si la base cae, el despacho completo se detiene |
+| TO-04 | Más agentes de observabilidad (Prometheus/Datadog) consumen recursos de cómputo que compiten con el servicio principal |
+| TO-05 | Más puntos de configuración por tenant significan más combinaciones que la suite de pruebas debe cubrir |
+| TO-06 | Reutilizar RLS como mecanismo de autorización de canal en mensajería (ADR-0017) acopla la seguridad del canal en tiempo real a la misma política que protege los datos |
+| TO-07 | Mientras más configurable es la plataforma para el Admin. tenant, más superficie de interfaz debe aprender un usuario no técnico |
+| TO-08 | Ejecutar 6+ casos de prueba en cada PR que toque auth/RLS/esquema añade tiempo al pipeline de CI, no al sistema en producción |
+
+**Tabla C — Decisión tomada / propuesta**
+
+| ID | Decisión tomada / propuesta |
+|---|---|
+| TO-01 | Se acepta el costo de RLS porque DR-01 es innegociable (Crítica); si QS-08 se degrada, la mitigación es indexación y no relajar RLS (ADR-0012) |
+| TO-02 | La configurabilidad (QS-07) debe validarse contra la misma suite de QS-17 antes de habilitarse — no se resuelve, se declara como requisito cruzado |
+| TO-03 | Aceptado — no hay cola de reintento diseñada todavía; queda como deuda técnica declarada (ver KI-06) |
+| TO-04 | Aceptado como costo operativo; ADR-0006 lo reconoce explícitamente como desventaja de la opción elegida |
+| TO-05 | Se declara que la suite de QS-17 debe crecer junto con cada nueva regla configurable — no queda como pendiente, es una regla del proceso |
+| TO-06 | Aceptado deliberadamente porque evita duplicar lógica de autorización (ADR-0017), a cambio de concentrar el riesgo en un solo mecanismo |
+| TO-07 | Sin decisión tomada — se deja como tensión abierta para que la Mesa la resuelva junto con el diseño de UX |
+| TO-08 | Aceptado — el costo se paga en CI, no en producción; ADR-0015 no lo considera bloqueante |
 
 ---
 
@@ -187,20 +696,23 @@ traducen en los Escenarios de Calidad (§5). Fuente: SRS_MANI.md §2, Analisis_d
 Requerimientos.md §1-3, Perfil_de_Proyecto_MANI.md §2-3, Glosario_Terminos_MANI.md. No
 introduce actores, procesos ni entidades que no existan ya en esos documentos.*
 
-### 7.0 Diagramas pendientes de esta sección
+### 7.0 Diagramas de esta sección
 
-| # | Diagrama | Ruta prevista | Descrito en |
-|---|---|---|---|
-| 1 | Mapa de capacidades de negocio | `Diagramas/Negocio/negocio-capacidades_mapa-mani_v1.png` | §7.3 |
-| 2 | Cadena de valor del ciclo del servicio | `Diagramas/Negocio/negocio-cadena-valor_ciclo-servicio_v1.png` (+ `.mmd`) | §7.4 |
-| 3 | BPMN — Alta y verificación de aliado | `Diagramas/Negocio/negocio-bpmn_alta-verificacion-aliado_v1.png` | §7.5.1 |
-| 4 | BPMN — Ciclo completo del servicio | `Diagramas/Negocio/negocio-bpmn_ciclo-servicio-completo_v1.png` | §7.5.2 |
-| 5 | Modelo de dominio conceptual | `Diagramas/Negocio/negocio-modelo-dominio_conceptual_v1.png` (+ `.mmd`) | §7.6 |
+| # | Diagrama | Ruta | Descrito en | Estado |
+|---|---|---|---|---|
+| 1 | Mapa de capacidades de negocio | `Diagramas/Negocio/v1/MAPA DE CAPACIDADES.jpg` | §7.3 | 🟢 Incluido |
+| 2 | Cadena de valor del ciclo del servicio | `Diagramas/Negocio/v1/CADENA DE VALOR.jpg` | §7.4 | 🟢 Incluido |
+| 3 | BPMN — Alta y verificación de aliado | `Diagramas/Negocio/v1/VERIFICACION ALIADO.jpg` | §7.5.1 | 🟢 Incluido |
+| 4 | BPMN — Ciclo completo del servicio | `Diagramas/Negocio/v1/BPMN CICLO SERVICIO.jpg` | §7.5.2 | 🟢 Incluido |
+| 5 | Modelo de dominio conceptual | `Diagramas/Negocio/negocio-modelo-dominio_conceptual_v1.png` (+ `.mmd`) | §7.6 | 🔴 Pendiente |
 
-🔴 Los 5 quedan pendientes de generar. Convención de nombres y carpeta según ADR-0008
-(`[tipo]_[nombre-descriptivo]_v[N]`); se crea `Diagramas/Negocio/` como tercera subcarpeta
-junto a `c4` y `flujos`, porque un mapa de capacidades y un modelo de dominio conceptual no
-son ni diagramas C4 ni diagramas de flujo técnico.
+Convención de nombres y carpeta según ADR-0008 (`[tipo]_[nombre-descriptivo]_v[N]`);
+`Diagramas/Negocio/` es la tercera subcarpeta junto a `c4` y `flujos`, porque un mapa de
+capacidades y un modelo de dominio conceptual no son ni diagramas C4 ni diagramas de flujo
+técnico. Los 4 diagramas ya provistos viven en `Diagramas/Negocio/v1/` (existe además una
+carpeta `v2/` vacía, reservada para su próxima revisión); pendiente renombrarlos a la
+convención `[tipo]_[nombre-descriptivo]_v[N]` de ADR-0008 cuando se regeneren desde la
+fuente.
 
 ### 7.1 Contexto de negocio
 
@@ -243,9 +755,11 @@ calificación y cierre.
 | Financiero | Cobro y liquidación | M-10 | EP-07 | 2º incremento |
 | Operación | Quejas, comercialización, administración avanzada | M-12..M-14 | EP-08 | 2º incremento |
 
-**📊 Diagrama pendiente 1 — Mapa de capacidades de negocio (Business Capability Map).**
+**📊 Mapa de capacidades de negocio (Business Capability Map).**
 Cuadrícula de las 13 capacidades de la tabla anterior, agrupadas por dominio, con distinción
 visual entre capacidades MVP vigentes y capacidades de 2º incremento fuera de este corte.
+
+![Mapa de capacidades de negocio](<../Diagramas/Negocio/v1/MAPA DE CAPACIDADES.jpg>)
 
 ### 7.4 Cadena de valor del ciclo del servicio
 
@@ -258,10 +772,12 @@ visual entre capacidades MVP vigentes y capacidades de 2º incremento fuera de e
 | Ejecución | Aliado | Cotización aceptada | Log cronológico de eventos del servicio | RF-18 |
 | Calificación y cierre | Cliente y Aliado | Servicio ejecutado | Calificación bidireccional; el servicio no cierra hasta que ambas partes califiquen | RF-19 |
 
-**📊 Diagrama pendiente 2 — Cadena de valor / Value Stream Map del ciclo del servicio.**
+**📊 Cadena de valor / Value Stream Map del ciclo del servicio.**
 Flujo horizontal de las 6 etapas de la tabla anterior, con el actor y el artefacto de negocio
 bajo cada etapa; marcar explícitamente el punto de despacho concurrente (broadcast, ver
 ADR-0016) como una bifurcación, no un paso lineal más.
+
+![Cadena de valor del ciclo del servicio](<../Diagramas/Negocio/v1/CADENA DE VALOR.jpg>)
 
 ### 7.5 Procesos de negocio clave
 
@@ -273,9 +789,11 @@ bandeja de verificación del administrador de tenant, quien lo aprueba o rechaza
 documentos de un aliado nunca son visibles para otro aliado del mismo tenant ni para usuarios
 de otro tenant (REST-02).
 
-**📊 Diagrama pendiente 3 — BPMN: Alta y verificación de aliado.**
+**📊 BPMN: Alta y verificación de aliado.**
 Swimlanes: Aliado / Administrador de tenant / Sistema. Incluir el nodo de decisión
 aprobar/rechazar y los documentos KYC como artefacto adjunto al registro.
+
+![BPMN — Alta y verificación de aliado](<../Diagramas/Negocio/v1/VERIFICACION ALIADO.jpg>)
 
 #### 7.5.2 Ciclo completo del servicio
 
@@ -285,10 +803,12 @@ asignación única y notifica al resto (ADR-0016); el aliado cotiza y el cliente
 rechazar o pedir ajuste (bucle, RF-17); durante la ejecución se registra cada evento
 (RF-18); el cierre queda condicionado a que ambas partes hayan calificado (join, RF-19).
 
-**📊 Diagrama pendiente 4 — BPMN: Ciclo completo del servicio (solicitud→cierre).**
+**📊 BPMN: Ciclo completo del servicio (solicitud→cierre).**
 Swimlanes: Cliente / Aliado(s) / Sistema. Incluir el gateway paralelo de despacho con
 resolución "primera aceptación válida", el bucle de ajuste de cotización, y el join de
 calificación bidireccional antes del cierre.
+
+![BPMN — Ciclo completo del servicio](<../Diagramas/Negocio/v1/BPMN CICLO SERVICIO.jpg>)
 
 ### 7.6 Modelo de dominio conceptual
 

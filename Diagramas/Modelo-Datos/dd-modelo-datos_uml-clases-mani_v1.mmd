@@ -1,0 +1,215 @@
+%% MANI — Modelo de datos (Diagrama de clases UML)
+%% Documento: Diagramas/Modelo-Datos/dd-modelo-datos_uml-clases-mani_v1.mmd
+%% Descrito en: Product/DD-MANI.md §5 y Product/Modelo_Datos_MANI.md
+%% Convención de nombres: ADR-0008. Fuente: RF-01..RF-23 (SRS V3), ADR-0011, ADR-0012,
+%% ADR-0013, ADR-0016, ADR-0017, ADR-0018. Alcance: MVP (EP-01..EP-06). No modela 2º
+%% incremento (Pago, Liquidacion, Queja) — ver Product/DD-MANI.md §7.
+
+classDiagram
+    direction LR
+
+    class Tenant {
+        <<global>>
+        +UUID id
+        +string nombre
+        +string slug
+        +string estado
+        +datetime fecha_alta
+    }
+
+    class Usuario {
+        +UUID id
+        +UUID tenant_id
+        +string email
+        +string rol
+        +string estado
+        +datetime created_at
+    }
+
+    class Aliado {
+        +UUID id
+        +UUID tenant_id
+        +UUID usuario_id
+        +string tipo
+        +string nombre_razon_social
+        +string estado_verificacion
+        +datetime created_at
+    }
+
+    class DocumentoKYC {
+        +UUID id
+        +UUID tenant_id
+        +UUID aliado_id
+        +string tipo_documento
+        +string ruta_storage
+        +string estado
+        +datetime fecha_carga
+    }
+
+    class Cliente {
+        +UUID id
+        +UUID tenant_id
+        +UUID usuario_id
+        +string tipo
+        +string nombre_razon_social
+    }
+
+    class Sitio {
+        +UUID id
+        +UUID tenant_id
+        +UUID cliente_id
+        +UUID zona_id
+        +string direccion
+        +jsonb reglas
+        +datetime created_at
+    }
+
+    class Zona {
+        <<global>>
+        +UUID id
+        +string nivel
+        +string nombre
+        +UUID zona_padre_id
+        +string estado
+    }
+
+    class CoberturaAliado {
+        <<asociación N:M>>
+        +UUID id
+        +UUID tenant_id
+        +UUID aliado_id
+        +UUID zona_id
+        +datetime fecha_declaracion
+    }
+
+    class CategoriaServicio {
+        +UUID id
+        +UUID tenant_id
+        +string nombre
+        +string estado
+        +string flujo_operativo
+    }
+
+    class AliadoCategoria {
+        <<asociación N:M>>
+        +UUID id
+        +UUID tenant_id
+        +UUID aliado_id
+        +UUID categoria_id
+    }
+
+    class TarifaReferencia {
+        +UUID id
+        +UUID tenant_id
+        +UUID categoria_id
+        +decimal valor_min
+        +decimal valor_tipico
+        +decimal valor_max
+    }
+
+    class Solicitud {
+        +UUID id
+        +UUID tenant_id
+        +UUID cliente_id
+        +UUID sitio_id
+        +UUID categoria_id
+        +UUID zona_id
+        +UUID aliado_id
+        +string estado
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    class Cotizacion {
+        +UUID id
+        +UUID tenant_id
+        +UUID solicitud_id
+        +UUID aliado_id
+        +decimal valor_mano_obra
+        +decimal valor_materiales
+        +string estado
+        +int version
+        +datetime created_at
+    }
+
+    class EventoServicio {
+        <<log inmutable>>
+        +UUID id
+        +UUID tenant_id
+        +UUID solicitud_id
+        +UUID actor_id
+        +string tipo_evento
+        +string descripcion
+        +datetime timestamp
+    }
+
+    class Calificacion {
+        +UUID id
+        +UUID tenant_id
+        +UUID solicitud_id
+        +UUID autor_id
+        +UUID destinatario_id
+        +int puntaje
+        +string comentario
+        +datetime created_at
+    }
+
+    class Mensaje {
+        +UUID id
+        +UUID tenant_id
+        +UUID solicitud_id
+        +UUID remitente_id
+        +string contenido
+        +datetime created_at
+        +datetime leido_at
+    }
+
+    class Notificacion {
+        +UUID id
+        +UUID tenant_id
+        +UUID usuario_id
+        +string tipo
+        +string canal
+        +jsonb payload
+        +datetime enviado_at
+        +datetime leido_at
+    }
+
+    %% Plataforma y acceso (M-01)
+    Tenant "1" --> "0..*" Usuario : tiene
+    Usuario "1" --> "0..1" Aliado : es
+    Usuario "1" --> "0..1" Cliente : es
+
+    %% Directorio de aliados y clientes (M-02/M-03)
+    Tenant "1" --> "0..*" Aliado
+    Tenant "1" --> "0..*" Cliente
+    Aliado "1" --> "0..*" DocumentoKYC : carga
+    Cliente "1" --> "0..*" Sitio : administra
+    Sitio "0..*" --> "1" Zona : ubicado en
+    Aliado "0..*" --> "0..*" CoberturaAliado
+    CoberturaAliado "0..*" --> "1" Zona : declara
+    Zona "0..1" --> "0..*" Zona : zona_padre
+
+    %% Catálogo y cobertura (M-04)
+    Tenant "1" --> "0..*" CategoriaServicio
+    Aliado "0..*" --> "0..*" AliadoCategoria
+    AliadoCategoria "0..*" --> "1" CategoriaServicio : atiende
+    CategoriaServicio "1" --> "0..*" TarifaReferencia
+
+    %% Ciclo del servicio (M-05..M-08)
+    Cliente "1" --> "0..*" Solicitud : crea
+    Sitio "1" --> "0..*" Solicitud
+    CategoriaServicio "1" --> "0..*" Solicitud
+    Zona "1" --> "0..*" Solicitud : snapshot
+    Aliado "0..1" --> "0..*" Solicitud : asignado a
+    Solicitud "1" --> "0..*" Cotizacion
+    Aliado "1" --> "0..*" Cotizacion : elabora
+    Solicitud "1" --> "0..*" EventoServicio
+    Usuario "1" --> "0..*" EventoServicio : actor
+    Solicitud "1" --> "0..2" Calificacion : cierre
+    Usuario "1" --> "0..*" Calificacion : autor
+
+    %% Comunicación (M-09)
+    Solicitud "1" --> "0..*" Mensaje
+    Usuario "1" --> "0..*" Mensaje : remitente
+    Usuario "1" --> "0..*" Notificacion : destinatario

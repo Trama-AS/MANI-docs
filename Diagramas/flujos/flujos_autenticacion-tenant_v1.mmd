@@ -1,0 +1,27 @@
+%% MANI — Secuencia: Resolución de tenant y autenticación
+%% Descrito en: Product/DD-MANI.md §6.3. Fuente: ADR-0018, ADR-0022, RNF-01.
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant App as Cliente Flutter
+    participant Auth as Supabase Auth
+    participant Backend as Backend Serverpod
+    participant DB as Supabase Postgres (RLS)
+
+    Note over Usuario,App: Fase 1 — Pre-autenticación (sin JWT todavía)
+    Usuario->>App: ingresa slug de tenant + credenciales
+    App->>Auth: POST /login (X-Tenant-Slug: "acme", email, password)
+    Auth->>DB: valida membresía activa del usuario en ese tenant
+    DB-->>Auth: OK
+    Auth-->>App: JWT firmado (app_metadata.tenant_id, app_metadata.rol)
+    App->>App: guarda JWT en flutter_secure_storage
+
+    Note over App,DB: Fase 2 — Peticiones autenticadas (RLS aplica)
+    App->>Backend: GET /solicitudes (Authorization: Bearer JWT)
+    Backend->>Backend: valida firma JWT contra clave pública de Supabase
+    Backend->>Backend: extrae tenant_id de app_metadata (nunca de un header editable)
+    Backend->>DB: SELECT ... (RLS compara auth.jwt()->tenant_id contra fila.tenant_id)
+    DB-->>Backend: solo filas del tenant del usuario
+    Backend-->>App: 200 OK
+
+    Note over App,Backend: Un intento de enviar otro tenant_id en el body es ignorado — el backend nunca lo lee de ahí (ADR-0018)

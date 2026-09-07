@@ -1,0 +1,30 @@
+%% MANI — Secuencia: Despacho de solicitud (broadcast + asignación atómica)
+%% Descrito en: Product/DD-MANI.md §6.1. Fuente: RF-12, RF-13, RF-14, RNF-05, ADR-0016.
+sequenceDiagram
+    autonumber
+    actor Cliente
+    participant Backend as Backend Serverpod
+    participant DB as Supabase Postgres (RLS)
+    participant RT as Supabase Realtime
+    actor AliadoA as Aliado A
+    actor AliadoB as Aliado B
+
+    Cliente->>Backend: POST /solicitudes (categoria, sitio)
+    Backend->>DB: SELECT Aliado WHERE zona_id = Sitio.zona_id AND categoria_id = :cat AND estado_verificacion = 'aprobado'
+    DB-->>Backend: lista de aliados válidos (RF-12, RF-13 orden por regla del tenant)
+    Backend->>DB: INSERT Solicitud (estado = 'pending', aliado_id = NULL, zona_id = snapshot)
+    Backend->>RT: broadcast(solicitud_id) a cada aliado válido
+    RT-->>AliadoA: notificación "nueva solicitud"
+    RT-->>AliadoB: notificación "nueva solicitud"
+
+    par Aceptación concurrente
+        AliadoA->>Backend: POST /solicitudes/:id/aceptar
+    and
+        AliadoB->>Backend: POST /solicitudes/:id/aceptar
+    end
+
+    Backend->>DB: UPDATE Solicitud SET estado='assigned', aliado_id=:actual WHERE id=:id AND estado='pending' AND aliado_id IS NULL
+    DB-->>Backend: 1 fila afectada (Aliado A) / 0 filas (Aliado B)
+    Backend-->>AliadoA: 200 OK — asignado
+    Backend-->>AliadoB: 409 Conflict — "ya no disponible"
+    Backend->>DB: INSERT EventoServicio (tipo_evento='asignado', actor_id=AliadoA)

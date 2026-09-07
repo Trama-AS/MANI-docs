@@ -1,0 +1,39 @@
+%% MANI — Secuencia: Cotización con bucle de ajuste
+%% Descrito en: Product/DD-MANI.md §6.2. Fuente: RF-15, RF-16, RF-17, ADR-0016 (asignación previa).
+sequenceDiagram
+    autonumber
+    actor Aliado
+    participant Backend as Backend Serverpod
+    participant DB as Supabase Postgres (RLS)
+    actor Cliente
+
+    Note over Aliado,Cliente: Precondición: Solicitud.estado = 'assigned' (ver flujos_despacho-solicitud_v1)
+
+    Aliado->>Backend: POST /solicitudes/:id/cotizaciones (mano_obra, materiales)
+    Backend->>DB: SELECT TarifaReferencia WHERE categoria_id = :cat
+    DB-->>Backend: valor_min, valor_tipico, valor_max
+    alt total fuera de rango
+        Backend-->>Aliado: 201 Created + alerta "fuera de rango" (RF-16)
+    else dentro de rango
+        Backend-->>Aliado: 201 Created
+    end
+    Backend->>DB: INSERT Cotizacion (version=1, estado='pendiente')
+
+    Backend-->>Cliente: notificación "cotización recibida"
+    Cliente->>Backend: GET /solicitudes/:id/cotizaciones/actual
+
+    alt Cliente acepta
+        Cliente->>Backend: POST /cotizaciones/:id/aceptar
+        Backend->>DB: UPDATE Cotizacion SET estado='aceptada'
+        Backend->>DB: INSERT EventoServicio (tipo_evento='cotizacion_aceptada')
+    else Cliente rechaza
+        Cliente->>Backend: POST /cotizaciones/:id/rechazar
+        Backend->>DB: UPDATE Cotizacion SET estado='rechazada'
+    else Cliente pide ajuste
+        Cliente->>Backend: POST /cotizaciones/:id/solicitar-ajuste (comentario)
+        Backend->>DB: UPDATE Cotizacion SET estado='ajuste_solicitado'
+        Backend-->>Aliado: notificación "ajuste solicitado"
+        Aliado->>Backend: POST /solicitudes/:id/cotizaciones (nueva versión)
+        Backend->>DB: INSERT Cotizacion (version=2, estado='pendiente')
+        Note over Aliado,Cliente: el bucle se repite hasta aceptar o rechazar
+    end

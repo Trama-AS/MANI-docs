@@ -1,4 +1,4 @@
-# ADR-0021: Consolidación del stack de backend distribuido y eliminación de Azure como proveedor de infraestructura (cierre de KI-02)
+# ADR-002: Consolidación del stack de backend distribuido y eliminación de Azure como proveedor de infraestructura (cierre de KI-02)
 
 - Fecha: 2026-09-03
 - Sprint: 1

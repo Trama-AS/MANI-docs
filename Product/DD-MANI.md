@@ -2,9 +2,9 @@
 
 **Empresa:** TRAMA · Ingeniería de Software
 **Producto:** MANI — plataforma multi-tenant de formalización de operaciones de servicio
-**Documento:** DD V3
+**Documento:** DD V4
 **Estado:** Borrador para revisión
-**Fecha de esta versión:** 2026-09-03
+**Fecha de esta versión:** 2026-09-16
 
 ## Historial de versiones
 
@@ -13,6 +13,7 @@
 | **V1** | Sprint 2, 2026-09-03 | Primera versión: vista de componentes, reglas de diseño, trazabilidad RF → entidad → ADR. Publicado junto con `Modelo_Datos_MANI.md`. |
 | **V2** | Sprint 2, 2026-09-03 | Fusión temporal con `Modelo_Datos_MANI.md`; revertida el mismo día a pedido del equipo. |
 | **V3** | Sprint 2, 2026-09-03 | Versión completa para Entrega 3: se agrega diseño de API por módulo (§5), 3 diagramas de secuencia de los flujos críticos (§6), manejo de errores e idempotencia (§7), diseño de seguridad con políticas RLS concretas (§8), vista de despliegue (§9) y trazabilidad hacia la estrategia de pruebas (§10). |
+| **V4** | Sprint 3, 2026-09-16 | Coherencia con `Modelo_Datos_MANI.md` V4: deja de referenciar el diagrama UML (eliminado) y pasa a referenciar el modelo relacional normalizado + diccionario de datos y el DDL físico (`Product/DDL_MANI.sql`). |
 
 ## Índice
 
@@ -40,12 +41,12 @@ de diseño, la seguridad y el despliegue que un desarrollador necesita para impl
 MVP (EP-01..EP-06). No repite decisiones ya tomadas en el SAD (`Product/SAD-MANI.md`) ni
 en los ADR — las referencia por código. Tampoco repite el detalle entidad por entidad del
 modelo de datos — eso vive en `Product/Modelo_Datos_MANI.md`, el único documento que
-muestra el diagrama UML y lo explica.
+define el modelo relacional normalizado y su diccionario de datos.
 
 - **No es** una especificación de qué debe hacer el sistema — eso vive en el SRS
   (`Product/SRS_MANI.md`).
 - **No es** el análisis de drivers/killers/trade-offs de alto nivel — eso vive en el SAD.
-- **No es** el catálogo de entidades ni la explicación del diagrama de clases — eso vive
+- **No es** el catálogo de entidades ni el diccionario de datos — eso vive
   en `Product/Modelo_Datos_MANI.md`.
 - **No es** un contrato OpenAPI ejecutable — el diseño de API de §5 es el contrato a
   nivel de recurso/verbo/rol, suficiente para implementar sin ambigüedad; el esquema
@@ -67,7 +68,7 @@ Este DD consume:
 - `Product/SRS_MANI.md` — RF-01..RF-23, RNF-01..RNF-11, REST-01..REST-05.
 - `Product/SAD-MANI.md` §7 — actores y capacidades de negocio (arquitectura de negocio).
 - `Product/SAD-MANI.md` §"Vista de Contenedores" — C4 Nivel 2, stack de cada contenedor.
-- `Product/Modelo_Datos_MANI.md` — las 18 entidades y su diagrama de clases UML.
+- `Product/Modelo_Datos_MANI.md` — el modelo relacional normalizado y el diccionario de datos.
 - ADR-0004 (pipeline CI/CD), ADR-0006 (observabilidad), ADR-0011 (cobertura), ADR-0012
   (backend/persistencia/RLS), ADR-0013 (storage KYC), ADR-0015 (pruebas de aislamiento),
   ADR-0016 (despacho), ADR-0017 (mensajería), ADR-0018 (identificación de tenant),
@@ -106,14 +107,15 @@ ratificados en el C4 de Nivel 2 (SAD "Vista de Contenedores") y en PROY-07:
 
 ## 4. Modelo de datos — remisión
 
-El modelo de datos lógico completo (18 entidades, diagrama de clases UML, cardinalidades
-justificadas, entidad por entidad) **no se repite en este DD**. Vive en un único
-documento: `Product/Modelo_Datos_MANI.md`, que muestra el diagrama de
-`Diagramas/Modelo-Datos/dd-modelo-datos_uml-clases-mani_v1.mmd` (+ `.png`) y lo explica.
+El modelo de datos lógico completo (modelo relacional normalizado, diccionario de datos,
+cardinalidades justificadas, entidad por entidad) **no se repite en este DD**. Vive en un
+único documento, sin diagrama: `Product/Modelo_Datos_MANI.md`. El modelo físico (DDL
+ejecutable) tampoco se repite aquí: vive en `Product/DDL_MANI.sql`, generado a partir de
+ese documento — es el mismo script que se aplica en `dev` y `qa` (§9).
 
 Regla de aislamiento que ese modelo implementa (RNF-01, ADR-0012, ADR-0018): toda entidad
 que representa un dato operativo de un tenant lleva una columna `tenant_id`, protegida por
-una política RLS. `Tenant` y `Zona` son la excepción (ver Modelo_Datos_MANI.md §4). Las
+una política RLS. `Tenant` y `Zona` son la excepción (ver Modelo_Datos_MANI.md §3). Las
 secciones siguientes de este DD (API, secuencias, seguridad) asumen ese modelo como dado.
 
 ## 5. Diseño de API por módulo
@@ -202,7 +204,7 @@ Implementa RF-15, RF-16 y RF-17.
 ![Secuencia — Cotización con ajuste](<../Diagramas/flujos/flujos_cotizacion-ajuste_v1.png>)
 
 Puntos de diseño: cada ajuste crea una **nueva versión** de `Cotizacion` en vez de
-mutar la existente (Modelo_Datos_MANI.md §2.4) — así el historial completo de
+mutar la existente (Modelo_Datos_MANI.md §3.4, patrón de versionado en §6.3) — así el historial completo de
 negociación queda disponible para auditoría (RNF-04) sin lógica adicional.
 
 ### 6.3 Resolución de tenant y autenticación
@@ -250,8 +252,8 @@ de fondo aunque el cliente no envíe la cabecera.
 
 ### 8.1 Aislamiento por RLS (RNF-01, ADR-0012, ADR-0018)
 
-Patrón aplicado a toda tabla tenant-scoped (`Product/Modelo_Datos_MANI.md` §"Cómo leer el
-diagrama"). Ejemplo concreto sobre `Solicitud`:
+Patrón aplicado a toda tabla tenant-scoped (`Product/Modelo_Datos_MANI.md` §3/§6.2).
+Ejemplo concreto sobre `Solicitud`:
 
 ```sql
 ALTER TABLE solicitud ENABLE ROW LEVEL SECURITY;
@@ -260,9 +262,9 @@ CREATE POLICY tenant_isolation_solicitud ON solicitud
   USING (tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid);
 ```
 
-El mismo patrón se repite en cada tabla listada en `Product/Modelo_Datos_MANI.md` §"Cómo
-leer el diagrama" salvo `Tenant` y `Zona`. Ningún endpoint de escritura de §5 acepta
-`tenant_id` en el body — se extrae siempre del JWT verificado server-side (§6.3).
+El mismo patrón se repite, literalmente, en cada tabla de `Product/DDL_MANI.sql` salvo
+`tenant` y `zona`. Ningún endpoint de escritura de §5 acepta `tenant_id` en el body — se
+extrae siempre del JWT verificado server-side (§6.3).
 
 ### 8.2 Aislamiento de documentos KYC (ADR-0013)
 
@@ -369,9 +371,11 @@ de diseño de §6-§8 es la que ese plan debe verificar:
 - **Contrato OpenAPI ejecutable:** §5 fija recurso/verbo/rol/RF; los esquemas JSON de
   request/response, códigos de error adicionales y versionado de API se generan en la
   fase de implementación.
-- **Modelo físico (DDL, índices, particionamiento):** este DD y `Modelo_Datos_MANI.md`
-  fijan el modelo lógico; el DDL ejecutable y las decisiones de indexación para RNF-07
-  (concurrencia) son responsabilidad de la fase de implementación y no se congelan aquí.
+- **Particionamiento y tuning fino de índices más allá de `tenant_id`:** el DDL ejecutable
+  (`Product/DDL_MANI.sql`) ya fija el modelo físico base — PK/FK, `CHECK`, RLS e índices
+  por `tenant_id` para RNF-07 (ver `Modelo_Datos_MANI.md` §9) — pero particionar tablas de
+  alto volumen o agregar índices compuestos específicos de una consulta queda para cuando
+  haya datos reales de producción que lo justifiquen.
 - **Modelo de dominio conceptual de negocio** (`Product/SAD-MANI.md` §7.6): ese diagrama
   es de nivel de negocio, sin tipos de dato ni claves; no se sustituye por este DD, que es
   el nivel técnico equivalente y coexiste con él.

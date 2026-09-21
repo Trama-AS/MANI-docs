@@ -341,6 +341,69 @@ ya) — eso sí requiere Mesa antes de Sprint 1.
 - Un fallo de CI en `develop` se atiende de inmediato (< 4 h) por el autor del último merge.
 - **Liberación a `main`:** la decide DevOps titular.
 
+### 2.3.1 Pruebas automatizadas en el pipeline (CFG-06)
+
+🔴 **PROPUESTA PARA EL EQUIPO (QA).** Redactada por Santiago Hernández (QA) a partir de
+CFG-06. La sección 2 es responsabilidad de Daniel Ávila (DevOps titular), y la configuración
+de repositorio y CI/CD la decide él (§1.1.3), así que esta subsección se ratifica en
+retrospectiva antes de exigirse (§0, regla 3).
+
+**Qué ejecuta el pipeline.** Cada rama de larga vida tiene su propio workflow en
+`.github/workflows/ci.yml`, y los tres declaran el mismo job, **`Flutter Lint, Test & Build
+Check`**:
+
+| Rama | Workflow |
+| --- | --- |
+| `develop` | `CI - Develop Pull Request Validation` |
+| `release` | `CI - Release & Staging Validation` |
+| `main` | `CI - Production Validation (main)` |
+
+El job corre en orden: verificación de formato (`dart format --set-exit-if-changed`),
+análisis estático (`flutter analyze`), pruebas unitarias y de widget con cobertura
+(`flutter test --coverage`), pruebas de integración (`flutter test test/integration`) y
+verificación de build.
+
+**Estado de implementación al 2026-09-21.** El paso de pruebas de integración está activo en
+`develop` desde el PR #4 del repositorio `MANI-Flutter` y se ejecuta en verde. `release` y
+`main` lo reciben por promoción (`develop → release → main`, ADR-0004); no se agrega por
+separado en cada rama.
+
+**Reglas:**
+
+1. **El pipeline falla si falla una prueba.** Ningún paso de pruebas puede llevar
+   `continue-on-error`, `|| true` ni `if: always()`. Una prueba roja marca el job como
+   *failed*. No existe excepción por urgencia: un pipeline rojo no se ignora, se arregla o se
+   revierte.
+2. **Cobertura mínima de integración.** El pipeline mantiene al menos una prueba de
+   integración sobre el flujo de asignación (RF-14): una solicitud se asigna a exactamente un
+   aliado y las aceptaciones concurrentes restantes reciben `ya_no_disponible`
+   (DD-MANI.md §7.1, ADR-0016, RNF-05).
+3. **El check es obligatorio para mergear.** El ruleset de cada rama de larga vida exige
+   `Flutter Lint, Test & Build Check` en verde antes de integrar, con *strict required status
+   checks* (la rama debe estar actualizada con su destino). Deshabilitar o saltar el check es
+   decisión del DevOps titular y se registra como excepción explícita (§0, regla 2).
+4. **Una prueba no se borra ni se deshabilita para poner el pipeline en verde.** Si una
+   prueba estorba, se corrige el código o se cambia la prueba con justificación en el PR;
+   comentarla o eliminarla sin acuerdo es una excepción que exige registro.
+5. **Responsables.** DevOps titular mantiene los workflows y los rulesets. QA define y
+   mantiene los casos de prueba y verifica el gate al menos una vez por sprint, forzando un
+   fallo deliberado en un PR de prueba y confirmando que bloquea el merge.
+6. **Evidencia.** El enlace al run de CI se adjunta en el PR y se vincula en Jira como
+   evidencia de DoD (§2.8, técnicos).
+
+🔴 **Brechas conocidas, verificadas el 2026-09-21.** Se listan porque la regla 3 todavía no es
+exigible tal como está escrita:
+
+- El único ruleset del repositorio aplica a `main`. `develop` y `release` figuran como
+  `protected: false`, de modo que un check rojo no impide integrar en la rama de integración.
+- Ningún ruleset incluye la regla `pull_request`, así que la exigencia de §2.3 —PR aprobado y
+  al menos una revisión de otro integrante— no está forzada por la herramienta.
+- Las Environment Protection Rules que ADR-0004 exige para promover a Testing y Producción no
+  están creadas: el repositorio no tiene *environments* configurados.
+
+Cerrar estas tres brechas corresponde al DevOps titular y es requisito para que esta
+subsección pase de propuesta a norma vigente.
+
 ## 2.4 Security Testing, dependencias y gestión de secretos
 
 El enfoque del proyecto es **DevSecOps** y QA incluye Security Testing, pero **no hay

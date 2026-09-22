@@ -23,7 +23,7 @@ respecto de `Product/DDL_MANI.sql` de MANI-docs.
 | --- | --- | --- |
 | `solicitud.aliado_id` | `uuid`, NULLABLE | El `WHERE ... AND aliado_id IS NULL` es valido |
 | `solicitud.estado` | `text`, NOT NULL | El `WHERE estado = 'pending'` es valido |
-| GRANTs a `authenticated` | SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER | k6 puede ejecutar la RPC via PostgREST |
+| GRANTs a `authenticated` | SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER | La tabla tiene los permisos que necesitara la RPC. El acceso a la RPC en si es privilegio aparte (`EXECUTE` sobre la funcion) y lo verifica SCRUM-960 |
 | `USAGE` sobre `public` | `anon` y `authenticated`: true | La API alcanza el esquema |
 | RLS sobre `solicitud` | `relrowsecurity = true`, `relforcerowsecurity = false` | Aisla por tenant; `postgres`/`service_role` bypassan (por eso el harness usa JWT de aliado, nunca la service key) |
 | Politica `tenant_isolation_solicitud` | `cmd = ALL`, `with_check = NULL` | **No bloquea el UPDATE**: con `ALL`, Postgres reutiliza la expresion `USING` como `WITH CHECK`. El UPDATE no toca `tenant_id`, asi que la fila resultante sigue cumpliendo |
@@ -49,10 +49,22 @@ las N peticiones, el resultado sera "1 exito" sin que haya existido concurrencia
 60 conexiones de motor y el pool propio de PostgREST por debajo de eso, N=200 no produce
 200 transacciones solapadas.
 
-Mitigacion obligatoria en la Fase 3, **no opcional**: control negativo con una variante de
-la RPC sin el predicado `estado = 'pending'`, que DEBE producir dobles asignaciones. Si el
-control negativo tambien da 1 exito, el harness no esta midiendo concurrencia y el verde
-del caso principal no vale.
+Mitigacion obligatoria en la Fase 3, **no opcional**: un control negativo que DEBE producir
+dobles asignaciones. Si tambien da 1 exito, el harness no esta midiendo concurrencia y el
+verde del caso principal no vale.
+
+El control negativo tiene que separar la comprobacion de la escritura —leer que la
+solicitud este `pending`, esperar, y actualizar SIN condicion— reproduciendo la ventana
+check-then-act. No basta con quitarle al `UPDATE` el predicado `estado = 'pending'`: el
+`WHERE` lleva dos guardas y la otra, `aliado_id IS NULL`, sigue excluyendo sola. En
+`READ COMMITTED` la segunda transaccion espera a la primera y re-evalua el `WHERE` contra
+la version ya comprometida (EvalPlanQual); ve `aliado_id` no nulo y afecta 0 filas. Daria
+1 exito con o sin concurrencia real, que es exactamente lo que el control debia descartar.
+
+Ademas, las dobles asignaciones no se pueden contar sobre `solicitud`: hay una sola fila,
+y si dos aliados ganan el segundo pisa al primero y el estado final es indistinguible del
+caso correcto. Hace falta una bitacora append-only donde la RPC registre cada asignacion
+exitosa; dos filas para la misma solicitud y corrida son la prueba del fallo.
 
 ## Derivas frente a `Product/DDL_MANI.sql`
 

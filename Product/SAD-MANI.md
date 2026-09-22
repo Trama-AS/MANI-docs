@@ -126,7 +126,7 @@
 | KI-09 | Sin resolver — Análisis de Requerimientos §7 no fija cifra |
 | KI-10 | Abierto — requiere sesión formal de la Mesa |
 | KI-11 | Resuelto — KI-02 cerrado por ADR-0021: Java/.NET preservados, ADR-0006 conserva destinatario técnico |
-| KI-12 | No resuelto — pendiente definición del cliente sobre el modelo de custodia a usar (ver ADR-0025) |
+| KI-12 | Resuelto — cliente confirmó modelo híbrido con PSP regulado (ver ADR-0026) |
 
 ---
 

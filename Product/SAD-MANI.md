@@ -100,7 +100,7 @@
 | ID | Descripción |
 |---|---|
 | KI-01 | El backend propuesto originalmente (MongoDB) no soporta RLS, quedando incompatible con DR-01 |
-| KI-03 | **Resuelto el "si": Kubernetes se adopta** — es requisito curricular no negociable (PROY-08) y no tiene costo de licencia (software open source; ver SRS_MANI.md §1.4). Lo único abierto es el "cómo": dónde y con qué nodos corre el clúster (ya no ligado a Azure/AKS, retirado por ADR-0021) |
+| KI-03 | **Resuelto el "si": Kubernetes se adopta** — es requisito curricular no negociable (PROY-08) y no tiene costo de licencia (software open source; ver SRS_MANI.md §1.4). Lo único abierto es el "cómo": dónde y con qué nodos corre el clúster (ya no ligado a Azure/AKS, retirado por ADR-0023) |
 | KI-04 | Sin automatización, un cambio que rompa el aislamiento puede llegar a producción sin detectarse, alguien puede pasar devops a main sin revision |
 | KI-05 | La ruta tenant_id/aliado_id/archivo no tiene límite físico de respaldo como un bucket separado. Hacer bien las conexiones entre repositorios "Clean Arqui" para hacer el llamado correcto |
 | KI-06 | Condiciona si el aislamiento lógico por RLS sobre esquema compartido basta a futuro, o si hará falta separar por base/esquema |
@@ -123,7 +123,7 @@
 | KI-08 | Degrada a nivel ciudad si no existe (ADR-0011) |
 | KI-09 | Sin resolver — Análisis de Requerimientos §7 no fija cifra |
 | KI-10 | Abierto — requiere sesión formal de la Mesa |
-| KI-11 | Resuelto — KI-02 cerrado por ADR-0021: Java/.NET preservados, ADR-0006 conserva destinatario técnico |
+| KI-11 | Resuelto — KI-02 cerrado por ADR-0023: Java/.NET preservados, ADR-0006 conserva destinatario técnico |
 
 ---
 
@@ -131,9 +131,20 @@
 
 **ADR Consolidados**
 
-*Los 15 ADR originales del repositorio Trama-AS/MANI-docs (no existe ADR-0014), más
-ADR-0021 (2026-09-03), que cierra el hallazgo transversal KI-02 sin reemplazar ninguno de
-los cuatro ADR que aclara.*
+*Los 24 ADR de la carpeta `ADR/` del repositorio Trama-AS/MANI-docs, consolidados en
+DOC-14 (2026-09-22). La versión anterior de esta sección listaba 16 y afirmaba que no
+existía ADR-0014: sí existe. Se incorporan aquí ADR-0014, ADR-0018 y los seis ADR nuevos
+del Sprint 2 (ADR-0019 a ADR-0024).*
+
+🔴 **Colisión de numeración pendiente de ratificar.** La carpeta tiene dos documentos que
+han sido llamados "ADR-0021": `ADR-0021-exclusion-concurrente-despacho.md` (mecanismo de
+exclusión concurrente, SP-04.1.2) y la consolidación del stack sin Azure, cuyo archivo es
+`ADR-0023-consolidacion-stack-backend-sin-azure.md` pero cuyo título interno dice
+"ADR-002". El README también usa "ADR-0021" para referirse al stack sin Azure. Esta sección
+adopta la numeración de los **nombres de archivo** (0021 = exclusión concurrente, 0023 =
+stack sin Azure) y corrige las referencias del propio SAD en consecuencia. La Mesa debe
+ratificar esa lectura; el banner de `ADR-0021-exclusion-concurrente-despacho.md` lo pide
+explícitamente.
 
 Cada ADR se presenta como una tabla de 2 columnas (Campo / Valor) en vez de una fila de
 una tabla ancha, para mantener legible el resumen y el detalle a la vez.
@@ -175,34 +186,34 @@ una tabla ancha, para mantener legible el resumen y el detalle a la vez.
 
 | Campo | Valor |
 |---|---|
-| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 (Azure reemplazado por Docker Hub + Railway) |
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0023 (Azure reemplazado por Docker Hub + Railway) |
 | Decisión (resumen) | GitHub Actions + Webhooks Jira↔GitHub + promoción de contenedores, sobre 3 repos (Flutter/Java/.NET) + backend Serverpod |
 | Alternativas descartadas | Monorepositorio; Jenkins auto-hospedado |
 | Objetivo de Diseño | DR-08 |
 | AC / Escenario | — |
-| Trade-off | Cierra KI-02 vía ADR-0021 (coexistencia, no reemplazo) |
+| Trade-off | Cierra KI-02 vía ADR-0023 (coexistencia, no reemplazo) |
 
 **ADR-0005 — DevSecOps: SAST + DAST**
 
 | Campo | Valor |
 |---|---|
-| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 |
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0023 |
 | Decisión (resumen) | SonarQube (SAST) + OWASP ZAP (DAST) en GitHub Actions, sobre Flutter/Java/.NET y backend Serverpod |
 | Alternativas descartadas | Revisión manual; plataformas comerciales unificadas |
 | Objetivo de Diseño | DR-07 |
 | AC / Escenario | — |
-| Trade-off | Cierra KI-02 vía ADR-0021 (coexistencia, no reemplazo) |
+| Trade-off | Cierra KI-02 vía ADR-0023 (coexistencia, no reemplazo) |
 
 **ADR-0006 — Observabilidad**
 
 | Campo | Valor |
 |---|---|
-| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 (Azure reemplazado por Docker Hub + Railway) |
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0023 (Azure reemplazado por Docker Hub + Railway) |
 | Decisión (resumen) | Prometheus + Grafana + Datadog, instrumentando Java Spring/.NET (y backend Serverpod si aplica) |
 | Alternativas descartadas | Stack ELK auto-alojado; Azure Monitor/App Insights exclusivo |
 | Objetivo de Diseño | KI-11 |
 | AC / Escenario | AC-11 / QS-18 |
-| Trade-off | TO-04 · KI-11 resuelto (Java/.NET preservados, ver ADR-0021) |
+| Trade-off | TO-04 · KI-11 resuelto (Java/.NET preservados, ver ADR-0023) |
 
 **ADR-0007 — Documentación en el repositorio**
 
@@ -263,12 +274,12 @@ una tabla ancha, para mantener legible el resumen y el detalle a la vez.
 
 | Campo | Valor |
 |---|---|
-| Estado | 🟢 Aceptado, alcance aclarado por ADR-0021 |
+| Estado | 🟢 Aceptado, alcance aclarado por ADR-0023 |
 | Decisión (resumen) | Serverpod (Dart) + Supabase (PostgreSQL) + RLS nativo — capa de persistencia/identidad, coexiste con Java (Repo B) y .NET (Repo C) |
 | Alternativas descartadas | NestJS+MongoDB; BaaS puro; filtrado manual sin RLS; base/esquema separado por tenant |
 | Objetivo de Diseño | DR-01 |
 | AC / Escenario | AC-01, AC-02 / QS-02 |
-| Trade-off | TO-01, TO-02, TO-06 · resuelve KI-01 · KI-02 cerrado (ADR-0021) · abre KI-06 |
+| Trade-off | TO-01, TO-02, TO-06 · resuelve KI-01 · KI-02 cerrado (ADR-0023) · abre KI-06 |
 
 **ADR-0013 — Almacenamiento de documentos KYC**
 
@@ -280,6 +291,17 @@ una tabla ancha, para mantener legible el resumen y el detalle a la vez.
 | Objetivo de Diseño | DR-05, DR-01 |
 | AC / Escenario | AC-01 / QS-04 |
 | Trade-off | KI-05 |
+
+**ADR-0014 — Adopción del patrón Feature Toggle**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto |
+| Decisión (resumen) | Feature toggles para desacoplar el despliegue del código de la activación de la funcionalidad, por tenant y sin nuevo despliegue |
+| Alternativas descartadas | Feature branching de larga duración; despliegue coordinado sin toggles |
+| Objetivo de Diseño | DR-14 (RNF-02) |
+| AC / Escenario | AC-07 / QS-07 |
+| Trade-off | TO-02, TO-05 · deuda de ciclo de vida de los toggles |
 
 **ADR-0015 — Estrategia de pruebas de aislamiento multi-tenant**
 
@@ -301,7 +323,7 @@ una tabla ancha, para mantener legible el resumen y el detalle a la vez.
 | Alternativas descartadas | Despacho secuencial según orden de RF-13 |
 | Objetivo de Diseño | DR-04 |
 | AC / Escenario | AC-04 / QS-09 |
-| Trade-off | TO-03 · pendiente en KI-10 |
+| Trade-off | TO-03 · pendiente en KI-10 · el mecanismo de exclusión que activó (SP-04.1.2) está formalizado en ADR-0021 y validado por PoC-001 |
 
 **ADR-0017 — Mensajería y notificaciones en tiempo real**
 
@@ -314,24 +336,101 @@ una tabla ancha, para mantener legible el resumen y el detalle a la vez.
 | AC / Escenario | AC-13 / QS-14 |
 | Trade-off | TO-06 · pendiente en KI-10 |
 
-**ADR-0021 — Consolidación del stack de backend distribuido y eliminación de Azure (cierre de KI-02)**
+**ADR-0018 — Identificación y propagación de tenant en peticiones**
 
 | Campo | Valor |
 |---|---|
 | Estado | 🟢 Aceptado |
+| Decisión (resumen) | Fuente única de verdad del tenant = claim `app_metadata.tenant_id` del JWT firmado por Supabase Auth; cabecera `X-Tenant-Slug` solo en pre-autenticación; *token relay* entre microservicios |
+| Alternativas descartadas | Subdominio por tenant (costo DNS/TLS y fricción en la app móvil única); cabecera `X-Tenant-ID` como mecanismo primario (*tenant spoofing* trivial) |
+| Objetivo de Diseño | DR-01 (RNF-01) |
+| AC / Escenario | AC-01, AC-16 / QS-01, QS-02 |
+| Trade-off | TO-10 · habilita el predicado RLS de ADR-0012 |
+
+**ADR-0019 — Estilo macroarquitectónico distribuido orientado a servicios multi-tenant**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Estilo distribuido orientado a servicios desacoplados: cliente Flutter + microservicios backend independientes + capa de persistencia multi-tenant sobre Supabase/PostgreSQL |
+| Alternativas descartadas | Monolito modular (viola el *killer* contractual); microservicios sobre Kubernetes gestionado en la nube (*killer* financiero); *serverless* puro / BaaS exclusivo (*vendor lock-in*) |
+| Objetivo de Diseño | DR-01, DR-14 · *killer* arquitectónico contractual |
+| AC / Escenario | AC-12 (sin QS propio — ver §6, nota de Tabla A) |
+| Trade-off | **TO-09** · sobrecarga de red, consistencia y trazabilidad distribuida |
+
+**ADR-0020 — Herramientas de documentación visual y presentaciones**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado |
+| Decisión (resumen) | Canva (presentaciones ejecutivas), Figma (UI/UX), Excalidraw (bocetos de mesa técnica) y Draw.io (diagramación técnica formal) |
+| Alternativas descartadas | Unificar en Lucidchart/draw.io de pago (tope de 60 objetos en capa gratuita); generación automática por IA (artefactos rígidos, sin edición fina); diagramar en Canva o Paint (sin notación C4/UML) |
+| Objetivo de Diseño | DR-11 |
+| AC / Escenario | — |
+| Trade-off | **TO-12** · fragmentación en plataformas externas, exportación manual |
+
+**ADR-0021 — Mecanismo de exclusión concurrente en el despacho (SP-04.1.2)**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto — con validación empírica completa, pendiente solo de aprobación colegiada, rotación de autoría (ADR-0003) y revisor |
+| Decisión (resumen) | `UPDATE` condicional sobre la solicitud (`status = 'pending' AND aliado_id IS NULL`) como único mecanismo de exclusión concurrente, sin bloqueo pesimista ni cola de reintento en este incremento |
+| Alternativas descartadas | Bloqueo pesimista `SELECT ... FOR UPDATE` (contención bajo aceptaciones simultáneas); cola de mensajes con reintento (infraestructura nueva sin driver que la justifique hoy) |
+| Objetivo de Diseño | DR-16 (RNF-05), DR-15 (RNF-03) |
+| AC / Escenario | AC-04, AC-05 / QS-09 |
+| Trade-off | **TO-03** — único trade-off del SAD con evidencia empírica: PoC-001 (SCRUM-926) |
+
+**ADR-0022 — Supabase Auth como proveedor de identidad multi-tenant**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado — 🔴 sin revisor asignado (incumple Gobierno del Equipo §2.6, punto 7) |
+| Decisión (resumen) | Supabase Auth como IdP para login, registro y acceso de Clientes, Aliados y Backoffice |
+| Alternativas descartadas | Auth0/Okta (precio de Organizations fuera de la capa gratuita); Firebase Authentication (Custom Claims + Cloud Functions, acoplamiento a GCP) |
+| Objetivo de Diseño | DR-03 (RNF-01) |
+| AC / Escenario | AC-16 / QS-01 |
+| Trade-off | **TO-10** · *vendor lock-in* moderado sobre la integración Auth↔Database |
+
+**ADR-0023 — Consolidación del stack de backend distribuido y eliminación de Azure (cierre de KI-02)**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aceptado — 🔴 el título interno del archivo dice "ADR-002"; corregir al ratificar la numeración |
 | Decisión (resumen) | Java (Repo B), .NET (Repo C) y el backend Serverpod/Supabase de ADR-0012 **coexisten** como módulos distintos (reglas de negocio, transaccional de alta concurrencia, y persistencia/identidad, respectivamente); se elimina Microsoft Azure como proveedor de infraestructura, migrando a Docker Hub + Railway |
 | Alternativas descartadas | Mantener la contradicción sin trazar; declarar ADR-0012 reemplazo total de Java/.NET; mantener Azure como proveedor |
 | Objetivo de Diseño | Cierra KI-02 |
 | AC / Escenario | — |
-| Trade-off | Migración de registro de contenedores (.NET) de Azure Container Registry a Docker Hub; Railway con menor techo de escala que Azure |
+| Trade-off | **TO-11** · migración del registro de contenedores (.NET) de Azure Container Registry a Docker Hub; Railway con menor techo de escala que Azure |
+
+**ADR-0024 — Framework de modelado arquitectónico**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟢 Aprobado — 🔴 sin revisor asignado (incumple Gobierno del Equipo §2.6, punto 7) |
+| Decisión (resumen) | Framework híbrido: C4 para arquitectura de software, UML para bajo nivel, BPMN (en Miro) para procesos de negocio y MER para el modelo relacional |
+| Alternativas descartadas | Modelo 4+1 / UML estricto (diagramas monolíticos, ilegibles para perfiles de negocio); solo C4 (insuficiente para procesos de negocio y base de datos) |
+| Objetivo de Diseño | DR-11 |
+| AC / Escenario | — |
+| Trade-off | **TO-12** · documentación fragmentada entre herramientas, exige disciplina de sincronización |
 
 ✅ **KI-02 — resuelto (2026-09-03).** ADR-0004/0005/0006 (Java/.NET, CI/CD/DevSecOps/
 Observabilidad) y ADR-0012 (Dart/Serverpod/Supabase) **no son mutuamente excluyentes**: la
 contradicción real estaba en el proveedor de infraestructura (Azure, fijado por ADR-0004/0006),
-no en el lenguaje de backend. ADR-0021 lo aclara explícitamente sin declarar `supersedes` sobre
-ninguno de los cuatro: Java, .NET y Serverpod/Dart gobiernan módulos distintos de la
+no en el lenguaje de backend. **ADR-0023** lo aclara explícitamente sin declarar `supersedes`
+sobre ninguno de los cuatro: Java, .NET y Serverpod/Dart gobiernan módulos distintos de la
 arquitectura y coexisten; solo la porción de infraestructura Azure de ADR-0004/0006 queda
 reemplazada (Docker Hub + Railway). Ver la nota de alcance agregada en ADR-0005 y ADR-0012.
+
+📌 **Cobertura de esta sección tras DOC-14.** 24 de 24 ADR de la carpeta están listados.
+Estados: 18 Aceptados/Aprobados, 6 Propuestos (ADR-0013, ADR-0014, ADR-0015, ADR-0016,
+ADR-0017, ADR-0021 — este último ya con evidencia empírica). Pendientes de gobernanza:
+ADR-0022 y ADR-0024 sin revisor, ADR-0016 y ADR-0017 incompletos (KI-10), ADR-0021 sin
+rotación de autoría ni revisor, ADR-0023 con el título interno mal numerado.
+
+🔴 **Discrepancia con el README.** La tabla del README marca ADR-0014 y ADR-0015 como
+"Aceptado"; los archivos de ambos dicen "Propuesto". Esta sección refleja el estado del
+archivo, que es la fuente normativa según Gobierno del Equipo §2.6. Corregir el README al
+ratificar la numeración.
 
 ---
 
@@ -883,8 +982,8 @@ Cotización, Evento, Calificación, Tarifa, con las cardinalidades listadas arri
 | Catálogo y cobertura | Backend / catálogo de zonas en base de datos | ADR-0011 |
 | Despacho de solicitudes | Backend Serverpod (UPDATE condicional atómico) | ADR-0016 |
 | Mensajería y notificaciones | Supabase Realtime + FCM/APNs | ADR-0017 |
-| Reglas de negocio empresariales | Repo B — microservicio Java | ADR-0004, ADR-0019, ADR-0021 |
-| Transaccional de alta concurrencia | Repo C — microservicio .NET | ADR-0004, ADR-0019, ADR-0021 |
+| Reglas de negocio empresariales | Repo B — microservicio Java | ADR-0004, ADR-0019, ADR-0023 |
+| Transaccional de alta concurrencia | Repo C — microservicio .NET | ADR-0004, ADR-0019, ADR-0023 |
 
 ---
 ## 7. Vista de Contenedores

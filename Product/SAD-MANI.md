@@ -94,6 +94,7 @@
 | KI-09 | Volumen concurrente de búsqueda + mensajería sin cifra conocida | Rendimiento |
 | KI-10 | ADR-0016/0017 incompletos (Redactor, Disenso, Quórum [completar]) | Gobernanza |
 | KI-11 | Observabilidad instrumentada sobre Java Spring/.NET, en riesgo si prevalece Dart/Serverpod | Mantenibilidad |
+| KI-12 | Modelo de custodia de pagos en EP-07 sin definir | Riesgo regulatorio |
 
 **Tabla B — Descripción del riesgo**
 
@@ -109,6 +110,7 @@
 | KI-09 | RNF-07 señalado como riesgo crítico en el SRS pese a prioridad Media, sin volumen definido para fijar umbrales |
 | KI-10 | No cumplen el checklist de cierre del Gobierno del Equipo §2.6, pese a que ya se están usando como base de diseño |
 | KI-11 | La instrumentación completa (ADR-0006) quedaría sin destinatario técnico si KI-02 se resolviera eliminando Java/.NET |
+|KI-12 | El diseño de escrow (retención de dinero en garantía) podría requerir autorización regulatoria si MANI retiene los fondos directamente, dependiendo del modelo de negocio. No se ha definido si se usará un proveedor de pagos (PSP) regulado como intermediario |
 
 **Tabla C — Mitigación / estado**
 
@@ -124,6 +126,7 @@
 | KI-09 | Sin resolver — Análisis de Requerimientos §7 no fija cifra |
 | KI-10 | Abierto — requiere sesión formal de la Mesa |
 | KI-11 | Resuelto — KI-02 cerrado por ADR-0021: Java/.NET preservados, ADR-0006 conserva destinatario técnico |
+| KI-12 | Resuelto — cliente confirmó modelo híbrido con PSP regulado (ver ADR-0026) |
 
 ---
 

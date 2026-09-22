@@ -644,7 +644,9 @@ de una tabla de 13 columnas, para que Source/Stimulus/Response se puedan leer co
 
 **Trade-offs Explícitos**
 
-*Tensiones documentadas entre escenarios de calidad y la decisión tomada o propuesta*
+*Tensiones documentadas entre escenarios de calidad y la decisión tomada o propuesta.
+Actualizado en DOC-14 (2026-09-22): cada trade-off declara ahora el nivel de evidencia que
+respalda su decisión y el spike que la produce cuando esa evidencia no existe.*
 
 **Tabla A — Escenarios en tensión**
 
@@ -658,6 +660,16 @@ de una tabla de 13 columnas, para que Source/Stimulus/Response se puedan leer co
 | TO-06 | QS-02 (Confidencialidad) vs. QS-14 (Interoperabilidad, mensajería) |
 | TO-07 | QS-07 (Adaptabilidad) vs. QS-19 (Aprendizaje) |
 | TO-08 | QS-17 (Verificabilidad) vs. QS-08 (Capacidad) |
+| TO-09 | QS-08 (Capacidad, latencia extremo a extremo) vs. AC-12 (Modularidad, despliegue independiente — sin QS propio) |
+| TO-10 | QS-01/QS-02 (Autenticación y confidencialidad) vs. AC-14 (Portabilidad — sin QS propio) |
+| TO-11 | QS-16 (Disponibilidad) vs. restricción financiera del proyecto (KI-03) |
+| TO-12 | QS-18 (Analizabilidad de la documentación) vs. DR-11 (gestión documental centralizada) |
+
+> TO-09 a TO-12 se incorporan en DOC-14. No son tensiones nuevas del sistema: estaban ya
+> declaradas en prosa dentro de los ADR del Sprint 2 (ADR-0019, ADR-0020, ADR-0022,
+> ADR-0023, ADR-0024) sin haber llegado a esta sección. TO-09 y TO-10 se tensionan contra
+> AC-12 y AC-14, atributos de calidad que hoy no tienen escenario propio en §5 — queda
+> declarado como hueco de cobertura para la Mesa.
 
 **Tabla B — Naturaleza de la tensión**
 
@@ -671,6 +683,10 @@ de una tabla de 13 columnas, para que Source/Stimulus/Response se puedan leer co
 | TO-06 | Reutilizar RLS como mecanismo de autorización de canal en mensajería (ADR-0017) acopla la seguridad del canal en tiempo real a la misma política que protege los datos |
 | TO-07 | Mientras más configurable es la plataforma para el Admin. tenant, más superficie de interfaz debe aprender un usuario no técnico |
 | TO-08 | Ejecutar 6+ casos de prueba en cada PR que toque auth/RLS/esquema añade tiempo al pipeline de CI, no al sistema en producción |
+| TO-09 | El estilo distribuido de ADR-0019 permite desplegar y escalar cada módulo por separado, a costa de un salto de red HTTP/REST en cada frontera de servicio y de la necesidad de reconstruir flujos que cruzan tres repositorios |
+| TO-10 | La integración Auth↔Database de Supabase es lo que hace posible que RLS resuelva el aislamiento en el motor (ADR-0012, ADR-0018); esa misma integración es lo que ata el proyecto al proveedor |
+| TO-11 | Railway se eligió por no tener costo fijo de infraestructura (ADR-0023), pero su techo de recursos es menor que el del proveedor que reemplaza, y sobre él corre además la instrumentación de ADR-0006 |
+| TO-12 | Usar la herramienta óptima para cada audiencia (ADR-0020, ADR-0024) maximiza la claridad de cada artefacto y dispersa la documentación en seis plataformas externas que solo la disciplina manual mantiene sincronizadas |
 
 **Tabla C — Decisión tomada / propuesta**
 
@@ -678,12 +694,43 @@ de una tabla de 13 columnas, para que Source/Stimulus/Response se puedan leer co
 |---|---|
 | TO-01 | Se acepta el costo de RLS porque DR-01 es innegociable (Crítica); si QS-08 se degrada, la mitigación es indexación y no relajar RLS (ADR-0012) |
 | TO-02 | La configurabilidad (QS-07) debe validarse contra la misma suite de QS-17 antes de habilitarse — no se resuelve, se declara como requisito cruzado |
-| TO-03 | Aceptado — no hay cola de reintento diseñada todavía; queda como deuda técnica declarada (ver KI-06) |
+| TO-03 | Aceptado y **validado empíricamente**: el mecanismo cumple su métrica (PoC-001). La ausencia de cola de reintento sigue siendo deuda técnica declarada, ahora formalizada en ADR-0021 y no solo en KI-06 |
 | TO-04 | Aceptado como costo operativo; ADR-0006 lo reconoce explícitamente como desventaja de la opción elegida |
 | TO-05 | Se declara que la suite de QS-17 debe crecer junto con cada nueva regla configurable — no queda como pendiente, es una regla del proceso |
-| TO-06 | Aceptado deliberadamente porque evita duplicar lógica de autorización (ADR-0017), a cambio de concentrar el riesgo en un solo mecanismo |
-| TO-07 | Sin decisión tomada — se deja como tensión abierta para que la Mesa la resuelva junto con el diseño de UX |
+| TO-06 | Aceptado deliberadamente porque evita duplicar lógica de autorización (ADR-0017), a cambio de concentrar el riesgo en un solo mecanismo. ⚠️ El hallazgo H-02 de PoC-001 muestra que la política vigente no restringe el rol que opera sobre `solicitud`: el riesgo concentrado ya se materializó en la capa de datos |
+| TO-07 | Sin decisión tomada — se deja como tensión abierta para que la Mesa la resuelva junto con el diseño de UX. **Único trade-off del SAD sin ADR asociado** |
 | TO-08 | Aceptado — el costo se paga en CI, no en producción; ADR-0015 no lo considera bloqueante |
+| TO-09 | Aceptado por obligación: la arquitectura distribuida es un *killer* contractual no negociable (ADR-0019). Lo gobernable no es el "si" sino el costo, que hoy no está medido |
+| TO-10 | Aceptado conscientemente en ADR-0022 ("acoplamiento moderado") a cambio de velocidad de desarrollo. Sin estimación del costo de salida |
+| TO-11 | Aceptado en ADR-0023 como consecuencia directa del *killer* financiero (KI-03). El techo del sustituto no está caracterizado |
+| TO-12 | Aceptado en ADR-0020 y ADR-0024 por separado, con la disciplina manual de exportación como única mitigación. Ningún control automático lo verifica |
+
+**Tabla D — Evidencia que respalda la decisión** *(nueva en DOC-14)*
+
+Niveles: **Empírica** = medición reproducible con umbral y control · **Documental** =
+razonamiento trazado a un requisito o restricción verificable, sin medición · **Ninguna** =
+la decisión se sostiene solo en criterio de la Mesa.
+
+| ID | Nivel | Evidencia citada | Spike que la produce |
+|---|---|---|---|
+| TO-01 | Ninguna | — | [SP-TO-01](../Entregas/Spikes/SP-TO-01-overhead-rls-busqueda.md) |
+| TO-02 | Ninguna | — | [SP-TO-02](../Entregas/Spikes/SP-TO-02-combinatoria-configuracion-aislamiento.md) |
+| TO-03 | **Empírica** | [PoC-001](../Entregas/PoC/PoC-001-exclusion-concurrente-aceptacion.md) (SCRUM-926, 2026-09-21): 1 asignación de 50 aceptaciones simultáneas, 0 dobles, contra un control negativo que bajo idéntica carga produjo 10 asignaciones en 136 ms | [SP-TO-03](../Entregas/Spikes/SP-TO-03-saturacion-y-cola-de-reintento.md) — solo el residual: saturación sostenida y caída de base |
+| TO-04 | Ninguna | — | [SP-TO-04](../Entregas/Spikes/SP-TO-04-huella-agentes-observabilidad.md) |
+| TO-05 | Ninguna | — | [SP-TO-05](../Entregas/Spikes/SP-TO-05-crecimiento-suite-costo-ci.md) |
+| TO-06 | **Adversa** | [PoC-001 §H-02](../Entregas/PoC/PoC-001-exclusion-concurrente-aceptacion.md): `tenant_isolation_solicitud` tiene `roles = {public}` y no restringe el rol, contra lo que exige `DD-MANI.md` §5.4 | [SP-TO-06](../Entregas/Spikes/SP-TO-06-autorizacion-canal-realtime.md) |
+| TO-07 | Ninguna | — | [SP-TO-07](../Entregas/Spikes/SP-TO-07-aprendizaje-admin-tenant.md) |
+| TO-08 | Ninguna | — | [SP-TO-05](../Entregas/Spikes/SP-TO-05-crecimiento-suite-costo-ci.md) (misma decisión que TO-05, ADR-0015) |
+| TO-09 | Documental | ADR-0019 (§Consecuencias): la latencia HTTP/REST y la trazabilidad distribuida se declaran como consecuencia negativa asumida | [SP-TO-09](../Entregas/Spikes/SP-TO-09-latencia-estilo-distribuido.md) |
+| TO-10 | Documental | ADR-0022 (§Trade-off asumido): renuncia explícita a la portabilidad a un Postgres *vanilla* sin rehacer la capa de autenticación | [SP-TO-10](../Entregas/Spikes/SP-TO-10-costo-de-salida-supabase-auth.md) |
+| TO-11 | Documental | ADR-0023 (§Trade-off): "Railway con menor techo de escala que Azure", sin cifra | [SP-TO-11](../Entregas/Spikes/SP-TO-11-techo-de-escala-railway.md) |
+| TO-12 | Documental | ADR-0020 y ADR-0024 (§Trade-off asumido y §Consecuencias negativas): fragmentación declarada en ambos, sin inventario | [SP-TO-12](../Entregas/Spikes/SP-TO-12-sincronizacion-artefactos-visuales.md) |
+
+> **Estado de la evidencia al cerrar DOC-14 (2026-09-22).** De 12 trade-offs, **1 tiene
+> evidencia empírica** (TO-03), 1 tiene evidencia **adversa** que contradice parcialmente la
+> decisión vigente (TO-06), 4 tienen evidencia documental y **6 no tienen ninguna**. Los
+> once spikes de `Entregas/Spikes/` están abiertos y suman 57 h de timebox: la Mesa debe
+> priorizarlos, no ejecutarlos todos. Ver `Project/DOC-14-mesa-arquitectura-2026-09-22.md`.
 
 ---
 

@@ -4,7 +4,7 @@
 - Sprint: 1
 - Autor: Santiago Hernández (Desarrollador / Equipo de Arquitectura)
 - Origen: Mesa Técnica de Arquitectura
-- Revisor: Sara Gómez (Líder Técnica / Product Owner)
+- Revisor: Sara Albarracín (Scrum Master)
 
 ## Contexto
 

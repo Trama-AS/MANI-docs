@@ -1,13 +1,16 @@
-> ⚠️ Confirmar el número real de ADR antes de commitear (revisar el último ADR en
-> `/docs/adr` del repositorio para no duplicar numeración). Al momento de redactar este
-> borrador, el último ADR existente en la carpeta era ADR-0020.
+> 🔴 **PARA LA MESA — colisión de numeración detectada (2026-09-21).** El `README.md` del
+> repositorio usa "ADR-0021" para referirse al stack de CI/CD sin Azure (línea 88), que es
+> el tema de `ADR-0023-consolidacion-stack-backend-sin-azure.md`. Además este ADR no
+> aparece en la tabla de ADR del README, que se corta en ADR-0018. La carpeta ya llega a
+> ADR-0024. La Mesa debe decidir si este documento conserva el número 0021 o se renumera, y
+> corregir la referencia del README en cualquiera de los dos casos.
 
 # ADR-0021: Mecanismo de exclusión concurrente en el despacho de solicitudes (SP-04.1.2)
 
 - Fecha: 2026-09-03
 - Sprint: 1
 - Autor: Santiago (QA Tester) — 🔴 confirmar si corresponde rotar la autoría según ADR-0003
-- Origen: Spike SP-04.1.2 (SCRUM-🔴 completar), activado formalmente por ADR-0016
+- Origen: Spike SP-04.1.2 (SCRUM-507), activado formalmente por ADR-0016
 - Revisor: 🔴 integrante distinto al autor que aprueba el pull request
 
 ## Contexto
@@ -66,7 +69,38 @@ la justifica.
 
 ## Estado
 
-Propuesto — última actualización: 2026-09-03
+Propuesto — última actualización: 2026-09-21
+
+Pendiente de revisión en la Mesa de Arquitectura. La decisión cuenta ahora con validación
+empírica (ver sección siguiente); lo que falta es la aprobación colegiada, la rotación de
+autoría según ADR-0003 y el revisor.
+
+## Validación empírica
+
+**PoC-001** (CFG-09, SCRUM-926) midió este mecanismo contra el proyecto QA el 2026-09-21:
+**exactamente 1 asignación** bajo 50 aceptaciones simultáneas sobre la misma solicitud, con
+**0 dobles asignaciones**, 49 respuestas `409 ya_no_disponible` y ninguna respuesta
+inesperada.
+
+El resultado se apoya en un control negativo que, bajo idéntica carga y alineación, produjo
+**10 asignaciones de 10 transacciones distintas en una ventana de 136 ms**. Sin esa corrida
+el "1" no distinguiría exclusión concurrente de ausencia de carrera.
+
+Se verificaron además los cuatro escenarios de `DD-MANI.md` §7.1 sobre HTTP real, incluido
+el reintento idempotente del ganador, que refuerza RNF-03 tal como anticipa este ADR.
+
+Informe: `Entregas/PoC/PoC-001-exclusion-concurrente-aceptacion.md`.
+
+**Salvedades que la PoC deja declaradas:**
+
+- La concurrencia efectiva la acota el pool de PostgREST, no `max_connections`: de 50
+  peticiones enviadas, solo 10 llegaron a solaparse. El mecanismo es correcto hasta esa
+  concurrencia; el comportamiento bajo saturación sostenida no se midió.
+- `solicitud.estado` no tiene `CHECK` ni `DEFAULT` en QA, pese a que `Product/DDL_MANI.sql`
+  los declara. La exclusión depende de que el código escriba el vocabulario correcto.
+- La política RLS de `solicitud` aísla por tenant pero no restringe el rol que acepta, en
+  contra de `DD-MANI.md` §5.4. Fuera del alcance de esta decisión, pero afecta al mismo
+  endpoint.
 
 ## Consecuencias
 
@@ -83,8 +117,10 @@ Propuesto — última actualización: 2026-09-03
 
 ## Trazabilidad
 
-- Issues: #🔴 completar (vincular con el issue de SP-04.1.2, o crearlo si no existe)
-- Pull requests: #🔴 completar
+- Issues: SCRUM-507 (spike SP-04.1.2) · SCRUM-723 (subtarea de redacción de este ADR) ·
+  SCRUM-926 (CFG-09, PoC que lo valida)
+- Pull requests: `Trama-AS/MANI-Flutter` #6 (implementación de la RPC, harness y evidencia) ·
+  `Trama-AS/MANI-docs` commit `1448499` (informe PoC-001)
 - Componentes del modelo C4 afectados: componente de despacho de solicitudes (EP-04, RF-14),
   capa de persistencia multi-tenant (Supabase/PostgreSQL, ADR-0012)
 - Documentos que deben actualizarse: Product_Backlog_MANI.md (cerrar SP-04.1.2 como

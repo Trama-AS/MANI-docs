@@ -1,0 +1,34 @@
+# ADR-0026: Definición de Listo (DoR) para paso a QA
+Fecha: 2026-09-22
+Sprint: Sprint 2
+Autor: Nicolás León
+Origen: issue #SCRUM-945
+Revisor: Santi (QA Tester)
+
+## Contexto
+El uso de IA para escribir código y pruebas automatizadas aprueba los tickets técnicamente pero permite fallas evidentes en usabilidad real. Debido a que la mayoría de los tickets se experimentan en el cliente Flutter y solo algunos impactan directamente APIs en Java o .NET, exigir un único tipo de evidencia de pruebas para todas las historias no es efectivo ni realista. Es imperativo que el desarrollador valide funcionalmente su código antes de transferirlo a QA.
+
+## Alternativas evaluadas
+* Confiar únicamente en que el pipeline automatizado esté en verde — descartada porque genera falsos positivos en las pruebas hechas por IA y traslada todo el trabajo de depuración a QA.
+* Prohibir el uso de IA para generar pruebas — descartada porque la IA aporta velocidad y una cobertura técnica válida si su uso es supervisado y complementado.
+* Exigir una única herramienta de prueba para todas las historias — descartada porque una herramienta de pruebas de API no puede ejercitar adecuadamente la mayoría del producto, que vive íntegramente en la interfaz Flutter.
+
+## Decisión
+Exigiremos que cada desarrollador adjunte evidencia verificable de pruebas funcionales, pruebas automatizadas trazables a criterios de aceptación y comprobación de aislamiento multi-tenant antes de enviar cualquier ticket a QA.
+
+## Trade-off asumido
+Sacrificamos la agilidad y velocidad percibida en la etapa de desarrollo al imponer una mayor carga de trabajo documentando evidencias y configurando pruebas cruzadas, a cambio de reducir sustancialmente los rechazos y retrabajos en la columna de QA.
+
+## Estado
+Propuesto — última actualización: 2026-09-22
+
+## Consecuencias
+Positivas: Reduce drásticamente la carga de QA filtrando errores básicos y previene que las pruebas generadas por IA se ajusten únicamente al código escrito sin validar las verdaderas reglas de negocio.
+Negativas: Encarece el desarrollo de tickets simples al imponer el registro riguroso de evidencias (videos o capturas) y exigir la configuración de múltiples tenants locales obligatoriamente.
+Neutras: Traslada la discusión sobre el formato estándar de las evidencias al equipo de desarrollo en futuras sesiones, quedando aún pendiente de estandarización.
+
+## Trazabilidad
+Issues: #SCRUM-945
+Pull requests: #
+Componentes del modelo C4 afectados: Cliente Flutter, backend Dart/Serverpod, módulos Java y .NET, capa de persistencia Supabase/PostgreSQL
+Documentos que deben actualizarse: Guía de contribución, Políticas de equipo

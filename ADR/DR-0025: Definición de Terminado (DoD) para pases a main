@@ -1,0 +1,33 @@
+# ADR-0025: Definición de Terminado (DoD) para pases a main
+Fecha: 2026-09-22
+Sprint: Sprint 2
+Autor: Nicolás León
+Origen: issue #SCRUM-945
+Revisor: Santi (QA Tester)
+
+## Contexto
+El código llega a la rama de QA una vez que el desarrollador ha terminado su parte, pero probar un ticket de forma aislada genera regresiones en ambientes compartidos. La mayor parte del producto vive en el cliente Flutter y en el backend Dart/Serverpod, mientras que Java y .NET son módulos puntuales exigidos por el proyecto. Es necesario garantizar que la nueva funcionalidad no rompa otras partes del ecosistema, requiriendo un enfoque de regresión que refleje esta proporción arquitectónica para asegurar que el pase a main mantenga la estabilidad.
+
+## Alternativas evaluadas
+* Aprobar el pase a main solo si el ticket específico funciona — descartada porque ignora el impacto colateral sobre el resto del ecosistema y genera fallos en integración.
+* Automatizar toda la regresión sin intervención humana — descartada porque la validación de la experiencia de usuario y las reglas de negocio complejas en Flutter requieren indispensablemente el criterio humano.
+
+## Decisión
+Validaremos el pase a main exigiendo pipelines automatizados en verde combinados con la ejecución de suites específicas según la arquitectura afectada (Maestro, Newman, aislamiento multi-tenant) y una regresión manual enfocada en el impacto de dependencias.
+
+## Trade-off asumido
+Asumimos un aumento en el tiempo de validación por cada ticket y el costo de mantenimiento constante de los scripts automatizados (Maestro y Postman), a cambio de reducir drásticamente las regresiones en main y asegurar la calidad del producto final.
+
+## Estado
+Propuesto — última actualización: 2026-09-22
+
+## Consecuencias
+Positivas: Habilita el pase a main con mayor confianza al formalizar la suite de aislamiento multi-tenant (ADR-0015) como barrera obligatoria y enfocar las pruebas en lo que realmente experimenta el usuario.
+Negativas: Complica y encarece las fases de prueba en los sprints siguientes al obligar al equipo a mantener actualizados los flujos de Maestro ante cada cambio de UI y sostener de forma permanente un mapa de dependencias funcional.
+Neutras: Fija la necesidad de establecer un límite de tiempo estricto para los tickets en estado de QA.
+
+## Trazabilidad
+Issues: #SCRUM-945
+Pull requests: #
+Componentes del modelo C4 afectados: Cliente Flutter, backend Dart/Serverpod, módulos Java y .NET, capa de persistencia Supabase/PostgreSQL
+Documentos que deben actualizarse: Guía de contribución, Políticas de equipo

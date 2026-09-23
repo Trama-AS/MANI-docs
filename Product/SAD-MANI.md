@@ -9,6 +9,7 @@
 5. [Escenarios_Calidad](#5-escenarios-calidad)
 6. [Trade-offs](#6-trade-offs)
 7. [Arquitectura_de_Negocio](#7-arquitectura-de-negocio)
+8. [Vista_de_Procesos](#vista-de-procesos)
 
 ---
 
@@ -1009,3 +1010,7 @@ convención de versionado.*
 | Backend principal | Serverpod (Dart) + Supabase PostgreSQL/RLS + Supabase Storage (KYC) + Supabase Realtime Broadcast | ADR-0012, ADR-0013, ADR-0017 |
 | Infraestructura compartida | SonarQube + OWASP ZAP (SAST/DAST) ×2, Prometheus + Grafana + Datadog, GitHub Actions CI/CD multi-repositorio, FCM/APNs | ADR-0004, ADR-0005, ADR-0006 |
 | Módulos adicionales | Módulo en Java Spring, Módulo en .NET, persistencia del módulo (pendiente de definir) | PROY-07 (constraint crítico), ADR-0004 |
+
+
+---
+## 8. Vista de Procesos ![Diagrama de secuencia - exclusión mutua](../Diagramas/diagrama_secuencia_exclusion_mutua.png) El sistema garantiza exclusión mutua mediante una actualización condicional (compare-and-swap) sobre el campo estado de la solicitud. Solo la primera petición que encuentra el registro en estado pendiente logra actualizarlo; cualquier petición posterior falla la condición y recibe rechazo, evitando así la doble asignación (RNF-05).

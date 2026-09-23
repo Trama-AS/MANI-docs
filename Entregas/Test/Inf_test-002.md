@@ -13,13 +13,19 @@ consciente frente a ADR-0004, ya decidido por el equipo: las PR de PoC (CFG-09, 
 CFG-13) ya la usaban como base.
 
 **Fuera de alcance:** k6 y OWASP ZAP. Corresponden al ambiente de Testing, después de promover.
-La suite Newman de ADR-0015 contra QA también queda para después, por la razón que se explica en
-la sección 4.
+La suite Newman de ADR-0015 contra QA no se corrió antes de promover, porque QA no tenía todavía el
+esquema de `develop` (sección 4). Se corre después de poner QA al día.
+
+**Después de promover** fue necesario poner MANI-QA al día. Primero se aplicaron 001–006, que
+nunca habían llegado. Después hubo que normalizar los valores de dominio de sus datos con la
+migración 007. Eso se documenta en la sección 4.
 
 **Veredicto:** se promovió **con excepción documentada**. El gate técnico (CI y pruebas) se
 cumple; el gate de proceso (revisión por par y DoR) no. Las brechas quedan en SCRUM-1055 a
 SCRUM-1058. La promoción se integró con merge commit (`ad4af04`, padres `665f223` de `release` y
-`9b86618` de `develop`), y el pipeline de `release` sobre ese commit quedó en verde.
+`9b86618` de `develop`), y el pipeline de `release` sobre ese commit quedó en verde. Al cierre
+de este informe, MANI-QA tiene 001–007 aplicadas y la verificación `database/verify/11` da
+**21/21** (sección 4.4).
 
 ---
 
@@ -182,7 +188,9 @@ En DEV local esto detiene `migrate-local.sh` antes de 005 y 006. En Supabase no 
 
 ---
 
-## 4. Pipeline de migraciones a QA
+## 4. Pipeline de migraciones a QA y puesta al día de MANI-QA
+
+### 4.1 El paso de migraciones nunca se ejecutaba
 
 **Pregunta:** al promover, ¿las migraciones 002–006 llegan solas a MANI-QA?
 
@@ -195,30 +203,117 @@ tenía la condición `if: ... && env.SUPABASE_QA_DB_URL != ''`, con la variable 
 `MANI-Flutter#23` lo corrigió: un step previo resuelve si el secret existe y deja un `::warning::`
 si falta. El primer run después del fix
 ([35916376440](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35916376440), `665f223`)
-confirmó que **el secret `SUPABASE_QA_DB_URL` no está configurado** en el repositorio.
+confirmó que el secret `SUPABASE_QA_DB_URL` tampoco estaba configurado.
 
-El push del merge de la promoción (`ad4af04`, run
-[35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037)) repitió el
-mismo warning. **SCRUM-1057 quedó bloqueado** el 2026-09-23: QA no tiene la contraseña de
-Postgres de MANI-QA ni permiso para resetearla, y se le pidió a quien administra el proyecto.
+Esto **cierra el punto abierto de `Inf_test-001`** (sección 6): el job de migraciones no
+contradecía la deuda de CFG-12, porque **nunca había llegado a ejecutarse**.
 
-**Consecuencias:**
+### 4.2 Primera aplicación de la cadena en QA (001–006)
 
-- Hasta que se cree el secret o se apliquen a mano, MANI-QA queda con el esquema anterior. La
-  suite Newman de ADR-0015 no se corrió antes de promover, porque habría medido un esquema que
-  no es el de `develop`. Queda en **SCRUM-1057**.
-- Esto **cierra el punto abierto de `Inf_test-001`** (sección 6): el job de migraciones no
-  contradice la deuda de CFG-12, porque **nunca llegó a ejecutarse**. SCRUM-1051 (18 políticas
-  RLS vivas en QA y sin versionar; `schema_migrations` inexistente en QA) sigue vigente, y el
-  primer contacto de la cadena con QA ocurrirá cuando se cree el secret.
+Con el secret creado, la cadena corrió por primera vez contra QA. Como antes `schema_migrations`
+no existía en QA, se hizo como un paso controlado:
 
-**Precauciones antes de aplicar en QA** (detalladas en SCRUM-1057):
+1. **Snapshot previo** de solo lectura (21:10 UTC): 18 tablas, 20 políticas, 22 índices y 4
+   funciones. Pre-chequeo de datos: 0 duplicados que rompieran los índices únicos de 003 y 004.
+2. **Simulación en una réplica local** con la estructura exacta de `public` de QA: 001–006
+   aplican sin error y una segunda corrida también. No se pierde ninguna política.
+3. **Aplicación:** re-ejecución (intento 2) del run
+   [35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037) sobre
+   `ad4af04`, a las 21:20 UTC, con `[ÉXITO]` de 001 a 006. `004` reportó `DELETE 0`.
+4. **Snapshot posterior**, que coincide exactamente con la simulación:
 
-- Tomar un snapshot de `pg_policies` y `pg_indexes` antes y después.
-- `004` borra filas duplicadas de `aliado_categoria` y reemplaza la política permisiva.
-- `006` crea políticas sobre `storage.objects`.
-- `004` además cubre parte de SCRUM-1054: crea `idx_aliado_categoria_tenant_categoria` y el
-  UNIQUE `(aliado_id, categoria_id)`.
+| | Antes | Después |
+|---|---|---|
+| `schema_migrations` | no existía | 001–006 |
+| Tablas `public` | 18 | 21 |
+| Políticas (`public` y `storage`) | 20 | 25, ninguna perdida |
+| Índices `public` | 22 | 34, ninguno perdido |
+| Funciones `public` | 4 | 32, las 4 previas se conservan |
+| Buckets | `kyc-documentos` | más `solicitudes` |
+
+SCRUM-1051 sigue vigente: las 16 políticas `tenant_isolation_*` de QA siguen sin estar en
+`database/migrations/`. Reconstruir un ambiente desde la cadena lo dejaría sin aislamiento.
+
+### 4.3 Los datos de QA usaban otro dominio: migración 007
+
+**Pregunta:** con 001–006 aplicadas, ¿funcionan en QA la bandeja del aliado y el catálogo?
+
+**Resultado real:** no. Los datos que dejaron los seeds de CFG-04, CFG-09 y CFG-12 usan minúscula
+y en parte inglés: `aliado`, `activo`, `aprobado`, `assigned`, `cedula`. 002–006 y la app
+comparan contra MAYÚSCULA en español: `ALIADO`, `ACTIVO`, `VERIFICADO`, `ASIGNADA`. En la réplica
+eso daba:
+
+- Bandeja y catálogo en `MANI-SOL-403` / `MANI-CAT-403`.
+- Cualquier `UPDATE` a una categoría existente rechazado por `ck_categoria_estado`.
+- El seed de CFG-04 ya no se podía volver a correr: desde 003, insertar `'activa'` viola el
+  `CHECK` (`NOT VALID` solo exime las filas existentes).
+
+**Decisión** (Santiago, 2026-09-23): normalizar los datos al formato del código. El token JWT
+sigue en minúscula porque es el contrato de ADR-0018. `MANI-Flutter#25` (SCRUM-1057) hace lo
+siguiente:
+
+- **Compatibilidad de las PoC, antes de tocar datos:** el hook de CFG-12 emite `lower(rol)` y
+  `kyc_isolation` de CFG-13 compara el rol con `lower()`.
+- **`007_normalizar_dominios.sql`**, en una transacción:
+  - Aplica esa compatibilidad solo si el hook y la política existen.
+  - 17 `UPDATE`, uno por valor viejo.
+  - Valida los `CHECK` que 003 dejó `NOT VALID`.
+  - Aborta si queda algún valor viejo.
+- **Seed de CFG-04** con los valores nuevos.
+
+Pruebas en la réplica (20 casos):
+
+| Escenario | Resultado |
+|---|---|
+| Antes de 007 (réplica igual a QA) | 13/20 |
+| Solo los `UPDATE`, sin compatibilidad de PoC | 12/20: el token sale `ADMIN_TENANT` y el admin_tenant **pierde acceso** a los KYC de su tenant |
+| 007 completa, con el runner del CI | 20/20 |
+| 007 dos veces | 244 filas la primera vez (la suma del inventario) y 0 la segunda |
+
+### 4.4 Aplicación de 007 y verificación en QA
+
+- **Aplicación:** merge de `MANI-Flutter#25` (`3d46075`, 21:40 UTC), run
+  [35923851959](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35923851959).
+- **Verificación en QA** con `database/verify/11-normalizacion-dominios.sql` (solo lectura):
+  **21/21**. Cubre:
+  - `schema_migrations` con 007.
+  - 0 valores viejos.
+  - Bandeja del aliado asignado: 1 fila.
+  - Catálogo tenant/admin/cliente: 1 fila cada uno.
+  - `CHECK` validado y sin filas que lo violen.
+  - Claims del hook `admin_tenant`/`aliado`/`cliente` para CFG-04 y CFG-12, y V4 fail closed.
+  - KYC (ADR-0015 caso 6): propio 1, de otro tenant 0, admin de su tenant 1, cliente 0.
+
+`#25` se mergeó antes de que entraran tres commits, que llegaron con `MANI-Flutter#27`
+(`e5e33b0`):
+
+- El seed de CFG-12 con los valores nuevos.
+- El assert de la suite Newman de ADR-0015 ("su estado NO fue modificado" esperaba
+  `'aprobado'`; ahora `'VERIFICADO'`).
+- `supabase/seed/README.md` con el orden para volver a sembrar QA.
+- Una versión de `verify/11` de un único `SELECT`, que ya no dispara el aviso de operaciones
+  destructivas del SQL Editor y usa el aliado real de la solicitud de CFG-09.
+
+### 4.5 PoC CFG-09
+
+`MANI-Flutter#26` (SCRUM-1059, `e6bb402`):
+
+- Versiona la RPC que corría en QA: tiene `p_espera`, que no estaba en el repo.
+- Pasa la PoC a `PENDIENTE`/`ASIGNADA`, en la función, el seed, el reset y las verificaciones.
+
+En la réplica, 10 aceptaciones simultáneas dan 1 éxito y 9 `ya_no_disponible`. El control
+negativo sigue produciendo 10 asignaciones y el reintento no duplica.
+
+**Aplicación en QA: pendiente**, a cargo de Santiago desde el SQL Editor. Se aplican solo las
+funciones (secciones 2 a 4 del archivo) y el reset: la sección 1 de
+`20_rpc_aceptar_solicitud.sql` hace `DROP TABLE poc_asignacion_log` y **borraría la bitácora de
+CFG-09**, que en QA tiene 13 filas de las corridas r1–r4.
+
+### 4.6 Suites Newman contra QA
+
+**Pendiente:** correr `qa/newman/mani-claims` (CFG-12) y `qa/newman/mani-aislamiento`
+(ADR-0015, CFG-13) contra QA. Usan las credenciales de los usuarios sembrados y las corre
+Santiago. Es lo último que falta para cerrar SCRUM-1057.
 
 ---
 
@@ -232,10 +327,18 @@ Postgres de MANI-QA ni permiso para resetearla, y se le pidió a quien administr
 | Paso de migraciones `skipped` antes del fix | [35822083795](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35822083795) | `release` | `246a150` | success, paso skipped |
 | Fix activo, warning de secret ausente | [35916376440](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35916376440) | `release` | `665f223` | success, warning |
 | CI del PR de promoción | [35918366684](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35918366684) | `develop` → `release` | `9b86618` | success |
-| Pipeline de `release` tras el merge | [35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037) | `release` | `ad4af04` | success, migraciones skipped por secret ausente |
+| Pipeline de `release` tras el merge | [35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037) | `release` | `ad4af04` | intento 1: success, migraciones skipped por secret ausente |
+| Primera aplicación de 001–006 en QA | [35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037) (intento 2) | `release` | `ad4af04` | success, `[ÉXITO]` 001–006 |
+| Aplicación de 007 en QA | [35923851959](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35923851959) | `release` | `3d46075` | success |
+| Merge de #26 (CFG-09) | [35925196154](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35925196154) | `release` | `e6bb402` | success |
+| Merge de #27 | [35925409985](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35925409985) | `release` | `e5e33b0` | success |
 
-**PR:** `MANI-Flutter#23` (fix del paso de migraciones, mergeado) y `MANI-Flutter#24`
-(promoción).
+**PR:** `MANI-Flutter#23` (fix del paso de migraciones), `#24` (promoción), `#25` (007 y
+compatibilidad de PoC), `#26` (CFG-09 alineada) y `#27` (seed de CFG-12, assert de Newman,
+README de seeds y `verify/11`). Todos mergeados en `release`.
+
+**QA:** snapshots de solo lectura antes (21:10 UTC) y después (21:22 UTC) de 001–006, y
+`verify/11` después de 007 (21/21). Los resultados están en los comentarios de SCRUM-1057.
 
 **Archivos:** `database/migrations/002…006`, `database/verify/09` y `10`,
 `database/init/08-seed-qa-multitenant.sql`, `test/integration/*` y
@@ -249,8 +352,9 @@ Postgres de MANI-QA ni permiso para resetearla, y se le pidió a quien administr
 |---|---|
 | SCRUM-1055 | Criterios de aceptación, evidencia y estados en Jira de las 9 historias promovidas |
 | SCRUM-1056 | Revisión retroactiva por un par de #9, #14 y `d9c6ef8`; protección de rama en `develop` |
-| SCRUM-1057 | Aplicar 002–006 en MANI-QA y correr la suite ADR-0015 y `verify/09-10` contra QA. **Bloqueado**: falta la contraseña de la BD de QA |
-| SCRUM-1058 | `004` falla en Postgres sin esquema `auth` y corta `migrate-local` en DEV |
+| SCRUM-1057 | Poner QA al día: 001–007 aplicadas y `verify/11` 21/21. **Falta** correr las suites Newman de CFG-12 y ADR-0015 |
+| SCRUM-1058 | `004` falla en Postgres sin esquema `auth` y corta `migrate-local` en DEV. Próximo sprint |
+| SCRUM-1059 | Alinear la PoC CFG-09 y versionar su RPC de QA. Mergeado en #26; **falta aplicarla en QA** |
 
 ---
 
@@ -264,6 +368,15 @@ Postgres de MANI-QA ni permiso para resetearla, y se le pidió a quien administr
   contra fakes. La única verificación contra PostgreSQL de esta promoción son los scripts de
   `database/verify`, corridos a mano. Mientras no exista un job con `services: postgres`, el
   pipeline no detecta un problema de migraciones como el de SCRUM-1058.
-- **QA ha estado desconectado de la cadena de migraciones desde que se creó.** Ningún push a
-  `release` aplicó nada. El primer contacto va a coincidir con cinco migraciones nuevas a la vez.
-  Conviene hacerlo como paso controlado (SCRUM-1057) y no como efecto lateral de crear el secret.
+- **QA estuvo desconectado de la cadena de migraciones desde que se creó.** El primer contacto
+  metió 6 migraciones de una vez. Se hizo como paso controlado: snapshot, simulación en una
+  réplica con la estructura real, re-ejecución del run y snapshot posterior. La simulación
+  predijo exactamente el resultado.
+- **Los seeds y las PoC hablaban otro dominio que el código.** CFG-04, CFG-09 y CFG-12 sembraban
+  minúscula e inglés, y nada lo detectaba, porque las pruebas automatizadas usan fakes. Se
+  corrigió con 007 y con los seeds alineados. La prevención de fondo sigue siendo un `CHECK` por
+  columna de dominio, que hoy solo existe en `categoria_servicio`.
+- **Algunos scripts de PoC no son seguros para volver a correrlos completos.**
+  `supabase/poc-cfg09/20_rpc_aceptar_solicitud.sql` recrea la bitácora con `DROP TABLE`, y el
+  seed de CFG-04 borra todo lo que cuelga de sus tenants, incluidos los usuarios de CFG-12.
+  Antes de volver a correr una PoC en QA hay que leer qué borra.

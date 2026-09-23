@@ -14,7 +14,7 @@ CFG-13) ya la usaban como base.
 
 **Fuera de alcance:** k6 y OWASP ZAP. Corresponden al ambiente de Testing, después de promover.
 La suite Newman de ADR-0015 contra QA no se corrió antes de promover, porque QA no tenía todavía el
-esquema de `develop` (sección 4). Se corre después de poner QA al día.
+esquema de `develop`. Se corrió después de poner QA al día (sección 4.6).
 
 **Después de promover** fue necesario poner MANI-QA al día. Primero se aplicaron 001–006, que
 nunca habían llegado. Después hubo que normalizar los valores de dominio de sus datos con la
@@ -24,8 +24,8 @@ migración 007. Eso se documenta en la sección 4.
 cumple; el gate de proceso (revisión por par y DoR) no. Las brechas quedan en SCRUM-1055 a
 SCRUM-1058. La promoción se integró con merge commit (`ad4af04`, padres `665f223` de `release` y
 `9b86618` de `develop`), y el pipeline de `release` sobre ese commit quedó en verde. Al cierre
-de este informe, MANI-QA tiene 001–007 aplicadas y la verificación `database/verify/11` da
-**21/21** (sección 4.4).
+de este informe, MANI-QA tiene 001–007 aplicadas, la verificación `database/verify/11` da
+**21/21** y las suites Newman de CFG-12 y ADR-0015 pasan **135/135 aserciones** (sección 4).
 
 ---
 
@@ -181,10 +181,10 @@ En DEV local esto detiene `migrate-local.sh` antes de 005 y 006. En Supabase no 
 | Elemento de diseño | Cobertura en `develop` | Estado |
 |---|---|---|
 | Despacho atómico (§6.1) | `asignacion_repository_test` (5 aceptaciones simultáneas producen 1 asignación) y `asignacion_us0414_test`, ambos contra fakes. La RPC de `005` usa `UPDATE` condicional y `GET DIAGNOSTICS ROW_COUNT`. El patrón se validó contra PostgreSQL en CFG-09 (`Inf_PoC-001`) | **Parcial**: no hay prueba de la RPC `aceptar_solicitud` contra BD real |
-| Resolución de tenant (§6.3) | `verify/09` y `verify/10` en SQL. Sin prueba de headers o JWT alterados | **Parcial**: la suite ADR-0015 queda para después (SCRUM-1057) |
+| Resolución de tenant (§6.3) | `verify/09` y `verify/10` en SQL. Sin prueba de headers o JWT alterados antes de promover | **Parcial** al promover. **Cubierto** después: la suite ADR-0015 en QA rechaza tokens con `tenant_id` reescrito o firma alterada con 401 (sección 4.6) |
 | Idempotencia de aceptación (§7.1) | "el reintento del mismo aliado es idempotente" y "rechazar dos veces es idempotente" (fakes) | **Parcial** |
 | Idempotencia de calificación (§7.2) | no existe la feature (US-04.4.1, SCRUM-874, en "Tareas por hacer") | **Brecha**, fuera del alcance de esta promoción |
-| Aislamiento de Storage (§8.2) | la suite `qa/storage` de CFG-13 ya está en `release`. `006` crea el bucket `solicitudes` con políticas por carpeta del usuario, sin prueba propia | **Parcial** |
+| Aislamiento de Storage (§8.2) | la suite `qa/storage` de CFG-13 ya está en `release`. `006` crea el bucket `solicitudes` con políticas por carpeta del usuario, sin prueba propia | **Parcial**: el caso 6 de ADR-0015 pasa en QA para `kyc-documentos` (sección 4.6); el bucket `solicitudes` sigue sin prueba |
 
 ---
 
@@ -304,16 +304,49 @@ Pruebas en la réplica (20 casos):
 En la réplica, 10 aceptaciones simultáneas dan 1 éxito y 9 `ya_no_disponible`. El control
 negativo sigue produciendo 10 asignaciones y el reintento no duplica.
 
-**Aplicación en QA: pendiente**, a cargo de Santiago desde el SQL Editor. Se aplican solo las
-funciones (secciones 2 a 4 del archivo) y el reset: la sección 1 de
-`20_rpc_aceptar_solicitud.sql` hace `DROP TABLE poc_asignacion_log` y **borraría la bitácora de
-CFG-09**, que en QA tiene 13 filas de las corridas r1–r4.
+**Aplicación en QA** (2026-09-23, Santiago, desde el SQL Editor): se aplicaron solo las
+funciones (secciones 2 a 4 del archivo) y el reset. La sección 1 de
+`20_rpc_aceptar_solicitud.sql` hace `DROP TABLE poc_asignacion_log`, y aplicarla **habría
+borrado la bitácora de CFG-09** (13 filas de las corridas r1–r4). Se detectó al revisar el
+archivo antes de ejecutarlo.
+
+Verificación posterior en QA (solo lectura):
+
+| Comprobación | Resultado |
+|---|---|
+| Filas de la bitácora `poc_asignacion_log` | 13 (antes y después) |
+| Funciones de la PoC | `aceptar_solicitud`, `_control_malo` y `_sin_exclusion` con `(uuid, uuid, text, numeric)`; el cuerpo compara `PENDIENTE`/`ASIGNADA` y tiene `p_espera` |
+| `aceptar_solicitud(uuid)` de 005 | intacta |
+| Permisos | `authenticated` ejecuta, `anon` no |
+| Solicitud de la PoC | `PENDIENTE`, sin aliado |
+| Bandeja de `aliado.poc.1` | 1 fila (la solicitud pendiente, elegible) |
+| Valores `pending`/`assigned` en `solicitud` | 0 |
 
 ### 4.6 Suites Newman contra QA
 
-**Pendiente:** correr `qa/newman/mani-claims` (CFG-12) y `qa/newman/mani-aislamiento`
-(ADR-0015, CFG-13) contra QA. Usan las credenciales de los usuarios sembrados y las corre
-Santiago. Es lo último que falta para cerrar SCRUM-1057.
+Corridas por Santiago el 2026-09-23 a las 22:09 UTC, desde `release` en `e5e33b0`, con las
+credenciales de los usuarios sembrados:
+
+| Suite | Cubre | Peticiones | Aserciones | Fallas |
+|---|---|---|---|---|
+| `qa/newman/mani-claims` | CFG-12: propagación de `tenant_id` y rol al JWT, casos borde y anti-spoofing | 13 | 40 | **0** |
+| `qa/newman/mani-aislamiento` | ADR-0015: los 6 casos de acceso cruzado, incluido el caso 6 de Storage (CFG-13) | 52 | 95 | **0** |
+
+Lo relevante para esta promoción:
+
+- Los claims siguen saliendo en minúscula (`admin_tenant`, `aliado`, `cliente`) aunque la tabla
+  guarde MAYÚSCULA: el `lower(rol)` del hook mantiene el contrato de ADR-0018.
+- `kyc_isolation` con `lower()` sigue aislando:
+  - El admin_tenant descarga y firma los KYC de su tenant (P2, P2b).
+  - El admin de otro tenant, otro aliado del mismo tenant y el cliente quedan denegados (N1–N7).
+- El caso 3 ("su estado NO fue modificado") pasa con `'VERIFICADO'`, el valor que dejó 007.
+- Escritura, inserción y borrado cruzados denegados. Tokens alterados rechazados con 401.
+
+Los reportes JSON se redactaron con `qa/newman/redactar_evidencia.mjs` (0 JWT y 0 anon key
+restantes) antes de conservarlos.
+
+Con esto **SCRUM-1057 queda cumplido**: QA con 001–007, `verify/11` 21/21 y las dos suites en
+verde.
 
 ---
 
@@ -352,9 +385,9 @@ README de seeds y `verify/11`). Todos mergeados en `release`.
 |---|---|
 | SCRUM-1055 | Criterios de aceptación, evidencia y estados en Jira de las 9 historias promovidas |
 | SCRUM-1056 | Revisión retroactiva por un par de #9, #14 y `d9c6ef8`; protección de rama en `develop` |
-| SCRUM-1057 | Poner QA al día: 001–007 aplicadas y `verify/11` 21/21. **Falta** correr las suites Newman de CFG-12 y ADR-0015 |
+| SCRUM-1057 | Poner QA al día: 001–007 aplicadas, `verify/11` 21/21 y suites Newman de CFG-12 y ADR-0015 en verde. **Cumplido** |
 | SCRUM-1058 | `004` falla en Postgres sin esquema `auth` y corta `migrate-local` en DEV. Próximo sprint |
-| SCRUM-1059 | Alinear la PoC CFG-09 y versionar su RPC de QA. Mergeado en #26; **falta aplicarla en QA** |
+| SCRUM-1059 | Alinear la PoC CFG-09 y versionar su RPC de QA. Mergeado en #26 y aplicado en QA, con la bitácora conservada. **Cumplido** |
 
 ---
 

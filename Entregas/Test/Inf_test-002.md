@@ -1,6 +1,6 @@
 # Informe de test — Promoción `develop` → `release` (Sprint 2)
 
-**PR de promoción:** `MANI-Flutter#24` · **Responsable:** Santiago (QA) · **Fecha:** 2026-09-23
+**PR de promoción:** `MANI-Flutter#24` (mergeado, merge commit `ad4af04` en `release`) · **Responsable:** Santiago (QA) · **Fecha:** 2026-09-23
 
 ## Alcance
 
@@ -16,9 +16,10 @@ CFG-13) ya la usaban como base.
 La suite Newman de ADR-0015 contra QA también queda para después, por la razón que se explica en
 la sección 4.
 
-**Veredicto:** se promueve **con excepción documentada**. El gate técnico (CI y pruebas) se
+**Veredicto:** se promovió **con excepción documentada**. El gate técnico (CI y pruebas) se
 cumple; el gate de proceso (revisión por par y DoR) no. Las brechas quedan en SCRUM-1055 a
-SCRUM-1058.
+SCRUM-1058. La promoción se integró con merge commit (`ad4af04`, padres `665f223` de `release` y
+`9b86618` de `develop`), y el pipeline de `release` sobre ese commit quedó en verde.
 
 ---
 
@@ -85,7 +86,7 @@ un issue de GitHub.
 Además hay **8 commits directos a `develop`**, lo que viola §4.1. El equipo los aceptó y acordó
 que no se repite.
 
-**Veredicto:** **no cumple.** Se promueve con excepción. Queda pendiente en **SCRUM-1056**:
+**Veredicto:** **no cumple.** Se promovió con excepción. Queda pendiente en **SCRUM-1056**:
 revisión retroactiva de #9, #14 y `d9c6ef8`, y decidir la protección de rama en `develop`.
 
 ### 2.3 DoR cumplida y criterios de aceptación validados en local
@@ -196,6 +197,11 @@ si falta. El primer run después del fix
 ([35916376440](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35916376440), `665f223`)
 confirmó que **el secret `SUPABASE_QA_DB_URL` no está configurado** en el repositorio.
 
+El push del merge de la promoción (`ad4af04`, run
+[35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037)) repitió el
+mismo warning. **SCRUM-1057 quedó bloqueado** el 2026-09-23: QA no tiene la contraseña de
+Postgres de MANI-QA ni permiso para resetearla, y se le pidió a quien administra el proyecto.
+
 **Consecuencias:**
 
 - Hasta que se cree el secret o se apliquen a mano, MANI-QA queda con el esquema anterior. La
@@ -225,7 +231,8 @@ confirmó que **el secret `SUPABASE_QA_DB_URL` no está configurado** en el repo
 | Último pipeline de `develop` | [35912665285](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35912665285) | `develop` | `9b86618` | success |
 | Paso de migraciones `skipped` antes del fix | [35822083795](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35822083795) | `release` | `246a150` | success, paso skipped |
 | Fix activo, warning de secret ausente | [35916376440](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35916376440) | `release` | `665f223` | success, warning |
-| CI del PR de promoción | [35918366684](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35918366684) | `develop` → `release` | `9b86618` | ver `MANI-Flutter#24` |
+| CI del PR de promoción | [35918366684](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35918366684) | `develop` → `release` | `9b86618` | success |
+| Pipeline de `release` tras el merge | [35919352037](https://github.com/Trama-AS/MANI-Flutter/actions/runs/35919352037) | `release` | `ad4af04` | success, migraciones skipped por secret ausente |
 
 **PR:** `MANI-Flutter#23` (fix del paso de migraciones, mergeado) y `MANI-Flutter#24`
 (promoción).
@@ -242,7 +249,7 @@ confirmó que **el secret `SUPABASE_QA_DB_URL` no está configurado** en el repo
 |---|---|
 | SCRUM-1055 | Criterios de aceptación, evidencia y estados en Jira de las 9 historias promovidas |
 | SCRUM-1056 | Revisión retroactiva por un par de #9, #14 y `d9c6ef8`; protección de rama en `develop` |
-| SCRUM-1057 | Aplicar 002–006 en MANI-QA y correr la suite ADR-0015 y `verify/09-10` contra QA |
+| SCRUM-1057 | Aplicar 002–006 en MANI-QA y correr la suite ADR-0015 y `verify/09-10` contra QA. **Bloqueado**: falta la contraseña de la BD de QA |
 | SCRUM-1058 | `004` falla en Postgres sin esquema `auth` y corta `migrate-local` en DEV |
 
 ---

@@ -1,4 +1,21 @@
-# MANI SAD
+# MANI SAD — V3
+
+| Metadato | Valor |
+| :--- | :--- |
+| **Proyecto** | MANI — Plataforma SaaS multi-tenant de formalización de operaciones de servicio |
+| **Organización** | TRAMA · Ingeniería de Software |
+| **Documento** | SAD V3 (ADD + ATAM) — Entrega 4 |
+| **Fecha** | 2026-09-23 |
+| **Estado** | Borrador para revisión de la Mesa de Arquitectura |
+| **Base** | SAD V2 = `Product/SAD-MANI.md` (tras DOC-14) + `Product/SADV2.md` (sección de infraestructura, DOC-15 / SCRUM-946). **Todo el contenido de V2 se conserva**; lo agregado en V3 va marcado con 🆕. |
+
+## Historial de versiones
+
+| Versión | Momento | Cambios principales |
+| :--- | :--- | :--- |
+| **V1** | Entrega 3 (Sprint 1 Review) | Drivers, killers, 16 ADR, atributos ISO 25010, escenarios de calidad, 8 trade-offs, arquitectura de negocio, C4 contenedores. |
+| **V2** | Sprint 2, 2026-09-22 (DOC-14 / DOC-15) | 24 ADR consolidados; trade-offs de 8 a 12 con nivel de evidencia (Tabla D) y spikes; vista de procesos (exclusión mutua); sección de infraestructura DEV/QA/PROD (`SADV2.md`). |
+| **V3** 🆕 | Entrega 4, 2026-09-23 | Sobre V2 se añade: resultados de **PoC-002, PoC-003 y PoC-004** en killers, ADR, escenarios y Tabla D; nuevos **KI-12** (RLS sin versionar) y **KI-13** (RLS sin rol); **ADR-0025/0026** (DoD/DoR) y borradores **ADR-0027/0028/0029**; **QS-21/QS-22** para AC-12/AC-14 (hueco DOC-14 D-07); **§9 Vistas 4+1 ↔ C4** (ADR-0024); **§10 Vista física** (integra `SADV2.md` + Documento de Infraestructura V1); **§11 Pendientes para la Mesa**. Se corrige la doble sección "7" (Vista de Contenedores pasa a §8.1). |
 
 ## Índice
 
@@ -9,7 +26,10 @@
 5. [Escenarios_Calidad](#5-escenarios-calidad)
 6. [Trade-offs](#6-trade-offs)
 7. [Arquitectura_de_Negocio](#7-arquitectura-de-negocio)
-8. [Vista_de_Procesos](#vista-de-procesos)
+8. [Vista de Contenedores y Vista de Procesos](#8-vista-de-contenedores-y-vista-de-procesos)
+9. 🆕 [Vistas de arquitectura 4+1 ↔ C4](#9-vistas-de-arquitectura-41--c4)
+10. 🆕 [Vista física e infraestructura](#10-vista-física-e-infraestructura)
+11. 🆕 [Pendientes para la Mesa](#11-pendientes-para-la-mesa)
 
 ---
 
@@ -95,6 +115,8 @@
 | KI-09 | Volumen concurrente de búsqueda + mensajería sin cifra conocida | Rendimiento |
 | KI-10 | ADR-0016/0017 incompletos (Redactor, Disenso, Quórum [completar]) | Gobernanza |
 | KI-11 | Observabilidad instrumentada sobre Java Spring/.NET, en riesgo si prevalece Dart/Serverpod | Mantenibilidad |
+| 🆕 KI-12 | Políticas RLS `tenant_isolation_*` sin versionar en migraciones | Seguridad |
+| 🆕 KI-13 | RLS no restringe el rol dentro del tenant | Seguridad |
 
 **Tabla B — Descripción del riesgo**
 
@@ -110,6 +132,8 @@
 | KI-09 | RNF-07 señalado como riesgo crítico en el SRS pese a prioridad Media, sin volumen definido para fijar umbrales |
 | KI-10 | No cumplen el checklist de cierre del Gobierno del Equipo §2.6, pese a que ya se están usando como base de diseño |
 | KI-11 | La instrumentación completa (ADR-0006) quedaría sin destinatario técnico si KI-02 se resolviera eliminando Java/.NET |
+| 🆕 KI-12 | Las 16 políticas `tenant_isolation_*` viven solo en la base de QA; la cadena `database/migrations/` no contiene ningún `CREATE POLICY` de aislamiento. Reconstruir un ambiente (p. ej. PROD) desde la cadena lo dejaría sin aislamiento (Inf_PoC-001, Inf_test-002, SCRUM-1051) |
+| 🆕 KI-13 | `tenant_isolation_solicitud` tiene `roles = {public}`: aísla por tenant pero no por rol; un `cliente` puede autoasignarse una solicitud de su tenant, contra DD §5.4 (PoC-001 H-02) |
 
 **Tabla C — Mitigación / estado**
 
@@ -125,6 +149,14 @@
 | KI-09 | Sin resolver — Análisis de Requerimientos §7 no fija cifra |
 | KI-10 | Abierto — requiere sesión formal de la Mesa |
 | KI-11 | Resuelto — KI-02 cerrado por ADR-0023: Java/.NET preservados, ADR-0006 conserva destinatario técnico |
+| 🆕 KI-12 | Abierto, **bloqueante para aprovisionar PROD** — migración 008 (DD V2 §4.1, SCRUM-1051) |
+| 🆕 KI-13 | Abierto — patrón RLS por rol propuesto en DD V2 §8.1 + chequeo de rol en la RPC `aceptar_solicitud`; SP-TO-06 prioridad 1 (DOC-14 D-03) |
+
+> 🆕 **Actualización de estado V3 (evidencia de PoC):**
+> - **KI-03:** propuesta de "cómo" en ADR-0029 (borrador): Railway para QA/PROD del MVP + clúster k3d/kind de referencia con las mismas imágenes y manifiestos Kustomize (Documento de Infraestructura V1 §9). Depende de SP-TO-11.
+> - **KI-04:** la suite de ADR-0015 ya existe y pasa en QA (PoC-002: 36/36; PoC-003: 95/95 con el caso 6; Inf_test-002: 135/135), pero **no corre automáticamente en cada PR** y `develop`/`release` no tienen protección de rama (Gobierno §2.3.1).
+> - **KI-05:** PoC-003 midió 0 accesos cruzados entre tenants; deja 3 hallazgos sobre ADR-0013 (H-01 URL firmada al portador, H-02 `aliado_id` vs `auth.uid()`, H-04 política `FOR ALL`).
+> - **KI-09:** primera cifra sintética (PoC-004): a 100k aliados/tenant la consulta de cobertura pasa de 123,91 ms a 9,48 ms p95 con 2 índices; extremo a extremo 296 ms p95 con 20 usuarios. Sigue sin cifra real de negocio; listado sin paginación no escala (H-03).
 
 ---
 
@@ -433,6 +465,78 @@ rotación de autoría ni revisor, ADR-0023 con el título interno mal numerado.
 archivo, que es la fuente normativa según Gobierno del Equipo §2.6. Corregir el README al
 ratificar la numeración.
 
+### 🆕 3.1 ADR agregados en V3
+
+**ADR-0025 — Definición de Terminado (DoD) para pases a main**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto (2026-09-22, SCRUM-945) |
+| Decisión (resumen) | Pase a `main` exige pipelines en verde + suites según la arquitectura afectada (Maestro, Newman, aislamiento multi-tenant) + regresión manual enfocada en dependencias |
+| Alternativas descartadas | Aprobar solo si el ticket funciona aislado; automatizar toda la regresión sin criterio humano |
+| Objetivo de Diseño | DR-06 (verificabilidad del aislamiento) |
+| AC / Escenario | AC-10 / QS-17 |
+| Trade-off | Más tiempo de validación y mantenimiento de scripts a cambio de menos regresiones |
+
+**ADR-0026 — Definición de Listo (DoR) para paso a QA**
+
+| Campo | Valor |
+|---|---|
+| Estado | 🟡 Propuesto (2026-09-22, SCRUM-945) |
+| Decisión (resumen) | Antes de pasar a QA, el desarrollador adjunta evidencia funcional, pruebas trazables a criterios de aceptación y comprobación de aislamiento multi-tenant |
+| Alternativas descartadas | Confiar solo en el pipeline (falsos positivos de pruebas generadas por IA); prohibir IA para pruebas; una única herramienta de prueba para todo |
+| Objetivo de Diseño | DR-09 (gobierno) |
+| AC / Escenario | AC-10 / QS-17 |
+| Trade-off | Menor velocidad percibida de desarrollo a cambio de menos rechazos en QA. Inf_test-002 muestra que la última promoción **no lo cumplió** (8 de 9 historias sin criterios, SCRUM-1055) |
+
+**ADR-0027 — API Gateway como punto de entrada único** *(borrador, SDD V1 Anexo A)*
+
+| Campo | Valor |
+|---|---|
+| Estado | ⚪ Borrador — requiere Mesa (PROY-05) |
+| Decisión (resumen) | Spring Cloud Gateway: enrutamiento a Core/Reglas/Despacho, validación temprana de JWT contra JWKS, CORS, rate limiting por `tenant_id`, correlación W3C |
+| Alternativas descartadas | YARP (válida); KrakenD CE y Kong OSS (funciones clave solo Enterprise); Nginx; sin gateway |
+| Objetivo de Diseño | DR-01, DR-03 |
+| AC / Escenario | AC-12 / QS-21, AC-16 |
+| Trade-off | TO-09 — un salto de red más; punto único de falla (2 réplicas en PROD) |
+
+**ADR-0028 — Alcance de los módulos Java y .NET** *(borrador, SDD V1 Anexo A)*
+
+| Campo | Valor |
+|---|---|
+| Estado | ⚪ Borrador — requiere Mesa |
+| Decisión (resumen) | Java (Repo B) = Motor de Reglas por Tenant (RF-02, RF-05, RF-13, RF-16); .NET (Repo C) = Motor de Despacho y Asignación (RF-12, RF-14), con acceso a datos solo por RPC atómicas con el JWT del usuario |
+| Alternativas descartadas | Reparto inverso; módulos "de cumplimiento" sin requisitos reales |
+| Objetivo de Diseño | DR-14, DR-16 |
+| AC / Escenario | AC-04, AC-07 / QS-07, QS-09 |
+| Trade-off | TO-09 · excepción acotada a "un solo dueño de datos" |
+
+**ADR-0029 — Ubicación y configuración del clúster Kubernetes** *(borrador, SDD V1 Anexo A)*
+
+| Campo | Valor |
+|---|---|
+| Estado | ⚪ Borrador — requiere Mesa y resultado de SP-TO-11 |
+| Decisión (resumen) | Railway para QA/PROD del MVP + clúster k3d/kind de referencia con manifiestos Kustomize (base + overlays dev/qa/prod), mismas imágenes GHCR, `NetworkPolicy` *default deny*, contenedores no-root |
+| Alternativas descartadas | Clúster gestionado (costo fijo, viola ADR-0019); K3s en VM gratuita (Oracle en "Mejor no"); solo Railway (incumple PROY-08) |
+| Objetivo de Diseño | KI-03 |
+| AC / Escenario | AC-06 / QS-16 |
+| Trade-off | TO-11 — el clúster no sirve tráfico productivo real |
+
+### 🆕 3.2 Estado de los ADR tras las PoC del Sprint 2
+
+| ADR | Estado V2 | Evidencia nueva | Acción propuesta |
+|---|---|---|---|
+| ADR-0011 | Aceptado | PoC-004: confirmado, no se reabre; no cumple 50 ms a 100k sin 2 índices | Agregar índices (SCRUM-1054); si se activa §6, usar PostGIS y descartar geohash (93,78 % de precisión) |
+| ADR-0013 | Propuesto | PoC-003: carga 1 MB p95 1180 ms, URL firmada p95 423 ms, 95/95, control negativo 20 en rojo | Corregir H-01/H-02/H-04 y pasar a Aceptado |
+| ADR-0015 | Propuesto | Suite ejecutada (casos 1–6): 36/36, 95/95, 135/135 en QA | Pasar a Aceptado; automatizar en PR |
+| ADR-0018 | Aceptado | PoC-002: decidido pero no implementado; la PoC construyó `custom_access_token_hook`; 4/4 suplantaciones rechazadas; firma ES256 p95 0,10 ms | Promover el hook a migraciones |
+| ADR-0021 | Propuesto | PoC-001 (ya en V2) | Aceptar con revisor (DOC-14 D-02) |
+| ADR-0012 | Aceptado | **Adversa** (H-02, KI-13) | Condicionar TO-06; migración 008 con rol |
+
+**Cobertura tras V3:** 26 ADR en la carpeta (18 Aceptados/Aprobados, 8 Propuestos) + 3
+borradores. Nota de numeración: el SDD 0.1 había llamado "ADR-0025/0026" al gateway y a
+Java/.NET; esos números ya pertenecen a DoD/DoR, por eso los borradores usan 0027–0029.
+
 ---
 
 ## 4. Atributos_Calidad
@@ -464,6 +568,9 @@ ratificar la numeración.
 | AC-19 | Seguridad | Cumplimiento normativo |
 
 > Excluidos deliberadamente: RNF-06 (responsabilidad PCI DSS) y RNF-11 (modelo de pagos) no son atributos de calidad ISO 25010 por sí mismos — están representados vía AC-19. RNF-09 (cobertura por zonas) es una restricción de producto (REST-01/DR-02), no un atributo de calidad.
+
+> 🆕 V3: AC-12 (Modularidad) y AC-14 (Portabilidad) reciben escenario propio — QS-21 y QS-22
+> (§5). AC-09 y AC-18 siguen sin escenario; AC-19 corresponde al 2º incremento.
 
 ---
 
@@ -738,6 +845,50 @@ de una tabla de 13 columnas, para que Source/Stimulus/Response se puedan leer co
 
 > Cobertura funcional: los 24 escenarios cubren RF-01 a RF-28 completos — RF-01 a RF-23 (MVP) en QS-01 a QS-15, y RF-24 a RF-28 (2º incremento) en QS-21 a QS-24. QS-16 a QS-20 son transversales: no prueban un RF puntual, sino una condición de calidad que protege a todos los módulos a la vez.
 
+> 🆕 **Corrección V3:** la nota anterior anuncia QS-21..QS-24 para el 2º incremento, pero esos
+> escenarios nunca se redactaron en V1 ni V2. En V3, **QS-21 y QS-22 se asignan a AC-12
+> (Modularidad) y AC-14 (Portabilidad)**, que no tenían escenario propio (hueco declarado en
+> DOC-14 D-07). RF-24..RF-28 quedan sin escenarios hasta que se diseñen.
+
+**🆕 QS-21 — Transversal (AC-12 Modularidad)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Mantenibilidad / Modularidad |
+| Source (Fuente) | Equipo de desarrollo |
+| Stimulus (Estímulo) | Se despliega una nueva versión de un backend (Reglas, Despacho o Core) |
+| Artifact (Artefacto) | Backends distribuidos + API Gateway |
+| Environment (Entorno) | QA / Producción, operación normal |
+| Response (Respuesta) | Los demás servicios siguen operando sin redespliegue coordinado |
+| Response Measure (Medida) | 0 despliegues coordinados; latencia adicional por salto de servicio ≤ 50 ms p95 |
+| Prioridad / Impacto / Complejidad | Media / Medio / Media — validación: SP-TO-09 |
+
+**🆕 QS-22 — Transversal (AC-14 Portabilidad)**
+
+| Campo | Valor |
+|---|---|
+| Atributo | Portabilidad / Adaptabilidad |
+| Source (Fuente) | Mesa de Arquitectura |
+| Stimulus (Estímulo) | Se decide migrar de Supabase Auth a otro IdP compatible con OIDC |
+| Artifact (Artefacto) | Capa de autenticación, hook de claims y políticas RLS |
+| Environment (Entorno) | Planificación de cambio de proveedor |
+| Response (Respuesta) | La autorización se adapta sin reescribir las políticas RLS, gracias a funciones de indirección `app.tenant_id()` / `app.user_role()` sobre `auth.jwt()` (DD V2 §8.1) |
+| Response Measure (Medida) | Esfuerzo estimado ≤ 1 sprint; 0 políticas RLS modificadas |
+| Prioridad / Impacto / Complejidad | Baja / Medio / Media — validación: SP-TO-10 |
+
+**🆕 Estado de validación de los escenarios (evidencia de PoC)**
+
+| QS | Validación | Resultado |
+|---|---|---|
+| QS-02 | ✅ PoC-002, Inf_test-002 | 0 fugas; 4/4 suplantaciones rechazadas; 135/135 aserciones en QA |
+| QS-04 | ◐ PoC-003 | Aislamiento KYC validado (95/95); tiempo de bandeja sin medir |
+| QS-08 | ✅ PoC-004 | E2E p95 296 ms con 20 VUs (objetivo < 1 s); BD 9,48 ms a 100k **solo con 2 índices** |
+| QS-09 | ✅ PoC-001 | 1 asignación de 50; control negativo 10 en 136 ms. La latencia medida (alineación artificial de 3 s) no es representativa de producción |
+| QS-11 | ✅ PoC-001 r5 | Reintento del ganador → 200, 0 filas nuevas (aceptación de solicitud) |
+| QS-17 | ◐ | Suite de 6 casos existe y pasa; no está en el workflow de PR |
+| QS-20 | ✅ | Una base de código Flutter (web operativa; móvil sin publicar) |
+| Resto | ⬜ | Sin medición; ver spikes en §6 Tabla D |
+
 ---
 
 ## 6. Trade-offs
@@ -813,24 +964,44 @@ la decisión se sostiene solo en criterio de la Mesa.
 
 | ID | Nivel | Evidencia citada | Spike que la produce |
 |---|---|---|---|
-| TO-01 | Ninguna | — | [SP-TO-01](../Entregas/Spikes/SP-TO-01-overhead-rls-busqueda.md) |
-| TO-02 | Ninguna | — | [SP-TO-02](../Entregas/Spikes/SP-TO-02-combinatoria-configuracion-aislamiento.md) |
-| TO-03 | **Empírica** | [PoC-001](../Entregas/PoC/PoC-001-exclusion-concurrente-aceptacion.md) (SCRUM-926, 2026-09-21): 1 asignación de 50 aceptaciones simultáneas, 0 dobles, contra un control negativo que bajo idéntica carga produjo 10 asignaciones en 136 ms | [SP-TO-03](../Entregas/Spikes/SP-TO-03-saturacion-y-cola-de-reintento.md) — solo el residual: saturación sostenida y caída de base |
-| TO-04 | Ninguna | — | [SP-TO-04](../Entregas/Spikes/SP-TO-04-huella-agentes-observabilidad.md) |
-| TO-05 | Ninguna | — | [SP-TO-05](../Entregas/Spikes/SP-TO-05-crecimiento-suite-costo-ci.md) |
-| TO-06 | **Adversa** | [PoC-001 §H-02](../Entregas/PoC/PoC-001-exclusion-concurrente-aceptacion.md): `tenant_isolation_solicitud` tiene `roles = {public}` y no restringe el rol, contra lo que exige `DD-MANI.md` §5.4 | [SP-TO-06](../Entregas/Spikes/SP-TO-06-autorizacion-canal-realtime.md) |
-| TO-07 | Ninguna | — | [SP-TO-07](../Entregas/Spikes/SP-TO-07-aprendizaje-admin-tenant.md) |
-| TO-08 | Ninguna | — | [SP-TO-05](../Entregas/Spikes/SP-TO-05-crecimiento-suite-costo-ci.md) (misma decisión que TO-05, ADR-0015) |
-| TO-09 | Documental | ADR-0019 (§Consecuencias): la latencia HTTP/REST y la trazabilidad distribuida se declaran como consecuencia negativa asumida | [SP-TO-09](../Entregas/Spikes/SP-TO-09-latencia-estilo-distribuido.md) |
-| TO-10 | Documental | ADR-0022 (§Trade-off asumido): renuncia explícita a la portabilidad a un Postgres *vanilla* sin rehacer la capa de autenticación | [SP-TO-10](../Entregas/Spikes/SP-TO-10-costo-de-salida-supabase-auth.md) |
-| TO-11 | Documental | ADR-0023 (§Trade-off): "Railway con menor techo de escala que Azure", sin cifra | [SP-TO-11](../Entregas/Spikes/SP-TO-11-techo-de-escala-railway.md) |
-| TO-12 | Documental | ADR-0020 y ADR-0024 (§Trade-off asumido y §Consecuencias negativas): fragmentación declarada en ambos, sin inventario | [SP-TO-12](../Entregas/Spikes/SP-TO-12-sincronizacion-artefactos-visuales.md) |
+| TO-01 | Ninguna | — | SP-TO-01 |
+| TO-02 | Ninguna | — | SP-TO-02 |
+| TO-03 | **Empírica** | [PoC-001](../../Project/PoC/PoC-001-exclusion-concurrente-aceptacion.md) (SCRUM-926, 2026-09-21): 1 asignación de 50 aceptaciones simultáneas, 0 dobles, contra un control negativo que bajo idéntica carga produjo 10 asignaciones en 136 ms | SP-TO-03 — solo el residual: saturación sostenida y caída de base |
+| TO-04 | Ninguna | — | SP-TO-04 |
+| TO-05 | Ninguna | — | SP-TO-05 |
+| TO-06 | **Adversa** | [PoC-001 §H-02](../../Project/PoC/PoC-001-exclusion-concurrente-aceptacion.md): `tenant_isolation_solicitud` tiene `roles = {public}` y no restringe el rol, contra lo que exige `DD-MANI.md` §5.4 | SP-TO-06 |
+| TO-07 | Ninguna | — | SP-TO-07 |
+| TO-08 | Ninguna | — | SP-TO-05 (misma decisión que TO-05, ADR-0015) |
+| TO-09 | Documental | ADR-0019 (§Consecuencias): la latencia HTTP/REST y la trazabilidad distribuida se declaran como consecuencia negativa asumida | SP-TO-09 |
+| TO-10 | Documental | ADR-0022 (§Trade-off asumido): renuncia explícita a la portabilidad a un Postgres *vanilla* sin rehacer la capa de autenticación | SP-TO-10 |
+| TO-11 | Documental | ADR-0023 (§Trade-off): "Railway con menor techo de escala que Azure", sin cifra | SP-TO-11 |
+| TO-12 | Documental | ADR-0020 y ADR-0024 (§Trade-off asumido y §Consecuencias negativas): fragmentación declarada en ambos, sin inventario | SP-TO-12 |
 
 > **Estado de la evidencia al cerrar DOC-14 (2026-09-22).** De 12 trade-offs, **1 tiene
 > evidencia empírica** (TO-03), 1 tiene evidencia **adversa** que contradice parcialmente la
 > decisión vigente (TO-06), 4 tienen evidencia documental y **6 no tienen ninguna**. Los
 > once spikes de `Entregas/Spikes/` están abiertos y suman 57 h de timebox: la Mesa debe
 > priorizarlos, no ejecutarlos todos. Ver `Project/DOC-14-mesa-arquitectura-2026-09-22.md`.
+
+**🆕 Tabla E — Evidencia agregada en V3 (PoC-002, PoC-003, PoC-004 e Inf_test-002)**
+
+La Tabla D se conserva como estaba al cerrar DOC-14. Esta tabla registra solo los cambios de
+nivel producidos por las PoC que terminaron después.
+
+| ID | Nivel en V2 | Nivel en V3 | Evidencia nueva | Qué sigue faltando |
+|---|---|---|---|---|
+| TO-01 | Ninguna | **Parcial** | PoC-004 midió la consulta de cobertura **con RLS activo** como `authenticated`: 9,48 ms p95 a 100k aliados con índices | Delta contra la misma consulta sin RLS (SP-TO-01) |
+| TO-06 | Adversa | Adversa | Sin cambio; KI-13 lo formaliza como killer | SP-TO-06 |
+| TO-08 | Ninguna | **Parcial** | Inf_test-002: 135 aserciones Newman + 313 pruebas Flutter corren en el CI actual sin bloquear el flujo | Proyección de crecimiento (SP-TO-05) |
+| TO-09 | Documental | Documental | El borrador ADR-0027 (gateway) agrega un salto de red; QS-21 le da umbral (≤ 50 ms p95 por salto) | Medición (SP-TO-09) |
+| TO-10 | Documental | **Parcial** | PoC-002 midió el costo de la integración Auth↔DB: firma ES256 p95 0,10 ms, delta E2E 0,07 ms; QS-22 le da umbral | Costo de salida (SP-TO-10) |
+| TO-11 | Documental | Documental | Borrador ADR-0029 propone dónde correr Kubernetes | Techo de Railway (SP-TO-11) |
+| TO-12 | Documental | Documental | SDD V1 §3.3 fija una fuente editable única por tipo de diagrama | Inventario (SP-TO-12) |
+
+> 🆕 **Estado de la evidencia en V3 (2026-09-23).** De 12 trade-offs: **1 empírica** (TO-03),
+> **3 parciales** (TO-01, TO-08, TO-10), **1 adversa** (TO-06), **3 documentales** (TO-09,
+> TO-11, TO-12) y **4 sin evidencia** (TO-02, TO-04, TO-05, TO-07). Los 11 spikes siguen
+> abiertos.
 
 ---
 
@@ -906,7 +1077,7 @@ calificación y cierre.
 Cuadrícula de las 13 capacidades de la tabla anterior, agrupadas por dominio, con distinción
 visual entre capacidades MVP vigentes y capacidades de 2º incremento fuera de este corte.
 
-![Mapa de capacidades de negocio](<../Diagramas/Negocio/v1/MAPA DE CAPACIDADES.jpg>)
+![Mapa de capacidades de negocio](<../../Diagramas/Negocio/v1/MAPA DE CAPACIDADES.jpg>)
 
 ### 7.4 Cadena de valor del ciclo del servicio
 
@@ -924,7 +1095,7 @@ Flujo horizontal de las 6 etapas de la tabla anterior, con el actor y el artefac
 bajo cada etapa; marcar explícitamente el punto de despacho concurrente (broadcast, ver
 ADR-0016) como una bifurcación, no un paso lineal más.
 
-![Cadena de valor del ciclo del servicio](<../Diagramas/Negocio/v1/CADENA DE VALOR.jpg>)
+![Cadena de valor del ciclo del servicio](<../../Diagramas/Negocio/v1/CADENA DE VALOR.jpg>)
 
 ### 7.5 Procesos de negocio clave
 
@@ -940,7 +1111,7 @@ de otro tenant (REST-02).
 Swimlanes: Aliado / Administrador de tenant / Sistema. Incluir el nodo de decisión
 aprobar/rechazar y los documentos KYC como artefacto adjunto al registro.
 
-![BPMN — Alta y verificación de aliado](<../Diagramas/Negocio/v1/VERIFICACION ALIADO.jpg>)
+![BPMN — Alta y verificación de aliado](<../../Diagramas/Negocio/v1/VERIFICACION ALIADO.jpg>)
 
 #### 7.5.2 Ciclo completo del servicio
 
@@ -955,7 +1126,7 @@ Swimlanes: Cliente / Aliado(s) / Sistema. Incluir el gateway paralelo de despach
 resolución "primera aceptación válida", el bucle de ajuste de cotización, y el join de
 calificación bidireccional antes del cierre.
 
-![BPMN — Ciclo completo del servicio](<../Diagramas/Negocio/v1/BPMN CICLO SERVICIO.jpg>)
+![BPMN — Ciclo completo del servicio](<../../Diagramas/Negocio/v1/BPMN CICLO SERVICIO.jpg>)
 
 ### 7.6 Modelo de dominio conceptual
 
@@ -987,7 +1158,11 @@ Cotización, Evento, Calificación, Tarifa, con las cardinalidades listadas arri
 | Transaccional de alta concurrencia | Repo C — microservicio .NET | ADR-0004, ADR-0019, ADR-0023 |
 
 ---
-## 7. Vista de Contenedores
+## 8. Vista de Contenedores y Vista de Procesos
+
+> 🆕 V3: en V2 esta sección estaba numerada "7" por error (duplicaba Arquitectura de Negocio, DOC-14 D-07). Se renumera sin cambiar su contenido.
+
+### 8.1 Vista de Contenedores
  
 **Diagrama C4 — Nivel 2 (Contenedores)**
  
@@ -999,8 +1174,8 @@ proyecto (PROY-07).*
 
  
 
-diagramas/c4/c4-contenedores_arquitectura-alto-nivel_v1.jpg` — ver ADR-0008 para
-convención de versionado.*
+*Fuente: `diagramas/c4/c4-contenedores_arquitectura-alto-nivel_v1.jpg` — ver ADR-0008 para
+convención de versionado. 🆕 Exportación versionada en el repositorio: `Diagramas/c4/C2-Contenedores.png`; fuente editable `Diagramas/c4/workspace-as-built.dsl`.*
  
 ### Lectura del diagrama
  
@@ -1013,4 +1188,128 @@ convención de versionado.*
 
 
 ---
-## 8. Vista de Procesos ![Diagrama de secuencia - exclusión mutua](../Diagramas/diagrama_secuencia_exclusion_mutua.png) El sistema garantiza exclusión mutua mediante una actualización condicional (compare-and-swap) sobre el campo estado de la solicitud. Solo la primera petición que encuentra el registro en estado pendiente logra actualizarlo; cualquier petición posterior falla la condición y recibe rechazo, evitando así la doble asignación (RNF-05).
+
+### 8.2 Vista de Procesos
+
+![Diagrama de secuencia - exclusión mutua](../../Diagramas/diagrama_secuencia_exclusion_mutua.png)
+
+El sistema garantiza exclusión mutua mediante una actualización condicional (compare-and-swap) sobre el campo estado de la solicitud. Solo la primera petición que encuentra el registro en estado pendiente logra actualizarlo; cualquier petición posterior falla la condición y recibe rechazo, evitando así la doble asignación (RNF-05).
+
+> 🆕 **Validado por PoC-001** (SCRUM-926, 2026-09-21): 50 aceptaciones simultáneas → 1
+> asignación, 49 × `409 ya_no_disponible`; el control negativo sin el mecanismo produjo 10
+> asignaciones en 136 ms. Secuencias adicionales (login con resolución de tenant, despacho
+> con gateway/Reglas/Despacho, cotización con validación de tarifario) en SDD V1 §6.
+
+### 🆕 8.3 Contenedores objetivo tras V3
+
+La lectura del diagrama de §8.1 queda así con los borradores ADR-0027/0028 (SDD V1 §5.3):
+
+| Bloque | Contenido | ADR |
+|---|---|---|
+| Cliente | Flutter App (Web servida por Nginx + Android/iOS) | ADR-0019, RNF-08 |
+| Borde | API Gateway (Spring Cloud Gateway) | ADR-0027 (borrador) |
+| Backend Core | Serverpod (Dart): tenants, directorio, KYC, catálogo, cotización, ejecución, calificación, mensajería, tarifario | ADR-0012, ADR-0023 |
+| Módulo Java | Motor de Reglas por Tenant (ranking, requisitos KYC, validación de tarifario) — sin base propia | PROY-07, ADR-0028 (borrador) |
+| Módulo .NET | Motor de Despacho y Asignación (crear solicitud, aliados válidos, aceptación concurrente) — solo RPC atómicas con el JWT del usuario | PROY-07, ADR-0028 (borrador), ADR-0021 |
+| Plataforma externa | Supabase Auth, PostgreSQL/RLS, Storage KYC, Realtime, Data API | ADR-0012, 0013, 0017, 0018, 0022 |
+
+Esto resuelve el "persistencia del módulo (pendiente de definir)" de §8.1: ni Java ni .NET
+tienen base propia.
+
+---
+
+## 🆕 9. Vistas de arquitectura 4+1 ↔ C4
+
+ADR-0024 fija la **notación** (C4 + UML + BPMN + MER) y descartó 4+1/UML estricto como notación
+única. En V3 se usa 4+1 como **índice de vistas** (qué preguntas debe responder la
+arquitectura) y C4 como forma de dibujar la estructura. El desarrollo completo está en el
+SDD V1 §3–§8.
+
+| Vista 4+1 | Pregunta | Realización (ADR-0024) | Dónde |
+|---|---|---|---|
+| Escenarios (+1) | ¿Qué valida la arquitectura? | Escenarios de calidad QS-01..QS-22 + BPMN | §5, §7.5 |
+| Lógica | ¿Qué hace y con qué abstracciones? | C4 L1 Contexto + L2 Contenedores; modelo de dominio; MER | §7.6, §8.1, §8.3; SDD V1 §5; `Modelo_Datos_MANI.md` |
+| Procesos | ¿Cómo interactúa en ejecución y con qué concurrencia? | Secuencias UML | §8.2; SDD V1 §6; DD V2 §6 |
+| Desarrollo | ¿Cómo se organiza el código? | C4 L3 Componentes; repositorios; Clean Architecture | SDD V1 §7 |
+| Física | ¿Dónde corre y cómo se protege? | C4 Deployment + tablas de configuración | §10; Documento de Infraestructura V1 |
+
+Fuente editable única por tipo de diagrama (mitiga TO-12): C4 en
+`Diagramas/c4/workspace-as-built.dsl`; secuencias en `Diagramas/Negocio/flujos/*.mmd`; BPMN en
+Miro con exportación en `Diagramas/Negocio/v1/`; MER en `Product/DDL_MANI.sql`.
+
+---
+
+## 🆕 10. Vista física e infraestructura
+
+### 10.1 Sección de infraestructura de SAD V2 (DOC-15 / SCRUM-946) — se conserva completa
+
+*Texto original de `Product/SADV2.md`.*
+
+> La infraestructura de MANI se organiza en tres ambientes — DEV, QA y PROD — según la topología ratificada en DOC-08 (Aprobada, 2026-09-21), que reemplaza la vista de despliegue previa de DD-MANI §9 en todo lo relativo a segregación de ambientes. DEV opera con Docker local autocontenido; QA y PROD son proyectos independientes de Supabase Cloud con cómputo en Railway (QA) y en una plataforma de hosting oficial aún no nombrada por DOC-08 (PROD). El esquema DDL y las políticas RLS son homogéneos entre ambientes; datos, identidad, almacenamiento KYC, secretos y red están estrictamente aislados. **Queda abierta y sin resolver la ubicación de Kubernetes (PROY-08, obligatorio) dentro de esta topología** — DOC-08 no lo menciona pese a ser posterior a la resolución que lo confirma como requisito innegociable. El SAD (KI-03) ya da por resuelto el "sí" de Kubernetes y remite el "cómo" (proveedor de cómputo, nodos) al spike SP-TO-11 (DOC-14), aún no ejecutado; esta sección de infraestructura debe actualizarse en cuanto ese spike produzca resultado, y hasta entonces se remite a la Mesa de Arquitectura antes de considerar cerrada esta sección.
+
+#### 1. Topología de ambientes (DEV / QA / PROD)
+
+| Ambiente | Rama Gitflow | Cómputo backend | Persistencia | Registro de imágenes | Observabilidad/Gate |
+|---|---|---|---|---|---|
+| **DEV** | `develop` | Docker local del desarrollador (Docker Compose) | PostgreSQL 16 Alpine local + Adminer | GHCR `ghcr.io/trama-as/mani-flutter`, tags `dev`, `dev-<sha>` | Linter, formato, tests con cobertura (sin SonarCloud) |
+| **QA (Testing/Staging)** | `release` | Railway, contenedores GHCR tag `staging`/`testing`/`release` | Proyecto dedicado Supabase Cloud (QA) | Mismo GHCR, tags de staging | CI + DAST (OWASP ZAP) + Newman/Postman (aislamiento multi-tenant, ADR-0015) |
+| **PROD** | `main` | Plataforma de hosting oficial (DOC-08 no nombra el proveedor — ver §4.1), contenedores GHCR tag `latest`/`vX.Y.Z` | Proyecto dedicado Supabase Cloud (PROD), aislado de QA | Mismo GHCR, tags inmutables | CI + **SonarCloud SAST/Quality Gate vinculante** (ADR-0005) + Release oficial |
+
+Promoción: `develop → release → main`, sin saltos — ningún despliegue a PROD sin pasar por DEV y QA con CI en verde (Gobierno del Equipo §2.5).
+
+#### 2. Qué se comparte vs. qué se aísla (resumen — matriz completa en DOC-08 §3)
+
+- **Compartido y homogéneo:** esquema DDL (17 tablas, mismo script versionado en los 3 ambientes — paridad de ambientes); definición de políticas RLS (idénticas en código, ejecución aislada por ambiente); registro de contenedores GHCR (mismo repo, tags mutuamente excluyentes).
+- **Aislado:** motor de base de datos (Docker local en DEV vs. proyectos Supabase Cloud distintos en QA/PROD), datos y registros, autenticación/identidad (mock/bypass en DEV, Supabase GoTrue con usuarios dummy en QA, GoTrue productivo en PROD), almacenamiento KYC (buckets `kyc-documents-staging` vs. `kyc-documents-prod`), variables de entorno/secretos (`.env` local → GitHub Secrets `release` → GitHub Environment Secrets `production` con aprobación), red y dominios (`localhost` → dominio de staging → dominio productivo, con aislamiento DNS/TLS).
+
+#### 3. Backend distribuido sobre esta topología
+
+La topología de DOC-08 es agnóstica del reparto de módulos backend (Serverpod/Dart, Java/Repo B, .NET/Repo C — ADR-0012, ADR-0004, PROY-07): los tres coexisten (ver ADR-0023 para consolidación de stack) y cada uno se empaqueta y promueve bajo el mismo esquema de tags GHCR por ambiente descrito en §1. DOC-08 no detalla el mecanismo de contenerización específico de Serverpod (Dart) — mismo vacío documental que ya señalaba el diagrama de despliegue anterior; se mantiene como pendiente, no se asume.
+
+### 🆕 10.2 Actualización V3 — estado verificado y cierres
+
+Detalle completo en `Documento_Infraestructura_V1.md`. Cambios respecto de §10.1:
+
+| Punto de §10.1 | Estado verificado al 2026-09-23 | Fuente |
+|---|---|---|
+| Kubernetes sin ubicación | Propuesta: Railway para QA/PROD del MVP + clúster k3d/kind de referencia con manifiestos Kustomize (base + overlays), mismas imágenes, `NetworkPolicy` *default deny* — ADR-0029 (borrador), depende de SP-TO-11 | Infraestructura V1 §9 |
+| DEV con tags GHCR `dev` | El workflow `docker-publish.yml` **solo publica desde `main`** (`latest`, semver); no existen tags `dev`/`staging` | Infraestructura V1 I-06 |
+| QA con Railway | Ningún backend desplegado todavía; QA consiste en Supabase QA + `flutter-web-staging.zip` (artefacto de Actions, 14 días) | Infraestructura V1 §4.3 |
+| QA con ZAP + Newman | Newman corrido manualmente (135/135); ZAP no integrado en ningún workflow | Inf_test-002; Infra S-07 |
+| Esquema homogéneo "17 tablas" | QA tiene 21 tablas tras las migraciones 001–007, aplicadas por CI desde el 2026-09-23 (el paso estaba siempre `skipped` hasta `MANI-Flutter#23`) | Inf_test-002 §4 |
+| "Políticas RLS idénticas en código" | **No se cumple:** las 16 `tenant_isolation_*` solo existen en QA (KI-12) | Inf_test-002 §4.2 |
+| Buckets `kyc-documents-staging/prod` | El bucket real en QA se llama `kyc-documentos` (más `solicitudes`); corregir DOC-08 | PoC-003; Infra I-09 |
+| PROD en Supabase dedicado | No aprovisionado; `main` aún contiene la plantilla Flutter Demo | SDD V1 B-09 |
+| Secretos por ambiente | `SUPABASE_QA_DB_URL` configurado; GitHub Environment `production` **no creado**; rulesets solo en `main` | Gobierno §2.3.1; Infra S-05 |
+| Contenerización de Serverpod | Sigue sin definir (sin repo Core) | — |
+| Registro de imágenes | Código usa GHCR; ADR-0023 dice Docker Hub → propuesta: unificar en GHCR | Infra M-02 |
+
+### 🆕 10.3 Seguridad por capas (resumen)
+
+| Capa | Control | Estado |
+|---|---|---|
+| Identidad | JWT ES256 con `tenant_id`/`user_role` vía hook, *fail-closed* | ◐ hook solo en PoC |
+| Borde | Gateway valida JWT, CORS, rate limit por tenant | ⬜ (ADR-0027) |
+| Servicio | Revalidación de JWT + autorización por rol | ⬜ |
+| Datos | RLS `tenant_isolation_*` | ◐ KI-12, KI-13 |
+| Archivos | Bucket privado + `kyc_isolation` + URL firmada corta | ◐ H-01/H-04 |
+| Red | TLS; `/health` y `/metrics` solo en red privada; `NetworkPolicy` en K8s | ⬜ |
+| Proceso | Rulesets, PR obligatorio, Environments con aprobación, Sonar, ZAP | ◐ solo `main` |
+
+---
+
+## 🆕 11. Pendientes para la Mesa
+
+| # | Decisión | Origen |
+|---|---|---|
+| 1 | Ratificar numeración ADR-0021/0023 | DOC-14 D-01 |
+| 2 | ADR-0021 → Aceptado con revisor | DOC-14 D-02 |
+| 3 | Ticket de H-02/KI-13 con responsable; SP-TO-06 primero | DOC-14 D-03 |
+| 4 | Dueño de TO-07 | DOC-14 D-04 |
+| 5 | Revisores de ADR-0021/0022/0024 | DOC-14 D-05 |
+| 6 | Priorización de spikes (24 h en el sprint) | DOC-14 D-06 |
+| 7 | Aceptar QS-21/QS-22 para AC-12/AC-14 | DOC-14 D-07 (V3) |
+| 8 | ADR-0013 (con correcciones H-01/H-02/H-04) y ADR-0015 → Aceptado | §3.2 |
+| 9 | Borradores ADR-0027, ADR-0028, ADR-0029 | SDD V1 Anexo A |
+| 10 | Registro de imágenes: GHCR | Infraestructura V1 M-02 |
+| 11 | Migración 008 (KI-12) antes de aprovisionar PROD | §2 |

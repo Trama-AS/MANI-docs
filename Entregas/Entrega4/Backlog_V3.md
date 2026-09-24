@@ -21,7 +21,7 @@ DOC-14, SDD V1, Documento de Infraestructura V1
 | Campo | Valores |
 | --- | --- |
 | Tipo | HU (historia de usuario), Task, Spike, PoC, Doc, Deuda |
-| Estado | ⬜ Por hacer · 🔵 En curso · 🟣 En revisión · ✅ Finalizada · ⚠️ Desalineado (Jira ≠ código) |
+| Estado | Por hacer · En curso · En revisión · Finalizada · Desalineado (Jira ≠ código) |
 | Prioridad | Crítica / Alta / Media / Baja (heredada del RF, SRS V3) |
 | Est. | Puntos de historia (Fibonacci), heredados del RF cuando la HU no tiene estimación propia |
 
@@ -53,93 +53,93 @@ DOC-14, SDD V1, Documento de Infraestructura V1
 
 | ID | Historia | RF | Prior. | Est. | Estado |
 | --- | --- | --- | :---: | :---: | :---: |
-| US-01.1.1 | **Como** Admin. de plataforma, **quiero** registrar una empresa como tenant, **para** que opere aislada desde el primer momento. | RF-01 | Crítica | 8 | ⬜ |
-| US-01.1.2 | **Como** Admin. del tenant, **quiero** configurar qué documentos exijo por tipo de aliado, **para** adaptar el KYC a mi empresa sin desarrollo. | RF-02 | Crítica | 5 | ⬜ |
-| US-01.1.3 | **Como** Admin. del tenant, **quiero** configurar la regla de posicionamiento del listado (cobertura, calificación o comisión), **para** priorizar según mi negocio. | RF-02, RF-13 | Crítica | 3 | ⬜ |
-| US-01.2.1 | **Como** usuario, **quiero** iniciar sesión indicando mi empresa, **para** acceder solo a los datos de mi tenant. | RF-03 | Crítica | 8 | ◐ login implementado en `features/auth`; resolución por slug pendiente |
-| US-01.2.2 | **Como** usuario, **quiero** recuperar mi contraseña de forma segura, **para** no perder acceso. | RF-04 | Alta | 3 | ⬜ |
+| US-01.1.1 | **Como** Admin. de plataforma, **quiero** registrar una empresa como tenant, **para** que opere aislada desde el primer momento. | RF-01 | Crítica | 8 | Por hacer |
+| US-01.1.2 | **Como** Admin. del tenant, **quiero** configurar qué documentos exijo por tipo de aliado, **para** adaptar el KYC a mi empresa sin desarrollo. | RF-02 | Crítica | 5 | Por hacer |
+| US-01.1.3 | **Como** Admin. del tenant, **quiero** configurar la regla de posicionamiento del listado (cobertura, calificación o comisión), **para** priorizar según mi negocio. | RF-02, RF-13 | Crítica | 3 | Por hacer |
+| US-01.2.1 | **Como** usuario, **quiero** iniciar sesión indicando mi empresa, **para** acceder solo a los datos de mi tenant. | RF-03 | Crítica | 8 | Parcial login implementado en `features/auth`; resolución por slug pendiente |
+| US-01.2.2 | **Como** usuario, **quiero** recuperar mi contraseña de forma segura, **para** no perder acceso. | RF-04 | Alta | 3 | Por hacer |
 
 ### EP-02 — Registro y perfiles
 
-| ID | Historia (resumen) | RF | Jira | Estado Jira | Código | Estado real |
-| --- | --- | --- | --- | --- | --- | :---: |
-| US-02.1.1 | Registro aliado persona natural (con documentos) | RF-05 | SCRUM-846 | En revisión | PR #14 en `develop` | ⚠️ |
-| US-02.1.2 | Registro aliado empresa (Cámara de Comercio) | RF-05 | SCRUM-847 | En revisión | PR #14 | ⚠️ |
-| US-02.1.3 | Aprobar/rechazar registro de aliado | RF-06 | SCRUM-848 | Finalizada | `d9c6ef8` (commit directo) | ◐ bandeja incompleta (SDD B-03) |
-| US-02.1.4 | Declarar zona de cobertura | RF-07 | SCRUM-849 | Finalizada | `d9c6ef8` | ✅ (sin criterios) |
-| US-02.1.5 | Registrar empleado directo | RF-05 | — | — | — | ⬜ |
-| US-02.1.6 | Aliado gestiona su disponibilidad | RF-14 (apoyo) | — | — | — | ⬜ |
-| US-02.2.1 | Registro cliente persona natural | RF-08 | SCRUM-851 | En revisión | PR #14 | ⚠️ |
-| US-02.2.2 | Cliente empresa con múltiples sitios | RF-08 | — | — | — | ⬜ |
-| US-02.2.3 | Reglas contextuales del sitio visibles al aliado | RF-09 | — | — | — | ⬜ |
-| US-02.3.1 | Editar perfil propio | RF-05/08 | — | — | — | ⬜ |
-| US-02.3.2 | Aceptación de Términos y Habeas Data (Ley 1581) | RF-05/08 | — | — | — | ⬜ |
+| ID | Historia (resumen) | RF | Prior. | Est. | Jira | Estado Jira | Código | Estado real |
+| --- | --- | --- | :---: | :---: | --- | --- | --- | :---: |
+| US-02.1.1 | Registro aliado persona natural (con documentos) | RF-05 | Highest | 3.0 | SCRUM-846 | En revisión | PR #14 en `develop` | Desalineado |
+| US-02.1.2 | Registro aliado empresa (Cámara de Comercio) | RF-05 | Medium | 3.0 | SCRUM-847 | En revisión | PR #14 | Desalineado |
+| US-02.1.3 | Aprobar/rechazar registro de aliado | RF-06 | Medium | 3.0 | SCRUM-848 | Finalizada | `d9c6ef8` (commit directo) | Parcial bandeja incompleta (SDD B-03) |
+| US-02.1.4 | Declarar zona de cobertura | RF-07 | High | 3.0 | SCRUM-849 | Finalizada | `d9c6ef8` | Finalizada (sin criterios) |
+| US-02.1.5 | Registrar empleado directo | RF-05 | Medium | 3.0 | — | — | — | Por hacer |
+| US-02.1.6 | Aliado gestiona su disponibilidad | RF-14 (apoyo) | Medium | 3.0 | — | — | — | Por hacer |
+| US-02.2.1 | Registro cliente persona natural | RF-08 | Highest | 3.0 | SCRUM-851 | En revisión | PR #14 | Desalineado |
+| US-02.2.2 | Cliente empresa con múltiples sitios | RF-08 | Medium | 3.0 | — | — | — | Por hacer |
+| US-02.2.3 | Reglas contextuales del sitio visibles al aliado | RF-09 | Medium | 3.0 | — | — | — | Por hacer |
+| US-02.3.1 | Editar perfil propio | RF-05/08 | Medium | 3.0 | — | — | — | Por hacer |
+| US-02.3.2 | Aceptación de Términos y Habeas Data (Ley 1581) | RF-05/08 | Low | 3.0 | — | — | — | Por hacer |
 
 Texto completo de cada historia: `Product/Product_Backlog.md` (sin cambios de redacción).
 
 ### EP-03 — Categorías
 
-| ID | Historia | RF | Jira | Estado Jira | Código | Estado real |
-| --- | --- | --- | --- | --- | --- | :---: |
-| US-03.1.1 | Crear categoría con flujo operativo | RF-10 | SCRUM-857 | Finalizada | PR #18 | ✅ (única con criterios G/W/T) |
-| US-03.1.2 | Desactivar categoría sin afectar servicios en curso | RF-10 | — | — | — | ⬜ |
-| US-03.1.3 | Aliado declara categorías que atiende | RF-11 | SCRUM-859 | En curso (subtareas 1016–1021 "por hacer") | PR #19 | ⚠️ |
+| ID | Historia | RF | Prior. | Est. | Jira | Estado Jira | Código | Estado real |
+| --- | --- | --- | :---: | :---: | --- | --- | --- | :---: |
+| US-03.1.1 | Crear categoría con flujo operativo | RF-10 | Highest | 5.0 | SCRUM-857 | Finalizada | PR #18 | Finalizada (única con criterios G/W/T) |
+| US-03.1.2 | Desactivar categoría sin afectar servicios en curso | RF-10 | High | 3.0 | — | — | — | Por hacer |
+| US-03.1.3 | Aliado declara categorías que atiende | RF-11 | Medium | 3.0 | SCRUM-859 | En curso (subtareas 1016–1021 "por hacer") | PR #19 | Desalineado |
 
 ### EP-04 — Flujo core del servicio
 
-| ID | Historia | RF | Jira | Estado real |
-| --- | --- | --- | --- | :---: |
-| US-04.1.1 | Crear solicitud (fotos y descripción) | RF-12 | SCRUM-860 (En revisión) | ⚠️ PR #22 en `develop` |
-| US-04.1.2 | Ver aliados válidos por cobertura y categoría (**paginado**, PoC-004 H-03) | RF-12 | — | ⬜ |
-| US-04.1.3 | Filtrar por tipo de aliado | RF-12 | — | ⬜ |
-| US-04.1.4 | Aceptar/rechazar solicitud sin doble asignación | RF-14 | SCRUM-863 (En revisión) | ⚠️ PR #21; RPC validada por PoC-001; app con datasource en memoria |
-| US-04.1.5 | Priorizar por comisión ofrecida | RF-13 | — | ⬜ |
-| US-04.2.1 | Cotización con mano de obra y materiales | RF-15 | — | ⬜ |
-| US-04.2.2 | Alerta de tarifa bidireccional | RF-16 | — | ⬜ |
-| US-04.2.3 | Cliente acepta/rechaza/ajusta cotización | RF-17 | — | ⬜ |
-| US-04.3.1 | Marcar inicio/fin de ejecución | RF-18 | — | ⬜ |
-| US-04.3.2 | Registrar eventos durante la ejecución | RF-18 | — | ⬜ |
-| US-04.3.3 | Cliente consulta el log del servicio | RF-18 | — | ⬜ |
-| US-04.3.4 | Rastreo del aliado en vivo | — | — | 🚫 **Fuera de alcance del MVP** (SRS §1.2: geolocalización en tiempo real descartada) |
-| US-04.3.5 | Adición por imprevisto | RF-17 | — | ⬜ |
-| US-04.3.6 | Evidencias sin conexión (offline) | RF-18 | — | ⬜ |
-| US-04.4.1 | Cliente califica al aliado | RF-19 | — | ⬜ |
-| US-04.4.2 | Aliado califica al cliente | RF-19 | — | ⬜ |
-| US-04.4.3 | Calificación agregada en el listado | RF-13, RF-19 | — | ⬜ |
-| US-04.5.1 | Cancelar solicitud antes de la ejecución | RF-14 | — | ⬜ |
-| US-04.5.2 | Penalización por cancelación tardía | RF-25 | — | ⬜ (depende de pagos, 2º incremento) |
-| US-04.6.1 | Historial de servicios del cliente | RF-18 | — | ⬜ |
-| US-04.6.2 | Historial de trabajos del aliado | RF-18 | — | ⬜ |
+| ID | Historia | RF | Prior. | Est. | Jira | Estado real |
+| --- | --- | --- | :---: | :---: | --- | :---: |
+| US-04.1.1 | Crear solicitud (fotos y descripción) | RF-12 | Highest | 3.0 | SCRUM-860 (En revisión) | Desalineado PR #22 en `develop` |
+| US-04.1.2 | Ver aliados válidos por cobertura y categoría (**paginado**, PoC-004 H-03) | RF-12 | High | 3.0 | — | Por hacer |
+| US-04.1.3 | Filtrar por tipo de aliado | RF-12 | High | 3.0 | — | Por hacer |
+| US-04.1.4 | Aceptar/rechazar solicitud sin doble asignación | RF-14 | Highest | 3.0 | SCRUM-863 (En revisión) | Desalineado PR #21; RPC validada por PoC-001; app con datasource en memoria |
+| US-04.1.5 | Priorizar por comisión ofrecida | RF-13 | Medium | 3.0 | — | Por hacer |
+| US-04.2.1 | Cotización con mano de obra y materiales | RF-15 | High | 3.0 | — | Por hacer |
+| US-04.2.2 | Alerta de tarifa bidireccional | RF-16 | High | 3.0 | — | Por hacer |
+| US-04.2.3 | Cliente acepta/rechaza/ajusta cotización | RF-17 | Medium | 3.0 | — | Por hacer |
+| US-04.3.1 | Marcar inicio/fin de ejecución | RF-18 | High | 3.0 | — | Por hacer |
+| US-04.3.2 | Registrar eventos durante la ejecución | RF-18 | High | 3.0 | — | Por hacer |
+| US-04.3.3 | Cliente consulta el log del servicio | RF-18 | Medium | 3.0 | — | Por hacer |
+| US-04.3.4 | Rastreo del aliado en vivo | — | High | 3.0 | — | Fuera de alcance **Fuera de alcance del MVP** (SRS §1.2: geolocalización en tiempo real descartada) |
+| US-04.3.5 | Adición por imprevisto | RF-17 | High | 3.0 | — | Por hacer |
+| US-04.3.6 | Evidencias sin conexión (offline) | RF-18 | High | 3.0 | — | Por hacer |
+| US-04.4.1 | Cliente califica al aliado | RF-19 | High | 3.0 | — | Por hacer |
+| US-04.4.2 | Aliado califica al cliente | RF-19 | Medium | 3.0 | — | Por hacer |
+| US-04.4.3 | Calificación agregada en el listado | RF-13, RF-19 | High | 3.0 | — | Por hacer |
+| US-04.5.1 | Cancelar solicitud antes de la ejecución | RF-14 | High | 3.0 | — | Por hacer |
+| US-04.5.2 | Penalización por cancelación tardía | RF-25 | High | 3.0 | — | Por hacer (depende de pagos, 2º incremento) |
+| US-04.6.1 | Historial de servicios del cliente | RF-18 | Medium | 3.0 | — | Por hacer |
+| US-04.6.2 | Historial de trabajos del aliado | RF-18 | High | 3.0 | — | Por hacer |
 
 ### EP-05 — Comunicación
 
-| ID | Historia | RF | Estado |
-| --- | --- | --- | :---: |
-| US-05.1.1 | Mensajería cliente–aliado por servicio | RF-20 | ⬜ |
-| US-05.1.2 | Notificaciones de mensajes nuevos | RF-20 | ⬜ |
-| US-05.1.3 | Consultar conversación para atender queja | RF-21 | ⬜ |
-| US-05.1.4 | Notificaciones push del ciclo del servicio | RF-20 | ⬜ |
+| ID | Historia | RF | Prior. | Est. | Estado |
+| --- | --- | --- | :---: | :---: | :---: |
+| US-05.1.1 | Mensajería cliente–aliado por servicio | RF-20 | High | 3.0 | Por hacer |
+| US-05.1.2 | Notificaciones de mensajes nuevos | RF-20 | Medium | 3.0 | Por hacer |
+| US-05.1.3 | Consultar conversación para atender queja | RF-21 | High | 3.0 | Por hacer |
+| US-05.1.4 | Notificaciones push del ciclo del servicio | RF-20 | Medium | 3.0 | Por hacer |
 
 ### EP-06 — Tarifas
 
-| ID | Historia | RF | Estado |
-| --- | --- | --- | :---: |
-| US-06.1.1 | Cargar tabla de tarifas por categoría | RF-22 | ⬜ |
-| US-06.1.2 | Ver tarifa de referencia al cotizar | RF-22, RF-16 | ⬜ |
-| US-06.1.3 | Reporte de cotizaciones fuera de rango | RF-23 | ⬜ |
+| ID | Historia | RF | Prior. | Est. | Estado |
+| --- | --- | --- | :---: | :---: | :---: |
+| US-06.1.1 | Cargar tabla de tarifas por categoría | RF-22 | High | 3.0 | Por hacer |
+| US-06.1.2 | Ver tarifa de referencia al cotizar | RF-22, RF-16 | Medium | 3.0 | Por hacer |
+| US-06.1.3 | Reporte de cotizaciones fuera de rango | RF-23 | Medium | 3.0 | Por hacer |
 
 ### EP-07 — Pagos (2º incremento)
 
 US-07.1.1 Pago en línea · US-07.1.2 Audit log inmutable · US-07.1.3 Soporte de pago ·
 US-07.1.4 Escrow · US-07.1.5 Liberación automática · US-07.2.1 Liquidación con comisión ·
-US-07.2.2 Detalle de pagos del aliado. Todas ⬜; bloqueadas por la selección del operador de
+US-07.2.2 Detalle de pagos del aliado. Todas Por hacer; bloqueadas por la selección del operador de
 pagos (SRS §3.2).
 
 ### EP-08 — Soporte y métricas (2º incremento)
 
 US-08.1.1 Queja del cliente · US-08.1.2 Bandeja de quejas · US-08.1.3 Resolución de disputa ·
 US-08.2.1 Publicación en redes · US-08.2.2 Campañas · US-08.3.1 Métricas por tenant ·
-US-08.3.2 Estado de tenants. Todas ⬜.
+US-08.3.2 Estado de tenants. Todas Por hacer.
 
 ---
 
@@ -265,79 +265,79 @@ Escenario: Un cliente intenta aceptar (regla crítica de rol, H-02)
 
 ## 4. Enablers (ÉPICA 1 técnica)
 
-| ID | Tarea | Tipo | Estado |
-| --- | --- | --- | :---: |
-| CFG-01.1 | Inicialización de repositorios | Task | ✅ |
-| CFG-01.2 | Base de datos en Supabase | Task | ✅ (proyecto QA) |
-| CFG-01.3 | Tablas, esquema y RLS básicas | Task | ◐ políticas sin versionar (SCRUM-1051) |
-| CFG-01.4 | Proyecto Flutter base | Task | ✅ |
-| CFG-01.5 | Supabase Auth | Task | ✅ |
-| CFG-01.6 | CI/CD y linters | Task | ✅ (3 workflows por rama) |
-| CFG-01.7 | Redacción del SAD | Task | ✅ V2 |
-| CFG-04 | Seed QA multi-tenant (SCRUM-921) | Task | ✅ (normalizado por 007) |
-| CFG-06 | Pruebas automatizadas en el pipeline | Task | ◐ reglas propuestas (Gobierno §2.3.1); brechas de rulesets |
+| ID | Tarea | Tipo | Prior. | Est. | Estado |
+| --- | --- | --- | :---: | :---: | :---: |
+| CFG-01.1 | Inicialización de repositorios | Task | - | - | Finalizada |
+| CFG-01.2 | Base de datos en Supabase | Task | - | - | Finalizada (proyecto QA) |
+| CFG-01.3 | Tablas, esquema y RLS básicas | Task | - | - | Parcial políticas sin versionar (SCRUM-1051) |
+| CFG-01.4 | Proyecto Flutter base | Task | - | - | Finalizada |
+| CFG-01.5 | Supabase Auth | Task | - | - | Finalizada |
+| CFG-01.6 | CI/CD y linters | Task | - | - | Finalizada (3 workflows por rama) |
+| CFG-01.7 | Redacción del SAD | Task | - | - | Finalizada V2 |
+| CFG-04 | Seed QA multi-tenant (SCRUM-921) | Task | - | - | Finalizada (normalizado por 007) |
+| CFG-06 | Pruebas automatizadas en el pipeline | Task | - | - | Parcial reglas propuestas (Gobierno §2.3.1); brechas de rulesets |
 
 ### 4.1 Nuevos enablers propuestos (derivados de SDD V1 e Infraestructura V1)
 
-| ID | Tarea | Origen | Prior. |
-| --- | --- | --- | :---: |
-| CFG-14 | Migración 008: políticas `tenant_isolation_*` versionadas con restricción de rol | KI-12, KI-13 | 🔴 Crítica |
-| CFG-15 | Migración 010: promover hook de claims, bucket KYC y RPC de cobertura desde PoC | SDD B-04/B-05 | Alta |
-| CFG-16 | Esqueleto del API Gateway (ruta `/api/v1/**` → Core mínimo, `/health`) | ADR-0027 (borrador) | Alta |
-| CFG-17 | Esqueleto del Core Serverpod (`/tenants/resolve`, `/health`, `/metrics`) | ADR-0012 | Alta |
-| CFG-18 | Esqueleto del Motor de Despacho .NET (`POST /solicitudes`, `/aceptar`) | ADR-0028 (borrador) | Alta |
-| CFG-19 | Esqueleto del Motor de Reglas Java (`/reglas/ranking`) | ADR-0028 (borrador) | Media |
-| CFG-20 | Cliente HTTP en Flutter (interceptor Bearer + `flutter_secure_storage`) | SDD B-08 | Alta |
-| CFG-21 | Rulesets en `develop`/`release` + Environments `release` y `production` | Infra S-05 | Alta |
-| CFG-22 | Manifiestos Kustomize + clúster k3d de referencia | ADR-0029 (borrador) | Media |
-| CFG-23 | Newman + ZAP baseline automáticos en el workflow de `release` | QS-17, Infra S-07 | Media |
-| CFG-24 | Publicación GHCR con tags `dev`/`staging` | Infra I-06 | Media |
+| ID | Tarea | Origen | Prior. | Est. | Prior. |
+| --- | --- | --- | :---: | :---: | :---: |
+| CFG-14 | Migración 008: políticas `tenant_isolation_*` versionadas con restricción de rol | KI-12, KI-13 | - | - | Crítica Crítica |
+| CFG-15 | Migración 010: promover hook de claims, bucket KYC y RPC de cobertura desde PoC | SDD B-04/B-05 | - | - | Alta |
+| CFG-16 | Esqueleto del API Gateway (ruta `/api/v1/**` → Core mínimo, `/health`) | ADR-0027 (borrador) | - | - | Alta |
+| CFG-17 | Esqueleto del Core Serverpod (`/tenants/resolve`, `/health`, `/metrics`) | ADR-0012 | - | - | Alta |
+| CFG-18 | Esqueleto del Motor de Despacho .NET (`POST /solicitudes`, `/aceptar`) | ADR-0028 (borrador) | - | - | Alta |
+| CFG-19 | Esqueleto del Motor de Reglas Java (`/reglas/ranking`) | ADR-0028 (borrador) | - | - | Media |
+| CFG-20 | Cliente HTTP en Flutter (interceptor Bearer + `flutter_secure_storage`) | SDD B-08 | - | - | Alta |
+| CFG-21 | Rulesets en `develop`/`release` + Environments `release` y `production` | Infra S-05 | - | - | Alta |
+| CFG-22 | Manifiestos Kustomize + clúster k3d de referencia | ADR-0029 (borrador) | - | - | Media |
+| CFG-23 | Newman + ZAP baseline automáticos en el workflow de `release` | QS-17, Infra S-07 | - | - | Media |
+| CFG-24 | Publicación GHCR con tags `dev`/`staging` | Infra I-06 | - | - | Media |
 
 ---
 
 ## 5. Pruebas de concepto (Sprint 2)
 
-| ID | Ticket | Pregunta | ADR | Resultado | Estado |
-| --- | --- | --- | --- | --- | :---: |
-| PoC-001 | CFG-09 / SCRUM-926 (959–964) | Exclusión concurrente en la aceptación | 0021, 0016 | 1/50, 0 dobles; control 10/50 | ✅ |
-| PoC-002 | CFG-12 / SCRUM-929 (971) | Propagación de claims de tenant | 0018, 0022 | 100 %, 0 fugas, 4/4 suplantaciones | ✅ (informe sin merge en docs) |
-| PoC-003 | CFG-13 / SCRUM-930 | Storage KYC y URLs firmadas | 0013 | p95 1180 ms / 423 ms; 95/95 | ✅ (informe sin merge en docs) |
-| PoC-004 | CFG-10 / SCRUM-927 (965–970) | Cobertura geográfica | 0011 | Cumple solo con 2 índices | ✅ |
-| Inf_PoC-001 | DOC-16 / SCRUM-952 | Informe consolidado | — | — | ✅ |
+| ID | Ticket | Pregunta | ADR | Resultado | Prior. | Est. | Estado |
+| --- | --- | --- | --- | --- | :---: | :---: | :---: |
+| PoC-001 | CFG-09 / SCRUM-926 (959–964) | Exclusión concurrente en la aceptación | 0021, 0016 | 1/50, 0 dobles; control 10/50 | - | - | Finalizada |
+| PoC-002 | CFG-12 / SCRUM-929 (971) | Propagación de claims de tenant | 0018, 0022 | 100 %, 0 fugas, 4/4 suplantaciones | - | - | Finalizada (informe sin merge en docs) |
+| PoC-003 | CFG-13 / SCRUM-930 | Storage KYC y URLs firmadas | 0013 | p95 1180 ms / 423 ms; 95/95 | - | - | Finalizada (informe sin merge en docs) |
+| PoC-004 | CFG-10 / SCRUM-927 (965–970) | Cobertura geográfica | 0011 | Cumple solo con 2 índices | - | - | Finalizada |
+| Inf_PoC-001 | DOC-16 / SCRUM-952 | Informe consolidado | — | — | - | - | Finalizada |
 
 ---
 
 ## 6. Documentación
 
-| ID | Ticket | Entregable | Estado |
-| --- | --- | --- | :---: |
-| DOC-03 | SCRUM-934 | Matriz de trazabilidad HU ↔ RNF ↔ ADR ↔ Componente ↔ PoC | ✅ |
-| DOC-08 | — | Topología de ambientes DEV/QA/PROD | ✅ Aprobada |
-| DOC-14 | — | Mesa de Arquitectura 2026-09-22 (trade-offs con evidencia) | ✅ |
-| DOC-15 | SCRUM-946 | SAD V2 — sección de infraestructura | ✅ (integrada en SAD V3 §10) |
-| DOC-16 | SCRUM-952 | Informe consolidado de PoC | ✅ |
-| — | SCRUM-953 | Informe de test Inf_test-001 | ✅ |
-| — | SCRUM-932 | ADR-0024 Framework de modelado | ✅ Aprobado |
-| — | SCRUM-945 | ADR-0025 DoD / ADR-0026 DoR | 🟣 Propuestos |
-| — | Entrega 4 | SRS V3, Backlog V3, SAD V3, DD V2, SDD V1, Infraestructura V1, Herramientas V3 | 🟣 Este paquete |
+| ID | Ticket | Entregable | Prior. | Est. | Estado |
+| --- | --- | --- | :---: | :---: | :---: |
+| DOC-03 | SCRUM-934 | Matriz de trazabilidad HU ↔ RNF ↔ ADR ↔ Componente ↔ PoC | - | - | Finalizada |
+| DOC-08 | — | Topología de ambientes DEV/QA/PROD | - | - | Finalizada Aprobada |
+| DOC-14 | — | Mesa de Arquitectura 2026-09-22 (trade-offs con evidencia) | - | - | Finalizada |
+| DOC-15 | SCRUM-946 | SAD V2 — sección de infraestructura | - | - | Finalizada (integrada en SAD V3 §10) |
+| DOC-16 | SCRUM-952 | Informe consolidado de PoC | - | - | Finalizada |
+| — | SCRUM-953 | Informe de test Inf_test-001 | - | - | Finalizada |
+| — | SCRUM-932 | ADR-0024 Framework de modelado | - | - | Finalizada Aprobado |
+| — | SCRUM-945 | ADR-0025 DoD / ADR-0026 DoR | - | - | En revisión Propuestos |
+| — | Entrega 4 | SRS V3, Backlog V3, SAD V3, DD V2, SDD V1, Infraestructura V1, Herramientas V3 | - | - | En revisión Este paquete |
 
 ---
 
 ## 7. Spikes de trade-offs (DOC-14)
 
-| ID | Trade-off | Pregunta | h | Prioridad (D-06) | Estado |
-| --- | --- | --- | :---: | :---: | :---: |
-| SP-TO-06 | TO-06 | ¿Realtime autoriza el canal con el rol correcto? | 6 | 1 | ⬜ |
-| SP-TO-03 | TO-03 | Saturación sostenida y caída de base sin cola | 8 | 2 | ⬜ |
-| SP-TO-01 | TO-01 | Overhead de RLS en la búsqueda | 6 | 3 | ⬜ |
-| SP-TO-05 | TO-05, TO-08 | Crecimiento de la suite y costo de CI | 4 | 4 | ⬜ |
-| SP-TO-02 | TO-02 | Combinatoria de configuración vs aislamiento | 4 | Sprint 3 | ⬜ |
-| SP-TO-04 | TO-04 | Huella de agentes de observabilidad | 5 | Sprint 3 | ⬜ |
-| SP-TO-07 | TO-07 | Aprendizaje del admin. tenant | 6 | Sprint 3 | ⬜ |
-| SP-TO-09 | TO-09 | Latencia del estilo distribuido (incluye gateway) | 6 | Sprint 3 | ⬜ |
-| SP-TO-10 | TO-10 | Costo de salida de Supabase Auth | 4 | Sprint 3 | ⬜ |
-| SP-TO-11 | TO-11 | Techo de escala de Railway (alimenta ADR-0029) | 5 | Sprint 3 | ⬜ |
-| SP-TO-12 | TO-12 | Sincronización de artefactos visuales | 3 | Sprint 3 | ⬜ |
+| ID | Trade-off | Pregunta | h | Prioridad (D-06) | Prior. | Est. | Estado |
+| --- | --- | --- | :---: | :---: | :---: | :---: | :---: |
+| SP-TO-06 | TO-06 | ¿Realtime autoriza el canal con el rol correcto? | 6 | 1 | - | - | Por hacer |
+| SP-TO-03 | TO-03 | Saturación sostenida y caída de base sin cola | 8 | 2 | - | - | Por hacer |
+| SP-TO-01 | TO-01 | Overhead de RLS en la búsqueda | 6 | 3 | - | - | Por hacer |
+| SP-TO-05 | TO-05, TO-08 | Crecimiento de la suite y costo de CI | 4 | 4 | - | - | Por hacer |
+| SP-TO-02 | TO-02 | Combinatoria de configuración vs aislamiento | 4 | Sprint 3 | - | - | Por hacer |
+| SP-TO-04 | TO-04 | Huella de agentes de observabilidad | 5 | Sprint 3 | - | - | Por hacer |
+| SP-TO-07 | TO-07 | Aprendizaje del admin. tenant | 6 | Sprint 3 | - | - | Por hacer |
+| SP-TO-09 | TO-09 | Latencia del estilo distribuido (incluye gateway) | 6 | Sprint 3 | - | - | Por hacer |
+| SP-TO-10 | TO-10 | Costo de salida de Supabase Auth | 4 | Sprint 3 | - | - | Por hacer |
+| SP-TO-11 | TO-11 | Techo de escala de Railway (alimenta ADR-0029) | 5 | Sprint 3 | - | - | Por hacer |
+| SP-TO-12 | TO-12 | Sincronización de artefactos visuales | 3 | Sprint 3 | - | - | Por hacer |
 
 Total 57 h; corte propuesto para el sprint en curso: 24 h (SP-TO-06, 03, 01, 05).
 
@@ -347,18 +347,18 @@ Total 57 h; corte propuesto para el sprint en curso: 24 h (SP-TO-06, 03, 01, 05)
 
 | Ticket | Descripción | Origen | Prior. | Estado |
 | --- | --- | --- | :---: | :---: |
-| SCRUM-1051 | 16 políticas `tenant_isolation_*` solo en QA, sin versionar | Inf_test-002 | 🔴 | ⬜ |
-| SCRUM-1054 | 2 índices de cobertura para cumplir 50 ms a 100k | PoC-004 | Alta | ⬜ |
-| SCRUM-1055 | Historias sin criterios de aceptación ni evidencia en Jira | Inf_test-002 §2.3 | Alta | 🔵 (§3 propone criterios) |
-| SCRUM-1056 | PR sin revisión (#9, #14), commits directos a `develop`, protección de rama | Inf_test-002 §2.2 | Alta | ⬜ |
-| SCRUM-1057 | Normalización de dominios en QA (migración 007) | Inf_test-002 §4.3 | — | ✅ |
-| SCRUM-1058 | Brecha de proceso de la promoción (ver Inf_test-002) | Inf_test-002 | Media | ⬜ |
-| SCRUM-1059 | Alinear scripts de poc-cfg09 con el dominio normalizado | Rama `fix/SCRUM-1059-alinear-poc-cfg09` | Media | 🔵 |
-| (crear) | H-02: RLS sin restricción de rol en `solicitud` | PoC-001, DOC-14 D-03 | 🔴 | ⬜ |
-| (crear) | Correcciones de texto de ADR-0013 (H-01, H-02, H-04) | PoC-003 | Media | ⬜ |
-| (crear) | Regenerar `Product/DDL_MANI.sql` desde la cadena de migraciones | PoC-001 | Media | ⬜ |
-| (crear) | Merge de PoC-002 y PoC-003 en MANI-docs (PR #6, #7) | Inf_PoC-001 | Baja | ⬜ |
-| (crear) | Correcciones documentales D-01, D-02, D-06, D-08 | SDD V1 §15.3 | Baja | ⬜ |
+| SCRUM-1051 | 16 políticas `tenant_isolation_*` solo en QA, sin versionar | Inf_test-002 | Crítica | Por hacer |
+| SCRUM-1054 | 2 índices de cobertura para cumplir 50 ms a 100k | PoC-004 | Alta | Por hacer |
+| SCRUM-1055 | Historias sin criterios de aceptación ni evidencia en Jira | Inf_test-002 §2.3 | Alta | En curso (§3 propone criterios) |
+| SCRUM-1056 | PR sin revisión (#9, #14), commits directos a `develop`, protección de rama | Inf_test-002 §2.2 | Alta | Por hacer |
+| SCRUM-1057 | Normalización de dominios en QA (migración 007) | Inf_test-002 §4.3 | — | Finalizada |
+| SCRUM-1058 | Brecha de proceso de la promoción (ver Inf_test-002) | Inf_test-002 | Media | Por hacer |
+| SCRUM-1059 | Alinear scripts de poc-cfg09 con el dominio normalizado | Rama `fix/SCRUM-1059-alinear-poc-cfg09` | Media | En curso |
+| (crear) | H-02: RLS sin restricción de rol en `solicitud` | PoC-001, DOC-14 D-03 | Crítica | Por hacer |
+| (crear) | Correcciones de texto de ADR-0013 (H-01, H-02, H-04) | PoC-003 | Media | Por hacer |
+| (crear) | Regenerar `Product/DDL_MANI.sql` desde la cadena de migraciones | PoC-001 | Media | Por hacer |
+| (crear) | Merge de PoC-002 y PoC-003 en MANI-docs (PR #6, #7) | Inf_PoC-001 | Baja | Por hacer |
+| (crear) | Correcciones documentales D-01, D-02, D-06, D-08 | SDD V1 §15.3 | Baja | Por hacer |
 
 ---
 

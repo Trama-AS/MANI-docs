@@ -11,7 +11,7 @@
 | **Estado** | Borrador para revisión de la Mesa de Arquitectura |
 | **Responsables** | Daniel Ávila (DevOps titular), Nicolás León (DevOps secundario), Santiago (QA / Security), Sara Albarracín (Scrum Master) |
 | **Fuentes** | DOC-08 (topología de ambientes, aprobada 2026-09-21), `Product/SADV2.md` (sección de infraestructura, DOC-15 / SCRUM-946), `Product/SDD-MANI.md` §9–§12, `Product/DD-MANI.md` §8–§9, ADR-0004, 0005, 0006, 0012, 0013, 0015, 0018, 0022, 0023, `Project/Test/Inf_test-002.md`, `Entregas/Entrega4/Inf_PoC-001.md`, código de `MANI-Flutter` (ramas `main`, `develop`, `release`) |
-| **Nota IA** | Consolidado con asistencia de IA (ADR-0009). Las secciones marcadas 🟡 son propuestas que requieren ratificación de la Mesa (PROY-05) antes de implementarse. |
+| **Nota IA** | Consolidado con asistencia de IA (ADR-0009). Las secciones marcadas Advertencia son propuestas que requieren ratificación de la Mesa (PROY-05) antes de implementarse. |
 
 ---
 
@@ -25,12 +25,12 @@
 
 | Marca | Significado |
 | :--- | :--- |
-| ✅ | Implementado y verificado en el repositorio o en un informe de prueba |
-| ◐ | Parcial: existe pero incompleto, solo en PoC o sin verificar |
-| ⬜ | No existe todavía |
-| 🟢 | Decidido por ADR Aceptado o documento Aprobado |
-| 🔵 | Respaldado por ADR Propuesto |
-| 🟡 | Propuesta de este documento — requiere ADR / Mesa |
+| Finalizada | Implementado y verificado en el repositorio o en un informe de prueba |
+| Parcial | Parcial: existe pero incompleto, solo en PoC o sin verificar |
+| Por hacer | No existe todavía |
+| Éxito | Decidido por ADR Aceptado o documento Aprobado |
+| En curso | Respaldado por ADR Propuesto |
+| Advertencia | Propuesta de este documento — requiere ADR / Mesa |
 
 ---
 
@@ -44,7 +44,7 @@
 6. [Pipeline de promoción y gates](#6-pipeline-de-promoción-y-gates)
 7. [Seguridad de la infraestructura](#7-seguridad-de-la-infraestructura)
 8. [Gestión de secretos y variables de entorno](#8-gestión-de-secretos-y-variables-de-entorno)
-9. [Kubernetes (PROY-08) — ubicación propuesta 🟡](#9-kubernetes-proy-08--ubicación-propuesta-)
+9. [Kubernetes (PROY-08) — ubicación propuesta Advertencia](#9-kubernetes-proy-08--ubicación-propuesta-)
 10. [Base de datos y migraciones](#10-base-de-datos-y-migraciones)
 11. [Observabilidad y operación](#11-observabilidad-y-operación)
 12. [Brechas verificadas y plan de cierre](#12-brechas-verificadas-y-plan-de-cierre)
@@ -106,14 +106,14 @@ flowchart TB
     end
 
     subgraph QA["QA — rama release"]
-        subgraph RWQ["Railway · proyecto Staging 🟡"]
+        subgraph RWQ["Railway · proyecto Staging Advertencia"]
             QGW["API Gateway"]
             QCORE["Core Serverpod"]
             QRUL["Reglas Java"]
             QDIS["Despacho .NET"]
             QWEB["mani-web :staging"]
         end
-        subgraph SBQ["Supabase Cloud · proyecto QA ✅"]
+        subgraph SBQ["Supabase Cloud · proyecto QA Finalizada"]
             QAUTH["Auth (GoTrue)"]
             QDB[("PostgreSQL 17.6<br/>RLS")]
             QST["Storage<br/>kyc-documentos · solicitudes"]
@@ -122,14 +122,14 @@ flowchart TB
     end
 
     subgraph PROD["PROD — rama main"]
-        subgraph RWP["Railway · proyecto Production 🟡"]
+        subgraph RWP["Railway · proyecto Production Advertencia"]
             PGW["API Gateway ×2"]
             PCORE["Core Serverpod"]
             PRUL["Reglas Java"]
             PDIS["Despacho .NET"]
             PWEB["mani-web :vX.Y.Z"]
         end
-        subgraph SBP["Supabase Cloud · proyecto PROD ⬜"]
+        subgraph SBP["Supabase Cloud · proyecto PROD Por hacer"]
             PAUTH["Auth (GoTrue)"]
             PDB[("PostgreSQL<br/>RLS")]
             PST["Storage KYC"]
@@ -137,9 +137,9 @@ flowchart TB
         end
     end
 
-    K8S["Clúster Kubernetes de referencia 🟡<br/>k3d / kind — mismos contenedores<br/>(PROY-08, ver §9)"]
-    OBS["Prometheus · Grafana · Datadog ⬜"]
-    PUSH["FCM / APNs ⬜"]
+    K8S["Clúster Kubernetes de referencia Advertencia<br/>k3d / kind — mismos contenedores<br/>(PROY-08, ver §9)"]
+    OBS["Prometheus · Grafana · Datadog Por hacer"]
+    PUSH["FCM / APNs Por hacer"]
 
     CI --> GHCR
     GHCR --> RWQ & RWP & K8S
@@ -169,7 +169,7 @@ flowchart LR
 
 Hoy la app habla directo con Supabase (estilo BaaS que ADR-0019 descartó como destino final;
 aceptado como andamiaje de Sprint 1–2 — SDD brecha B-01). No hay backends desplegados en
-Railway todavía: Serverpod, Java, .NET y el gateway están en estado ⬜.
+Railway todavía: Serverpod, Java, .NET y el gateway están en estado Por hacer.
 
 ---
 
@@ -181,18 +181,18 @@ Railway todavía: Serverpod, Java, .NET y el gateway están en estado ⬜.
 | :--- | :--- | :--- | :--- |
 | **Rama Gitflow** | `develop` (+ `feature/*`, `fix/*`) | `release` (rama persistente, desvío consciente de ADR-0004 — Inf_test-002) | `main` (+ `hotfix/*`) |
 | **Destinatarios** | Desarrolladores | QA, PO, automatizaciones (Newman, k6, ZAP) | Tenants, clientes, aliados |
-| **Cómputo app web** | `docker compose` → `mani-web` :8080 (Nginx) ✅ | `flutter-web-staging.zip` ✅ · imagen `:staging` en Railway 🟡 | Imagen `:latest` / `:vX.Y.Z` en Railway 🟡 · tiendas (móvil) ⬜ |
-| **Cómputo backends** | Docker Compose local 🟡 | Railway proyecto Staging 🟡 | Railway proyecto Production 🟡 |
-| **Base de datos** | `postgres:16-alpine` local + Adminer :8088 ✅ | Supabase Cloud proyecto QA (PostgreSQL 17.6) ✅ | Supabase Cloud proyecto PROD ⬜ |
-| **Esquema** | `database/init` + `database/migrations` 001–007 | Migraciones 001–007 aplicadas por CI (`schema_migrations`) ✅ | Mismas migraciones, mismo orden ⬜ |
+| **Cómputo app web** | `docker compose` → `mani-web` :8080 (Nginx) Finalizada | `flutter-web-staging.zip` Finalizada · imagen `:staging` en Railway Advertencia | Imagen `:latest` / `:vX.Y.Z` en Railway Advertencia · tiendas (móvil) Por hacer |
+| **Cómputo backends** | Docker Compose local Advertencia | Railway proyecto Staging Advertencia | Railway proyecto Production Advertencia |
+| **Base de datos** | `postgres:16-alpine` local + Adminer :8088 Finalizada | Supabase Cloud proyecto QA (PostgreSQL 17.6) Finalizada | Supabase Cloud proyecto PROD Por hacer |
+| **Esquema** | `database/init` + `database/migrations` 001–007 | Migraciones 001–007 aplicadas por CI (`schema_migrations`) Finalizada | Mismas migraciones, mismo orden Por hacer |
 | **Datos** | Seed `02-seed.sql` (tenant ficticio "TRAMA Servicios Demo", zonas Bogotá) | Sintéticos: seeds CFG-04/09/12, normalizados por 007 | Reales |
-| **Identidad** | Mock / JWT estático (DOC-08) · ◐ hoy `.env.example` apunta a un proyecto cloud (SDD D-05) | GoTrue QA, usuarios dummy, hook `custom_access_token_hook` (PoC-002) | GoTrue PROD, verificación real de correo |
-| **Storage KYC** | Mock / filesystem | Bucket `kyc-documentos` + `solicitudes` | Bucket KYC productivo ⬜ |
-| **Red / dominio** | `localhost:8080`, `:5432`, `:8088` | Dominio de staging (ej. `staging-app.mani.trama.com`) ⬜ | Dominio productivo (ej. `app.mani.trama.com`) ⬜ |
-| **TLS** | No aplica (localhost) | TLS gestionado por Railway / Supabase | TLS gestionado; HSTS en gateway 🟡 |
-| **Registro de imágenes** | Build local | GHCR tags `staging`, `testing`, `release`, `staging-<sha>` 🟡 (el workflow actual publica solo desde `main`) | GHCR `latest`, `vX.Y.Z`, `X.Y` ✅ |
-| **Gates de CI** | format, analyze, test + cobertura, integración, build | Igual + migraciones a QA + artefacto QA · Newman/k6/ZAP (manual hoy) | Igual + **SonarCloud Quality Gate vinculante** ✅ |
-| **Secretos** | `.env` local (en `.gitignore`) | GitHub Secrets (`SUPABASE_QA_DB_URL` configurado 2026-09-23) | GitHub Environment `production` con aprobación ⬜ |
+| **Identidad** | Mock / JWT estático (DOC-08) · Parcial hoy `.env.example` apunta a un proyecto cloud (SDD D-05) | GoTrue QA, usuarios dummy, hook `custom_access_token_hook` (PoC-002) | GoTrue PROD, verificación real de correo |
+| **Storage KYC** | Mock / filesystem | Bucket `kyc-documentos` + `solicitudes` | Bucket KYC productivo Por hacer |
+| **Red / dominio** | `localhost:8080`, `:5432`, `:8088` | Dominio de staging (ej. `staging-app.mani.trama.com`) Por hacer | Dominio productivo (ej. `app.mani.trama.com`) Por hacer |
+| **TLS** | No aplica (localhost) | TLS gestionado por Railway / Supabase | TLS gestionado; HSTS en gateway Advertencia |
+| **Registro de imágenes** | Build local | GHCR tags `staging`, `testing`, `release`, `staging-<sha>` Advertencia (el workflow actual publica solo desde `main`) | GHCR `latest`, `vX.Y.Z`, `X.Y` Finalizada |
+| **Gates de CI** | format, analyze, test + cobertura, integración, build | Igual + migraciones a QA + artefacto QA · Newman/k6/ZAP (manual hoy) | Igual + **SonarCloud Quality Gate vinculante** Finalizada |
+| **Secretos** | `.env` local (en `.gitignore`) | GitHub Secrets (`SUPABASE_QA_DB_URL` configurado 2026-09-23) | GitHub Environment `production` con aprobación Por hacer |
 | **Acceso humano a BD** | Total (`postgres:postgres` local) | QA (Santiago) al dashboard; DevOps con credenciales maestras | Solo DevOps titular |
 
 ### 4.2 DEV — detalle
@@ -212,7 +212,7 @@ Reglas:
 - `migrate-local.sh` aplica la cadena de migraciones. Inf_test-002 §3.2 encontró que `004`
   falla sobre un Postgres limpio sin el shim de Supabase (`auth.uid()`, roles `anon`,
   `authenticated`): DEV necesita ese shim para ser fiel a QA — ver brecha I-07.
-- 🟡 Propuesta: agregar al Compose los backends (gateway, core, reglas, despacho) con perfiles
+- Advertencia Propuesta: agregar al Compose los backends (gateway, core, reglas, despacho) con perfiles
   (`docker compose --profile backend up`) para que DEV reproduzca el C4 Nivel 2 completo.
 
 ### 4.3 QA — detalle
@@ -239,7 +239,7 @@ Reglas:
 - **Estado:** `main` todavía contiene la plantilla "Flutter Demo" (SDD brecha B-09). El
   proyecto Supabase PROD y el hosting productivo **no están aprovisionados**. La promoción
   `release → main` es requisito del cierre de sprint.
-- **Requisitos antes del primer despliegue real** (todos ⬜): GitHub Environment
+- **Requisitos antes del primer despliegue real** (todos Por hacer): GitHub Environment
   `production` con revisor obligatorio (DevOps titular), proyecto Supabase PROD con políticas
   RLS versionadas (brecha I-01), dominio + TLS, backups verificados contra el plan contratado.
 
@@ -251,16 +251,16 @@ Resumen de la matriz aprobada en DOC-08 §3, con el estado real verificado:
 
 | # | Componente | Estado | Implementación | Verificado |
 | :-: | :--- | :---: | :--- | :---: |
-| 1 | Motor de base de datos | Aislado | Docker local / Supabase QA / Supabase PROD | ◐ (PROD ⬜) |
-| 2 | Esquema DDL | Compartido | Migraciones 001–007, mismo orden | ◐ (políticas `tenant_isolation_*` sin versionar — I-01) |
-| 3 | Datos | Aislado | Seeds / sintéticos / reales | ✅ |
-| 4 | Identidad | Aislado | Mock / GoTrue QA / GoTrue PROD — JWT independientes por proyecto | ✅ QA |
-| 5 | Storage KYC | Aislado | Mock / bucket QA / bucket PROD | ◐ — nombre real `kyc-documentos`; DOC-08 dice `kyc-documents-staging` (I-09) |
-| 6 | Registro de contenedores | Compartido, tags segregados | GHCR `ghcr.io/trama-as/*` | ◐ — solo publica desde `main` |
-| 7 | Secretos | Aislado | `.env` / Secrets `release` / Environment `production` | ◐ — Environment `production` no creado |
-| 8 | Políticas RLS | Reglas compartidas, ejecución aislada | Mismo código, BD distinta | ◐ — ver I-01 |
-| 9 | Red y dominios | Aislado | localhost / staging / prod | ⬜ dominios |
-| 10 | Pipeline y gates | Diferenciado | Ver §6 | ✅ |
+| 1 | Motor de base de datos | Aislado | Docker local / Supabase QA / Supabase PROD | Parcial (PROD Por hacer) |
+| 2 | Esquema DDL | Compartido | Migraciones 001–007, mismo orden | Parcial (políticas `tenant_isolation_*` sin versionar — I-01) |
+| 3 | Datos | Aislado | Seeds / sintéticos / reales | Finalizada |
+| 4 | Identidad | Aislado | Mock / GoTrue QA / GoTrue PROD — JWT independientes por proyecto | Finalizada QA |
+| 5 | Storage KYC | Aislado | Mock / bucket QA / bucket PROD | Parcial — nombre real `kyc-documentos`; DOC-08 dice `kyc-documents-staging` (I-09) |
+| 6 | Registro de contenedores | Compartido, tags segregados | GHCR `ghcr.io/trama-as/*` | Parcial — solo publica desde `main` |
+| 7 | Secretos | Aislado | `.env` / Secrets `release` / Environment `production` | Parcial — Environment `production` no creado |
+| 8 | Políticas RLS | Reglas compartidas, ejecución aislada | Mismo código, BD distinta | Parcial — ver I-01 |
+| 9 | Red y dominios | Aislado | localhost / staging / prod | Por hacer dominios |
+| 10 | Pipeline y gates | Diferenciado | Ver §6 | Finalizada |
 
 ---
 
@@ -280,10 +280,10 @@ flowchart LR
 
 | Criterio | Fuente | Estado en la última promoción (Inf_test-002) |
 | :--- | :--- | :---: |
-| CI de `develop` en verde (format, analyze, 313 tests, 18 de integración, build) | DOC-08 §5.2 | ✅ Cumple |
-| PR revisado y aprobado por un par; sin commits directos | Gobierno §2.3, Herramientas §4.1 | ❌ No cumple — #9 y #14 sin revisión, 8 commits directos (SCRUM-1056) |
-| DoR cumplida, criterios de aceptación validados | ADR-0026 (Propuesto) | ❌ No cumple — 8 de 9 historias sin criterios (SCRUM-1055) |
-| SonarQube | ADR-0005 | ⚠️ No verificable fuera de `main` |
+| CI de `develop` en verde (format, analyze, 313 tests, 18 de integración, build) | DOC-08 §5.2 | Finalizada Cumple |
+| PR revisado y aprobado por un par; sin commits directos | Gobierno §2.3, Herramientas §4.1 |  No cumple — #9 y #14 sin revisión, 8 commits directos (SCRUM-1056) |
+| DoR cumplida, criterios de aceptación validados | ADR-0026 (Propuesto) |  No cumple — 8 de 9 historias sin criterios (SCRUM-1055) |
+| SonarQube | ADR-0005 | Atención No verificable fuera de `main` |
 
 ### 6.2 Gate QA → PROD (merge a `main`)
 
@@ -294,8 +294,8 @@ flowchart LR
 | Artefacto `flutter-web-staging.zip` validado por QA | DOC-08 §5.2 |
 | Aceptación del PO | Gobierno §1.1.3 |
 | Quality Gate de SonarCloud aprobado | ADR-0005 |
-| DAST OWASP ZAP sin hallazgos High sobre QA | ADR-0005 — ⬜ ZAP aún no integrado |
-| Merge ejecutado por el DevOps titular con aprobación del Environment `production` | ADR-0004 — ⬜ Environment no creado |
+| DAST OWASP ZAP sin hallazgos High sobre QA | ADR-0005 — Por hacer ZAP aún no integrado |
+| Merge ejecutado por el DevOps titular con aprobación del Environment `production` | ADR-0004 — Por hacer Environment no creado |
 
 ---
 
@@ -307,15 +307,15 @@ Ninguna capa confía en la anterior (SDD §9).
 
 | Capa | Control | Decisión | Estado |
 | :--- | :--- | :--- | :---: |
-| 1. Identidad | Supabase Auth emite JWT (ES256) con `app_metadata.tenant_id` y `user_role` vía `custom_access_token_hook`, *fail-closed* | 🟢 ADR-0022, ADR-0018 | ◐ hook solo en PoC (promover — I-04) |
-| 2. Borde | API Gateway valida firma/expiración/emisor contra JWKS; CORS por ambiente; rate limiting por `tenant_id` y usuario | 🟡 ADR-0027 (propuesto en SDD) | ⬜ |
-| 3. Servicio | Cada backend revalida el JWT y autoriza por rol; nunca lee `tenant_id` del body ni de cabeceras | 🟢 ADR-0018, DD §8.3 | ⬜ |
-| 4. Datos | RLS `tenant_isolation_*` con `auth.jwt() -> 'app_metadata' ->> 'tenant_id'` en toda tabla salvo `tenant` y `zona` | 🟢 ADR-0012 | ◐ en QA, sin versionar (I-01) y sin restricción de rol (I-02) |
-| 5. Archivos | Bucket privado, ruta `tenant_id/<uid>/archivo`, política `kyc_isolation`, URL firmada de vida corta | 🔵 ADR-0013 | ◐ validado en PoC-003 con 3 hallazgos |
-| 6. Entre servicios | *Token relay* (JWT del usuario en cada salto); rutas `/internal/v1/*` no expuestas en el gateway; red privada de Railway | 🟢 ADR-0018 | ⬜ |
-| 7. Red | TLS en todo tráfico externo; `/health` y `/metrics` solo en red privada; en K8s `NetworkPolicy` *default deny* | 🟡 este documento | ⬜ |
-| 8. Cadena de suministro | SonarCloud SAST; Dependabot (pub, Maven, NuGet); imágenes base oficiales (`nginx:alpine`, `postgres:16-alpine`) | 🟢 ADR-0005 | ◐ Sonar solo en `main` |
-| 9. Proceso | Branch protection + PR obligatorio + Environments con aprobación | 🟢 ADR-0004, Gobierno §2.3 | ◐ solo `main` protegido (I-05) |
+| 1. Identidad | Supabase Auth emite JWT (ES256) con `app_metadata.tenant_id` y `user_role` vía `custom_access_token_hook`, *fail-closed* | Éxito ADR-0022, ADR-0018 | Parcial hook solo en PoC (promover — I-04) |
+| 2. Borde | API Gateway valida firma/expiración/emisor contra JWKS; CORS por ambiente; rate limiting por `tenant_id` y usuario | Advertencia ADR-0027 (propuesto en SDD) | Por hacer |
+| 3. Servicio | Cada backend revalida el JWT y autoriza por rol; nunca lee `tenant_id` del body ni de cabeceras | Éxito ADR-0018, DD §8.3 | Por hacer |
+| 4. Datos | RLS `tenant_isolation_*` con `auth.jwt() -> 'app_metadata' ->> 'tenant_id'` en toda tabla salvo `tenant` y `zona` | Éxito ADR-0012 | Parcial en QA, sin versionar (I-01) y sin restricción de rol (I-02) |
+| 5. Archivos | Bucket privado, ruta `tenant_id/<uid>/archivo`, política `kyc_isolation`, URL firmada de vida corta | En curso ADR-0013 | Parcial validado en PoC-003 con 3 hallazgos |
+| 6. Entre servicios | *Token relay* (JWT del usuario en cada salto); rutas `/internal/v1/*` no expuestas en el gateway; red privada de Railway | Éxito ADR-0018 | Por hacer |
+| 7. Red | TLS en todo tráfico externo; `/health` y `/metrics` solo en red privada; en K8s `NetworkPolicy` *default deny* | Advertencia este documento | Por hacer |
+| 8. Cadena de suministro | SonarCloud SAST; Dependabot (pub, Maven, NuGet); imágenes base oficiales (`nginx:alpine`, `postgres:16-alpine`) | Éxito ADR-0005 | Parcial Sonar solo en `main` |
+| 9. Proceso | Branch protection + PR obligatorio + Environments con aprobación | Éxito ADR-0004, Gobierno §2.3 | Parcial solo `main` protegido (I-05) |
 
 ### 7.2 Evidencia de seguridad medida
 
@@ -332,15 +332,26 @@ Ninguna capa confía en la anterior (SDD §9).
 
 | ID | Hallazgo | Severidad | Origen | Acción |
 | :--- | :--- | :---: | :--- | :--- |
-| S-01 | Las 16 políticas `tenant_isolation_*` viven solo en QA, no en `database/migrations/`. Reconstruir un ambiente desde la cadena lo dejaría **sin aislamiento**. | 🔴 Crítica | Inf_PoC-001, Inf_test-002 (SCRUM-1051) | Versionar como migración 008 antes de aprovisionar PROD |
-| S-02 | `tenant_isolation_solicitud` tiene `roles = {public}`: un `cliente` puede autoasignarse una solicitud de su tenant. | 🔴 Alta | PoC-001 H-02, DOC-14 D-03 | Política por rol o chequeo de rol en la RPC `aceptar_solicitud`; ejecutar SP-TO-06 |
+| S-01 | Las 16 políticas `tenant_isolation_*` viven solo en QA, no en `database/migrations/`. Reconstruir un ambiente desde la cadena lo dejaría **sin aislamiento**. | Crítica Crítica | Inf_PoC-001, Inf_test-002 (SCRUM-1051) | Versionar como migración 008 antes de aprovisionar PROD |
+| S-02 | `tenant_isolation_solicitud` tiene `roles = {public}`: un `cliente` puede autoasignarse una solicitud de su tenant. | Crítica Alta | PoC-001 H-02, DOC-14 D-03 | Política por rol o chequeo de rol en la RPC `aceptar_solicitud`; ejecutar SP-TO-06 |
 | S-03 | La URL firmada de Storage es un token al portador. | 🟠 Media | PoC-003 H-01 | TTL corto (≤ 60 s) y emisión solo desde el Core |
 | S-04 | `kyc_isolation` es `FOR ALL`: `admin_tenant` puede escribir y borrar documentos KYC, no solo leer. | 🟠 Media | PoC-003 H-04 | Decidir en Mesa; si no es intencional, separar en `FOR SELECT` para admin |
 | S-05 | `develop` y `release` sin protección de rama ni regla `pull_request`; sin Environments. | 🟠 Media | Gobierno §2.3.1, Inf_test-002 | Rulesets en las tres ramas; Environments `release` y `production` |
-| S-06 | SonarCloud solo corre en `main` (403 del Quality Gate desde el 20/09). | 🟡 Baja | Inf_test-002 §2.4 | Evaluar SonarCloud en PR hacia `release` o SonarQube CE self-hosted en CI |
-| S-07 | OWASP ZAP no integrado en ningún workflow. | 🟡 Baja | Herramientas V2 ("En calibración") | Job `zap-baseline` sobre QA tras cada promoción |
+| S-06 | SonarCloud solo corre en `main` (403 del Quality Gate desde el 20/09). | Advertencia Baja | Inf_test-002 §2.4 | Evaluar SonarCloud en PR hacia `release` o SonarQube CE self-hosted en CI |
+| S-07 | OWASP ZAP no integrado en ningún workflow. | Advertencia Baja | Herramientas V2 ("En calibración") | Job `zap-baseline` sobre QA tras cada promoción |
 
-### 7.4 Reglas vinculantes
+
+### 7.4 Demostración de Aislamiento Multi-Tenant
+
+El aislamiento estricto de datos (RNF-01) se garantiza a través de múltiples capas, demostrando que un tenant no puede acceder a información de otro:
+
+1. **Autenticación (Supabase Auth):** Cada petición es firmada criptográficamente (JWT ES256). El `tenant_id` se inyecta directamente en el token por el `custom_access_token_hook` y nunca es provisto por el cliente, evitando suplantación.
+2. **Autorización y RLS (Base de Datos):** Todas las políticas RLS (Row-Level Security) en PostgreSQL incluyen obligatoriamente la restricción `tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid`. Esto significa que a nivel de motor de base de datos, cualquier consulta que no coincida con el tenant del token devuelve cero registros.
+3. **Storage (Documentos KYC y Solicitudes):** El acceso a los buckets está delimitado por el path `tenant_id/<uid>/`. Una política dedicada de aislamiento en el almacenamiento impide listados o accesos cruzados.
+4. **Cifrado y Secretos:** En PROD, todos los datos en reposo están cifrados en Supabase (AES-256) y el tráfico viaja forzosamente bajo TLS 1.3. Los secretos de conexión nunca coexisten entre ambientes.
+5. **Validación Práctica:** Como fue probado en la suite `mani-aislamiento` (PoC-002, 36/36 aserciones), intentos de lectura, escritura, borrado o listado cruzado resultan en respuestas de cero registros o `403 Forbidden` (incluso con tokens alterados, que fallan la verificación de firma `401 Unauthorized`).
+
+### 7.5 Reglas vinculantes
 
 1. La `service_role` key de Supabase **solo** existe en el entorno del Core, y solo para
    tareas administrativas explícitas. Nunca en la app, el gateway, Reglas ni Despacho.
@@ -362,29 +373,29 @@ Ninguna capa confía en la anterior (SDD §9).
 | `SUPABASE_URL` | App, backends | `.env` | Secret `release` | Env `production` | DevOps titular |
 | `SUPABASE_ANON_KEY` | App | `.env` | Secret `release` | Env `production` | DevOps titular |
 | `SUPABASE_SERVICE_ROLE_KEY` | **Solo Core** | `.env` | Secret `release` | Env `production` | DevOps titular |
-| `SUPABASE_QA_DB_URL` | Job de migraciones | — | Secret ✅ (2026-09-23) | — | DevOps titular |
-| `SUPABASE_PROD_DB_URL` | Job de migraciones | — | — | Env `production` ⬜ | DevOps titular |
+| `SUPABASE_QA_DB_URL` | Job de migraciones | — | Secret Finalizada (2026-09-23) | — | DevOps titular |
+| `SUPABASE_PROD_DB_URL` | Job de migraciones | — | — | Env `production` Por hacer | DevOps titular |
 | `SUPABASE_JWKS_URL` | Gateway, backends | `.env` | Variable | Variable | DevOps |
 | `CORE_URL`, `RULES_URL`, `DISPATCH_URL` | Gateway | `.env` | Variables Railway | Variables Railway | DevOps |
 | `ALLOWED_ORIGINS` | Gateway | `http://localhost:8080` | Dominio staging | Dominio prod | DevOps |
-| `SONAR_TOKEN` | CI | — | — | Secret ✅ | DevOps titular |
+| `SONAR_TOKEN` | CI | — | — | Secret Finalizada | DevOps titular |
 | `GITHUB_TOKEN` | Publicación GHCR | — | automático | automático | GitHub |
 | `POSTGRES_*`, `ADMINER_PORT` | Compose DEV | `.env` | — | — | Cada desarrollador |
 
 ### 8.2 Reglas
 
-- **DEV:** `.env` fuera de Git (`.gitignore`); `.env.example` sin valores reales. 🟡 Alinear
+- **DEV:** `.env` fuera de Git (`.gitignore`); `.env.example` sin valores reales. Advertencia Alinear
   `.env.example` con DOC-08 (DEV no debe apuntar a un proyecto cloud — brecha I-08).
 - **QA:** GitHub Repository Secrets consumidos solo por workflows de `release`.
 - **PROD:** GitHub Environment `production` con *required reviewers* = DevOps titular;
   secretos invisibles para ramas distintas de `main`.
 - **Rotación:** al salir un integrante del equipo, al exponerse un secreto o cada fin de
   corte académico. Registro de la rotación en Jira.
-- **Detección:** GitHub secret scanning + push protection activados en la organización 🟡.
+- **Detección:** GitHub secret scanning + push protection activados en la organización Advertencia.
 
 ---
 
-## 9. Kubernetes (PROY-08) — ubicación propuesta 🟡
+## 9. Kubernetes (PROY-08) — ubicación propuesta Advertencia
 
 ### 9.1 El problema
 
@@ -477,7 +488,7 @@ tentativo; ver §13). Debe citar el resultado de SP-TO-11.
 | Verificación | Scripts de solo lectura en `database/verify/` (ej. `11-normalizacion-dominios.sql`, 21/21) |
 | Valores de dominio | MAYÚSCULA en español en la BD (`ALIADO`, `ACTIVO`, `VERIFICADO`, `ASIGNADA`); minúscula en el JWT (`lower(rol)`, contrato de ADR-0018) — migración 007 |
 | Índices pendientes | `(tenant_id, zona_id)` en `cobertura_aliado` y `(tenant_id, categoria_id)` en `aliado_categoria` — sin ellos la cobertura no cumple 50 ms a 100k aliados (PoC-004, SCRUM-1054) |
-| Backups | DOC-08 declara backups diarios y cifrado en reposo en PROD. 🟡 Verificar contra el plan de Supabase que se contrate antes de declararlo cumplido; si el plan gratuito no lo incluye, programar `pg_dump` cifrado desde CI hacia almacenamiento privado |
+| Backups | DOC-08 declara backups diarios y cifrado en reposo en PROD. Advertencia Verificar contra el plan de Supabase que se contrate antes de declararlo cumplido; si el plan gratuito no lo incluye, programar `pg_dump` cifrado desde CI hacia almacenamiento privado |
 
 ---
 
@@ -485,11 +496,11 @@ tentativo; ver §13). Debe citar el resultado de SP-TO-11.
 
 | Tema | Definición | Estado |
 | :--- | :--- | :---: |
-| Endpoints | `/health` y `/metrics` en cada backend; `/actuator/prometheus` en el gateway | ⬜ |
-| Logs | JSON: `timestamp`, `level`, `service_id`, `trace_id`, `tenant_id`, `message`; sin datos personales | ◐ (`StructuredLogger` en la app) |
-| Trazas | `traceparent` W3C de punta a punta | ⬜ |
-| Métricas mínimas | Latencia p95 por ruta y tenant, tasa de errores, `409` de despacho | ⬜ |
-| Alertas | Latencia > 2 s sostenida o errores > 3 % en 5 min → issue en Jira (ADR-0006) | ⬜ |
+| Endpoints | `/health` y `/metrics` en cada backend; `/actuator/prometheus` en el gateway | Por hacer |
+| Logs | JSON: `timestamp`, `level`, `service_id`, `trace_id`, `tenant_id`, `message`; sin datos personales | Parcial (`StructuredLogger` en la app) |
+| Trazas | `traceparent` W3C de punta a punta | Por hacer |
+| Métricas mínimas | Latencia p95 por ruta y tenant, tasa de errores, `409` de despacho | Por hacer |
+| Alertas | Latencia > 2 s sostenida o errores > 3 % en 5 min → issue en Jira (ADR-0006) | Por hacer |
 | Disponibilidad objetivo | ≥ 99,5 % mensual, detección < 5 min (QS-16) | Sin medir (SP-TO-11) |
 | Huella de agentes | < 10 % del techo del plan (SP-TO-04) | Sin medir |
 
@@ -499,18 +510,18 @@ tentativo; ver §13). Debe citar el resultado de SP-TO-11.
 
 | ID | Brecha | Evidencia | Prioridad | Responsable | Ticket |
 | :-: | :--- | :--- | :---: | :--- | :--- |
-| I-01 | Políticas `tenant_isolation_*` sin versionar | Inf_test-002 §4.2 | 🔴 | Backend Lead | SCRUM-1051 |
-| I-02 | RLS sin restricción de rol en `solicitud` | PoC-001 H-02 | 🔴 | Backend Lead | Crear (DOC-14 D-03) |
-| I-03 | Proyecto Supabase PROD y hosting productivo no aprovisionados | SDD §12 | 🔴 | DevOps titular | Crear |
+| I-01 | Políticas `tenant_isolation_*` sin versionar | Inf_test-002 §4.2 | Crítica | Backend Lead | SCRUM-1051 |
+| I-02 | RLS sin restricción de rol en `solicitud` | PoC-001 H-02 | Crítica | Backend Lead | Crear (DOC-14 D-03) |
+| I-03 | Proyecto Supabase PROD y hosting productivo no aprovisionados | SDD §12 | Crítica | DevOps titular | Crear |
 | I-04 | Hook de claims, RPC `aceptar_solicitud` y bucket KYC solo en scripts de PoC | SDD B-05 | 🟠 | Backend Lead | Crear |
 | I-05 | Rulesets solo en `main`; sin Environments | Gobierno §2.3.1 | 🟠 | DevOps titular | SCRUM-1056 |
 | I-06 | GHCR solo publica desde `main`; sin tags `dev`/`staging` | `docker-publish.yml` | 🟠 | DevOps | Crear |
-| I-07 | `004` falla sin shim de Supabase en Postgres limpio | Inf_test-002 §3.2 | 🟡 | DevOps | Crear |
-| I-08 | `.env.example` apunta a Supabase cloud; DOC-08 dice que DEV no se conecta | SDD D-05 | 🟡 | DevOps | Crear |
-| I-09 | Nombre del bucket: `kyc-documentos` (real) vs `kyc-documents-staging/prod` (DOC-08) | PoC-003 vs DOC-08 | 🟡 | DevOps + QA | Corregir DOC-08 |
-| I-10 | Registro de imágenes: GHCR (código) vs Docker Hub (ADR-0023) | SDD P-04 | 🟡 | Mesa | Ratificar |
+| I-07 | `004` falla sin shim de Supabase en Postgres limpio | Inf_test-002 §3.2 | Advertencia | DevOps | Crear |
+| I-08 | `.env.example` apunta a Supabase cloud; DOC-08 dice que DEV no se conecta | SDD D-05 | Advertencia | DevOps | Crear |
+| I-09 | Nombre del bucket: `kyc-documentos` (real) vs `kyc-documents-staging/prod` (DOC-08) | PoC-003 vs DOC-08 | Advertencia | DevOps + QA | Corregir DOC-08 |
+| I-10 | Registro de imágenes: GHCR (código) vs Docker Hub (ADR-0023) | SDD P-04 | Advertencia | Mesa | Ratificar |
 | I-11 | Kubernetes sin ubicación ni manifiestos | §9 | 🟠 | DevOps titular | ADR-0029 + SP-TO-11 |
-| I-12 | ZAP y Newman no automatizados en el workflow de `release` | Herramientas V2 | 🟡 | QA | Crear |
+| I-12 | ZAP y Newman no automatizados en el workflow de `release` | Herramientas V2 | Advertencia | QA | Crear |
 
 ---
 
@@ -545,3 +556,20 @@ tentativo; ver §13). Debe citar el resultado de SP-TO-11.
 | ADR-0015 (pruebas de aislamiento) | §4.3, §7.2 |
 | ADR-0023 (sin Azure, Railway) | §3, §9, M-02 |
 | DOC-08 (topología) | §4, §5 (se conserva como fuente aprobada; I-09 pide corregirla) |
+
+---
+
+## 15. Estimación de Costos de Infraestructura por Ambiente
+
+Con el fin de mantener una defensa económica frente a la competencia (REST-02), el despliegue prioriza servicios gestionados en capas gratuitas y recursos de infraestructura de la red institucional.
+
+| Recurso / Servicio | DEV | QA | PROD | Costo Mensual Estimado |
+| :--- | :--- | :--- | :--- | :--- |
+| **Base de Datos** | Docker local | Supabase Cloud (Free Tier) | Supabase Cloud (Pro Plan) | **$25 USD** (PROD) |
+| **Cómputo Web/Backend**| Máquina del desarrollador | VM 2 Linux Institucional | VM 1 Linux Institucional | **$0 USD** (Patrocinio Universitario) |
+| **CI / CD** | Local | GitHub Actions (Free) | GitHub Actions (Free) | **$0 USD** |
+| **Almacenamiento (Storage)**| Local | Supabase Storage (Free Tier) | Supabase Storage (Pro incl. 100GB)| **$0 USD** (Incluido en BD PROD) |
+| **Dominio y TLS** | `localhost` | `staging.trama.com` | `mani.trama.com` | **$2 USD** (~$24/año) |
+
+**Costo Total Estimado de Operación:** ~$27 USD / mes.
+Esta estructura de costos es una ventaja competitiva masiva frente a soluciones hospedadas 100% en AWS o Azure, cuyo costo base para clústeres gestionados (EKS/AKS + RDS) inicia alrededor de los $200-$300 USD mensuales.

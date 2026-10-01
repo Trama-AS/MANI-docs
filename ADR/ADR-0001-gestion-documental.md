@@ -1,48 +1,49 @@
-# ADR-0001 · Gestión documental: GitHub y OneDrive
+# ADR-0001 — Gestión documental del proyecto
 
 - **Estado:** Aceptado
-- **Fecha:** 2026-08-17 (Mesa de Arquitectura)
-- **Redactor asignado:** Nicolás León (rol secundario DevOps) — 🔴 ver PREGUNTA en README
-- **Decisión de:** proceso / gobierno documental
+- **Decisión de:** gobierno documental
+- **Relacionado con:** ADR-0008
 
 ## Contexto
 
-El equipo tenía documentación dispersa (Drive, GitHub, Confluence propuesto por el PO) y
-sin regla única de dónde vive cada artefacto. Esto rompía la trazabilidad y generaba
-ambigüedad sobre la fuente de verdad de cada documento.
+MANI necesita una fuente de verdad clara para documentación técnica y documentos formales, evitando duplicidad entre GitHub, OneDrive y otras herramientas.
+
+## Alternativas
+
+1. **Todo en OneDrive.** Descartada porque la documentación técnica pierde trazabilidad junto al código.
+2. **Todo en GitHub.** Descartada porque actas y documentos administrativos no requieren versionado técnico.
+3. **Separación GitHub/OneDrive.** Elegida.
 
 ## Decisión
 
-Se define una distribución única:
+La documentación técnica oficial vive en GitHub, dentro de `MANI-Docs`; OneDrive se reserva para documentación formal, administrativa y académica.
 
-**GitHub** (`/docs/` y repositorio de código)
+En `MANI-Docs` deben vivir como mínimo:
+- `SDD.md`;
+- `SAD_MANI.md`;
+- `MANI_Modelo_de_Datos.md`;
+- `/adr/`;
+- `/diagramas/`;
+- guías técnicas versionables.
 
-- Código y elementos técnicos directamente relacionados con desarrollo.
-- **ADR en formato `.md`**, en `/docs/adr/`.
-- Elementos técnicos que ya se gestionan allí y que se decida conservar temporalmente
-  (issues técnicos, workflows, C4/`workspace.dsl`).
+## Justificación
 
-**OneDrive**
-
-- SRS, Análisis de Requerimientos, Gobierno del Equipo,
-  Plan de Tareas, Actas, documentación funcional y documentos administrativos/académicos.
-
-## Alternativas evaluadas
-
-1. **Todo en GitHub.** Descartada: los documentos formales y administrativos no aportan
-   valor versionado línea a línea y saturan el repositorio.
-2. **Confluence + Jira para documentación.** Descartada: agrega una herramienta más y su
-   costo/licenciamiento no se justifica frente a OneDrive ya disponible.
-3. **GitHub para ADR/código + OneDrive para documentos formales.** **Elegida.**
-
-## Trade-off asumido
-
-La documentación formal en OneDrive no queda bajo control de versiones tipo Git. La
-trazabilidad de cambios se apoya en las herramientas y repositorios definidos, no en
-tablas de historial dentro de cada documento.
+Favorece trazabilidad, revisión por Pull Request y consistencia entre arquitectura y código, sin forzar documentos administrativos a un flujo Git.
 
 ## Consecuencias
 
-- Los ADR se escriben y viven en GitHub como `.md`.
-- El resto de la documentación formal se mantiene en OneDrive.
-- El Gobierno del Equipo refleja esta distribución.
+### Positivas
+- Una fuente técnica oficial y versionada.
+- Revisión de cambios mediante PR.
+
+### Negativas
+- Exige disciplina para no mantener copias técnicas divergentes en OneDrive.
+
+## Condición de revisión
+
+Revisar si la organización adopta un repositorio documental único con control de versiones equivalente.
+
+## Trazabilidad
+
+- SDD: documentación y gobierno.
+- Sustituye funcionalmente a ADR-0007.

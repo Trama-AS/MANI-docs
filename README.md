@@ -1,115 +1,356 @@
-# TRAMA · MANI — Repositorio Central de Documentación de Arquitectura
+# MANI
 
-Bienvenido al repositorio oficial de documentación técnica, arquitectura de software, gestión y gobierno del proyecto **MANI**, desarrollado por el equipo **TRAMA**.
+**MANI** es una plataforma SaaS multi-tenant para formalizar y gestionar operaciones de servicio, conectando clientes con aliados durante todo el ciclo:
 
-Este repositorio centraliza y versiona todos los artefactos de diseño, requerimientos (SRS), arquitectura (SAD), registros de decisiones de arquitectura (ADRs), diagramas y entregables oficiales del sistema.
+`Solicitud → Cotización → Ejecución → Calificación → Cierre`
 
----
-
-## 📌 Acerca del Proyecto MANI
-
-**MANI** es una plataforma SaaS multi-tenant diseñada para la formalización, gestión operativa y despacho determinista de servicios, conectando empresas clientes con aliados calificados en diversas categorías de servicio.
-
-### Principales Atributos de Calidad y Drivers de Diseño
-- **Seguridad y Aislamiento Multi-Tenant (RNF-01 / DR-01):** Aislamiento estricto de datos a nivel de motor de persistencia mediante **Row-Level Security (RLS)** nativo en PostgreSQL (ADR-0012) e identificación criptográfica de tenant vía **JWT claims** (ADR-0018).
-- **Despacho Concurrente Determinista (RNF-05 / DR-04):** Asignación atómica de solicitudes a nivel de motor de datos (ADR-0016).
-- **Cobertura Geográfica por Catálogo de Zonas (REST-01 / DR-02):** Cobertura administrativa a nivel de localidad/comuna sin cálculo geoespacial en el MVP (ADR-0011).
-- **DevSecOps Continuo:** Verificación estática con **SonarQube** (SAST), dinámica con **OWASP ZAP** (DAST) y suite automatizada de pruebas de aislamiento en **Newman** (ADR-0005, ADR-0015).
-- **Observabilidad y Feedback Loop:** Telemetría integral con **Prometheus**, **Grafana** y **Datadog**, cerrando el bucle con creación automática de incidentes en el backlog de **Jira** (ADR-0006).
+El proyecto es desarrollado por **TRAMA · Ingeniería de Software**.
 
 ---
 
-## 🗂️ Estructura del Repositorio
+## 1. Problema que resuelve
 
-La organización del repositorio sigue la directriz formal de gestión documental establecida en **ADR-0001** y **ADR-0007**:
+La operación objetivo se gestiona actualmente de forma informal mediante llamadas, mensajería y contactos directos, lo que dificulta:
 
+- mantener trazabilidad de los servicios;
+- verificar aliados;
+- estandarizar tarifas;
+- controlar solicitudes y asignaciones;
+- auditar la operación;
+- escalar el modelo hacia múltiples empresas.
+
+MANI busca centralizar este proceso en una única plataforma configurable por empresa, manteniendo aislamiento estricto entre tenants.
+
+---
+
+## 2. Alcance
+
+### MVP
+
+El primer incremento contempla:
+
+- administración de tenants;
+- autenticación y control de acceso;
+- directorio de aliados y clientes;
+- documentos KYC;
+- catálogo de categorías;
+- cobertura por zonas;
+- creación y despacho de solicitudes;
+- cotizaciones;
+- ejecución del servicio;
+- calificación bidireccional;
+- mensajería y notificaciones;
+- tarifario de referencia;
+- reportes asociados al tarifario.
+
+### Segundo incremento
+
+Quedan previstos para una fase posterior:
+
+- pagos y liquidaciones;
+- gestión de quejas;
+- comercialización;
+- administración avanzada;
+- métricas operativas por tenant.
+
+---
+
+## 3. Principios del producto
+
+MANI se diseña bajo los siguientes criterios:
+
+- **Multi-tenancy:** cada empresa opera con datos, usuarios y configuración aislados.
+- **Configurabilidad:** las reglas de cada tenant cambian mediante configuración, no mediante una versión distinta del software.
+- **Trazabilidad:** las operaciones relevantes del ciclo del servicio deben poder reconstruirse.
+- **Idempotencia:** las operaciones críticas deben soportar reintentos sin duplicar efectos.
+- **Concurrencia controlada:** una solicitud solo puede terminar con una asignación válida.
+- **Cobertura por zonas:** el MVP no utiliza geolocalización en tiempo real ni cálculo por radio.
+- **Seguridad en profundidad:** identidad, autorización y aislamiento de datos se validan en más de una capa.
+
+---
+
+## 4. Arquitectura
+
+La arquitectura objetivo de MANI es:
+
+> **SOA distribuida + API Gateway + enfoque políglota + multi-tenancy**
+
+### Componentes principales
+
+| Componente | Tecnología | Responsabilidad |
+|---|---|---|
+| Cliente | Flutter / Dart | Aplicación web y móvil |
+| API Gateway | NGINX | Entrada única, routing y políticas transversales |
+| Rules Service | Java | Reglas configurables por tenant, ranking y tarifarios |
+| Dispatch Service | .NET | Despacho, asignación y control de concurrencia |
+| Core Services | Node.js | Tenants, usuarios, aliados, clientes, KYC, cotizaciones, ejecución y comunicación |
+| Availability Service | Node.js | Cobertura, disponibilidad y elegibilidad |
+| Persistencia | Supabase | Plataforma administrada |
+| Motor de datos | PostgreSQL | Persistencia relacional y RLS |
+
+Supabase se utiliza como **plataforma administrada** y PostgreSQL como su **motor de base de datos**. No son dos alternativas distintas.
+
+### Seguridad multi-tenant
+
+La identificación autenticada del tenant se basa en un **JWT firmado**.
+
+El aislamiento se aplica mediante:
+
+1. validación inicial en el API Gateway;
+2. autorización dentro de los servicios;
+3. Row-Level Security (RLS) en PostgreSQL;
+4. aislamiento equivalente para documentos KYC en Storage.
+
+---
+
+## 5. Servicios externos
+
+MANI contempla integración con:
+
+- **FCM / APNs** para notificaciones push;
+- **operador de pagos certificado** en el segundo incremento;
+- herramientas de observabilidad;
+- Data Warehouse / BI para analítica.
+
+---
+
+## 6. Ambientes
+
+La línea base contempla exactamente tres ambientes:
+
+```text
+DEV → TEST/QA → PROD
 ```
-MANI-docs/
-├── ADR/                       # Architectural Decision Records (ADR-0001 al ADR-0018)
-├── Diagramas/                 # Repositorio central de diagramas arquitectónicos (ADR-0008)
-│   └── Tecnologías/           # Diagramas de tecnologías de alto nivel (V1 y V2) y Tech Radar
-├── Entregas/                  # Entregables consolidados por sprint / hito curricular
-│   ├── Entrega1/              # Documento inicial de proyecto V1
-│   ├── Entrega2/              # Perfil de proyecto, Backlog, SRS V1, Gobierno y Políticas V1
-│   └── Entrega3/              # Documento de Herramientas, Políticas y Lineamientos V2 (MD y PDF)
-├── Product/                   # Especificación de producto y arquitectura
-│   ├── Analisis_de_Requerimientos.md
-│   ├── Glosario_Terminos_MANI.md
-│   ├── Product_Backlog_MANI_Jira_COMPLETO.csv
-│   ├── SAD-MANI.md            # Software Architecture Document (ADD + ATAM)
-│   └── SRS_MANI.md            # Software Requirements Specification
-├── Project/                   # Gobierno del equipo, ceremonias y marcos de trabajo
-│   ├── Gobierno_del_Equipo.md # Gestión del proyecto, roles, ceremonias y métricas
-│   ├── Matriz_de_Herramientas.md
-│   └── Temas_Mesa_Arq01.md    # Minutas y temas de la Mesa de Arquitectura
-├── Perfil_de_Proyecto_MANI.md # Perfil y justificación estratégica del producto
-└── README.md                  # Este documento
+
+No se define un cuarto ambiente STAGING independiente.
+
+La promoción debe mantener el principio:
+
+> **Build once, deploy many**
+
+El mismo artefacto validado debe promoverse entre ambientes sin reconstruirse.
+
+### Decisiones de infraestructura pendientes
+
+La ubicación concreta del clúster Kubernetes, la configuración definitiva de DEV y el registro oficial de imágenes se encuentran pendientes de cierre con DevOps.
+
+Hasta que esas decisiones queden ratificadas, este README no fija un proveedor de hosting ni un registro de contenedores como parte de la arquitectura oficial.
+
+---
+
+## 7. Contenerización y orquestación
+
+- Docker / OCI para empaquetado.
+- Kubernetes como orquestador requerido por el proyecto.
+- GitHub Actions para CI/CD.
+- Despliegues segregados por ambiente.
+- Configuración y secretos externos al artefacto.
+
+El dimensionamiento y proveedor de cómputo del clúster se documentan en el documento de Infraestructura cuando exista decisión ratificada.
+
+---
+
+## 8. DevSecOps
+
+El flujo de calidad y seguridad contempla:
+
+```text
+Pull Request
+   ↓
+Pruebas unitarias / integración / contratos
+   ↓
+SonarQube
+   ↓
+Build Docker/OCI
+   ↓
+Escaneo de dependencias e imagen
+   ↓
+TEST/QA
+   ↓
+Newman
+   ↓
+OWASP ZAP
+   ↓
+Promoción a PROD
 ```
 
----
+Herramientas principales:
 
-## 📑 Registro de Decisiones de Arquitectura (ADR)
-
-Toda decisión técnica y de gobernanza con impacto estructural se evalúa colegiadamente en la **Mesa de Arquitectura** y se documenta formalmente bajo el formato ADR:
-
-| ADR | Título | Estado | Autor / Rol |
-| :---: | :--- | :---: | :--- |
-| [ADR-0001](ADR/ADR-0001-gestion-documental.md) | Gestión documental: GitHub y OneDrive | Aceptado | Nicolás León (DevOps / PO) |
-| [ADR-0002](ADR/ADR-0002-herramientas-gestion-jira.md) | Herramientas de gestión y seguimiento: Jira | Aceptado | Sara Albarracín (Scrum Master) |
-| [ADR-0003](ADR/ADR-0003-mesa-de-arquitectura.md) | Creación y funcionamiento de la Mesa de Arquitectura | Aceptado | Sara Albarracín (Scrum Master) |
-| [ADR-0004](ADR/ADR-0004-pipeline-cicd-promocion-ambientes.md) | Pipeline de CI/CD Multi-Repositorio y Promoción de Ambientes | Aceptado | Daniel Ávila Medina (DevOps) |
-| [ADR-0005](ADR/ADR-0005-seguridad-devsecops-sast-dast.md) | Integración DevSecOps con Análisis Estático (SonarQube) y Dinámico (OWASP ZAP) | Aceptado | Daniel Ávila Medina (DevOps) |
-| [ADR-0006](ADR/ADR-0006-observabilidad-monitoreo-alertas.md) | Observabilidad, Monitoreo Continuo y Gestión de Incidentes (Prometheus, Grafana, Datadog, Jira) | Aceptado | Daniel Ávila Medina (DevOps) |
-| [ADR-0007](ADR/ADR-0007-documentacion-en-el-repo.md) | Estructura y Gestión de Documentación en el Repositorio | Aceptado | Camila Beltrán (Frontend) |
-| [ADR-0008](ADR/ADR-0008-carpeta-de-diagramas.md) | Organización de Diagramas de Arquitectura en el Repositorio | Aceptado | Camila Beltrán (Frontend) |
-| [ADR-0009](ADR/ADR-0009-politicas-de-ia.md) | Política de Uso de Inteligencia Artificial en el Proyecto | Aceptado | Camila Beltrán (Frontend) |
-| [ADR-0010](ADR/ADR-0010-tech-radar.md) | Definición del Tech Radar del Proyecto | Aceptado | Camila Beltrán (Frontend) |
-| [ADR-0011](ADR/ADR-0011-modelo-de-cobertura.md) | Modelo de Cobertura Geográfica del Aliado por Zonas | Aceptado | Nicolás Álvarez / Juan Sebastián Álvarez |
-| [ADR-0012](ADR/ADR-0012-aislamiento-multitenant.md) | Backend en Dart, Persistencia en Supabase PostgreSQL y Aislamiento con RLS | Aceptado | Juan Sebastián Álvarez (Backend) |
-| [ADR-0013](ADR/ADR-0013-almacenamiento-documentos-kyc.md) | Almacenamiento Seguro de Documentos KYC de Aliados en Supabase Storage | Aceptado | Santiago (QA / Security) |
-| [ADR-0014](ADR/ADR-0014-FeatureToggle.md) | Adopción del Patrón Feature Toggle para Desacoplamiento de Despliegues | Aceptado | Juan Sebastián Álvarez (Backend) |
-| [ADR-0015](ADR/ADR-0015-estrategia-pruebas-aislamiento-multitenant.md) | Estrategia de Pruebas Automatizadas para Aislamiento Multi-Tenant con Newman | Aceptado | Santiago (QA / Security) |
-| [ADR-0016](ADR/ADR-0016-estrategia-despacho.md) | Estrategia de Despacho Simultáneo (Broadcast) con Asignación Atómica | Propuesto | Nicolás Álvarez (Frontend) |
-| [ADR-0017](ADR/ADR-0017-mensajeria-tiempo-real.md) | Mecanismo de Mensajería y Notificaciones en Tiempo Real (Supabase Realtime) | Propuesto | Nicolás Álvarez (Frontend) |
-| [ADR-0018](ADR/ADR-0018-identificacion-propagacion-tenant.md) | Identificación y Propagación de Tenant en Peticiones (Token JWT Claims vs. Header vs. Subdominio) | Aceptado | Daniel Ávila Medina (DevOps) |
+- **SonarQube:** SAST y Quality Gates.
+- **OWASP ZAP:** DAST sobre TEST/QA.
+- **Postman / Newman:** pruebas funcionales, contratos y aislamiento multi-tenant.
+- **k6:** pruebas de carga y concurrencia cuando corresponda.
 
 ---
 
-## 🛠️ Stack Tecnológico Principal
+## 9. Observabilidad
 
-El stack del proyecto se define formalmente en el **Tech Radar V2** (ADR-0010) y en la **Arquitectura Tecnológica de Alto Nivel V2**:
+La estrategia definida utiliza:
 
-- **Cliente y Frontend Móvil:** [Flutter](https://flutter.dev) & [Dart](https://dart.dev) (multiplataforma iOS / Android).
-- **Servicios de Backend:**
-  - **Repo A:** App móvil cliente y aliados (Flutter / Dart).
-  - **Repo B:** Microservicio de reglas de negocio empresariales (Java / Maven / Docker).
-  - **Repo C:** Microservicio transaccional de alta concurrencia (.NET / C#).
-  - **BaaS y Persistencia:** Supabase / PostgreSQL con Row-Level Security (RLS) nativo y Serverpod.
-- **CI/CD y DevOps:** GitHub Actions, Docker, Docker Hub, Railway, Kubernetes (ADR-0021 — sin Azure).
-- **Seguridad (DevSecOps):** SonarQube (SAST), OWASP ZAP (DAST), Newman / Postman (Pruebas automáticas de RLS en CI).
-- **Observabilidad:** Prometheus (Métricas), Grafana (Dashboards), Datadog (APM, Logs y Alertas automáticas hacia Jira).
-- **Gestión Ágil y Diseño:** Jira Software, Discord, Figma, Excalidraw.
+- **Prometheus** para métricas;
+- **Grafana** para visualización;
+- **Datadog** para logs, APM y trazas;
+- `correlation_id` para seguimiento distribuido;
+- Jira como destino de incidentes relevantes.
 
 ---
 
-## 👥 Equipo de Trabajo — TRAMA
+## 10. Estrategia de repositorios
 
-Todos los integrantes técnicos asumen responsabilidad transversal como **Arquitectos** dentro de la **Mesa de Arquitectura** (ADR-0003):
+MANI adopta una estrategia **multi-repo**.
 
-| Integrante | Rol Principal | Segundo Rol |
-| :--- | :--- | :--- |
-| **Nicolás León** | Product Owner | DevOps |
-| **Sara Albarracín** | Scrum Master | Frontend |
-| **Daniel Ávila Medina** | DevOps | Backend |
-| **Santiago** | QA & Security Testing Lead | Product Owner |
-| **Juan Sebastián Álvarez (Alviz)** | Backend Lead | Frontend |
-| **Camila Beltrán** | Frontend Lead | Scrum Master |
-| **Nicolás Álvarez** | Frontend Lead | QA |
+Estructura objetivo:
+
+```text
+MANI-Flutter
+MANI-Gateway
+MANI-Rules-Java
+MANI-Dispatch-DotNet
+MANI-Core-Node
+MANI-Availability
+MANI-Infra
+MANI-Docs
+```
+
+Cada unidad desplegable mantiene de forma independiente:
+
+- código fuente;
+- dependencias;
+- pruebas;
+- pipeline;
+- versionamiento;
+- artefacto contenerizado.
 
 ---
 
-## 📜 Políticas de Gobierno y Trabajo
+## 11. Gestión del proyecto
 
-1. **Gestión de Ramas (Gitflow):** Rama `main` protegida (Producción), `develop` (Integración), ramas de trabajo `feature/*`, `fix/*`, `release/*` y `spike/*`. Todo cambio ingresa exclusivamente mediante Pull Request con revisión de pares y CI en verde (ADR-0004).
-2. **Promoción Inmutable (*Build Once, Deploy Anywhere*):** Las mismas imágenes generadas en *Development* se promueven hacia *Testing* y *Production* sin recompilación.
-3. **Uso Responsable de IA:** Regulado por **ADR-0009**. Prohibido el ingreso de información sensible o credenciales reales en modelos de IA externos. Revisión y autoría humana obligatoria en todo commit. Toda decisión arquitectónica debe ser aprobada en la Mesa de Arquitectura.
+El proyecto se ejecuta bajo **Scrum**.
+
+Herramientas principales:
+
+- **Jira:** backlog, épicas, historias, bugs, sprints y seguimiento.
+- **GitHub:** código, Pull Requests, issues técnicos, CI/CD y documentación técnica versionable.
+- **Discord:** comunicación operativa del equipo.
+- **OneDrive:** documentación administrativa, actas e informes cuando corresponda.
+
+Las decisiones técnicas costosas de revertir pasan por la **Mesa de Arquitectura** y se registran mediante ADR.
+
+---
+
+## 12. Equipo
+
+| Integrante | Rol principal | Segundo rol |
+|---|---|---|
+| Sara Albarracín | Scrum Master | Frontend |
+| Juan Sebastián Álvarez | Backend | Frontend |
+| Camila Beltrán | Frontend | Scrum Master |
+| Nicolás Álvarez | Frontend | QA |
+| Santiago | QA | Product Owner |
+| Daniel Ávila | DevOps | Backend |
+| Nicolás León | Product Owner | DevOps |
+
+Todos los integrantes técnicos participan transversalmente en la **Mesa de Arquitectura**.
+
+---
+
+## 13. Documentación
+
+La documentación del proyecto se divide por responsabilidad para evitar duplicidad.
+
+```text
+MANI-Docs/
+├── README.md
+├── Product/
+│   ├── SRS_MANI.md
+│   └── Perfil_de_Proyecto_MANI.md
+├── Architecture/
+│   ├── SAD_MANI.md
+│   ├── SDD.md
+│   ├── MANI_Modelo_de_Datos.md
+│   ├── TECH_RADAR.md
+│   └── workspace.dsl
+├── ADR/
+│   ├── README.md
+│   └── ADR-XXXX-*.md
+├── Project/
+│   └── GOBIERNO_DEL_EQUIPO.md
+├── DevOps/
+│   └── POLITICAS_DEVOPS_HERRAMIENTAS.md
+├── Infrastructure/
+│   └── INFRAESTRUCTURA_MANI.md
+└── Diagramas/
+    ├── c4/
+    ├── datos/
+    ├── despliegue/
+    └── flujos/
+```
+
+### Fuente de verdad por tema
+
+| Tema | Documento |
+|---|---|
+| Requerimientos | `SRS_MANI.md` |
+| Perfil y contexto del proyecto | `Perfil_de_Proyecto_MANI.md` |
+| Arquitectura | `SAD_MANI.md` |
+| Diseño detallado | `SDD.md` |
+| Modelo de datos, DDL y diccionario | `MANI_Modelo_de_Datos.md` |
+| Decisiones arquitectónicas | `ADR/` |
+| Modelo C4 | `workspace.dsl` |
+| Tecnologías vigentes | `TECH_RADAR.md` |
+| Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
+| DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
+| Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |
+
+---
+
+## 14. Modelo de datos
+
+El documento de modelo de datos contiene:
+
+- glosario de datos;
+- modelo conceptual;
+- modelo lógico;
+- DER;
+- modelo físico;
+- DDL operacional;
+- diccionario de datos;
+- Data Warehouse;
+- modelo dimensional;
+- DDL del Data Warehouse;
+- calidad de datos;
+- relación datos ↔ servicios.
+
+La analítica permanece separada del OLTP para no degradar la operación transaccional.
+
+---
+
+## 15. Estado documental
+
+La arquitectura, requerimientos, ADR y modelo de datos ya fueron depurados hacia la línea base actual.
+
+Se mantiene pendiente el cierre con DevOps de tres decisiones de infraestructura:
+
+1. ubicación concreta de Kubernetes en TEST/QA y PROD;
+2. estrategia definitiva de DEV para Supabase/local;
+3. registro oficial de imágenes.
+
+Estas decisiones deberán actualizar el documento de Infraestructura y las políticas DevOps sin modificar los requerimientos funcionales del producto.
+
+---
+
+## 16. Convenciones
+
+- Ninguna decisión arquitectónica se considera oficial únicamente por aparecer en una conversación o propuesta.
+- Los cambios arquitectónicos relevantes se formalizan mediante ADR.
+- Los ADR históricos no se eliminan; cuando una decisión cambia se marca como `Superseded`.
+- Los requerimientos se mantienen separados de las decisiones de implementación.
+- No se duplican decisiones completas entre SRS, SAD, SDD, ADR, políticas e infraestructura.
+
+---
+
+## 17. Licencia y uso
+
+Proyecto académico desarrollado por **TRAMA · Ingeniería de Software**.
+
+El uso, distribución y publicación del código y documentación se rige por las condiciones definidas por el equipo y el contexto académico del proyecto.

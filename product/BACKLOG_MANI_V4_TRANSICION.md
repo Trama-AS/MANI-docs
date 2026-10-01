@@ -2,7 +2,7 @@
 
 **Objetivo:** conservar todo el trabajo ya ejecutado en Jira, alinear el producto con el SRS vigente y crear explícitamente las tareas necesarias para migrar de la implementación anterior a la arquitectura objetivo actual.
 
-> Regla principal: **una historia o tarea histórica marcada Done no se reabre solo porque cambió la arquitectura**. Se conserva su evidencia. Si necesita adaptación, se crea una tarea `MIG-xx` o un bug de regresión. Así no se borra trabajo real ni se finge que la migración ya ocurrió.
+> Regla principal: **una historia o tarea histórica marcada Done no se reabre solo porque cambió la arquitectura**. Se conserva su evidencia. Si necesita adaptación, se crea una subtarea de migración `-Mn` colgada de la propia historia, una tarea `CFG` en EP-09 o un bug de regresión. Así no se borra trabajo real ni se finge que la migración ya ocurrió.
 
 ## 1. Fotografía del Jira recibido
 
@@ -20,7 +20,7 @@ El backlog nuevo no elimina esas filas. El CSV conserva cada issue legacy con su
 | Clasificación | Significado | Qué hacer |
 |---|---|---|
 | `PRESERVAR_HISTORICO` | Trabajo terminado/evidencia válida | No reabrir |
-| `PRESERVAR_Y_VALIDAR` | Funcionalidad terminada y todavía requerida | Reutilizar y validar mediante MIG/regresión |
+| `PRESERVAR_Y_VALIDAR` | Funcionalidad terminada y todavía requerida | Reutilizar y validar mediante subtareas `-Mn` y regresión |
 | `REESPECIFICAR_Y_REUTILIZAR` | Hay trabajo útil pero cambió el requisito | Conservar código/evidencia y adaptar |
 | `CONTINUAR` | Historia pendiente alineada al SRS | Continuar, ajustada al componente objetivo |
 | `REESPECIFICAR` | La HU actual es demasiado específica o contradice el SRS | Actualizar alcance antes de implementar |
@@ -30,70 +30,160 @@ El backlog nuevo no elimina esas filas. El CSV conserva cada issue legacy con su
 | `NUEVO_DELTA_ARQUITECTURA` | Trabajo necesario por el cambio arquitectónico | Crear y ejecutar |
 | `NUEVO_REQUERIDO` | Hueco entre SRS y backlog legacy | Crear en Jira |
 
-## 3. Qué trabajo ya hecho se conserva
+## 3. Punto de partida real de la arquitectura anterior
 
-Se conservan especialmente los avances ya ejecutados en:
+Antes de listar tareas hay que corregir el supuesto de partida. La arquitectura anterior **no es un backend que haya que mover de lenguaje**: es un cliente Flutter hablando directo con Supabase, con la lógica de negocio en la base de datos.
 
-- Supabase, Auth, RLS y aislamiento multi-tenant.
-- Registro y aprobación de aliados.
-- Registro de cliente persona natural.
-- Categorías.
-- Creación de solicitud.
-- Exclusión concurrente / aceptación sin doble asignación.
-- PoC de despacho concurrente.
-- PoC de identidad/claims de tenant.
-- PoC de Storage/KYC.
-- pipelines, GHCR, secretos y promoción de ambientes.
-- seeds multi-tenant.
-- documentación y diagramas ya consolidados.
+Lo verificado en `MANI-Flutter`:
 
-Ese trabajo **no se desecha**. La diferencia es que parte de la implementación debe moverse o validarse dentro de los límites nuevos: Gateway, Rules Java, Dispatch .NET, Core Node y Availability Node.
+- `main` contiene únicamente el scaffold por defecto de Flutter (un archivo en `lib/`). El producto real vive en **`develop` y `release`**, con 128 archivos en `lib/` y arquitectura limpia por feature (`data` / `domain` / `presentation`), BLoC, `get_it` y `go_router`.
+- Los **siete `*_remote_datasource.dart` instancian `SupabaseClient`** y llaman `.rpc()`, `.from()` y `.storage.from()` directamente. No hay backend propio ni API Gateway; el `nginx.conf` del repositorio sirve la SPA.
+- La lógica de negocio está en **unas 32 funciones PL/pgSQL** bajo `database/` (`crear_solicitud`, `aceptar_solicitud`, `rechazar_solicitud`, `registrar_aliado_empresa`, `resolver_verificacion_aliado`, `_sol_aliado_elegible`, `_sol_zona_cubierta`, `_zona_activa` y auxiliares), más las políticas RLS.
+- `database/`, `docker-compose.yml`, `scripts/` y las migraciones viven **dentro del repositorio Flutter**, y su CI es el que las ejecuta.
+- El registro escribe en las tablas `usuario` y `cliente` con `.from().upsert()` desde el cliente, sin pasar por función alguna.
 
-## 4. Delta arquitectónico que sí hay que ejecutar
+Dos consecuencias para el backlog:
 
-| ID | Prioridad | Pts | Tarea | Dependencias |
-|---|---|---:|---|---|
-| `MIG-01` | Highest | 5 | Crear repositorios faltantes del modelo multi-repo | — |
-| `MIG-02` | Highest | 5 | Definir contratos OpenAPI entre Gateway y servicios | — |
-| `MIG-03` | Highest | 8 | Implementar NGINX API Gateway como entrada única | — |
-| `MIG-04` | Highest | 5 | Crear esqueleto Rules Service en Java | — |
-| `MIG-05` | Highest | 5 | Crear esqueleto Dispatch Service en .NET | — |
-| `MIG-06` | Highest | 8 | Crear esqueleto Core Services en Node.js | — |
-| `MIG-07` | High | 5 | Crear Availability Service en Node.js | — |
-| `MIG-08` | Highest | 8 | Portar y validar registro/KYC ya implementado al Core actual | MIG-06,MIG-14 |
-| `MIG-09` | High | 5 | Portar categorías y asociación aliado-categoría | MIG-04,MIG-06 |
-| `MIG-10` | Highest | 8 | Portar creación de solicitud al Core y despacho al servicio .NET | MIG-05,MIG-06,MIG-07 |
-| `MIG-11` | Highest | 8 | Portar aceptación concurrente a Dispatch .NET | MIG-05,MIG-14 |
-| `MIG-12` | Highest | 5 | Ajustar cobertura implementada a catálogo jerárquico de zonas | MIG-07 |
-| `MIG-13` | High | 5 | Aplicar propiedad lógica de datos por dominio | MIG-04,MIG-05,MIG-06,MIG-07 |
-| `MIG-14` | Highest | 8 | Alinear JWT, Gateway, servicios y RLS | MIG-03,MIG-04,MIG-05,MIG-06,MIG-07 |
-| `MIG-15` | High | 5 | Alinear Supabase DEV, TEST/QA y PROD | — |
-| `MIG-16` | Highest | 5 | Estandarizar imágenes OCI y publicación multi-repo en GHCR | MIG-01 |
-| `MIG-17` | High | 5 | Actualizar Docker Compose por ambiente para consumir GHCR | MIG-16 |
-| `MIG-18` | Highest | 8 | Replicar pipeline CI/CD por repositorio | MIG-01,MIG-16 |
-| `MIG-19` | High | 5 | Extender observabilidad a Gateway y todos los servicios nuevos | MIG-03,MIG-04,MIG-05,MIG-06,MIG-07 |
-| `MIG-20` | High | 5 | Definir hosting y topología concreta de Kubernetes | — |
-| `MIG-21` | High | 8 | Preparar despliegue Kubernetes sin romper Compose actual | MIG-20,MIG-16 |
-| `MIG-22` | Highest | 8 | Ejecutar regresión funcional sobre funcionalidades legacy preservadas | MIG-08,MIG-09,MIG-10,MIG-11,MIG-12,MIG-14 |
+1. La migración consiste en **crear el backend que no existe y sacar al cliente de la base de datos**, no en traducir servicios entre lenguajes.
+2. Los riesgos **KI-01** y **KI-02** del SAD están mal calibrados: KI-01 supone lógica de negocio en Flutter, pero la lógica está en PL/pgSQL. Lo que hay en Flutter son casos de uso que orquestan llamadas RPC.
 
-### Orden recomendado
+### Qué trabajo ya hecho se conserva
 
-1. `MIG-01..07`: crear la estructura de repositorios y servicios.
-2. `MIG-13..18`: datos, identidad, GHCR, Compose y pipelines.
-3. `MIG-08..12`: portar/reutilizar las funcionalidades que ya existen.
-4. `MIG-19`: observabilidad transversal.
-5. `MIG-22`: regresión completa del trabajo preservado.
-6. `MIG-20..21`: cerrar hosting/topología Kubernetes y ejecutar la transición cuando el ADR correspondiente exista.
+Se conserva la inversión en Supabase, Auth, RLS y aislamiento multi-tenant; registro y aprobación de aliados; registro de cliente; categorías; creación de solicitud; exclusión concurrente; las PoC de despacho, identidad y Storage/KYC; los pipelines, GHCR, secretos y promoción de ambientes; los seeds multi-tenant; y la documentación y diagramas consolidados.
+
+Ese trabajo **no se desecha**. Cambia de ubicación: parte de la lógica se mueve a Gateway, Rules Java, Dispatch .NET, Core Node y Availability Node, y el cliente deja de ser quien la invoca.
+
+## 4. Dónde van las tareas de migración
+
+No se crea una épica de migración aparte. El trabajo de transición se reparte en los contenedores que ya existen en Jira:
+
+| Destino | Qué recibe | Convención |
+|---|---|---|
+| **EP-09 — Gestión y configuración del proyecto** | Plataforma, repositorios, Gateway, esqueletos de servicio, identidad, CI/CD, GHCR, Compose, Kubernetes, configuración del cliente Flutter y regresión | `CFG-15` … `CFG-40`, más el spike `SP-05` |
+| **EP-10 — Documentación de arquitectura y entregables académicos** | ADR de la decisión sobre PL/pgSQL, matriz de trazabilidad, actualización de SAD/SDD y del contexto de IA | `DOC-25` … `DOC-28` |
+| **Las 9 historias ya desarrolladas** | El trabajo funcional de migrar y revalidar cada caso de uso, como **subtareas** de la propia historia | `US-xx-M1` … `US-xx-Mn` |
+
+La regla de la sección anterior se mantiene: **ninguna historia en Done se reabre**. Las subtareas `-Mn` cuelgan de la historia para que el trabajo quede trazado contra el requisito original, mientras el estado histórico de la historia permanece intacto.
+
+### 4.1 Spike bloqueante
+
+| ID | Épica | Pts | Spike |
+|---|---|---:|---|
+| `SP-05` | EP-09 | 5 | Decidir si los servicios reescriben la lógica PL/pgSQL o la invocan |
+
+Es la decisión que falta y la que **impide estimar el trabajo funcional**: ¿los servicios nuevos llaman a las funciones existentes, dejando la lógica en la base de datos, o acceden a tablas y la lógica se reescribe en Java, .NET y Node? KI-02 apunta a reescribir, pero nunca se decidió ni se tasó. Mientras no se cierre, las subtareas `-M2` de todas las historias no son estimables.
+
+### 4.2 Plataforma y configuración — EP-09
+
+| ID | Pts | Tarea | Depende de |
+|---|---:|---|---|
+| `CFG-15` | 5 | Crear los repositorios faltantes del modelo multi-repo | — |
+| `CFG-16` | 5 | Definir los contratos OpenAPI entre Gateway y servicios | CFG-15 |
+| `CFG-17` | 8 | Implementar el NGINX API Gateway como entrada única | CFG-15, CFG-16 |
+| `CFG-18` | 5 | Crear el esqueleto del Rules Service en Java | CFG-15 |
+| `CFG-19` | 5 | Crear el esqueleto del Dispatch Service en .NET | CFG-15 |
+| `CFG-20` | 8 | Crear el esqueleto de los Core Services en Node.js | CFG-15 |
+| `CFG-21` | 5 | Crear el esqueleto del Availability Service en Node.js | CFG-15 |
+| `CFG-22` | 8 | Alinear emisión y propagación de JWT entre Auth, Gateway y servicios | CFG-17..21 |
+| `CFG-23` | 8 | **Rediseñar el modelo de identidad en base de datos porque RLS deja de filtrar por `auth.uid()`** | CFG-22, SP-05 |
+| `CFG-24` | 5 | Inventariar y mapear cada función PL/pgSQL a su servicio dueño | SP-05 |
+| `CFG-25` | 5 | Aplicar la propiedad lógica de datos por dominio | CFG-24 |
+| `CFG-26` | 5 | Alinear los proyectos Supabase de DEV, TEST/QA y PROD | — |
+| `CFG-27` | 5 | Estandarizar imágenes OCI y publicación multi-repo en GHCR | CFG-15 |
+| `CFG-28` | 5 | Actualizar el Docker Compose por ambiente para consumir GHCR | CFG-27, CFG-33 |
+| `CFG-29` | 8 | Replicar el pipeline CI/CD en cada repositorio | CFG-15, CFG-27 |
+| `CFG-30` | 5 | Extender la observabilidad al Gateway y a todos los servicios | CFG-17..21 |
+| `CFG-31` | 5 | Definir hosting y topología concreta de Kubernetes | — |
+| `CFG-32` | 8 | Preparar el despliegue en Kubernetes sin romper el Compose actual | CFG-31, CFG-27 |
+| `CFG-33` | 8 | Sacar `database/`, `docker-compose.yml`, `scripts/` y `nginx.conf` del repositorio Flutter | CFG-15 |
+| `CFG-34` | 8 | Construir la capa HTTP del cliente que sustituye a `SupabaseClient` | CFG-16, CFG-17 |
+| `CFG-35` | 5 | Decidir y aplicar qué queda de `supabase_flutter` en el cliente | CFG-34 |
+| `CFG-36` | 5 | **Retirar la `SUPABASE_ANON_KEY` del bundle web y rotarla** | CFG-34, CFG-35 |
+| `CFG-37` | 3 | Resolver la estrategia de ramas de `MANI-Flutter` antes de migrar | — |
+| `CFG-38` | 5 | Reconciliar las 13 ramas `feature`/`fix` con trabajo sin fusionar | CFG-37 |
+| `CFG-39` | 5 | Montar la base de pruebas del cliente contra un mock del Gateway | CFG-16, CFG-34 |
+| `CFG-40` | 8 | Ejecutar la regresión funcional sobre todo lo legacy preservado | CFG-23, CFG-34, CFG-38 |
+
+Tres de estas tareas no estaban contempladas y son las de mayor riesgo:
+
+- **`CFG-23`** — las políticas RLS derivan tenant y usuario de `auth.uid()` porque hoy el llamador es el cliente. Cuando el llamador pase a ser un servicio con `service-role`, **dejan de aislar**. Es el punto que puede tumbar el aislamiento multi-tenant y no estaba nombrado.
+- **`CFG-36`** — el artefacto web publicado hoy incluye la `SUPABASE_ANON_KEY`, de modo que cualquiera puede llamar a PostgREST directamente y solo RLS lo contiene. Hay que sacarla del bundle y rotarla.
+- **`CFG-38`** — hay 13 ramas vivas con trabajo sin fusionar. Si no se reconcilian primero, el trabajo funcional se ejecuta sobre una base incompleta.
+
+### 4.3 Documentación — EP-10
+
+| ID | Pts | Tarea |
+|---|---:|---|
+| `DOC-25` | 2 | Actualizar `architecture_context.txt`, que aún describe la arquitectura anterior a las herramientas de IA |
+| `DOC-26` | 3 | Registrar en ADR la decisión sobre la capa de funciones PL/pgSQL (resultado de `SP-05`) |
+| `DOC-27` | 3 | Reconstruir la matriz de trazabilidad ADR y recuperar los ADR-0022 a ADR-0026 |
+| `DOC-28` | 3 | Actualizar SAD y SDD con el resultado real, corrigiendo KI-01 y KI-02 |
+
+### 4.4 Trabajo funcional — subtareas dentro de cada historia desarrollada
+
+Las nueve historias con trabajo ejecutado mapean **una a una** con las siete carpetas de `lib/features/`, lo que permite acotar el delta por historia:
+
+| Historia | Jira | Estado | RF | Código existente | Lógica PL/pgSQL a portar | Servicio destino |
+|---|---|---|---|---|---|---|
+| `US-02.1.1` Registro aliado persona natural | SCRUM-846 | Done | RF-05 | `features/auth` | `registrar_aliado_persona_natural`, `handle_new_user`, upsert a `usuario` | Core Node |
+| `US-02.1.2` Registro aliado empresa | SCRUM-847 | Done | RF-05 | `features/auth` | `registrar_aliado_empresa` | Core Node |
+| `US-02.1.3` Aprobar/rechazar aliado | SCRUM-848 | Done | RF-06 | `features/profiles/verification` | `listar_aliados_verificacion`, `obtener_aliado_verificacion`, `resolver_verificacion_aliado` | Core Node |
+| `US-02.1.4` Declarar zona de cobertura | SCRUM-849 | Done | RF-07 | `features/profiles/coverage` | `declarar_cobertura`, `obtener_mi_cobertura`, `listar_zonas`, `_zona_activa` | Availability Node |
+| `US-02.2.1` Registro cliente persona natural | SCRUM-851 | Done | RF-08 | `features/auth` | `registrar_cliente_persona_natural`, upsert a `cliente` | Core Node |
+| `US-03.1.1` Crear categoría con flujo operativo | SCRUM-857 | Done | RF-10 | `features/services/categories` | `crear_categoria_servicio`, `listar_categorias_admin`, `listar_categorias_cliente` | Core Node + Rules Java |
+| `US-03.1.3` Aliado declara categorías | SCRUM-859 | In Progress | RF-11 | `features/profile_categories` | `guardar_mis_categorias`, `obtener_mis_categorias`, `listar_categorias_tenant` | Core Node |
+| `US-04.1.1` Crear solicitud | SCRUM-860 | Done | RF-12 | `features/services/requests` | `crear_solicitud`, `_sol_zona_cubierta`, `_sol_aliado_elegible`, Storage | Core Node + Availability |
+| `US-04.1.4` Aceptar/rechazar sin doble asignación | SCRUM-863 | Done | RF-14 | `features/asignacion` | `aceptar_solicitud`, `rechazar_solicitud`, `listar_solicitudes_aliado` | Dispatch .NET |
+
+Cada historia recibe este patrón de subtareas:
+
+| Subtarea | Qué hace |
+|---|---|
+| `-M1` | Definir el contrato REST del caso de uso en OpenAPI |
+| `-M2` | Implementar el caso de uso en el servicio destino, portando la lógica PL/pgSQL indicada |
+| `-M3` | Reescribir el `*_remote_datasource.dart` contra el Gateway |
+| `-M4…` | Ajustes específicos de la historia, cuando los hay |
+| último | Regresión de la historia y pruebas de aislamiento multi-tenant |
+
+**El punto que conviene defender ante el equipo:** en `-M3` sólo cambia `data/datasources`. Las interfaces de `domain/repositories` se mantienen, así que usecases, BLoC y UI quedan intactos. La arquitectura limpia que ya se aplicó es lo que hace que el delta del cliente sea acotado.
+
+Subtareas específicas más allá del patrón:
+
+| Historia | Subtarea adicional | Por qué |
+|---|---|---|
+| `US-02.1.3` | Revalidar que los documentos KYC de un aliado nunca sean visibles para otro | El control de acceso a Storage cambia de dueño al pasar al servicio |
+| `US-02.1.4` | Reemplazar la selección libre de zona por catálogo jerárquico con coincidencia exacta | Se implementó con mapa y radio; el requisito vigente exige catálogo y coincidencia exacta |
+| `US-03.1.1` | Separar la gestión de categoría en Core de las reglas evaluables en Rules | Hoy ambas viven en la misma función PL/pgSQL |
+| `US-04.1.1` | Separar la creación en Core de la orquestación del despacho | `crear_solicitud` resuelve creación y elegibilidad en una sola función |
+| `US-04.1.4` | **Decidir dónde vive la atomicidad y revalidar PoC-001** | La exclusión concurrente la garantiza hoy la transacción de PostgreSQL; es el mayor riesgo de regresión |
+| `US-04.1.4` | Revalidar idempotencia y ausencia de doble asignación bajo concurrencia | Repetir el escenario del PoC contra el servicio .NET a través del Gateway |
+
+### 4.5 Orden de ejecución
+
+1. `CFG-37`, `CFG-38` — reconciliar ramas y fijar la base de código. **Antes de todo lo demás.**
+2. `SP-05` — cerrar la decisión sobre PL/pgSQL. Bloquea toda estimación funcional.
+3. `CFG-15` … `CFG-21` — repositorios, contratos, Gateway y esqueletos de servicio.
+4. `CFG-22`, `CFG-23`, `CFG-24`, `CFG-25` — identidad, RLS y propiedad de datos.
+5. `CFG-26` … `CFG-30`, `CFG-33` — Supabase por ambiente, GHCR, Compose, CI/CD, observabilidad y reubicación de artefactos.
+6. `CFG-34` … `CFG-36`, `CFG-39` — capa HTTP del cliente, recorte de `supabase_flutter`, seguridad del bundle y mock de pruebas.
+7. Subtareas `-M1` … `-Mn` por historia, en el orden de las épicas funcionales.
+8. `CFG-40` — regresión completa.
+9. `CFG-31`, `CFG-32` — cerrar Kubernetes por ADR y ejecutar la transición de despliegue.
+10. `DOC-25` … `DOC-28` — documentación, en paralelo y cerrando al final.
+
+Corrección frente a la versión anterior de este backlog: `SP-05` y `CFG-23` estaban ausentes y son **bloqueantes del trabajo funcional**; van en las fases 1 y 2, no al final.
 
 ## 5. Huecos del backlog frente al SRS
 
-| ID | RF | Historia nueva | Componente |
-|---|---|---|---|
-| `HU-N-01` | RF-01 | Administrar tenants y su estado base | Core Node |
-| `HU-N-02` | RF-02 / RNF-02 / REST-05 | Configurar reglas operativas por tenant sin despliegue | Rules Java + Core Node |
-| `HU-N-03` | RF-03 / RNF-01 | Autenticar y autorizar por tenant y rol | Supabase Auth + Gateway + Services |
-| `HU-N-04` | RF-04 | Recuperar contraseña de forma segura | Supabase Auth + Core Node |
-| `HU-N-05` | RF-19 | Cerrar servicio solo tras calificación bidireccional | Core Node |
+Historias nuevas que el SRS exige y el backlog legacy no cubre. Van bajo su épica funcional, no bajo EP-09.
+
+| ID | Épica | RF | Historia nueva | Componente |
+|---|---|---|---|---|
+| `HU-N-01` | EP-01 | RF-01 | Administrar tenants y su estado base | Core Node |
+| `HU-N-02` | EP-01 | RF-02 / RNF-02 / REST-05 | Configurar reglas operativas por tenant sin despliegue | Rules Java + Core Node |
+| `HU-N-03` | EP-01 | RF-03 / RNF-01 | Autenticar y autorizar por tenant y rol | Supabase Auth + Gateway + servicios |
+| `HU-N-04` | EP-02 | RF-04 | Recuperar contraseña de forma segura | Supabase Auth + Core Node |
+| `HU-N-05` | EP-04D | RF-19 | Cerrar servicio sólo tras calificación bidireccional | Core Node |
 
 ## 6. Revisión de Historias de Usuario legacy
 
@@ -177,30 +267,35 @@ Pagos y liquidación permanecen en el segundo incremento. Escrow, liberación au
 
 1. **No borrar issues antiguos.**
 2. **No cambiar Done a To Do** para representar la migración.
-3. Mantener `EP-09 - Gestión y configuración del proyecto`, pero ampliarla como épica de **transición arquitectónica y plataforma**.
-4. Crear `MIG-01..MIG-22` bajo EP-09.
-5. Crear `HU-N-01..HU-N-05` bajo las épicas funcionales correspondientes.
-6. En las HUs legacy aún abiertas, actualizar descripción/criterios cuando la disposición sea `REESPECIFICAR`.
-7. Mover RF-24..RF-28 a un backlog de **Segundo Incremento**, no al Sprint MVP.
-8. Marcar historias fuera de alcance como `Won't Do`/`Cancelled` si el workflow de Jira lo permite, conservando la razón y la referencia al SRS.
+3. Mantener `EP-09 - Gestión y configuración del proyecto` como contenedor de la transición de plataforma, ampliando su descripción a «transición arquitectónica y plataforma». Crear allí `CFG-15` … `CFG-40` y `SP-05`.
+4. Crear `DOC-25` … `DOC-28` bajo `EP-10`.
+5. Crear las subtareas `-Mn` **colgando de cada historia ya desarrollada**, sin tocar su estado histórico. Así el trabajo de migración queda trazado contra el requisito original en lugar de vivir en una épica paralela.
+6. Crear `HU-N-01` … `HU-N-05` bajo sus épicas funcionales (EP-01, EP-02, EP-04D).
+7. En las historias legacy aún abiertas, actualizar descripción y criterios cuando la disposición sea `REESPECIFICAR`.
+8. Mover RF-24..RF-28 a un backlog de **Segundo Incremento**, no al sprint del MVP.
+9. Marcar lo que sale de alcance como `Won't Do` o `Cancelled` si el workflow lo permite, conservando la razón y la referencia al SRS.
+
+### Defecto corregido en el inventario
+
+El `Backlog ID` de cuatro filas legacy se había derivado del texto del resumen, de modo que subtareas que *mencionaban* `CFG-04`, `CFG-06`, `CFG-09` o `SP-02.1.1` quedaron con ese identificador y colisionaban con la tarea real. Esas cuatro filas usan ahora su propia clave Jira (`SCRUM-959`, `SCRUM-985`, `SCRUM-1059`, `SCRUM-970`). El CSV queda sin identificadores duplicados ni dependencias colgantes.
 
 ## 9. Definición de llegada
 
 La transición puede considerarse completada cuando:
 
-- Flutter consume la solución a través de NGINX Gateway para operaciones de negocio.
-- Rules corre en Java.
-- Dispatch corre en .NET y conserva exactamente una asignación válida.
-- Core y Availability corren en Node.js.
-- Supabase/PostgreSQL mantiene RLS y separación por dominio.
-- Auth, Storage y Realtime están integrados según el SAD.
-- cada repositorio publica su imagen en GHCR.
-- las VMs pueden levantar los servicios con Compose usando esas imágenes.
-- CI/CD y pruebas de aislamiento funcionan por repositorio.
-- las funcionalidades históricas preservadas pasan la regresión.
-- el proveedor/topología Kubernetes queda cerrado por ADR y puede desplegar las mismas imágenes OCI.
+- Flutter consume la solución a través del NGINX Gateway para toda operación de negocio, y **no queda ningún acceso PostgREST desde el cliente**.
+- La `SUPABASE_ANON_KEY` ya no viaja en el artefacto web.
+- Rules corre en Java, Dispatch en .NET, y Core y Availability en Node.js.
+- Dispatch conserva exactamente una asignación válida bajo concurrencia, con el PoC-001 revalidado.
+- Supabase/PostgreSQL mantiene RLS **con el modelo de identidad rediseñado** para un llamador que es un servicio, no el usuario final.
+- Auth, Storage y Realtime están integrados según el SAD, y el destino de cada función PL/pgSQL está decidido y registrado en ADR.
+- `database/`, Compose y scripts viven en su repositorio dueño, y está definido quién ejecuta las migraciones en cada ambiente.
+- Cada repositorio publica su imagen en GHCR y las VMs pueden levantarlas con Compose.
+- CI/CD y las pruebas de aislamiento funcionan por repositorio.
+- Las nueve historias preservadas pasan la regresión.
+- El proveedor y la topología de Kubernetes quedan cerrados por ADR y pueden desplegar las mismas imágenes OCI.
 
 ## 10. Archivos
 
 - `BACKLOG_MANI_V4_TRANSICION.md`: criterio de transición y backlog legible.
-- `BACKLOG_MANI_V4_TRANSICION.csv`: inventario completo de Jira + ítems nuevos + clasificación y delta.
+- `BACKLOG_MANI_V4_TRANSICION.csv`: inventario completo de Jira más los ítems nuevos, con clasificación y delta. 328 filas, 18 columnas, listo para importar.

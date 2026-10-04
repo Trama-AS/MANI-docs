@@ -578,7 +578,113 @@ Reglas:
 
 ---
 
-# 20. Excepciones
+# 20. Versionamiento de despliegue
+
+El versionamiento de despliegue responde una sola pregunta: **qué artefacto exacto está corriendo en cada
+ambiente y de qué commit salió**. Es el complemento operativo de §9 *Build Once, Deploy Many*: §9 define que el
+artefacto no se reconstruye, y esta sección define cómo se lo nombra, se lo registra y se vuelve atrás.
+
+## 20.1 Versión semántica por repositorio
+
+Cada repositorio desplegable —`MANI-Flutter`, `MANI-Gateway`, `MANI-Core`— versiona de forma independiente con
+**SemVer** `MAJOR.MINOR.PATCH`:
+
+| Incremento | Cuándo |
+|---|---|
+| `MAJOR` | Cambio incompatible en el contrato expuesto: se rompe un consumidor existente |
+| `MINOR` | Capacidad nueva compatible hacia atrás |
+| `PATCH` | Corrección que no altera el contrato |
+
+Los repositorios no comparten numeración. `MANI-Gateway v1.4.0` y `MANI-Core v2.1.3` conviven sin relación entre
+sus números, porque se despliegan por separado.
+
+`MANI-docs` no versiona por SemVer: su unidad de versión es el commit y la entrega académica.
+
+## 20.2 Identidad de un despliegue
+
+Un despliegue queda identificado por cuatro datos, y ninguno es opcional:
+
+```text
+repositorio      MANI-Core
+versión          v2.1.3
+digest           sha256:9f2c...            <- identidad inmutable real
+commit           a7b3c91                   <- trazabilidad al código
+```
+
+El **digest** es la identidad verdadera del artefacto. El tag puede reapuntarse; el digest no. La promoción entre
+ambientes se hace **por digest**, no por tag, de modo que lo validado en QA es bit a bit lo que entra a PROD.
+
+## 20.3 Convención de tags
+
+Sobre la convención base de §10, el tag declara en qué etapa del ciclo está la imagen:
+
+```text
+ghcr.io/trama-as/mani-core:dev-a7b3c91     imagen de develop, trazada al commit
+ghcr.io/trama-as/mani-core:qa-a7b3c91      candidata promovida a QA
+ghcr.io/trama-as/mani-core:v2.1.3          release versionado, inmutable
+```
+
+Reglas:
+
+- el tag de versión `vX.Y.Z` **nunca se reescribe**; si hay que corregir, se emite `vX.Y.Z+1`;
+- `latest` es conveniencia de desarrollo y no se usa para promover ni para desplegar en QA o PROD;
+- todo tag incluye el SHA corto del commit salvo el tag de release, que se resuelve por el *git tag*.
+
+## 20.4 Tag de Git y release
+
+Cada versión desplegada tiene su **tag anotado de Git** en el repositorio, con el mismo número que la imagen, y
+su *release* en GitHub con las notas de cambios. El tag se crea sobre `main` después del merge de la rama
+`release/*` o `hotfix/*` descritas en §5.2.
+
+Consecuencia práctica: desde una versión corriendo en PROD se llega al código exacto con `git checkout v2.1.3`,
+y desde el issue de Jira se llega a la rama, al PR y al despliegue por la integración de §6 y la trazabilidad
+Jira ↔ GitHub.
+
+## 20.5 Registro de despliegues
+
+Cada ambiente mantiene un registro de qué está corriendo, versionado en el repositorio dueño del ambiente:
+
+| Campo | Ejemplo |
+|---|---|
+| Ambiente | `QA` |
+| Servicio | `MANI-Core` |
+| Versión | `v2.1.3` |
+| Digest | `sha256:9f2c...` |
+| Commit | `a7b3c91` |
+| Fecha y responsable | `2026-10-03 · Daniel` |
+| Issue de Jira | `SCRUM-xxxx` |
+| Aprobación | manual, según §7.2 |
+
+Sin este registro no se puede responder qué cambió entre dos incidentes, que es justamente lo que el auditor
+pregunta.
+
+## 20.6 Compatibilidad entre servicios
+
+Gateway y Core se despliegan por separado, así que pueden quedar en versiones distintas durante una ventana de
+despliegue. Por eso:
+
+- un cambio `MAJOR` en el contrato de Core exige que el Gateway lo soporte **antes** de promover Core;
+- durante la transición conviven las dos versiones del endpoint, y la vieja se retira en un despliegue posterior;
+- el contrato OpenAPI se versiona junto al servicio que lo expone y se valida en CI con las pruebas de contrato
+  de §13.3.
+
+## 20.7 Reversión
+
+La reversión es un **redespliegue de un digest anterior**, nunca una reconstrucción ni un revert apurado en
+caliente:
+
+1. se identifica el digest de la última versión sana en el registro de §20.5;
+2. se redespliega ese digest en el ambiente afectado;
+3. se registra la reversión con su causa;
+4. la corrección se trabaja en una rama `hotfix/*` y sale como `PATCH` nuevo.
+
+Las migraciones de base de datos son la excepción que obliga a cuidado: una migración aplicada no se revierte
+redesplegando la imagen anterior, por lo que toda migración debe ser compatible hacia atrás con la versión
+inmediatamente previa del servicio.
+
+---
+
+# 21. Excepciones
 
 Toda excepción a estas políticas debe indicar:
 

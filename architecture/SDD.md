@@ -3,9 +3,10 @@
 
 **Arquitectura objetivo:** SOA + API Gateway + enfoque políglota  
 **Norma de calidad de referencia:** ISO/IEC 25010:2023  
-**Documento de datos asociado:** [MANI_Modelo_de_Datos.md](./MANI_Modelo_de_Datos.md)  
+**Documento de datos asociado:** [ModeloDatos.md](./ModeloDatos.md)  
 **Estado:** Diseño arquitectónico objetivo  
-**Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.
+**Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.  
+**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core`, `componentes-availability` (N3) y `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
 
 ---
 
@@ -24,7 +25,7 @@ Este Software Design Description (SDD) define la arquitectura de MANI desde la p
 - diseño físico del repositorio y de la infraestructura;
 - estrategia de versionamiento, entrega y rollback.
 
-> **Separación documental:** este SDD no redefine el modelo conceptual, lógico o físico de datos. La definición canónica de entidades, relaciones, DDL, diccionario de datos, Data Warehouse y flujo analítico se mantiene en [MANI_Modelo_de_Datos.md](./MANI_Modelo_de_Datos.md).
+> **Separación documental:** este SDD no redefine el modelo conceptual, lógico o físico de datos. La definición canónica de entidades, relaciones, DDL, diccionario de datos, Data Warehouse y flujo analítico se mantiene en [ModeloDatos.md](./ModeloDatos.md).
 
 ---
 
@@ -129,31 +130,25 @@ El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnolo
 
 # 4. Vistas C4
 
+Las vistas de esta sección se generan desde [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), que es su fuente. Cada subsección indica la vista que le corresponde y mantiene en texto la estructura y las responsabilidades, para que el documento se lea sin renderizar.
+
 ## 4.1 Nivel 1 — System Context
 
 **Objetivo:** mostrar MANI como un sistema y sus relaciones con personas y sistemas externos.
 
-```mermaid
-flowchart LR
-    C[Cliente]
-    A[Aliado]
-    AD[Administrador del tenant]
+![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](../diagrams/C4Model/png/contexto.png)
 
-    MANI((MANI))
+> **Figura 1 — Contexto del sistema (C4 Nivel 1).** Generada desde la vista `contexto` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/contexto.png`](../diagrams/C4Model/png/contexto.png).
 
-    PUSH[FCM / APNs]
-    PAY[Pasarela de pagos]
-    OBS[Plataforma de observabilidad]
-    DW[(Plataforma analítica / Data Warehouse)]
+```text
+Cliente              → crea solicitudes y aprueba cotizaciones
+Aliado               → cotiza, acepta y ejecuta servicios; gestiona KYC        → [ MANI ]
+Administrador tenant → administra usuarios, aliados, tenant y KYC
 
-    C -->|Crea solicitudes y aprueba cotizaciones| MANI
-    A -->|Cotiza, acepta y ejecuta servicios; gestiona KYC| MANI
-    AD -->|Administra usuarios, aliados, tenant y KYC| MANI
-
-    MANI -->|Notificaciones| PUSH
-    MANI -->|API de pagos| PAY
-    MANI -->|Métricas, logs y trazas| OBS
-    MANI -->|Eventos/datos operacionales para análisis| DW
+[ MANI ] → FCM / APNs                    notificaciones
+         → Operador de pagos             API de pagos
+         → Plataforma de observabilidad  métricas, logs y trazas
+         → Data Warehouse                datos operacionales para análisis
 ```
 
 ### Responsabilidades de frontera
@@ -170,71 +165,22 @@ flowchart LR
 
 **Objetivo:** mostrar las unidades desplegables y almacenes principales.
 
-```mermaid
-flowchart LR
-    U[Usuarios]
+![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](../diagrams/C4Model/png/contenedores.png)
 
-    subgraph Client["Capa de presentación"]
-        FL[Flutter Web / Mobile]
-    end
+> **Figura 2 — Contenedores (C4 Nivel 2).** Generada desde la vista `contenedores` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/contenedores.png`](../diagrams/C4Model/png/contenedores.png).
 
-    subgraph Access["Capa de acceso"]
-        GW[NGINX API Gateway]
-    end
-
-    subgraph Business["Capa de negocio / servicios"]
-        JR[Rules Service\nJava]
-        DS[Dispatch Service\n.NET]
-        NS[Core Services\nNode.js]
-        AV[Availability Service\nNode.js / API]
-    end
-
-    subgraph Data["Persistencia operacional"]
-        DBR[(Supabase\nPostgreSQL — Reglas)]
-        DBD[(Supabase\nPostgreSQL — Despacho)]
-        DBC[(Supabase\nPostgreSQL — Core)]
-        DBA[(Supabase\nPostgreSQL — Disponibilidad)]
-    end
-
-    subgraph External["Integraciones"]
-        FCM[FCM / APNs]
-        PAY[Payments]
-        MON[Prometheus / Grafana / Datadog]
-    end
-
-    subgraph Analytics["Datos analíticos"]
-        PIPE[CDC / ELT]
-        DWH[(Data Warehouse)]
-        BI[BI / Analytics]
-    end
-
-    U --> FL
-    FL -->|HTTPS| GW
-    GW --> JR
-    GW --> DS
-    GW --> NS
-    GW --> AV
-
-    JR --> DBR
-    DS --> DBD
-    NS --> DBC
-    AV --> DBA
-
-    NS --> FCM
-    NS --> PAY
-
-    JR -.telemetría.-> MON
-    DS -.telemetría.-> MON
-    NS -.telemetría.-> MON
-    AV -.telemetría.-> MON
-    GW -.telemetría.-> MON
-
-    DBR -.carga incremental.-> PIPE
-    DBD -.carga incremental.-> PIPE
-    DBC -.carga incremental.-> PIPE
-    DBA -.carga incremental.-> PIPE
-    PIPE --> DWH
-    DWH --> BI
+```text
+Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
+                                                   ↓
+        ┌──────────────┬───────────────┬───────────────┬────────────────────┐
+   Rules Service   Dispatch Service   Core Services   Availability Service
+     (Java)            (.NET)          (Node.js)          (Node.js)
+        ↓                 ↓                ↓                   ↓
+   Supabase/PostgreSQL por dominio: reglas · despacho · core · disponibilidad
+                                                   ↓
+   Core → FCM/APNs · Operador de pagos · Storage · Realtime
+   Gateway y servicios → telemetría → Prometheus / Grafana / Datadog
+   PostgreSQL → carga incremental → CDC/ELT → Data Warehouse → BI
 ```
 
 ### Reglas de dependencia
@@ -243,7 +189,7 @@ flowchart LR
 - Los servicios no acceden directamente a tablas propiedad de otro dominio.
 - Las integraciones externas se encapsulan mediante adaptadores.
 - El Data Warehouse no participa en transacciones operacionales.
-- El detalle de esquemas, entidades y modelo dimensional se encuentra en `MANI_Modelo_de_Datos.md`.
+- El detalle de esquemas, entidades y modelo dimensional se encuentra en `ModeloDatos.md`.
 
 ---
 
@@ -251,26 +197,15 @@ flowchart LR
 
 ### 4.3.1 Servicio de Reglas — Java
 
-```mermaid
-flowchart LR
-    API[Rules REST Controller]
-    APP[Rules Application Service]
-    FACT[Rule Strategy Factory]
-    RANK[Ranking Strategy]
-    TAR[Tariff Validation Strategy]
-    KYC[KYC Policy Strategy]
-    PORT[Rule Repository Port]
-    ADP[Supabase Adapter (PostgreSQL)]
-    DB[(Reglas DB)]
+![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](../diagrams/C4Model/png/componentes-rules.png)
 
-    API --> APP
-    APP --> FACT
-    FACT --> RANK
-    FACT --> TAR
-    FACT --> KYC
-    APP --> PORT
-    PORT --> ADP
-    ADP --> DB
+> **Figura 3 — Rules Service, Java (C4 Nivel 3).** Generada desde la vista `componentes-rules` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-rules.png`](../diagrams/C4Model/png/componentes-rules.png).
+
+```text
+Rules REST Controller
+  → Rules Application Service
+       → Rule Strategy Factory → Ranking Strategy | Tariff Validation Strategy | KYC Policy Strategy
+       → Rule Repository Port  → Supabase Adapter (PostgreSQL) → Reglas DB
 ```
 
 Responsabilidades:
@@ -283,26 +218,17 @@ Responsabilidades:
 
 ### 4.3.2 Servicio de Despacho — .NET
 
-```mermaid
-flowchart LR
-    API[Dispatch API]
-    APP[Dispatch Application Service]
-    SEL[Candidate Selector]
-    COORD[Assignment Coordinator]
-    CONC[Concurrency Guard]
-    AUD[Audit Component]
-    PORT[Dispatch Repository Port]
-    ADP[PostgreSQL Adapter]
-    DB[(Dispatch DB)]
+![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](../diagrams/C4Model/png/componentes-dispatch.png)
 
-    API --> APP
-    APP --> SEL
-    APP --> COORD
-    COORD --> CONC
-    APP --> AUD
-    APP --> PORT
-    PORT --> ADP
-    ADP --> DB
+> **Figura 4 — Dispatch Service, .NET (C4 Nivel 3).** Generada desde la vista `componentes-dispatch` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-dispatch.png`](../diagrams/C4Model/png/componentes-dispatch.png).
+
+```text
+Dispatch API
+  → Dispatch Application Service
+       → Candidate Selector
+       → Assignment Coordinator → Concurrency Guard
+       → Audit Component
+       → Dispatch Repository Port → PostgreSQL Adapter → Dispatch DB
 ```
 
 Responsabilidades:
@@ -316,52 +242,33 @@ Responsabilidades:
 
 ### 4.3.3 Core Services — Node.js
 
-```mermaid
-flowchart LR
-    API[Core API]
-    USER[Users/Tenants Component]
-    KYC[KYC Orchestrator]
-    CAT[Catalog Component]
-    NOT[Notification Component]
-    REP[Operational Reporting]
-    EXT[External Adapters]
-    PORT[Repositories]
-    DB[(Core DB)]
+![C4 Nivel 3 — Core Services (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/C4Model/png/componentes-core.png)
 
-    API --> USER
-    API --> KYC
-    API --> CAT
-    API --> NOT
-    API --> REP
+> **Figura 5 — Core Services, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-core.png`](../diagrams/C4Model/png/componentes-core.png).
 
-    NOT --> EXT
-    KYC --> EXT
+```text
+Core API
+  → Users/Tenants Component ─┐
+  → KYC Orchestrator ────────┤
+  → Catalog Component ───────┼→ Repositories → Core DB
+  → Notification Component ──┤
+  → Operational Reporting ───┘
 
-    USER --> PORT
-    KYC --> PORT
-    CAT --> PORT
-    NOT --> PORT
-    REP --> PORT
-
-    PORT --> DB
+KYC Orchestrator y Notification Component → External Adapters → Storage · Realtime · FCM/APNs
 ```
 
 ### 4.3.4 Servicio de Disponibilidades
 
-```mermaid
-flowchart LR
-    API[Availability API]
-    APP[Availability Application Service]
-    SCH[Schedule Rules]
-    QUERY[Availability Query]
-    PORT[Availability Repository]
-    DB[(Availability DB)]
+![C4 Nivel 3 — Availability Service (Node.js): reglas de horario, consulta de elegibilidad y repositorio](../diagrams/C4Model/png/componentes-availability.png)
 
-    API --> APP
-    APP --> SCH
-    APP --> QUERY
-    APP --> PORT
-    PORT --> DB
+> **Figura 6 — Availability Service, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-availability` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-availability.png`](../diagrams/C4Model/png/componentes-availability.png).
+
+```text
+Availability API
+  → Availability Application Service
+       → Schedule Rules
+       → Availability Query
+       → Availability Repository → Availability DB
 ```
 
 La lógica de horarios, solapamientos, zonas y elegibilidad pertenece al servicio, no al cliente Flutter.
@@ -374,75 +281,34 @@ El nivel 4 expresa la estructura interna de código. No pretende congelar clases
 
 ### Ejemplo: Rules Service
 
-```mermaid
-classDiagram
-    class RulesController {
-      +evaluateRule(request)
-      +rankAllies(request)
-    }
-
-    class RulesApplicationService {
-      +evaluate(context)
-      +rank(context)
-    }
-
-    class RuleStrategy {
-      <<interface>>
-      +supports(ruleType)
-      +evaluate(context)
-    }
-
-    class RankingStrategy
-    class TariffStrategy
-    class KycStrategy
-
-    class RuleStrategyFactory {
-      +resolve(ruleType)
-    }
-
-    class RuleRepository {
-      <<interface>>
-      +findByTenant(tenantId)
-    }
-
-    class PostgresRuleRepository {
-      +findByTenant(tenantId)
-    }
-
-    RulesController --> RulesApplicationService
-    RulesApplicationService --> RuleStrategyFactory
-    RuleStrategyFactory --> RuleStrategy
-    RuleStrategy <|.. RankingStrategy
-    RuleStrategy <|.. TariffStrategy
-    RuleStrategy <|.. KycStrategy
-    RulesApplicationService --> RuleRepository
-    RuleRepository <|.. PostgresRuleRepository
+```text
+RulesController
+  +evaluateRule(request)
+  +rankAllies(request)
+      ↓
+RulesApplicationService
+  +evaluate(context)
+  +rank(context)
+      ↓                              ↓
+RuleStrategyFactory             RuleRepository  «interfaz»
+  +resolve(ruleType)              +findByTenant(tenantId)
+      ↓                              ↑
+RuleStrategy  «interfaz»        PostgresRuleRepository
+  +supports(ruleType)             +findByTenant(tenantId)
+  +evaluate(context)
+      ↑
+  RankingStrategy · TariffStrategy · KycStrategy   (implementaciones)
 ```
 
 ### Ejemplo: Dispatch Service
 
-```mermaid
-classDiagram
-    class DispatchController
-    class CreateRequestUseCase
-    class AssignAllyUseCase
-    class CandidateSelector
-    class AssignmentRepository {
-      <<interface>>
-    }
-    class RequestRepository {
-      <<interface>>
-    }
-    class ConcurrencyGuard
-    class AuditPublisher
-
-    DispatchController --> CreateRequestUseCase
-    DispatchController --> AssignAllyUseCase
-    AssignAllyUseCase --> CandidateSelector
-    AssignAllyUseCase --> ConcurrencyGuard
-    AssignAllyUseCase --> AssignmentRepository
-    CreateRequestUseCase --> RequestRepository
-    AssignAllyUseCase --> AuditPublisher
+```text
+DispatchController
+  → CreateRequestUseCase → RequestRepository  «interfaz»
+  → AssignAllyUseCase    → CandidateSelector
+                         → ConcurrencyGuard
+                         → AssignmentRepository  «interfaz»
+                         → AuditPublisher
 ```
 
 ### Regla de dependencia de código
@@ -636,49 +502,23 @@ MANI no controla maquinaria ni procesos donde un fallo de software implique dire
 
 ---
 
-# 8. Escenarios de calidad prioritarios
+# 8. Escenarios de calidad priorizados
 
-## QAS-01 — Aislamiento multi-tenant
+Esta sección operacionaliza la priorización definida en la sección 7 mediante **un escenario de calidad representativo por cada característica de ISO/IEC 25010:2023**. Cada escenario identifica la fuente del estímulo, el estímulo, el entorno de ejecución, el artefacto afectado, la respuesta esperada, el umbral de aceptación y el mecanismo mediante el cual QA debe verificarlo.
 
-- **Fuente:** usuario autenticado.
-- **Estímulo:** intenta consultar o modificar un recurso de otro tenant.
-- **Respuesta:** solicitud rechazada y evento auditado.
-- **Umbral:** 100% de pruebas de aislamiento deben bloquear acceso cruzado.
+| ID | Característica ISO/IEC 25010:2023 | Subcaracterística seleccionada | Prioridad | Fuente | Estímulo | Entorno | Artefacto | Respuesta esperada | Umbral / criterio de aceptación | ¿Cómo lo mide QA? |
+|---|---|---|:---:|---|---|---|---|---|---|---|
+| **QAS-01** | **Seguridad** | **Confidencialidad** | P1 | Usuario autenticado de un tenant | Intenta consultar o modificar información perteneciente a otro tenant | TEST/QA o PROD en operación normal | API Gateway, servicio de dominio y PostgreSQL/RLS | El sistema rechaza la operación, no expone información del tenant destino y registra el evento cuando corresponda | **100% de accesos cross-tenant rechazados** | QA ejecuta pruebas automatizadas con tokens y recursos de tenants distintos sobre operaciones de lectura y escritura; verifica rechazo de acceso, ausencia de datos ajenos y evidencia de auditoría |
+| **QAS-02** | **Fiabilidad** | **Tolerancia a fallos** | P1 | Proveedor externo de notificaciones | FCM/APNs deja de responder después de confirmarse una operación de negocio | TEST/QA con dependencia externa degradada o indisponible | Core Services, Notification Component y adaptador externo | La operación principal permanece confirmada y la notificación queda disponible para reintento controlado | **0 operaciones confirmadas revertidas únicamente por fallo de notificación** | QA simula timeout, error y caída del proveedor; verifica estado final de la operación, persistencia del evento, logs y ejecución del mecanismo de retry |
+| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | TEST/QA bajo carga nominal | Availability Service, persistencia y componentes involucrados en la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta pruebas de carga, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral |
+| **QAS-04** | **Mantenibilidad** | **Capacidad para ser modificado** | P1 | Equipo de desarrollo | Modifica una regla de ranking o comportamiento configurable de un tenant manteniendo el contrato externo | DEV y TEST/QA | Rules Service, configuración y contratos de integración | El cambio se implementa sin exigir modificaciones en consumidores externos compatibles | **0 cambios obligatorios en Flutter, Gateway o Dispatch para un cambio interno compatible** | QA ejecuta pruebas de regresión, integración y contract tests; verifica que los consumidores existentes continúen operando sin modificaciones derivadas del cambio |
+| **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad objetivo de las réplicas actuales | Kubernetes en TEST/QA bajo carga controlada | Deployment, HPA y servicio crítico contenerizado | La plataforma incrementa horizontalmente la capacidad del servicio sin modificar código ni reconstruir el artefacto | **Escalamiento de 2 a 6 réplicas sin cambio de código** | QA genera carga progresiva y monitorea réplicas, CPU, memoria, latencia, errores y continuidad del servicio mediante Kubernetes y la plataforma de observabilidad |
+| **QAS-06** | **Compatibilidad** | **Interoperabilidad** | P2 | Servicio interno o consumidor autorizado | Consume una API publicada por un servicio implementado en otra tecnología | TEST/QA de integración | APIs REST, API Gateway y contratos OpenAPI | Productor y consumidor intercambian información respetando el contrato publicado | **100% de APIs documentadas con OpenAPI y contract tests críticos aprobados antes de promoción** | QA ejecuta contract tests y pruebas de integración/Newman; valida códigos HTTP, payloads, tipos de datos, campos obligatorios y compatibilidad del contrato |
+| **QAS-07** | **Adecuación funcional** | **Corrección funcional** | P2 | Usuarios o servicios que ejecutan reglas y operaciones críticas | Ejecutan escenarios críticos de ranking, tarifa, asignación o conflicto | TEST/QA con datos de prueba controlados | Rules Service, Dispatch Service y servicios involucrados | El sistema produce el resultado funcional definido para cada regla, asignación y transición de estado | **100% de escenarios críticos de ranking, tarifa, asignación y conflicto aprobados** | QA mantiene casos de prueba trazados a los requisitos críticos y verifica resultados esperados, estados persistidos, códigos de respuesta y reglas de negocio |
+| **QAS-08** | **Capacidad de interacción** | **Protección contra errores de usuario** | P2 | Usuario autorizado | Intenta ejecutar una acción irreversible o envía información inválida en un flujo crítico | Aplicación web/móvil en operación normal | Flutter y API asociada al caso de uso | El sistema previene la ejecución accidental mediante validación o confirmación y devuelve errores accionables | **100% de acciones irreversibles definidas requieren validación o confirmación previa** | QA recorre los flujos críticos y prueba entradas inválidas, cancelaciones y acciones irreversibles; verifica validaciones, confirmaciones, mensajes y conservación del estado previo cuando la operación es rechazada |
+| **QAS-09** | **Protección / Safety** | **Protección ante fallos** | P3 | Servicio o integración externa | Se produce una falla durante una operación que modifica información crítica | TEST/QA con falla controlada de una dependencia | Servicio de negocio, adaptador externo y persistencia | El sistema evita estados parciales o ambiguos y conserva un estado consistente o recuperable | **0 transacciones críticas en estado ambiguo por fallas de terceros** | QA aplica fault injection, timeouts o respuestas inválidas durante operaciones críticas y valida estados persistidos, logs, eventos y posibilidad de recuperación sin inconsistencias |
 
-## QAS-02 — Concurrencia de asignación
-
-- **Fuente:** dos aliados.
-- **Estímulo:** ambos intentan aceptar la misma asignación.
-- **Respuesta:** solo uno confirma; el otro recibe `409 Conflict`.
-- **Umbral:** 0 dobles asignaciones en pruebas de concurrencia.
-
-## QAS-03 — Disponibilidad
-
-- **Fuente:** usuario.
-- **Estímulo:** consulta disponibilidad por zona/categoría.
-- **Respuesta:** sistema retorna candidatos elegibles.
-- **Umbral:** p95 ≤ 500 ms bajo carga nominal.
-
-## QAS-04 — Falla de notificaciones
-
-- **Fuente:** FCM/APNs.
-- **Estímulo:** proveedor no responde.
-- **Respuesta:** la transacción principal permanece confirmada; notificación queda para retry.
-- **Umbral:** 0 rollbacks de operación principal causados únicamente por fallo de push.
-
-## QAS-05 — Modificación de regla
-
-- **Fuente:** cambio de negocio.
-- **Estímulo:** nueva política de ranking de un tenant.
-- **Respuesta:** se agrega/configura estrategia sin alterar Flutter ni Dispatch.
-- **Umbral:** cambio contenido en Rules Service y configuración correspondiente.
-
-## QAS-06 — Recuperación
-
-- **Fuente:** falla de servicio o nodo.
-- **Estímulo:** pérdida de una réplica.
-- **Respuesta:** Kubernetes restablece capacidad.
-- **Umbral:** servicio recuperado sin intervención manual en ≤ 5 min; recuperación de desastre global conforme a RTO ≤ 30 min.
+Los escenarios anteriores complementan los umbrales específicos definidos en las subsecciones 7.2 a 7.10. Cuando exista diferencia entre un escenario de esta tabla y un criterio más restrictivo definido para una subcaracterística en la sección 7, **prevalece el criterio más restrictivo**.
 
 ---
 
@@ -686,56 +526,19 @@ MANI no controla maquinaria ni procesos donde un fallo de software implique dire
 
 ## 9.1 Producción
 
-```mermaid
-flowchart TB
-    USER[Web / Mobile Users]
-    DNS[DNS + TLS]
-    ING[NGINX Ingress / API Gateway]
+![Vista de despliegue — producción: borde TLS, clúster Kubernetes, plataforma de datos administrada y analítica](../diagrams/C4Model/png/despliegue-prod.png)
 
-    subgraph K8S["Kubernetes Cluster — Production"]
-        R1[Rules Service\nJava\n2..6 replicas]
-        D1[Dispatch Service\n.NET\n2..6 replicas]
-        N1[Core Services\nNode.js\n2..6 replicas]
-        A1[Availability Service\n2..6 replicas]
-    end
-
-    subgraph DB["Managed Data Platform"]
-        SR[(Rules PostgreSQL)]
-        SD[(Dispatch PostgreSQL)]
-        SC[(Core PostgreSQL)]
-        SA[(Availability PostgreSQL)]
-    end
-
-    subgraph OBS["Observability"]
-        PROM[Prometheus]
-        GRAF[Grafana]
-        DD[Datadog / Logs / APM]
-    end
-
-    EXT[FCM/APNs + Payments]
-
-    USER --> DNS --> ING
-    ING --> R1
-    ING --> D1
-    ING --> N1
-    ING --> A1
-
-    R1 --> SR
-    D1 --> SD
-    N1 --> SC
-    A1 --> SA
-
-    N1 --> EXT
-
-    R1 -.-> PROM
-    D1 -.-> PROM
-    N1 -.-> PROM
-    A1 -.-> PROM
-    ING -.-> PROM
-    PROM --> GRAF
-    R1 -.logs/traces.-> DD
-    D1 -.logs/traces.-> DD
-    N1 -.logs/traces.-> DD
+```text
+Web / Mobile Users → DNS + TLS → NGINX Ingress / API Gateway
+                                          ↓
+Clúster Kubernetes — producción (proveedor y topología pendientes: INFRA-01, INFRA-02)
+  Rules (Java) · Dispatch (.NET) · Core (Node.js) · Availability — 2..6 réplicas cada uno
+                                          ↓
+Plataforma de datos administrada
+  PostgreSQL por dominio: reglas · despacho · core · disponibilidad
+                                          ↓
+Core → FCM/APNs + Operador de pagos
+Gateway y servicios → Prometheus → Grafana · logs y trazas → Datadog
 ```
 
 ### Reglas físicas
@@ -777,19 +580,16 @@ MANI adopta **tres ambientes de despliegue**. No se define un ambiente STAGING i
 
 # 11. Flujo CI/CD y promoción
 
-```mermaid
-flowchart LR
-    DEV[Commit / Pull Request]
-    TEST[Unit + Integration + Contract Tests]
-    SAST[SonarQube SAST]
-    BUILD[Build Images]
-    SCAN[Dependency / Image Scan]
-    QA[Deploy TEST / QA]
-    DAST[Newman + OWASP ZAP]
-    PROD[Promote same validated artifact to PROD]
-    OBS[Post-deploy Verification]
-
-    DEV --> TEST --> SAST --> BUILD --> SCAN --> QA --> DAST --> PROD --> OBS
+```text
+Commit / Pull Request
+  → Unit + Integration + Contract Tests
+  → SonarQube (SAST)
+  → Build Images
+  → Dependency / Image Scan
+  → Deploy TEST/QA
+  → Newman + OWASP ZAP
+  → Promoción del mismo artefacto validado a PROD
+  → Verificación post-despliegue
 ```
 
 Un artefacto que no pasa los gates de calidad **no se reconstruye para producción**; se promueve exactamente la misma imagen verificada.
@@ -890,10 +690,12 @@ GitHub / Organización MANI
 │   │   └── prod/
 │   └── observability/
 └── MANI-Docs
-    ├── SDD.md
-    ├── MANI_Modelo_de_Datos.md
+    ├── product/        SRS y backlog
+    ├── architecture/   SAD.md, SDD.md, ModeloDatos.md, workspace.dsl, TECH_RADAR.md
     ├── adr/
-    └── diagramas/
+    ├── governance/     gobierno, políticas DevOps e infraestructura
+    ├── diagrams/       ALTO_NIVEL (DHL) y C4Model (vistas exportadas)
+    └── wiki/           navegación y reglas derivadas
 ```
 
 ### Responsabilidades
@@ -1005,7 +807,7 @@ DEV/QA → base de datos PROD
 
 Este SDD define **quién es responsable de los datos y cómo se accede a ellos**, pero no sustituye su especificación.
 
-Consultar [MANI_Modelo_de_Datos.md](./MANI_Modelo_de_Datos.md) para:
+Consultar [ModeloDatos.md](./ModeloDatos.md) para:
 
 - modelo conceptual;
 - modelo lógico;
@@ -1039,6 +841,6 @@ Una versión puede promoverse a producción únicamente si:
 # 20. Referencias
 
 - ISO/IEC 25010:2023, *Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model*.
-- C4 Model, vistas de contexto, contenedores, componentes y código.
+- C4 Model, vistas de contexto, contenedores, componentes y código. Modelo del proyecto en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl).
 - OpenAPI para contratos HTTP.
 - OWASP para controles de seguridad de aplicaciones y APIs.

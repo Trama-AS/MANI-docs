@@ -18,7 +18,7 @@ Reglas:
 
 1. Cada caso lleva el identificador del escenario en su nombre. El prefijo `rg` significa regresión.
 2. Cada negativo (N) y cada intento de violación (V) exige su control positivo (P) en la misma corrida. Un negativo cuyo control falló no cuenta como pasado.
-3. Rechazo de acceso cross-tenant: 403 o 404, o ausencia de datos ajenos; nunca 200 con datos. Para tokens inválidos: 401 en el Gateway.
+3. Rechazo de acceso cross-tenant: 403 o 404, o ausencia de datos ajenos; nunca 200 con datos. Para tokens inválidos: 401, del Gateway o del Core según PA-16.
 4. Evidencia redactada, sin JWT ni llaves. Las variables llevan nombre en camelCase.
 5. Los resultados esperados marcados como "según lectura" provienen de leer el código y no se han observado.
 
@@ -40,9 +40,9 @@ Según el ADR-0022 (decisión del equipo del 5 de octubre, documento aún Propue
 | `{{rutaDocumentos}}` | Endpoint privado de carga de documentos | CFG-16 |
 | `{{rutaEstado}}` | Endpoint privado de consulta de estado | CFG-16 |
 | `{{rutaAccesoDocumento}}` | Mecanismo de acceso temporal al documento (descarga o URL firmada) | CFG-16 y CFG-23a (PA-09) |
-| `{{campoCorrelacion}}` | Nombre del campo de `correlation_id` en la respuesta | CFG-16 |
+| `{{campoCorrelacion}}` | Nombre del campo de correlación en la respuesta. Valor de partida: `correlationId`, según el `CLAUDE.md` de `MANI-Node` (PA-17) | CFG-16 |
 | `{{codigoRechazo}}` | Código exacto de rechazo, entre 403 y 404 | CFG-16 |
-| `{{formatoError}}` | Estructura del error de validación | CFG-16 |
+| `{{formatoError}}` | Estructura del error. Valor de partida: `{ error, code?, correlationId }`, según el `CLAUDE.md` de `MANI-Node` (PA-17) | CFG-16 |
 | `{{ttlUrlFirmada}}` | Vida de la URL firmada | CFG-23a (la colección usa 60 s) |
 
 Usuarios de prueba (existen en la colección `mani-aislamiento`): `aliado.t1`, `aliado.t2`, `admin.t1`, `admin.t2`, `cliente.t1` y `hook.t1` (segundo aliado del tenant 1). Falta un `cliente.t2` (PA-10). Datos: dos tenants activos con su slug (`slugT1`, `slugT2`), un tenant inexistente (`slugInexistente`) y un tenant inactivo si existe en QA.
@@ -71,7 +71,7 @@ Usuarios de prueba (existen en la colección `mani-aislamiento`): `aliado.t1`, `
 | rgA3P1 | A3-P | Positivo | No | Tenant 1 activo | 1. Registrar con `X-Tenant-Slug: slugT1` 2. Iniciar sesión y decodificar el claim (sin versionar el token) | El aliado queda en el tenant 1 y el claim `tenant_id` es el del tenant 1 |
 | rgA3P2 | A3-P | Positivo | No | Aliado autenticado en el tenant 1 | 1. Subir un documento a `{{rutaDocumentos}}`. 2. Consultar `{{rutaEstado}}` | 2xx. Solo se afectan registros del tenant 1 y del propio uid |
 | rgA3N1 | A3-N | Negativo | No: hoy se usa un tenant por defecto (F3) | `slugInexistente` y, si existe, un tenant inactivo | 1. Registrar con cada uno | Rechazo. Ningún tenant por defecto. No se crea usuario, aliado ni documento. Control positivo: rgA3P1 |
-| rgA3N2 | A3-N | Negativo | No | Sin sesión | 1. Llamar a `{{rutaDocumentos}}` y `{{rutaEstado}}` sin cabecera `Authorization`, con token expirado y con firma alterada | 401 del Gateway en cada variante, sin llegar al Core. Control positivo: rgA3P2 |
+| rgA3N2 | A3-N | Negativo | No | Sin sesión | 1. Llamar a `{{rutaDocumentos}}` y `{{rutaEstado}}` sin cabecera `Authorization`, con token expirado y con firma alterada | 401 en cada variante, del Gateway o del Core según PA-16, sin acceder a ningún dato. Control positivo: rgA3P2 |
 | rgA3V1 | A3-V | Violación | No | `X-Tenant-Slug: slugT1` | 1. Registrar con `tenant_id` del tenant 2 en el cuerpo | El cuerpo se ignora o se rechaza (PA-05). Nada queda en el tenant 2 |
 | rgA3V2 | A3-V | Violación | No | Aliado autenticado en el tenant 1 | 1. Operación privada con `tenant_id` del tenant 2 en el cuerpo. 2. La misma con `X-Tenant-Slug: slugT2` | El Core usa el claim del token. Nada se lee ni se escribe en el tenant 2. Control positivo: rgA3P2 |
 
@@ -93,7 +93,7 @@ Los casos reutilizan los usuarios y las solicitudes de `mani-aislamiento`. La co
 | rgB2 | B2 listado | `aliado.t1` y `admin.t1` listan: ninguna fila del tenant 2. Un aliado no ve documentos de otro aliado del tenant | Cada listado devuelve al menos una fila propia | Carpeta 02 (`sitio` y `usuario`) y el complemento de la fila de `documento_kyc` | Listados de documentos y aliados por el Gateway |
 | rgB3 | B3 escritura | `aliado.t1` intenta modificar el KYC o el estado del tenant 2. Verificar con `admin.t2` que sigue intacto. Variante de inserción con `tenant_id` ajeno. No puede cambiar su propio estado (403) | Reemplazar su propio documento si está PENDIENTE (PA-08) | Carpetas 03 y 03b. El control positivo actual pone `estado: aprobado` (auto-aprobación) y debe reemplazarse | Solicitudes por el Gateway y control positivo nuevo |
 | rgB4 | B4 borrado | `aliado.t1` intenta borrar un documento del tenant 2. Verificar con `admin.t2` | Retirar su propio documento si está PENDIENTE (PA-08) | Carpeta 04 | Solicitudes por el Gateway |
-| rgB5 | B5 tokens | Token con `tenant_id` reescrito, firma alterada, expirado y sin `Authorization`: 401 en el Gateway y ninguna fila | Token válido de `aliado.t1`: 200 | Carpeta 05 (no cubre expirado ni ausencia total de token) | Variantes expirado y sin cabecera |
+| rgB5 | B5 tokens | Token con `tenant_id` reescrito, firma alterada, expirado y sin `Authorization`: 401, del Gateway o del Core según PA-16, y ninguna fila | Token válido de `aliado.t1`: 200 | Carpeta 05 (no cubre expirado ni ausencia total de token) | Variantes expirado y sin cabecera |
 | rgB6 | B6 KYC en Storage | `aliado.t2`, `admin.t2`, `hook.t1`, `cliente.t1` y anónimo no descargan, firman, listan ni suben. URLs firmadas alteradas, reutilizadas o vencidas se rechazan | El dueño y su admin descargan, firman y listan | Carpeta 06 completa (N1 a N11, P1 a P3, C1 y complemento) | Acceso por `{{rutaAccesoDocumento}}`; `cliente.t2` |
 
 Controles adicionales del caso 6, para decidir el resultado esperado:
@@ -139,13 +139,14 @@ Un comportamiento sin línea base no puede declararse "preservado": se declara "
 |---|---|---|
 | PA-01 | Todas las rutas y códigos | Juan Sebastián Álvarez |
 | PA-02 | rgA1P: registro y documentos en una o dos peticiones | José Nicolás Álvarez y Juan Sebastián Álvarez |
-| PA-03 | rgA2N: qué documento es obligatorio | Nicolás León |
+| PA-03 | rgA2N: qué documento es obligatorio, y si la lista sale del Core o del servicio de reglas | Nicolás León y Juan Sebastián Álvarez |
 | PA-04 | rgB6 y rgA1P: ruta de Storage | Autor de ADR-0013 y Mesa de Arquitectura |
 | PA-05 | rgA1V1 y rgA3V1: ignorar o rechazar | Sara Albarracín y María Camila Beltrán |
 | PA-06 | rgA1V2 | Santiago |
 | PA-07 | rgA4P: excepción de Supabase Auth | Daniel Ávila |
 | PA-08 | rgB3 y rgB4: control positivo | Nicolás León |
 | PA-09 | rgB6: mecanismo y TTL | Juan Sebastián Álvarez |
+| PA-16 | rgA3N2 y rgB5: quién devuelve el 401 | Daniel Ávila y Juan Sebastián Álvarez |
 | PA-11 | Sección 6: falta publicar el ADR-0022 que registra la decisión | María Camila Beltrán |
 
 ## 10. Trazabilidad con Jira

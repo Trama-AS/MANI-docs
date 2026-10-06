@@ -32,12 +32,13 @@ Autoridad de decisión (`governance/GOBIERNO_DEL_EQUIPO.md`, sección 2.3): el P
 | Contrato OpenAPI de CFG-16 (SCRUM-1099) | No existe | No hay archivos OpenAPI en los repositorios revisados. Rutas y códigos quedan atados a SCRUM-1099 (PA-01) |
 | `MANI-Node` y `MANI-APIGateway` (carpeta local `MANI-API`) | Leídos en `main` | Solo esqueleto, gobernanza y plantilla de PR. Sin workflows, sin proyecto Sonar y sin pruebas. El Core no tiene ruta de registro |
 | `MANI-Java` y `MANI-.NET` | Sincronizados; solo se listó su contenido | No se asume nada sobre ellos |
-| `MANI-Infrastructure` | **No accesible** el 6 de octubre | `git fetch` responde "repository not found" y el repositorio no aparece en la lista de `Trama-AS`. Solo se conoce el estado local (`eadd67c`: README y CODEOWNERS). No se asume nada sobre su contenido actual |
+| `MANI-Infrastructure` (`MANI-Infra` en la documentación) | **No existe** | DevOps (Daniel Ávila) lo borró el 6 de octubre porque ya no se necesitaba. Ninguno de los `AGENTS.md` ni `CLAUDE.md` lo menciona. ADR-0004, el SAD, el SDD, el README y la wiki aún lo nombran como `MANI-Infra` |
+| `AGENTS.md` y `CLAUDE.md` de `MANI-Flutter` (`develop`), `MANI-Node`, `MANI-APIGateway`, `MANI-Java` y `MANI-.NET` | Leídos en su rama vigente | `MANI-docs` no tiene esos archivos. Fijan lo siguiente: el Gateway reenvía el JWT sin validarlo (PA-16); el error del Core es `{ error, code?, correlationId }`; el servicio de reglas se encarga de las reglas por tenant (RF-02, PA-03); Flutter hace PR a `develop` o `release`; ninguno menciona Availability ni un repo de infraestructura |
 | Jira | Leído en línea el 6 de octubre, sin escrituras | SCRUM-1076, 1126 a 1131, 1062, 1184 a 1188, 1061, 1065, 1099, 1075, 1083, 1102 a 1104 y 1112 |
 
 No se citan ADR-0023 a ADR-0026: la wiki indica que no están en el repositorio. ADR-0022 se cita desde su rama sin fusionar y se señala como Propuesto.
 
-Base de código al 6 de octubre de 2026, tras `git fetch --all --prune`: `MANI-docs` `origin/main` `3fd4473`; **`MANI-Flutter` rama `develop` `1f4c843`** (la rama vigente: `main` `0412421` y `release` `a2a2e15` están atrasadas; `develop` lleva 6 commits sobre `main` y 14 sobre `release`); `MANI-Node` `07069d3`, `MANI-APIGateway` `e312793`, `MANI-Java` `ae5d6ce` y `MANI-.NET` `e2e8370`, todos en `main`. `MANI-Infrastructure` no fue accesible.
+Base de código al 6 de octubre de 2026, tras `git fetch --all --prune`: `MANI-docs` `origin/main` `3fd4473`; **`MANI-Flutter` rama `develop` `1f4c843`** (la rama vigente: `main` `0412421` y `release` `a2a2e15` están atrasadas; `develop` lleva 6 commits sobre `main` y 14 sobre `release`); `MANI-Node` `07069d3`, `MANI-APIGateway` `e312793`, `MANI-Java` `ae5d6ce` y `MANI-.NET` `e2e8370`, todos en `main`. `MANI-Infrastructure` ya no existe (borrado por DevOps).
 
 ## 2. Línea base: qué hace hoy el código
 
@@ -231,7 +232,7 @@ Escenario A3-N: Tenant inexistente o inactivo, o petición privada sin token vá
   Entonces el registro se rechaza, no se asigna ningún tenant por defecto y no se crea usuario, aliado ni documento
   Dada una petición privada sin token, con token expirado o con firma alterada
   Cuando llega al Gateway
-  Entonces el Gateway responde 401 y la petición no llega al Core
+  Entonces la petición se rechaza con 401, sea en el Gateway o en el Core según lo que decida PA-16, y no se accede a ningún dato
 
 Escenario A3-V: El cliente intenta fijar otro tenant
   Dado un registro con X-Tenant-Slug del tenant 1 y un tenant_id del tenant 2 en el cuerpo
@@ -294,7 +295,7 @@ Escenario B4 (caso 4, borrado)
 
 Escenario B5 (caso 5, tokens inválidos)
   Cuando se llama a un endpoint privado de documentos o de estado con un token con tenant_id reescrito, con la firma alterada, expirado o sin cabecera Authorization
-  Entonces el Gateway responde 401 en cada variante, la petición no llega al Core y no se devuelve ninguna fila
+  Entonces cada variante se rechaza con 401, sea en el Gateway o en el Core según lo que decida PA-16, y no se devuelve ninguna fila
   Y la misma llamada con un token válido de aliado.t1 devuelve 200 (control positivo)
 
 Escenario B6 (caso 6, KYC en Storage)
@@ -334,7 +335,7 @@ Si las dependencias del punto 6 no llegan a QA antes del cierre del sprint, la a
 |---|---|---|
 | PA-01 | No existe el contrato OpenAPI. Rutas, códigos de estado, formato de error y nombre del campo de `correlation_id` no se inventan aquí y quedan atados a CFG-16. Debe incluir el endpoint público de registro y los privados de documentos y estado. Flutter ya consume `/api/v1/core/aliados/empresa` (F10): el contrato debe reconciliarse con esa ruta o acordar el cambio con quien la implementó | Juan Sebastián Álvarez, SCRUM-1099 |
 | PA-02 | Si el registro y la carga de documentos son una sola petición o dos para persona natural. El precedente de empresa (F10) usa una sola petición multipart, y su método recibe `documentosKYC` como `List<Map<String, String>>` con `contenido_base64`, el mismo tipo que usa persona natural. Eso sugiere que la interfaz del repositorio no necesita cambiar, solo lo que la página pone en cada mapa (contenido en lugar de rutas). Falta que José lo confirme | José Nicolás Álvarez y Juan Sebastián Álvarez, SCRUM-1061 y SCRUM-1065; decisión de fondo en CFG-35 |
-| PA-03 | Fuente de los documentos requeridos por tenant. El Backlog V3 habla de "cédula y antecedentes"; el código exige solo la cédula (F4) y no hay configuración por tenant (RF-02). El PO debe confirmar si "antecedentes" es obligatorio | Nicolás León (PO), con SCRUM-1065 |
+| PA-03 | Fuente de los documentos requeridos por tenant. El Backlog V3 habla de "cédula y antecedentes"; el código exige solo la cédula (F4) y no hay configuración por tenant (RF-02). El PO debe confirmar si "antecedentes" es obligatorio. Hipótesis por confirmar: el `AGENTS.md` de `MANI-Java` asigna a ese servicio las reglas por tenant (RF-02), así que la lista de documentos exigidos podría salir del servicio de reglas y no del Core | Nicolás León (PO), con SCRUM-1065 y Juan Sebastián Álvarez |
 | PA-04 | Inconsistencia de ruta de Storage: ADR-0013 y el comentario del código de empresa en `develop` (F11) dicen `tenant_id/aliado_id/documento`; el Backlog V3, la política `kyc_isolation` y la colección usan `<tenant_id>/<uid>/` (la solicitud N11 de la colección verifica que la ruta con `aliado.id` se deniega). SCRUM-1063 CA-2 también usa `aliado_id`. Si el Core construye la ruta con `aliado_id`, la política vigente la rechazaría o habría que migrarla. Corrección propuesta, sin editar el ADR: fijar cuál es la ruta, sustituir `aliado_id` por `usuario_id` o migrar la política | Autor de ADR-0013 y Mesa de Arquitectura; María Camila Beltrán en SCRUM-1063; Juan Sebastián Álvarez como implementador del Core |
 | PA-05 | Tratamiento de un `tenant_id` ajeno en el cuerpo: PO-05 dice "se ignora" y la colección (caso 3, variante de inserción) espera rechazo. Los criterios admiten ambos y exigen que no se escriba en el tenant ajeno. Debe unificarse en el contrato | Sara Albarracín y María Camila Beltrán, SCRUM-1083 |
 | PA-06 | Verificar en QA, antes de la regresión, si un registro con `rol` o `tenant_id` fijados desde el cliente crea un usuario con ese rol o en ese tenant (F3). Es una lectura de código no ejecutada | Santiago, SCRUM-1062; si se confirma, abrir defecto en Jira |
@@ -347,6 +348,8 @@ Si las dependencias del punto 6 no llegan a QA antes del cierre del sprint, la a
 | PA-13 | El backlog (sección 3.6) deja regresión solo para US-02.1.1. US-02.1.2-M2/M3 y US-02.2.1-M2 entran sin historia de regresión propia. Decisión pendiente del PO | Nicolás León (PO) |
 | PA-14 | El destino de publicación: la descripción de SCRUM-1076 dice "Jira / Backlog V4", archivo que ya no existe. Falta confirmar con la Scrum Master si el destino es Jira o `MANI-docs` | Sara Albarracín |
 | PA-15 | Los escenarios BDD completos están condicionados a lo que confirme la Scrum Master (sección 5) | Sara Albarracín |
+| PA-16 | Quién valida el JWT. El ADR-0018 dice que el Gateway "valida inicialmente el token", pero el `CLAUDE.md` de `MANI-APIGateway` prohíbe consumir el payload del JWT en el Gateway y delega la validación al backend, y `COMUNICACION_SERVICIOS_GATEWAY.md` dice que cada servicio inspecciona el token. Si el Gateway no valida, los 401 de A3-N y B5 vienen del Core y "la petición no llega al Core" no se cumple | Daniel Ávila (Gateway) y Juan Sebastián Álvarez (Core), con CFG-22 (SCRUM-1102) |
+| PA-17 | Formato de error y nombre del campo de correlación. El `CLAUDE.md` de `MANI-Node` fija el error como `{ error, code?, correlationId }` y el esqueleto del Core ya usa `correlationId`. Se propone como valor de partida para el contrato, pendiente de confirmar | Juan Sebastián Álvarez, SCRUM-1099 |
 
 ## 9. Solapes con PO-05 (SCRUM-1083)
 
@@ -368,7 +371,8 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 | Juan Sebastián Álvarez (dueño de CFG-16, CFG-23a y M2) | Ajusta el DoR y el DoD de M1 y M2. Resuelve PA-01, PA-02, PA-09 y PA-11 |
 | José Nicolás Álvarez (dueño de M3) | Ajusta el DoR y el DoD de M3. Resuelve PA-02 |
 | María Camila Beltrán (PO-05 y DOC-26) | Evita duplicar criterios comunes. Reconcilia la ruta de Storage (PA-04) |
-| Daniel Ávila (DevOps) | Confirma la ejecución en CI. Resuelve PA-07 y las fechas de CFG-22 y CFG-23b |
+| Nota | `MANI-Infra` sigue nombrado en ADR-0004, SAD, SDD, README y wiki, aunque el repositorio ya no existe. Pasa por María Camila Beltrán (documentación) |
+| Daniel Ávila (DevOps) | Confirma la ejecución en CI. Resuelve PA-07 y PA-16, y las fechas de CFG-22 y CFG-23b |
 
 ## 11. Cambios propuestos en Jira (no ejecutados)
 
@@ -395,4 +399,5 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 - Se añadieron los hallazgos F8 y F9 y se ajustó F7.
 - Tras la revisión del 6 de octubre: las condiciones 8 y 9 del DoR de M4 pasan a recomendadas, el control negativo ejecutable pasa a meta, se añade la alternativa de los controles positivos de B3 y B4 (PA-08) y se mantiene la evidencia con enlace a CI como requisito.
 - Actualización del 6 de octubre tras sincronizar los siete repositorios: la revisión de Flutter pasa de `main` a `develop` (`1f4c843`). Se corrige F8 (20 archivos, no 10), se confirma F3 por el lado del cliente y se añaden F10 y F11 (precedente de empresa por el Gateway y ruta de Storage). A1 y A3 nombran `X-Tenant-Slug` en el registro y el claim en lo privado. Se ajustan los DoR y DoD de M1 a M3, PA-01, PA-02 y PA-04. PA-11 se reformula por el ADR-0022 (Propuesto), y el reporte de M4 se vuelve el criterio para retirar las funciones PL/pgSQL si ese ADR se acepta.
-- Actualización del 6 de octubre, por lo publicado por María Camila Beltrán: SCRUM-1063, 1064 y 1065 ya dicen que el Core migra la lógica al servicio (ADR-0022). A1 deja de ser ambiguo, la paridad de M4 pasa a regla vigente, PA-11 queda como "decidido, falta publicar el ADR" y se añade que SCRUM-1075 conserva el título anterior. `MANI-Infrastructure` no fue accesible.
+- Actualización del 6 de octubre, por lo publicado por María Camila Beltrán: SCRUM-1063, 1064 y 1065 ya dicen que el Core migra la lógica al servicio (ADR-0022). A1 deja de ser ambiguo, la paridad de M4 pasa a regla vigente, PA-11 queda como "decidido, falta publicar el ADR" y se añade que SCRUM-1075 conserva el título anterior. `MANI-Infrastructure` ya no existe (borrado por DevOps).
+- Actualización del 6 de octubre tras leer los `AGENTS.md` y `CLAUDE.md` de los repos: los 401 de A3-N y B5 ya no se atribuyen solo al Gateway (PA-16). Se añaden PA-16 y PA-17, la hipótesis de las reglas por tenant en PA-03 y la confirmación de que `MANI-Infrastructure` fue borrado por DevOps.

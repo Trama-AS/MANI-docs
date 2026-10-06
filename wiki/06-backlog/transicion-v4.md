@@ -2,7 +2,7 @@
 
 [← 06 · Backlog](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`product/BACKLOG_MANI_V4_TRANSICION.md`](../../product/BACKLOG_MANI_V4_TRANSICION.md) §1–§8 y [`BACKLOG_MANI_V4_TRANSICION.csv`](../../product/BACKLOG_MANI_V4_TRANSICION.csv).
+**Fuente:** [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §1–§8.
 
 ## Fotografía de partida
 

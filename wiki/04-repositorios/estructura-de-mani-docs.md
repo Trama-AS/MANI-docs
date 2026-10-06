@@ -12,8 +12,7 @@ MANI-Docs/
 ├── CONTRIBUTING.md                resumen del proceso de contribución
 ├── product/
 │   ├── SRS.md                            requerimientos (fuente de verdad)
-│   ├── BACKLOG_MANI_V4_TRANSICION.md     criterio de transición legible
-│   └── BACKLOG_MANI_V4_TRANSICION.csv    inventario importable a Jira
+│   ├── BACKLOG_MANI.md     criterio de transición legible
 ├── architecture/
 │   ├── SAD.md                     arquitectura; referencia los diagramas DHL
 │   ├── SDD.md                     diseño detallado; referencia las vistas C4
@@ -55,4 +54,3 @@ MANI-Docs/
 - No se eliminan ADR históricos: una decisión que cambia produce un ADR nuevo y el anterior pasa a `Superseded`.
 - La wiki no introduce reglas propias: si un dato no está en un documento, no se documenta como vigente ([Home](../Home.md) §4).
 
-> El árbol que describe `README.md` §13 (`Product/`, `Architecture/`, `ADR/`, `Project/`, `DevOps/`, `Infrastructure/`, `Diagramas/`, y `MANI_Modelo_de_Datos.md`) no coincide con el árbol real de arriba. Está listado en [Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md) como hueco documental.

@@ -32,7 +32,7 @@ Ninguna persona es dueña de un documento: la autoridad es del **rol** y del **a
 4. **Datos:** [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md).
 5. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).
 6. **Tecnologías vigentes:** [`architecture/TECH_RADAR.md`](../architecture/TECH_RADAR.md).
-7. **Trabajo:** Jira es la fuente del backlog y los sprints; [`product/BACKLOG_MANI_V4_TRANSICION.md`](../product/BACKLOG_MANI_V4_TRANSICION.md) es el criterio de transición.
+7. **Trabajo:** Jira es la fuente del backlog y los sprints; [`product/BACKLOG_MANI.md`](../product/BACKLOG_MANI.md) es el criterio de transición.
 8. **Esta wiki.**
 
 Tres reglas de gobierno aplican a todo lo anterior ([`GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md) §1):

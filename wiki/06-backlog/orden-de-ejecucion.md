@@ -2,7 +2,7 @@
 
 [← 06 · Backlog](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`product/BACKLOG_MANI_V4_TRANSICION.md`](../../product/BACKLOG_MANI_V4_TRANSICION.md) §4.1, §4.2 y §4.5.
+**Fuente:** [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §4.1, §4.2 y §4.5.
 
 Este orden no es una sugerencia: las fases 1 y 2 **bloquean** el resto.
 

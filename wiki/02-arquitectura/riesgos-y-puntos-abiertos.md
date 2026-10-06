@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §23 · [`architecture/SDD.md`](../../architecture/SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §25 · [`product/BACKLOG_MANI_V4_TRANSICION.md`](../../product/BACKLOG_MANI_V4_TRANSICION.md) §3, §4.1 y §4.2.
+**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §23 · [`architecture/SDD.md`](../../architecture/SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §25 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §3, §4.1 y §4.2.
 
 Esta página existe para que nadie —persona o asistente— «resuelva» en un PR algo que el equipo todavía no decidió.
 
@@ -48,10 +48,7 @@ Detectados al navegar este repositorio. **No alteran ninguna decisión**; se lis
 
 | Hueco | Detalle |
 |---|---|
-| Ruta de `workspace.dsl` | `README.md` §13 y `GOBIERNO_DEL_EQUIPO.md` §3.1 lo citan sin ruta; el archivo vive en [`diagrams/C4Model/workspace.dsl`](../../diagrams/C4Model/workspace.dsl) |
-| `MANI_Modelo_de_Datos.md` | `README.md` §13 y `GOBIERNO_DEL_EQUIPO.md` §3.1 lo citan con ese nombre; el archivo real es [`architecture/ModeloDatos.md`](../../architecture/ModeloDatos.md), al que SAD y SDD ya apuntan |
 | `docs/governance/POLITICA_USO_IA.md` | Citado por ADR-0009 como su sustituto; no existe. La política vigente es Políticas DevOps §18 |
-| Estructura de `README.md` §13 | Describe `Product/`, `Architecture/`, `ADR/`, `Project/`, `DevOps/`, `Infrastructure/`, `Diagramas/`; el árbol real es el de [Estructura de MANI-Docs](../04-repositorios/estructura-de-mani-docs.md) |
 | ADR-0022..ADR-0026 | Referenciados por `DOC-27` como recuperables; no están en `adr/` |
 | `architecture_context.txt` | `DOC-25` pide actualizarlo; no está en este repositorio |
 

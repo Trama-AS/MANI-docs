@@ -5,6 +5,7 @@
 **Apoyo:** Nicolás León — DevOps secundario  
 **Ámbito:** desarrollo, repositorios, CI/CD, pruebas, seguridad, observabilidad y herramientas  
 **Estado:** Línea base consolidada conforme a los ADR vigentes  
+**Socialización:** [Video — Políticas DevOps: Gitflow y ambientes](https://livejaverianaedu-my.sharepoint.com/:v:/g/personal/ds_avilam_javeriana_edu_co/IQDJum5FxLZUT7eaGJrT-VSUAa4MTwcZkgTP_k2EMLSW_QQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=dhFbaF) · OneDrive institucional, requiere cuenta Javeriana  
 
 ---
 
@@ -103,6 +104,10 @@ Cada repositorio desplegable debe mantener:
 ---
 
 # 5. Control de versiones y ramas
+
+> **Socialización en video.** El flujo de ramas de esta sección y la promoción entre ambientes de §7 están
+> explicados en el [video de socialización de políticas DevOps (Gitflow y ambientes)](https://livejaverianaedu-my.sharepoint.com/:v:/g/personal/ds_avilam_javeriana_edu_co/IQDJum5FxLZUT7eaGJrT-VSUAa4MTwcZkgTP_k2EMLSW_QQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=dhFbaF).
+> Ante discrepancia entre el video y este documento, manda el documento.
 
 ## 5.1 Ramas principales
 

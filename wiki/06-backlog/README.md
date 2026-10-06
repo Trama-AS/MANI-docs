@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-**Fuente:** [`product/BACKLOG_MANI_V4_TRANSICION.md`](../../product/BACKLOG_MANI_V4_TRANSICION.md) y su CSV · [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md).
+**Fuente:** [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) y su CSV · [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md).
 
 > **Jira es la fuente del trabajo.** Esta carpeta no lo duplica: explica cómo se lee el backlog V4 de transición y en qué orden se ejecuta.
 

@@ -7,6 +7,8 @@
 **Despliegue:** Docker + Kubernetes  
 **Ambientes:** DEV → TEST/QA → PROD  
 **Estrategia de repositorios:** Multi-repo  
+**Diagramas de este documento:** diagramas de alto nivel (DHL) en [`diagrams/ALTO_NIVEL/`](../diagrams/ALTO_NIVEL/) — [DHL.png](../diagrams/ALTO_NIVEL/DHL.png), [Infra.png](../diagrams/ALTO_NIVEL/Infra.png), [TechRadar.png](../diagrams/ALTO_NIVEL/TechRadar.png)  
+**Modelo C4 formal:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentado vista por vista en [`SDD.md`](./SDD.md) §4  
 
 ---
 
@@ -21,7 +23,7 @@ Para evitar contaminación entre requisitos y solución, esta versión:
 - usa RF, RNF y REST del SRS como drivers;
 - no toma como drivers las notas históricas de inconsistencias arquitectónicas del SRS;
 - no redefine requisitos;
-- no duplica el modelo de datos físico ni el DDL, que viven en `MANI_Modelo_de_Datos.md`;
+- no duplica el modelo de datos físico ni el DDL, que viven en `ModeloDatos.md`;
 - no duplica decisiones históricas completas de ADR, solo referencia las decisiones vigentes.
 
 ---
@@ -107,87 +109,42 @@ MANI adopta una **arquitectura SOA distribuida**, con un **API Gateway** como fr
 
 # 5. Vista de contexto — C4 Nivel 1
 
-```mermaid
-flowchart LR
-    CL[Cliente]
-    AL[Aliado]
-    AT[Administrador de tenant]
-    AP[Administrador de plataforma]
+![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](../diagrams/ALTO_NIVEL/DHL.png)
 
-    MANI((MANI))
+> **Figura 1 — Diagrama de alto nivel (DHL).** Archivo: [`diagrams/ALTO_NIVEL/DHL.png`](../diagrams/ALTO_NIVEL/DHL.png).
+> La vista C4 formal correspondiente es `contexto` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §4.1.
 
-    PUSH[FCM / APNs]
-    PAY[Operador de pagos<br/>2.º incremento]
-    OBS[Observabilidad]
-    DWH[Data Warehouse / BI]
-
-    CL --> MANI
-    AL --> MANI
-    AT --> MANI
-    AP --> MANI
-
-    MANI --> PUSH
-    MANI --> PAY
-    MANI --> OBS
-    MANI --> DWH
+```text
+Actores
+  Cliente · Aliado · Administrador de tenant · Administrador de plataforma
+        ↓
+                          [ MANI ]
+        ↓
+Sistemas externos
+  FCM / APNs · Operador de pagos (2.º incremento) · Observabilidad · Data Warehouse / BI
 ```
 
 ---
 
 # 6. Vista de contenedores — C4 Nivel 2
 
-```mermaid
-flowchart LR
-    U[Usuarios]
+![Vista de alto nivel de los componentes de MANI: cliente, gateway, servicios y Supabase](../diagrams/ALTO_NIVEL/DHL.png)
 
-    subgraph Presentation["Presentación"]
-        FL[Flutter Web / Mobile]
-    end
+> **Figura 2 — Componentes de la solución en el DHL.** Archivo: [`diagrams/ALTO_NIVEL/DHL.png`](../diagrams/ALTO_NIVEL/DHL.png).
+> La vista C4 formal correspondiente es `contenedores` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §4.2.
 
-    subgraph Access["Acceso"]
-        GW[NGINX API Gateway]
-    end
-
-    subgraph Services["Servicios de negocio"]
-        RULES[Rules Service<br/>Java]
-        DISPATCH[Dispatch Service<br/>.NET]
-        CORE[Core Services<br/>Node.js]
-        AVAIL[Availability Service<br/>Node.js]
-    end
-
-    subgraph Supabase["Supabase"]
-        AUTH[Auth]
-        DB[(PostgreSQL)]
-        STORAGE[Storage]
-        REALTIME[Realtime]
-        RLS[Row-Level Security]
-    end
-
-    subgraph External["Integraciones"]
-        FCM[FCM / APNs]
-        PAYMENT[Operador de pagos<br/>2.º incremento]
-    end
-
-    U --> FL
-    FL -->|HTTPS| GW
-
-    GW --> RULES
-    GW --> DISPATCH
-    GW --> CORE
-    GW --> AVAIL
-
-    CORE --> AUTH
-    RULES --> DB
-    DISPATCH --> DB
-    CORE --> DB
-    AVAIL --> DB
-
-    CORE --> STORAGE
-    CORE --> REALTIME
-    CORE --> FCM
-    CORE --> PAYMENT
-
-    DB --- RLS
+```text
+Usuarios
+   ↓
+Flutter Web / Mobile                    presentación e interacción
+   ↓ HTTPS
+NGINX API Gateway                       entrada única, routing y políticas transversales
+   ↓
+Rules (Java) · Dispatch (.NET) · Core (Node.js) · Availability (Node.js)
+   ↓
+Supabase: Auth · PostgreSQL + RLS · Storage · Realtime
+   ↓
+Integraciones: FCM/APNs · Operador de pagos (2.º incremento)
 ```
 
 ---
@@ -359,24 +316,16 @@ Elegible =
 
 # 11. Ciclo del servicio
 
-```mermaid
-flowchart LR
-    A[Solicitud]
-    B[Selección de aliados válidos]
-    C[Broadcast]
-    D[Aceptación atómica]
-    E[Cotización]
-    F[Aceptación/Ajuste]
-    G[Ejecución]
-    H[Calificación cliente]
-    I[Calificación aliado]
-    J[Cierre]
-
-    A --> B --> C --> D --> E --> F --> G
-    G --> H
-    G --> I
-    H --> J
-    I --> J
+```text
+Solicitud
+  → Selección de aliados válidos (categoría + zona)
+  → Broadcast
+  → Aceptación atómica
+  → Cotización
+  → Aceptación / ajuste del cliente
+  → Ejecución
+  → Calificación del cliente  +  Calificación del aliado
+  → Cierre
 ```
 
 El cierre solo ocurre cuando ambas calificaciones requeridas por RF-19 existen.
@@ -433,7 +382,7 @@ Capacidades utilizadas:
 - Storage;
 - Realtime.
 
-El detalle conceptual, lógico, físico, DDL y diccionario vive en `MANI_Modelo_de_Datos.md`.
+El detalle conceptual, lógico, físico, DDL y diccionario vive en `ModeloDatos.md`.
 
 ---
 
@@ -443,23 +392,22 @@ RF-28 requiere métricas operativas por tenant en el segundo incremento.
 
 La solución analítica se mantiene separada del flujo transaccional:
 
-```mermaid
-flowchart LR
-    S[(Supabase / PostgreSQL OLTP)]
-    CDC[CDC / ELT incremental]
-    DW[(Data Warehouse)]
-    BI[Dashboards / Analytics]
-
-    S --> CDC --> DW --> BI
+```text
+Supabase / PostgreSQL (OLTP) → CDC / ELT incremental → Data Warehouse → Dashboards / Analytics
 ```
 
 Esto evita ejecutar consultas analíticas intensivas directamente sobre las tablas operacionales.
 
-El modelo dimensional se especifica en `MANI_Modelo_de_Datos.md`.
+El modelo dimensional se especifica en `ModeloDatos.md`.
 
 ---
 
 # 16. Vista de despliegue
+
+![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/ALTO_NIVEL/Infra.png)
+
+> **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/ALTO_NIVEL/Infra.png`](../diagrams/ALTO_NIVEL/Infra.png).
+> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §9.
 
 MANI mantiene tres ambientes:
 
@@ -534,19 +482,16 @@ Cada unidad desplegable mantiene:
 
 # 18. CI/CD
 
-```mermaid
-flowchart LR
-    PR[Pull Request]
-    UT[Unit / Integration / Contract Tests]
-    SAST[SonarQube]
-    BUILD[Docker Build]
-    SCAN[Dependency / Image Scan]
-    QA[Deploy TEST/QA]
-    API[Newman]
-    DAST[OWASP ZAP]
-    PROD[Promote same artifact to PROD]
-
-    PR --> UT --> SAST --> BUILD --> SCAN --> QA --> API --> DAST --> PROD
+```text
+Pull Request
+  → Unit / Integration / Contract Tests
+  → SonarQube
+  → Docker Build
+  → Dependency / Image Scan
+  → Deploy TEST/QA
+  → Newman
+  → OWASP ZAP
+  → Promoción del mismo artefacto a PROD
 ```
 
 Principio:
@@ -864,7 +809,8 @@ La arquitectura contempla explícitamente:
 # 26. Documentos relacionados
 
 - `SRS_MANI.md` — fuente de verdad de requerimientos.
-- `MANI_Modelo_de_Datos.md` — diseño conceptual, lógico, físico y analítico.
+- `ModeloDatos.md` — diseño conceptual, lógico, físico y analítico.
 - `SDD.md` — descripción detallada de diseño de software.
 - `/docs/adr/` — decisiones arquitectónicas.
-- `/docs/diagramas/` — vistas C4, datos, despliegue y flujos.
+- [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `contexto`, `contenedores`, `componentes-*` y `despliegue-prod`.
+- [`diagrams/ALTO_NIVEL/`](../diagrams/ALTO_NIVEL/) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.

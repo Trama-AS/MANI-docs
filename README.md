@@ -261,43 +261,43 @@ La documentación del proyecto se divide por responsabilidad para evitar duplici
 ```text
 MANI-Docs/
 ├── README.md
-├── Product/
-│   ├── SRS_MANI.md
-│   └── Perfil_de_Proyecto_MANI.md
-├── Architecture/
-│   ├── SAD_MANI.md
+├── CONTRIBUTING.md
+├── product/
+│   ├── SRS.md
+│   └── BACKLOG_MANI.md
+├── architecture/
+│   ├── SAD.md
 │   ├── SDD.md
-│   ├── MANI_Modelo_de_Datos.md
-│   ├── TECH_RADAR.md
-│   └── workspace.dsl
-├── ADR/
-│   ├── README.md
-│   └── ADR-XXXX-*.md
-├── Project/
-│   └── GOBIERNO_DEL_EQUIPO.md
-├── DevOps/
-│   └── POLITICAS_DEVOPS_HERRAMIENTAS.md
-├── Infrastructure/
+│   ├── ModeloDatos.md
+│   └── TECH_RADAR.md
+├── adr/
+│   └── ADR-00XX-*.md
+├── governance/
+│   ├── GOBIERNO_DEL_EQUIPO.md
+│   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md
 │   └── INFRAESTRUCTURA_MANI.md
-└── Diagramas/
-    ├── c4/
-    ├── datos/
-    ├── despliegue/
-    └── flujos/
+├── diagrams/
+│   ├── ALTO_NIVEL/          DHL, infraestructura y Tech Radar
+│   ├── C4Model/
+│   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas C4
+│   │   └── png/             vistas exportadas que incrusta el SDD
+│   └── ModeloDatos.png
+├── wiki/                    consulta por tema; no añade reglas propias
+└── Entregas/                entregables academicos por corte
 ```
 
 ### Fuente de verdad por tema
 
 | Tema | Documento |
 |---|---|
-| Requerimientos | `SRS_MANI.md` |
-| Perfil y contexto del proyecto | `Perfil_de_Proyecto_MANI.md` |
-| Arquitectura | `SAD_MANI.md` |
-| Diseño detallado | `SDD.md` |
-| Modelo de datos, DDL y diccionario | `MANI_Modelo_de_Datos.md` |
-| Decisiones arquitectónicas | `ADR/` |
-| Modelo C4 | `workspace.dsl` |
-| Tecnologías vigentes | `TECH_RADAR.md` |
+| Requerimientos | [`product/SRS.md`](product/SRS.md) |
+| Backlog | [`product/BACKLOG_MANI.md`](product/BACKLOG_MANI.md) |
+| Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
+| Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
+| Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
+| Decisiones arquitectónicas | [`adr/`](adr/) |
+| Modelo C4 | [`diagrams/C4Model/workspace.dsl`](diagrams/C4Model/workspace.dsl) |
+| Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
 | Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |

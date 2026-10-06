@@ -46,6 +46,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0012](../../adr/ADR-0012-persistencia-multitenant.md) | Persistencia operacional y aislamiento multi-tenant |
 | [ADR-0018](../../adr/ADR-0018-identificacion-tenant.md) | Identificación y propagación segura del tenant |
 | [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md) | Arquitectura SOA distribuida, multi-tenant y políglota |
+| [ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md) | Alcance de supabase_flutter en el cliente (retiro de PostgREST y Storage) |
 
 ### Pendientes de aprobación — `Propuesto`
 

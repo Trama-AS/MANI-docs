@@ -29,7 +29,7 @@ Reglas:
 | Línea base | El comportamiento validado en las entregas 1 a 3, que debe preservarse | Flutter directo a Supabase (el camino actual de persona natural, F1) | Hoy, con la colección `mani-aislamiento` y `mani-claims` ya existentes, solo en QA |
 | Gateway | El mismo comportamiento y el aislamiento por el camino nuevo | Flutter -> Gateway -> Core | Cuando M1 a M3, CFG-20, CFG-22 y CFG-23 estén desplegados en QA |
 
-Si el ADR-0022 se acepta, la línea base es además el criterio que autoriza retirar las funciones PL/pgSQL que reemplace M2 ("una vez la regresión en QA confirme el reemplazo"). Por eso cada caso funcional indica si **tiene línea base** o es comportamiento **por construir** (F1).
+Según el ADR-0022 (decisión del equipo del 5 de octubre, documento aún Propuesto), la línea base es además el criterio que autoriza retirar las funciones PL/pgSQL que reemplace M2 ("una vez la regresión en QA confirme el reemplazo"). Por eso cada caso funcional indica si **tiene línea base** o es comportamiento **por construir** (F1).
 
 ## 3. Marcadores y datos de prueba
 
@@ -102,7 +102,7 @@ Controles adicionales del caso 6, para decidir el resultado esperado:
 
 ## 6. Paridad: lo que debe preservarse antes de retirar la lógica vieja
 
-Aplica solo si el ADR-0022 se acepta. Lista de comportamientos que el reporte de M4 debe declarar cubiertos o no cubiertos.
+Aplica por la decisión del 5 de octubre registrada en el ADR-0022 (Propuesto). Lista de comportamientos que el reporte de M4 debe declarar cubiertos o no cubiertos.
 
 | Comportamiento | Función o pieza actual | Línea base existente | Caso |
 |---|---|---|---|
@@ -146,7 +146,7 @@ Un comportamiento sin línea base no puede declararse "preservado": se declara "
 | PA-07 | rgA4P: excepción de Supabase Auth | Daniel Ávila |
 | PA-08 | rgB3 y rgB4: control positivo | Nicolás León |
 | PA-09 | rgB6: mecanismo y TTL | Juan Sebastián Álvarez |
-| PA-11 | Sección 6: invocar o reimplementar | María Camila Beltrán |
+| PA-11 | Sección 6: falta publicar el ADR-0022 que registra la decisión | María Camila Beltrán |
 
 ## 10. Trazabilidad con Jira
 

@@ -27,16 +27,17 @@ Autoridad de decisión (`governance/GOBIERNO_DEL_EQUIPO.md`, sección 2.3): el P
 | `product/SRS.md`: RF-02, RF-03, RF-05, RNF-01, RNF-04, REST-02 | Leídos | RF-05 exige documentos según la configuración del tenant y aislados por aliado y tenant |
 | `Entregas/Entrega4/Backlog_V3.md`, sección 3 | Leída | Tres escenarios originales de US-02.1.1 y US-02.1.2, pendientes de validación del PO |
 | `wiki/02-arquitectura/riesgos-y-puntos-abiertos.md` | Leída | SP-05 abierto; riesgos CFG-23 y CFG-36 |
-| `ADR-0022` (rama `SCRUM-1075-adr-0022`, `aa6d464`, no fusionada) | Leído, estado Propuesto | Decide que la lógica de negocio vive en los servicios y que las funciones PL/pgSQL se retiran después de que la regresión en QA (SCRUM-1062) confirme el reemplazo. Contradice la lectura "los servicios invocan las funciones existentes". No es una decisión vigente hasta que se acepte |
+| `ADR-0022` (rama `SCRUM-1075-adr-0022`, `aa6d464`, no fusionada) | Leído, estado Propuesto | Registra la decisión de SP-05 que el equipo revisó en la daily del 5 de octubre: la lógica de negocio vive en los servicios y las funciones PL/pgSQL se retiran después de que la regresión en QA (SCRUM-1062) confirme el reemplazo. Los títulos de SCRUM-1063, 1064 y 1065 ya reflejan esa decisión. El documento formal sigue en Propuesto y no está en `main` |
 | `MANI-Flutter/qa/newman/` | Leída en `develop` (sin cambios frente a `main`) | Colecciones `mani-aislamiento` y `mani-claims`. Atacan Supabase directo |
 | Contrato OpenAPI de CFG-16 (SCRUM-1099) | No existe | No hay archivos OpenAPI en los repositorios revisados. Rutas y códigos quedan atados a SCRUM-1099 (PA-01) |
 | `MANI-Node` y `MANI-APIGateway` (carpeta local `MANI-API`) | Leídos en `main` | Solo esqueleto, gobernanza y plantilla de PR. Sin workflows, sin proyecto Sonar y sin pruebas. El Core no tiene ruta de registro |
-| `MANI-Java`, `MANI-.NET` y `MANI-Infrastructure` | Sincronizados; solo se listó su contenido | No se asume nada sobre ellos |
+| `MANI-Java` y `MANI-.NET` | Sincronizados; solo se listó su contenido | No se asume nada sobre ellos |
+| `MANI-Infrastructure` | **No accesible** el 6 de octubre | `git fetch` responde "repository not found" y el repositorio no aparece en la lista de `Trama-AS`. Solo se conoce el estado local (`eadd67c`: README y CODEOWNERS). No se asume nada sobre su contenido actual |
 | Jira | Leído en línea el 6 de octubre, sin escrituras | SCRUM-1076, 1126 a 1131, 1062, 1184 a 1188, 1061, 1065, 1099, 1075, 1083, 1102 a 1104 y 1112 |
 
-No se citan ADR-0022 a ADR-0026: la wiki indica que no están en el repositorio.
+No se citan ADR-0023 a ADR-0026: la wiki indica que no están en el repositorio. ADR-0022 se cita desde su rama sin fusionar y se señala como Propuesto.
 
-Base de código al 6 de octubre de 2026, tras `git fetch --all --prune` en los siete repositorios: `MANI-docs` `origin/main` `3fd4473`; **`MANI-Flutter` rama `develop` `1f4c843`** (la rama vigente: `main` `0412421` y `release` `a2a2e15` están atrasadas; `develop` lleva 6 commits sobre `main` y 14 sobre `release`); `MANI-Node` `07069d3`, `MANI-APIGateway` `e312793`, `MANI-Java` `ae5d6ce`, `MANI-.NET` `e2e8370` y `MANI-Infrastructure` `eadd67c`, todos en `main`.
+Base de código al 6 de octubre de 2026, tras `git fetch --all --prune`: `MANI-docs` `origin/main` `3fd4473`; **`MANI-Flutter` rama `develop` `1f4c843`** (la rama vigente: `main` `0412421` y `release` `a2a2e15` están atrasadas; `develop` lleva 6 commits sobre `main` y 14 sobre `release`); `MANI-Node` `07069d3`, `MANI-APIGateway` `e312793`, `MANI-Java` `ae5d6ce` y `MANI-.NET` `e2e8370`, todos en `main`. `MANI-Infrastructure` no fue accesible.
 
 ## 2. Línea base: qué hace hoy el código
 
@@ -97,7 +98,7 @@ Los pasos M1 a M3 pertenecen a otros responsables. Lo siguiente es una **propues
 | Paso | Ticket y responsable | Problema del DoR y DoD actuales | DoR propuesto | DoD propuesto |
 |---|---|---|---|---|
 | M1 | CFG-16, SCRUM-1099 (Juan Sebastián Álvarez). No tiene ticket propio: CFG-16 lo sustituye | El DoD es de plantilla de código ("cobertura mayor al 80 %, desplegado en QA") y no encaja con un documento OpenAPI. Además, Flutter ya consume `/api/v1/core/aliados/empresa` antes de que exista el contrato (F10) | Lista de operaciones acordada (registro público, carga de documentos, estado). Borrador del modelo de identidad (CFG-23a). Revisadas la ruta y la forma de petición que Flutter ya usa en `develop` | Documento OpenAPI válido según linter. Revisado por par técnico. Versionado en el repositorio acordado. Incluye endpoint público de registro, privados de documentos y estado, formato de error y campo de `correlation_id`. Reconciliado con lo ya construido en Flutter (ruta, multipart, `X-Tenant-Slug`) o con una nota de cambio acordada con quien lo implementó. Referenciado desde M2 y M3 |
-| M2 | SCRUM-1065 (Juan Sebastián Álvarez) | El DoD no exige los seis casos y su cobertura (>80 %) no coincide con el gate de ADR-0005. El DoR no refleja que SP-05 sigue sin decisión aceptada: la descripción dice "SP-05 cerrado en invocar", pero el ADR-0022 de DOC-26 (SCRUM-1075, en curso) está en estado Propuesto y decide lo contrario: la lógica se migra al servicio y no se invoca la función PL/pgSQL. El título de M2 ("invocando registrar_aliado_persona_natural") queda desactualizado si ese ADR se acepta | Contrato CFG-16 publicado. ADR de DOC-26 aceptado, para saber si M2 invoca o reimplementa. Modelo de identidad CFG-23a aprobado. Criterios de aceptación validados por el PO | Gates de ADR-0005. Los seis casos con rechazo y control positivo, con el aislamiento demostrado en el Core (con `service-role` la política `kyc_isolation` no se evalúa, F5). Pull Request aprobado y CI en verde. Contrato actualizado. Desplegado en QA |
+| M2 | SCRUM-1065 (Juan Sebastián Álvarez) | El DoD no exige los seis casos y su cobertura (>80 %) no coincide con el gate de ADR-0005. El título y la justificación ya se actualizaron el 6 de octubre: el Core migra al servicio la lógica de `registrar_aliado_persona_natural`, `handle_new_user` y el upsert a `usuario` (ADR-0022) y deja de invocar las funciones PL/pgSQL. Por eso M2 reimplementa comportamiento y no solo cambia el llamador | Contrato CFG-16 publicado. Decisión de SP-05 registrada (daily del 5 de octubre) y ADR-0022 publicado en `MANI-docs`. Modelo de identidad CFG-23a aprobado. Criterios de aceptación validados por el PO | Gates de ADR-0005. Los seis casos con rechazo y control positivo, con el aislamiento demostrado en el Core (con `service-role` la política `kyc_isolation` no se evalúa, F5). Paridad con el comportamiento de la línea base, declarada en el reporte de M4. Pull Request aprobado y CI en verde. Contrato actualizado. Desplegado en QA |
 | M3 | SCRUM-1061 (José Nicolás Álvarez) | El DoR pide diseño en Figma, que no aplica porque la UI no se toca. El DoD no pide ausencia de llamadas a `SupabaseClient`. No menciona el precedente de SCRUM-1060 (empresa), ya en `develop` | Contrato OpenAPI publicado o mockeado. `GatewayClient` (SCRUM-1111) disponible. Decisión de CFG-35 sobre qué queda de `supabase_flutter`. Se toma SCRUM-1060 como patrón (multipart al Core, tenant solo en `X-Tenant-Slug`, el cliente no envía rutas de Storage) y se confirma PA-02 | Ninguna llamada a `SupabaseClient`, `.rpc()`, `.from()` ni `.storage.from()` en `registrarAliadoPersonaNatural`, salvo la excepción que decida CFG-35. El cliente deja de enviar `rol`, `estado_verificacion` y rutas de Storage en la metadata, y el tenant viaja solo en `X-Tenant-Slug`. Interfaz de `domain/repositories` sin cambios, o cambio aprobado por el PO. Pruebas unitarias del datasource, como las de SCRUM-1060. CI en verde. Código integrado por Pull Request |
 
 ### 4.2 DoR de M4 (SCRUM-1062)
@@ -127,7 +128,7 @@ Base: DoD oficial de la wiki más los añadidos de los seis casos.
 7. Reporte QA aprobado, socializado y vinculado a Jira y GitHub.
 8. Documentación afectada actualizada (plan de pruebas de DOC-38, SCRUM-1094).
 
-Si el ADR-0022 se acepta, el reporte de M4 es además el criterio que autoriza retirar las funciones PL/pgSQL que M2 reemplace: sin regresión aprobada, esas funciones no se retiran. El reporte debe decir qué funciones cubre.
+Según el ADR-0022 (decisión del equipo del 5 de octubre), el reporte de M4 es además el criterio que autoriza retirar las funciones PL/pgSQL que M2 reemplace: sin regresión aprobada, esas funciones no se retiran. El reporte debe decir qué funciones cubre.
 
 ### 4.4 Lista de verificación go/no-go de M4 (SCRUM-1184)
 
@@ -140,7 +141,7 @@ Si el ADR-0022 se acepta, el reporte de M4 es además el criterio que autoriza r
 | JWT con claims operativo | SCRUM-1102 | Daniel | No |
 | Modelo de identidad aprobado | SCRUM-1103 | Juan | No |
 | Políticas RLS aplicadas en QA | SCRUM-1104 | Daniel | No |
-| ADR de DOC-26 aceptado (SP-05) | SCRUM-1075 | María Camila | No (Propuesto) |
+| Decisión de SP-05 registrada y ADR-0022 publicado | SCRUM-1075 | María Camila | Parcial: decisión tomada en la daily; ADR aún Propuesto y sin fusionar |
 | `GatewayClient` en `develop` | SCRUM-1111 | José | Sí (merge de PR #33) |
 | Excepción de Auth decidida (recomendado) | SCRUM-1112 | Daniel | No |
 | Criterios validados por el PO | SCRUM-1130 | Nicolás León | No |
@@ -179,7 +180,7 @@ Escenario A1-P: Registro exitoso con documentos privados
   Dado un tenant activo, identificado por la cabecera X-Tenant-Slug, que exige los documentos de su configuración para persona natural
   Cuando el aliado envía el registro con todos los documentos exigidos al Gateway
   Entonces el Gateway enruta la solicitud al Core
-  Y el Core registra al aliado, sea invocando la lógica existente o reimplementándola según lo que decida el ADR de DOC-26
+  Y el Core ejecuta la lógica del registro en el propio servicio, sin invocar funciones PL/pgSQL (ADR-0022)
   Y el aliado queda con estado_verificacion "PENDIENTE" en ese tenant, con el rol "aliado"
   Y cada documento queda en el bucket privado kyc-documentos bajo la ruta <tenant_id>/<uid>/
   Y existe una fila de documento_kyc por documento, con ruta_storage igual a la ruta real del objeto
@@ -341,7 +342,7 @@ Si las dependencias del punto 6 no llegan a QA antes del cierre del sprint, la a
 | PA-08 | Si el aliado puede reemplazar o retirar un documento propio mientras está en `PENDIENTE`. El control positivo actual de la colección (caso 3) cambia el `estado` del propio KYC a "aprobado": es una auto-aprobación y debe eliminarse. Los controles positivos de B3 y B4 dependen de la respuesta | Nicolás León (PO), con SCRUM-1062 |
 | PA-09 | Mecanismo y TTL del acceso temporal a documentos KYC cuando el llamador es el Core (SCRUM-1066 CA-2 lo deja "según diseño de CFG-23a"). Con `service-role` la política `kyc_isolation` no se evalúa (F5): el aislamiento debe demostrarse en el Core | Juan Sebastián Álvarez, SCRUM-1103 |
 | PA-10 | La colección debe ampliarse: solicitudes contra el Gateway para los casos 1 a 5 sobre recursos de US-02.1.1, token expirado y ausencia total de token en el caso 5, un cliente del tenant 2 en el caso 6 y reemplazo del control positivo del caso 3 | Santiago, SCRUM-1105 (CFG-23c) y SCRUM-1120 (QA-03) |
-| PA-11 | SP-05 no tiene decisión aceptada: la descripción de SCRUM-1065 dice "SP-05 cerrado en invocar", pero el ADR-0022 (SCRUM-1075, Propuesto, rama `SCRUM-1075-adr-0022`) decide que la lógica vive en los servicios y las funciones PL/pgSQL se retiran después de la regresión de M4. Si se acepta, el título de M2 y A1 deben leerse sin "invoca"; si no, M2 invoca. Hasta entonces el DoR de M2 no se cumple | María Camila Beltrán (SCRUM-1075), Sara Albarracín (revisora del ADR) y Juan Sebastián Álvarez (SCRUM-1065) |
+| PA-11 | La decisión de SP-05 está tomada (daily del 5 de octubre) y SCRUM-1063, 1064 y 1065 ya la reflejan, pero el ADR-0022 sigue en Propuesto y sin fusionar. SCRUM-1075 (DOC-26) conserva el título anterior, "los servicios invocan las funciones PL/pgSQL existentes y no reescriben la lógica", que contradice la decisión. Hasta publicar el ADR, el DoR de M2 se cumple solo en parte | María Camila Beltrán (SCRUM-1075), Sara Albarracín (revisora del ADR) y Juan Sebastián Álvarez (SCRUM-1065) |
 | PA-12 | Los escenarios originales del Backlog V3 cubren US-02.1.1 y US-02.1.2 en un mismo bloque; este documento solo cubre persona natural. La variante de empresa queda en PO-05 | Nicolás León (PO), SCRUM-1083 |
 | PA-13 | El backlog (sección 3.6) deja regresión solo para US-02.1.1. US-02.1.2-M2/M3 y US-02.2.1-M2 entran sin historia de regresión propia. Decisión pendiente del PO | Nicolás León (PO) |
 | PA-14 | El destino de publicación: la descripción de SCRUM-1076 dice "Jira / Backlog V4", archivo que ya no existe. Falta confirmar con la Scrum Master si el destino es Jira o `MANI-docs` | Sara Albarracín |
@@ -374,7 +375,8 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 | Ticket | Propuesta |
 |---|---|
 | SCRUM-1062 y 1184 a 1188 | Prioridad Low a Highest. El backlog fija M4 en Highest |
-| SCRUM-1065 | Prioridad High a Highest. Corregir "SP-05 cerrado en invocar" y revisar el título ("invocando") cuando se acepte el ADR de DOC-26. Sustituir el DoD por el de la sección 4.1 |
+| SCRUM-1065 | Prioridad High a Highest. Sustituir el DoD por el de la sección 4.1. El título y la justificación ya se actualizaron por el ADR-0022 |
+| SCRUM-1075 | Corregir el título, que aún dice que los servicios invocan las funciones PL/pgSQL. Pasa por María Camila Beltrán |
 | SCRUM-1061 | Quitar "Diseño en Figma" del DoR. Añadir la ausencia de llamadas a `SupabaseClient` al DoD |
 | SCRUM-1099 | Corregir el título ("Gateway con Js acotado PARA a identidad"). Sustituir el DoD de código por el de documento OpenAPI |
 | SCRUM-1102, 1103, 1104 y 1112 | Prioridad Medium o Low a Highest, como en el backlog |
@@ -393,3 +395,4 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 - Se añadieron los hallazgos F8 y F9 y se ajustó F7.
 - Tras la revisión del 6 de octubre: las condiciones 8 y 9 del DoR de M4 pasan a recomendadas, el control negativo ejecutable pasa a meta, se añade la alternativa de los controles positivos de B3 y B4 (PA-08) y se mantiene la evidencia con enlace a CI como requisito.
 - Actualización del 6 de octubre tras sincronizar los siete repositorios: la revisión de Flutter pasa de `main` a `develop` (`1f4c843`). Se corrige F8 (20 archivos, no 10), se confirma F3 por el lado del cliente y se añaden F10 y F11 (precedente de empresa por el Gateway y ruta de Storage). A1 y A3 nombran `X-Tenant-Slug` en el registro y el claim en lo privado. Se ajustan los DoR y DoD de M1 a M3, PA-01, PA-02 y PA-04. PA-11 se reformula por el ADR-0022 (Propuesto), y el reporte de M4 se vuelve el criterio para retirar las funciones PL/pgSQL si ese ADR se acepta.
+- Actualización del 6 de octubre, por lo publicado por María Camila Beltrán: SCRUM-1063, 1064 y 1065 ya dicen que el Core migra la lógica al servicio (ADR-0022). A1 deja de ser ambiguo, la paridad de M4 pasa a regla vigente, PA-11 queda como "decidido, falta publicar el ADR" y se añade que SCRUM-1075 conserva el título anterior. `MANI-Infrastructure` no fue accesible.

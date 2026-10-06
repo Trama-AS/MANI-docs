@@ -6,7 +6,7 @@
 | Tarea | SCRUM-1076 (PO-01), subtareas SCRUM-1126 (PO-01a), SCRUM-1127 (PO-01b), SCRUM-1128 (PO-01c) y SCRUM-1129 (PO-01d) |
 | Camino de la arquitectura | Flutter -> NGINX Gateway -> Core Node -> funciones PL/pgSQL en Supabase |
 | Autor | Santiago (QA) |
-| Fecha | 6 de octubre de 2026 |
+| Fecha | 6 de octubre de 2026 (actualizado tras sincronizar los siete repositorios) |
 | Estado | Borrador. DoR y DoD de M4 definidos por QA. DoR y DoD de M1 a M3 en propuesta, pendientes de sus responsables. Escenarios BDD condicionales a la confirmación de la Scrum Master. Validación del PO y revisión del par técnico pendientes (SCRUM-1130). Publicación pendiente (SCRUM-1131) |
 | Alimenta a | SCRUM-1062 (US-02.1.1-M4), SCRUM-1094 (DOC-38) y SCRUM-1105 (CFG-23c) |
 
@@ -27,14 +27,16 @@ Autoridad de decisión (`governance/GOBIERNO_DEL_EQUIPO.md`, sección 2.3): el P
 | `product/SRS.md`: RF-02, RF-03, RF-05, RNF-01, RNF-04, REST-02 | Leídos | RF-05 exige documentos según la configuración del tenant y aislados por aliado y tenant |
 | `Entregas/Entrega4/Backlog_V3.md`, sección 3 | Leída | Tres escenarios originales de US-02.1.1 y US-02.1.2, pendientes de validación del PO |
 | `wiki/02-arquitectura/riesgos-y-puntos-abiertos.md` | Leída | SP-05 abierto; riesgos CFG-23 y CFG-36 |
-| `MANI-Flutter/qa/newman/` | Leída en `main` | Colecciones `mani-aislamiento` y `mani-claims`. Atacan Supabase directo |
+| `ADR-0022` (rama `SCRUM-1075-adr-0022`, `aa6d464`, no fusionada) | Leído, estado Propuesto | Decide que la lógica de negocio vive en los servicios y que las funciones PL/pgSQL se retiran después de que la regresión en QA (SCRUM-1062) confirme el reemplazo. Contradice la lectura "los servicios invocan las funciones existentes". No es una decisión vigente hasta que se acepte |
+| `MANI-Flutter/qa/newman/` | Leída en `develop` (sin cambios frente a `main`) | Colecciones `mani-aislamiento` y `mani-claims`. Atacan Supabase directo |
 | Contrato OpenAPI de CFG-16 (SCRUM-1099) | No existe | No hay archivos OpenAPI en los repositorios revisados. Rutas y códigos quedan atados a SCRUM-1099 (PA-01) |
-| `MANI-Java` y `MANI-.NET` | Solo se listó su contenido | No se asume nada sobre ellos |
+| `MANI-Node` y `MANI-APIGateway` (carpeta local `MANI-API`) | Leídos en `main` | Solo esqueleto, gobernanza y plantilla de PR. Sin workflows, sin proyecto Sonar y sin pruebas. El Core no tiene ruta de registro |
+| `MANI-Java`, `MANI-.NET` y `MANI-Infrastructure` | Sincronizados; solo se listó su contenido | No se asume nada sobre ellos |
 | Jira | Leído en línea el 6 de octubre, sin escrituras | SCRUM-1076, 1126 a 1131, 1062, 1184 a 1188, 1061, 1065, 1099, 1075, 1083, 1102 a 1104 y 1112 |
 
 No se citan ADR-0022 a ADR-0026: la wiki indica que no están en el repositorio.
 
-Base de código: `MANI-docs` en `origin/main` `3fd4473` y `MANI-Flutter` en `main` `0412421`, al 6 de octubre de 2026.
+Base de código al 6 de octubre de 2026, tras `git fetch --all --prune` en los siete repositorios: `MANI-docs` `origin/main` `3fd4473`; **`MANI-Flutter` rama `develop` `1f4c843`** (la rama vigente: `main` `0412421` y `release` `a2a2e15` están atrasadas; `develop` lleva 6 commits sobre `main` y 14 sobre `release`); `MANI-Node` `07069d3`, `MANI-APIGateway` `e312793`, `MANI-Java` `ae5d6ce`, `MANI-.NET` `e2e8370` y `MANI-Infrastructure` `eadd67c`, todos en `main`.
 
 ## 2. Línea base: qué hace hoy el código
 
@@ -42,15 +44,19 @@ Los criterios se verificaron contra el comportamiento real del código, que difi
 
 | ID | Hallazgo | Evidencia |
 |---|---|---|
-| F1 | El registro de aliado persona natural en Flutter hace `signUp` con metadata y devuelve éxito sin invocar `registrar_aliado_persona_natural` (el código dice "Simplificado por brevedad"). El cliente tampoco sube los archivos a Storage: solo arma una lista de rutas. Ningún camino del registro inserta filas en `documento_kyc` | `lib/features/auth/data/datasources/auth_remote_data_source.dart`; `registro_aliado_page.dart`; `handle_new_user` en `database/init/05` |
+| F1 | En `develop`, el registro de aliado persona natural sigue directo a Supabase: hace `client.auth.signUp` con metadata y devuelve éxito sin invocar `registrar_aliado_persona_natural` (el código dice "Simplificado por brevedad"). El cliente tampoco sube los archivos a Storage: solo arma una lista de rutas. Ningún camino del registro de persona natural inserta filas en `documento_kyc`. El registro de cliente persona natural también sigue directo | `lib/features/auth/data/datasources/auth_remote_data_source.dart`; `registro_aliado_page.dart`; `handle_new_user` en `database/init/05` |
 | F2 | La ruta que arma el cliente es `kyc/<tenant>/cedula_<nombre>`; la política de Storage exige `<tenant_id>/<uid>/...` | `registro_aliado_page.dart`; política `kyc_isolation` en `database/migrations/007_normalizar_dominios.sql` |
-| F3 | El tenant lo elige el registrante en una lista desplegable. `handle_new_user` toma `tenant_id` y `rol` de `raw_user_meta_data` y, si falta el tenant, usa uno fijo. La RPC `registrar_aliado_persona_natural` recibe `p_tenant_id` por parámetro, es `SECURITY DEFINER` y tiene `GRANT` a `anon`. La definición solo está en `database/init`, no en `database/migrations`, por lo que la versión desplegada en QA no se pudo confirmar | `registro_aliado_page.dart`; `database/init/04` y `05` |
+| F3 | El tenant lo elige el registrante en una lista desplegable, y el cliente envía `rol: 'ALIADO'` y `tenant_id` dentro de la metadata del `signUp` (verificado en `develop`). `handle_new_user` toma `tenant_id` y `rol` de `raw_user_meta_data` y, si falta el tenant, usa uno fijo. La RPC `registrar_aliado_persona_natural` recibe `p_tenant_id` por parámetro, es `SECURITY DEFINER` y tiene `GRANT` a `anon`. La definición solo está en `database/init`, no en `database/migrations`, por lo que la versión desplegada en QA no se pudo confirmar | `registro_aliado_page.dart`; `database/init/04` y `05` |
 | F4 | La interfaz exige solo la cédula; `RUT_CERTIFICADO` es opcional. No existe "antecedentes" en el código ni en el esquema, y no hay configuración de documentos requeridos por tenant, que RF-02 y RF-05 sí exigen | `registro_aliado_page.dart`; búsqueda en `lib/` y `database/` |
 | F5 | Bucket privado `kyc-documentos` (10 MB; PDF, JPEG y PNG). La política `kyc_isolation` permite acceso si el tenant de la carpeta 1 coincide con el claim y la carpeta 2 es `auth.uid()` o el rol es `admin_tenant`. Solo se evalúa con el JWT de un usuario: un Core que use `service-role` la omite | `database/migrations/007`; `supabase/poc-cfg13/10_bucket_kyc.sql` |
 | F6 | Los casos 1 a 5 de la colección usan PostgREST con tokens de usuario, no el Gateway, y recursos que no son de US-02.1.1 (`sitio`, `usuario`, `notificacion`). El caso 5 no incluye token expirado ni ausencia total de token. El control positivo del caso 3 modifica el propio KYC poniendo `estado: "aprobado"` | `mani-aislamiento.postman_collection.json`, carpetas 01 a 05 |
 | F7 | En `database/init/04`, `documento_kyc` tiene `INSERT WITH CHECK (true)` y `SELECT USING (true)`. El aislamiento real depende de las políticas `tenant_isolation_*` de QA, cuyo estado actual no se pudo confirmar. CFG-23b (SCRUM-1104) las versiona | `database/init/04-supabase-rls-and-functions.sql` |
-| F8 | `supabase_flutter` o `SupabaseClient` aparecen en 10 archivos de `lib/`, incluidos el datasource de autenticación, el router y la inyección de dependencias | búsqueda en `MANI-Flutter/lib` |
-| F9 | `MANI-Node` solo tiene el esqueleto de Express con endpoints de ejemplo (`/tenants`, `/profiles/me`, `/catalog`). No existe ruta de registro, workflow ni pruebas | `MANI-Node/src/routes/core.routes.js` |
+| F8 | `supabase_flutter` o `SupabaseClient` aparecen en 20 archivos de `lib/` en `develop` (19 en `main`), incluidos el datasource de autenticación, el router y la inyección de dependencias. Una versión anterior de este documento decía 10 por un conteo truncado | `git grep` sobre `origin/develop`, `lib/` |
+| F9 | `MANI-Node` solo tiene el esqueleto de Express con endpoints de ejemplo (`/tenants`, `/profiles/me`, `/catalog`). No existe ruta de registro, workflow ni pruebas, aunque Flutter ya consume `/api/v1/core/aliados/empresa` (F10) | `MANI-Node/src/routes/core.routes.js` |
+| F10 | Existe un precedente por el Gateway: en `develop`, `registrarAliadoEmpresa` (SCRUM-1060, US-02.1.2-M3) hace un `POST` multipart a `/api/v1/core/aliados/empresa` mediante `GatewayClient` (SCRUM-1111). El tenant viaja solo en la cabecera `X-Tenant-Slug`, no en el cuerpo, y el comentario del código dice que el Core construye la ruta de Storage. `GatewayClient` envía `Authorization: Bearer` si hay sesión y un `X-Correlation-ID` por petición. Esa ruta no existe en `MANI-Node` y no hay contrato OpenAPI | `lib/features/auth/data/datasources/auth_remote_data_source.dart` y `lib/core/network/gateway_client.dart` en `develop` |
+| F11 | El comentario de F10 fija la ruta de Storage como `tenant_id/aliado_id/documento` (ADR-0013), que es la que la política `kyc_isolation` deniega (PA-04) | `auth_remote_data_source.dart` en `develop`; `database/migrations/007` |
+
+Los hallazgos F2 a F7 se verificaron sobre `develop`: `database/`, `qa/newman/` y `registro_aliado_page.dart` no difieren de `main`.
 
 Consecuencia: varias postcondiciones de los criterios originales (documentos en `<tenant_id>/<uid>/`, rechazo de documento faltante) son hoy comportamiento por construir, no regresión por revalidar. M4 (SCRUM-1062) debe tratarlas como tales.
 
@@ -64,7 +70,7 @@ Consecuencia: varias postcondiciones de los criterios originales (documentos en 
 | O2. Falta un documento exigido y el registro se rechaza | Backlog V3, escenario 2 | RF-05, RF-02 | A2 | Ninguno | No existe la regla: F4 |
 | O3. Un aliado no puede leer los documentos de otro aliado del mismo tenant | Backlog V3, escenario 3, regla crítica REST-02 | RF-05, RNF-01 | B6 | Caso 6 | La política `kyc_isolation` lo cubre en el camino directo: F5 |
 | N1. El tenant, el rol y el estado no los fija el cliente | Nuevo | RF-03, RNF-01, ADR-0018 | A1 (V) y A3 | Casos 3 y 5 | Incumplido por diseño: F3 |
-| N2. El cliente solo habla con el Gateway | Nuevo | `COMUNICACION_SERVICIOS_GATEWAY.md` | A4 | Caso 5 y CFG-36 | Incumplido: F8 |
+| N2. El cliente solo habla con el Gateway | Nuevo | `COMUNICACION_SERVICIOS_GATEWAY.md` | A4 | Caso 5 y CFG-36 | Incumplido para persona natural y cliente; cumplido en el cliente para empresa (F10) |
 | N3. Respuesta con `correlation_id` | Nuevo | RNF-04, CFG-16 | A1 y A2 (respuestas) | No aplica | Sin contrato: PA-01 |
 
 ### 3.2 Los seis casos frente a los recursos de US-02.1.1
@@ -90,9 +96,9 @@ Los pasos M1 a M3 pertenecen a otros responsables. Lo siguiente es una **propues
 
 | Paso | Ticket y responsable | Problema del DoR y DoD actuales | DoR propuesto | DoD propuesto |
 |---|---|---|---|---|
-| M1 | CFG-16, SCRUM-1099 (Juan Sebastián Álvarez). No tiene ticket propio: CFG-16 lo sustituye | El DoD es de plantilla de código ("cobertura mayor al 80 %, desplegado en QA") y no encaja con un documento OpenAPI | Lista de operaciones acordada (registro público, carga de documentos, estado). Borrador del modelo de identidad (CFG-23a) | Documento OpenAPI válido según linter. Revisado por par técnico. Versionado en el repositorio acordado. Incluye endpoint público de registro, privados de documentos y estado, formato de error y campo de `correlation_id`. Referenciado desde M2 y M3 |
-| M2 | SCRUM-1065 (Juan Sebastián Álvarez) | El DoD no exige los seis casos y su cobertura (>80 %) no coincide con el gate de ADR-0005. El DoR no refleja que SP-05 sigue abierto: la descripción dice "SP-05 cerrado en invocar", pero la wiki lo da por abierto hasta que se publique el ADR de DOC-26 (SCRUM-1075, en curso) | Contrato CFG-16 publicado. ADR de DOC-26 aprobado (spike SP-05 cerrado). Modelo de identidad CFG-23a aprobado. Criterios de aceptación validados por el PO | Gates de ADR-0005. Los seis casos con rechazo y control positivo, con el aislamiento demostrado en el Core (con `service-role` la política `kyc_isolation` no se evalúa, F5). Pull Request aprobado y CI en verde. Contrato actualizado. Desplegado en QA |
-| M3 | SCRUM-1061 (José Nicolás Álvarez) | El DoR pide diseño en Figma, que no aplica porque la UI no se toca. El DoD no pide ausencia de llamadas a `SupabaseClient` | Contrato OpenAPI publicado o mockeado. Decisión de CFG-35 sobre qué queda de `supabase_flutter`. Resuelto PA-02 (la interfaz actual del repositorio transporta rutas, no archivos) | Ninguna llamada a `SupabaseClient`, `.rpc()`, `.from()` ni `.storage.from()` en el datasource de registro, salvo la excepción que decida CFG-35. Interfaz de `domain/repositories` sin cambios, o cambio aprobado por el PO. Pruebas unitarias pasando. CI en verde. Código integrado por Pull Request |
+| M1 | CFG-16, SCRUM-1099 (Juan Sebastián Álvarez). No tiene ticket propio: CFG-16 lo sustituye | El DoD es de plantilla de código ("cobertura mayor al 80 %, desplegado en QA") y no encaja con un documento OpenAPI. Además, Flutter ya consume `/api/v1/core/aliados/empresa` antes de que exista el contrato (F10) | Lista de operaciones acordada (registro público, carga de documentos, estado). Borrador del modelo de identidad (CFG-23a). Revisadas la ruta y la forma de petición que Flutter ya usa en `develop` | Documento OpenAPI válido según linter. Revisado por par técnico. Versionado en el repositorio acordado. Incluye endpoint público de registro, privados de documentos y estado, formato de error y campo de `correlation_id`. Reconciliado con lo ya construido en Flutter (ruta, multipart, `X-Tenant-Slug`) o con una nota de cambio acordada con quien lo implementó. Referenciado desde M2 y M3 |
+| M2 | SCRUM-1065 (Juan Sebastián Álvarez) | El DoD no exige los seis casos y su cobertura (>80 %) no coincide con el gate de ADR-0005. El DoR no refleja que SP-05 sigue sin decisión aceptada: la descripción dice "SP-05 cerrado en invocar", pero el ADR-0022 de DOC-26 (SCRUM-1075, en curso) está en estado Propuesto y decide lo contrario: la lógica se migra al servicio y no se invoca la función PL/pgSQL. El título de M2 ("invocando registrar_aliado_persona_natural") queda desactualizado si ese ADR se acepta | Contrato CFG-16 publicado. ADR de DOC-26 aceptado, para saber si M2 invoca o reimplementa. Modelo de identidad CFG-23a aprobado. Criterios de aceptación validados por el PO | Gates de ADR-0005. Los seis casos con rechazo y control positivo, con el aislamiento demostrado en el Core (con `service-role` la política `kyc_isolation` no se evalúa, F5). Pull Request aprobado y CI en verde. Contrato actualizado. Desplegado en QA |
+| M3 | SCRUM-1061 (José Nicolás Álvarez) | El DoR pide diseño en Figma, que no aplica porque la UI no se toca. El DoD no pide ausencia de llamadas a `SupabaseClient`. No menciona el precedente de SCRUM-1060 (empresa), ya en `develop` | Contrato OpenAPI publicado o mockeado. `GatewayClient` (SCRUM-1111) disponible. Decisión de CFG-35 sobre qué queda de `supabase_flutter`. Se toma SCRUM-1060 como patrón (multipart al Core, tenant solo en `X-Tenant-Slug`, el cliente no envía rutas de Storage) y se confirma PA-02 | Ninguna llamada a `SupabaseClient`, `.rpc()`, `.from()` ni `.storage.from()` en `registrarAliadoPersonaNatural`, salvo la excepción que decida CFG-35. El cliente deja de enviar `rol`, `estado_verificacion` y rutas de Storage en la metadata, y el tenant viaja solo en `X-Tenant-Slug`. Interfaz de `domain/repositories` sin cambios, o cambio aprobado por el PO. Pruebas unitarias del datasource, como las de SCRUM-1060. CI en verde. Código integrado por Pull Request |
 
 ### 4.2 DoR de M4 (SCRUM-1062)
 
@@ -121,6 +127,8 @@ Base: DoD oficial de la wiki más los añadidos de los seis casos.
 7. Reporte QA aprobado, socializado y vinculado a Jira y GitHub.
 8. Documentación afectada actualizada (plan de pruebas de DOC-38, SCRUM-1094).
 
+Si el ADR-0022 se acepta, el reporte de M4 es además el criterio que autoriza retirar las funciones PL/pgSQL que M2 reemplace: sin regresión aprobada, esas funciones no se retiran. El reporte debe decir qué funciones cubre.
+
 ### 4.4 Lista de verificación go/no-go de M4 (SCRUM-1184)
 
 | Ítem | Ticket | Dueño | Cumplido al 6 de octubre |
@@ -132,6 +140,8 @@ Base: DoD oficial de la wiki más los añadidos de los seis casos.
 | JWT con claims operativo | SCRUM-1102 | Daniel | No |
 | Modelo de identidad aprobado | SCRUM-1103 | Juan | No |
 | Políticas RLS aplicadas en QA | SCRUM-1104 | Daniel | No |
+| ADR de DOC-26 aceptado (SP-05) | SCRUM-1075 | María Camila | No (Propuesto) |
+| `GatewayClient` en `develop` | SCRUM-1111 | José | Sí (merge de PR #33) |
 | Excepción de Auth decidida (recomendado) | SCRUM-1112 | Daniel | No |
 | Criterios validados por el PO | SCRUM-1130 | Nicolás León | No |
 | Usuarios de dos tenants en QA | Colección `mani-aislamiento` | Santiago | Por confirmar |
@@ -160,16 +170,16 @@ Cada caso lleva el identificador del escenario en su nombre. El resultado espera
 
 Convención: P es el caso positivo, N el negativo y V el intento de violar la regla crítica. Los códigos HTTP concretos se fijan en el contrato de CFG-16 (PA-01). Mientras no exista, el rechazo se expresa como "403 o 404, nunca 200 con datos" y la falta de campos como "error de validación que identifica el campo".
 
-El registro es el único endpoint público de la historia: el registrante todavía no tiene token, por lo que el tenant se resuelve antes de autenticar (ADR-0018 permite `X-Tenant-Slug` solo para esa resolución, sin autorizar acceso a datos). La carga de documentos y la consulta de estado son privadas y toman el tenant solo del claim. Si el registro y la carga viajan en una petición o en dos queda abierto en PA-02.
+El registro es el único endpoint público de la historia: el registrante todavía no tiene token, por lo que el tenant se resuelve antes de autenticar con la cabecera `X-Tenant-Slug` (ADR-0018 la permite solo para esa resolución, sin autorizar acceso a datos). El claim `tenant_id` aparece **después** del registro, en el primer token. La carga posterior de documentos y la consulta de estado son privadas y toman el tenant solo del claim. El precedente de empresa (F10) manda el registro y los documentos en una sola petición multipart; para persona natural queda por confirmar en PA-02.
 
 ```gherkin
 Característica: Registro de aliado persona natural con KYC por el camino Gateway - Core
 
 Escenario A1-P: Registro exitoso con documentos privados
-  Dado un tenant activo que exige los documentos de su configuración para persona natural
+  Dado un tenant activo, identificado por la cabecera X-Tenant-Slug, que exige los documentos de su configuración para persona natural
   Cuando el aliado envía el registro con todos los documentos exigidos al Gateway
   Entonces el Gateway enruta la solicitud al Core
-  Y el Core invoca registrar_aliado_persona_natural
+  Y el Core registra al aliado, sea invocando la lógica existente o reimplementándola según lo que decida el ADR de DOC-26
   Y el aliado queda con estado_verificacion "PENDIENTE" en ese tenant, con el rol "aliado"
   Y cada documento queda en el bucket privado kyc-documentos bajo la ruta <tenant_id>/<uid>/
   Y existe una fila de documento_kyc por documento, con ruta_storage igual a la ruta real del objeto
@@ -177,7 +187,7 @@ Escenario A1-P: Registro exitoso con documentos privados
   Y el primer token del aliado trae el claim tenant_id de ese tenant y el rol "aliado"
 
 Escenario A1-V: El cliente intenta fijar rol, estado o tenant ajeno
-  Dado un registro cuyo cuerpo, cabecera o metadata incluye rol "ADMIN_TENANT", estado_verificacion "VERIFICADO" o un tenant distinto del resuelto
+  Dado un registro cuyo cuerpo o metadata incluye rol "ADMIN_TENANT", estado_verificacion "VERIFICADO" o un tenant_id distinto del que resuelve X-Tenant-Slug
   Cuando el Core procesa la petición
   Entonces esos valores se ignoran o la petición se rechaza (PA-05)
   Y el usuario creado, si existe, es un aliado en estado "PENDIENTE" en el tenant resuelto
@@ -205,25 +215,30 @@ Escenario A2-V: Ruta de documento fuera de la carpeta del aliado
 A2-N materializa el criterio original O2. La regla "cédula y antecedentes" del Backlog V3 no existe en el código (F4): el documento exigido depende de la configuración del tenant (RF-02), cuya fuente no está definida (PA-03).
 
 ```gherkin
-Escenario A3-P: Operación privada con tenant tomado del token
+Escenario A3-P: El tenant se resuelve por slug en el registro y por token en lo privado
+  Dado un registro público con X-Tenant-Slug de un tenant activo
+  Cuando el Core crea al aliado
+  Entonces el aliado queda en ese tenant y el primer token trae el claim tenant_id de ese tenant
   Dado un aliado autenticado en el tenant 1
   Cuando sube un documento o consulta su estado por el Gateway
   Entonces el Core usa únicamente el claim tenant_id del token
   Y la operación afecta solo registros del tenant 1 y de su propio uid
 
-Escenario A3-N: Registro con tenant inexistente o inactivo, o petición privada sin token válido
-  Dado un registro con un tenant que no existe o no está activo
+Escenario A3-N: Tenant inexistente o inactivo, o petición privada sin token válido
+  Dado un registro con un X-Tenant-Slug que no existe o no está activo
   Cuando el aliado envía el registro
   Entonces el registro se rechaza, no se asigna ningún tenant por defecto y no se crea usuario, aliado ni documento
   Dada una petición privada sin token, con token expirado o con firma alterada
   Cuando llega al Gateway
   Entonces el Gateway responde 401 y la petición no llega al Core
 
-Escenario A3-V: El cliente intenta fijar el tenant en una operación privada
+Escenario A3-V: El cliente intenta fijar otro tenant
+  Dado un registro con X-Tenant-Slug del tenant 1 y un tenant_id del tenant 2 en el cuerpo
+  Cuando el Core procesa el registro
+  Entonces el cuerpo se ignora o la petición se rechaza (PA-05) y no queda nada en el tenant 2
   Dado un aliado autenticado en el tenant 1
-  Cuando envía una operación privada con el tenant 2 en el cuerpo o en una cabecera (por ejemplo X-Tenant-Slug)
-  Entonces el Core usa el claim tenant_id del token
-  Y nada se escribe ni se lee en el tenant 2
+  Cuando envía una operación privada con el tenant 2 en el cuerpo o en la cabecera X-Tenant-Slug
+  Entonces el Core usa el claim tenant_id del token y nada se escribe ni se lee en el tenant 2
 ```
 
 ```gherkin
@@ -316,17 +331,17 @@ Si las dependencias del punto 6 no llegan a QA antes del cierre del sprint, la a
 
 | ID | Punto abierto | Responsable sugerido y ticket |
 |---|---|---|
-| PA-01 | No existe el contrato OpenAPI. Rutas, códigos de estado, formato de error y nombre del campo de `correlation_id` no se inventan aquí y quedan atados a CFG-16. Debe incluir el endpoint público de registro y los privados de documentos y estado | Juan Sebastián Álvarez, SCRUM-1099 |
-| PA-02 | No está definido si el registro y la carga de documentos son una sola petición o dos. La interfaz actual del repositorio de Flutter transporta rutas (`List<Map<String, String>>`), no archivos: cargar el KYC por el Gateway obliga a cambiar la interfaz, lo que contradice la premisa de M3 de no tocar `domain/repositories` | Juan Sebastián Álvarez y José Nicolás Álvarez, SCRUM-1065 y SCRUM-1061; decisión de fondo en CFG-35 |
+| PA-01 | No existe el contrato OpenAPI. Rutas, códigos de estado, formato de error y nombre del campo de `correlation_id` no se inventan aquí y quedan atados a CFG-16. Debe incluir el endpoint público de registro y los privados de documentos y estado. Flutter ya consume `/api/v1/core/aliados/empresa` (F10): el contrato debe reconciliarse con esa ruta o acordar el cambio con quien la implementó | Juan Sebastián Álvarez, SCRUM-1099 |
+| PA-02 | Si el registro y la carga de documentos son una sola petición o dos para persona natural. El precedente de empresa (F10) usa una sola petición multipart, y su método recibe `documentosKYC` como `List<Map<String, String>>` con `contenido_base64`, el mismo tipo que usa persona natural. Eso sugiere que la interfaz del repositorio no necesita cambiar, solo lo que la página pone en cada mapa (contenido en lugar de rutas). Falta que José lo confirme | José Nicolás Álvarez y Juan Sebastián Álvarez, SCRUM-1061 y SCRUM-1065; decisión de fondo en CFG-35 |
 | PA-03 | Fuente de los documentos requeridos por tenant. El Backlog V3 habla de "cédula y antecedentes"; el código exige solo la cédula (F4) y no hay configuración por tenant (RF-02). El PO debe confirmar si "antecedentes" es obligatorio | Nicolás León (PO), con SCRUM-1065 |
-| PA-04 | Inconsistencia de ruta de Storage: ADR-0013 dice `tenant_id/aliado_id/documento`; el Backlog V3, la política `kyc_isolation` y la colección usan `<tenant_id>/<uid>/` (la solicitud N11 de la colección verifica que la ruta con `aliado.id` se deniega). SCRUM-1063 CA-2 también usa `aliado_id`. Corrección propuesta, sin editar el ADR: sustituir `aliado_id` por `usuario_id` (el `uid` de Supabase Auth), o fijar que la ruta la construye el Core y migrar la política | Autor de ADR-0013 y Mesa de Arquitectura; María Camila Beltrán en SCRUM-1063 |
+| PA-04 | Inconsistencia de ruta de Storage: ADR-0013 y el comentario del código de empresa en `develop` (F11) dicen `tenant_id/aliado_id/documento`; el Backlog V3, la política `kyc_isolation` y la colección usan `<tenant_id>/<uid>/` (la solicitud N11 de la colección verifica que la ruta con `aliado.id` se deniega). SCRUM-1063 CA-2 también usa `aliado_id`. Si el Core construye la ruta con `aliado_id`, la política vigente la rechazaría o habría que migrarla. Corrección propuesta, sin editar el ADR: fijar cuál es la ruta, sustituir `aliado_id` por `usuario_id` o migrar la política | Autor de ADR-0013 y Mesa de Arquitectura; María Camila Beltrán en SCRUM-1063; Juan Sebastián Álvarez como implementador del Core |
 | PA-05 | Tratamiento de un `tenant_id` ajeno en el cuerpo: PO-05 dice "se ignora" y la colección (caso 3, variante de inserción) espera rechazo. Los criterios admiten ambos y exigen que no se escriba en el tenant ajeno. Debe unificarse en el contrato | Sara Albarracín y María Camila Beltrán, SCRUM-1083 |
 | PA-06 | Verificar en QA, antes de la regresión, si un registro con `rol` o `tenant_id` fijados desde el cliente crea un usuario con ese rol o en ese tenant (F3). Es una lectura de código no ejecutada | Santiago, SCRUM-1062; si se confirma, abrir defecto en Jira |
 | PA-07 | Alcance de la excepción de Supabase Auth en A4. Hasta que CFG-35 decida, el criterio solo cubre REST, RPC y Storage | Daniel Ávila, SCRUM-1112 |
 | PA-08 | Si el aliado puede reemplazar o retirar un documento propio mientras está en `PENDIENTE`. El control positivo actual de la colección (caso 3) cambia el `estado` del propio KYC a "aprobado": es una auto-aprobación y debe eliminarse. Los controles positivos de B3 y B4 dependen de la respuesta | Nicolás León (PO), con SCRUM-1062 |
 | PA-09 | Mecanismo y TTL del acceso temporal a documentos KYC cuando el llamador es el Core (SCRUM-1066 CA-2 lo deja "según diseño de CFG-23a"). Con `service-role` la política `kyc_isolation` no se evalúa (F5): el aislamiento debe demostrarse en el Core | Juan Sebastián Álvarez, SCRUM-1103 |
 | PA-10 | La colección debe ampliarse: solicitudes contra el Gateway para los casos 1 a 5 sobre recursos de US-02.1.1, token expirado y ausencia total de token en el caso 5, un cliente del tenant 2 en el caso 6 y reemplazo del control positivo del caso 3 | Santiago, SCRUM-1105 (CFG-23c) y SCRUM-1120 (QA-03) |
-| PA-11 | SP-05 sigue abierto según la wiki hasta que se publique el ADR de DOC-26 (SCRUM-1075, en curso), pero la descripción de SCRUM-1065 dice "SP-05 cerrado en invocar". Hasta que el ADR exista, el DoR de M2 no se cumple | María Camila Beltrán (SCRUM-1075) y Juan Sebastián Álvarez (SCRUM-1065) |
+| PA-11 | SP-05 no tiene decisión aceptada: la descripción de SCRUM-1065 dice "SP-05 cerrado en invocar", pero el ADR-0022 (SCRUM-1075, Propuesto, rama `SCRUM-1075-adr-0022`) decide que la lógica vive en los servicios y las funciones PL/pgSQL se retiran después de la regresión de M4. Si se acepta, el título de M2 y A1 deben leerse sin "invoca"; si no, M2 invoca. Hasta entonces el DoR de M2 no se cumple | María Camila Beltrán (SCRUM-1075), Sara Albarracín (revisora del ADR) y Juan Sebastián Álvarez (SCRUM-1065) |
 | PA-12 | Los escenarios originales del Backlog V3 cubren US-02.1.1 y US-02.1.2 en un mismo bloque; este documento solo cubre persona natural. La variante de empresa queda en PO-05 | Nicolás León (PO), SCRUM-1083 |
 | PA-13 | El backlog (sección 3.6) deja regresión solo para US-02.1.1. US-02.1.2-M2/M3 y US-02.2.1-M2 entran sin historia de regresión propia. Decisión pendiente del PO | Nicolás León (PO) |
 | PA-14 | El destino de publicación: la descripción de SCRUM-1076 dice "Jira / Backlog V4", archivo que ya no existe. Falta confirmar con la Scrum Master si el destino es Jira o `MANI-docs` | Sara Albarracín |
@@ -359,7 +374,7 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 | Ticket | Propuesta |
 |---|---|
 | SCRUM-1062 y 1184 a 1188 | Prioridad Low a Highest. El backlog fija M4 en Highest |
-| SCRUM-1065 | Prioridad High a Highest. Corregir "SP-05 cerrado". Sustituir el DoD por el de la sección 4.1 |
+| SCRUM-1065 | Prioridad High a Highest. Corregir "SP-05 cerrado en invocar" y revisar el título ("invocando") cuando se acepte el ADR de DOC-26. Sustituir el DoD por el de la sección 4.1 |
 | SCRUM-1061 | Quitar "Diseño en Figma" del DoR. Añadir la ausencia de llamadas a `SupabaseClient` al DoD |
 | SCRUM-1099 | Corregir el título ("Gateway con Js acotado PARA a identidad"). Sustituir el DoD de código por el de documento OpenAPI |
 | SCRUM-1102, 1103, 1104 y 1112 | Prioridad Medium o Low a Highest, como en el backlog |
@@ -377,3 +392,4 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 - Se eliminó el punto abierto sobre la numeración de ADR-0025 y ADR-0026, y se añadieron PA-11 y PA-13 a PA-15.
 - Se añadieron los hallazgos F8 y F9 y se ajustó F7.
 - Tras la revisión del 6 de octubre: las condiciones 8 y 9 del DoR de M4 pasan a recomendadas, el control negativo ejecutable pasa a meta, se añade la alternativa de los controles positivos de B3 y B4 (PA-08) y se mantiene la evidencia con enlace a CI como requisito.
+- Actualización del 6 de octubre tras sincronizar los siete repositorios: la revisión de Flutter pasa de `main` a `develop` (`1f4c843`). Se corrige F8 (20 archivos, no 10), se confirma F3 por el lado del cliente y se añaden F10 y F11 (precedente de empresa por el Gateway y ruta de Storage). A1 y A3 nombran `X-Tenant-Slug` en el registro y el claim en lo privado. Se ajustan los DoR y DoD de M1 a M3, PA-01, PA-02 y PA-04. PA-11 se reformula por el ADR-0022 (Propuesto), y el reporte de M4 se vuelve el criterio para retirar las funciones PL/pgSQL si ese ADR se acepta.

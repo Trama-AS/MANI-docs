@@ -30,10 +30,26 @@ Cada repositorio desplegable mantiene de forma independiente: código · depende
 
 ## Estado real a tener en cuenta
 
-Backlog V4 §3, verificado sobre `MANI-Flutter`:
+Verificado sobre `MANI-Flutter` el 2026-10-07 (`CFG-38`, SCRUM-1097):
 
-- `main` contiene sólo el scaffold por defecto de Flutter; **el producto vive en `develop` y `release`**;
-- hay 13 ramas `feature`/`fix` con trabajo sin fusionar, que deben reconciliarse antes de migrar (`CFG-37`, `CFG-38`);
+- **`develop` es la base única de código**: `main` y `release` están contenidos en `develop` (no tienen commits propios);
+- las 13 ramas `feature`/`fix` que señalaba el Backlog V4 §3 quedaron reconciliadas: todas están fusionadas en `develop` o fueron reemplazadas por un PR posterior (detalle abajo). No queda trabajo sin fusionar;
 - la lógica de negocio está en ~32 funciones PL/pgSQL bajo `database/`, no en el cliente.
+
+### Reconciliación de ramas de MANI-Flutter (CFG-38)
+
+| Rama / PR | Commits fuera de `develop` | Dictamen |
+|---|---|---|
+| `feature/SCRUM-1060-registro-empresa-gateway` (#33) | 0 | Fusionada; se retira del remoto |
+| `feature/SCRUM-1061-auth-remote-gateway` (#34) | 0 | Fusionada; se retira del remoto |
+| `feature/SCRUM-1111-capa-http-gateway` (#33) | 0 | Fusionada; se retira del remoto |
+| `feature/SCRUM-1114-trazabilidad-jira-github` (#32) | 0 | Fusionada; se retira del remoto |
+| #11, #12, #13 (`develop` → `main` / `Feature-RegisterAndLogin`) | 0 | Sin trabajo pendiente; descartados |
+| #15 `feature/SCRUM-927-poc-cobertura-geografica` | 0 (parches equivalentes en `develop`) | Reemplazado por #16 |
+| #2 `feature/SCRUM-923-pipeline-pruebas-automatizadas` | 7 | Reemplazado por #4 (SCRUM-955), #21 (asignación en arquitectura limpia) y los workflows actuales |
+| #10 `feature/us-03-1-3-categorias-aliado` | 1 | Reemplazado por #19 (`categorias-aliado-clean`) |
+| #17 `feature/us-03-1-3-categorias-aliado-v2` | 2 | Reemplazado por #19; `categories_local_datasource.dart` no pasó a `develop` (pendiente de confirmar con la autora) |
+
+Las ramas nuevas de MANI-Flutter salen de `develop` y vuelven a `develop` por PR (ver [Git: ramas y commits](../05-proceso/git-ramas-y-commits.md)).
 
 Quien vaya a trabajar en ese repositorio revisa primero [Orden de ejecución](../06-backlog/orden-de-ejecucion.md).

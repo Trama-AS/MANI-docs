@@ -16,7 +16,7 @@ Este orden no es una sugerencia: las fases 1 y 2 **bloquean** el resto.
 | 6 | `CFG-34 … CFG-36`, `CFG-39` — capa HTTP del cliente, recorte de `supabase_flutter`, **retirar y rotar la `SUPABASE_ANON_KEY`** y mock del Gateway para pruebas | Saca al cliente de la base de datos |
 | 7 | Subtareas `-M1 … -Mn` por historia, en el orden de las épicas funcionales | El trabajo funcional propiamente dicho |
 | 8 | `CFG-40` — regresión completa sobre todo lo legacy preservado | Demuestra que nada se rompió |
-| 9 | `CFG-31`, `CFG-32` — cerrar Kubernetes por ADR y ejecutar la transición de despliegue sin romper el Compose actual | Depende de INFRA-01 e INFRA-02 |
+| 9 | Cerrar Kubernetes por ADR y ejecutar la transición de despliegue sin romper el Compose actual. **No tiene tarea en el backlog vigente**: los números `CFG-31` y `CFG-32` que citaba esta fila no existen | Depende de `INFRA-01` e `INFRA-02`, ambos sin decidir. Mientras no haya decisión, Docker Compose sobre VMs sigue siendo el mecanismo operativo (Políticas DevOps §12) |
 | 10 | `DOC-25 … DOC-28` — documentación, en paralelo y cerrando al final | Deja SAD, SDD, ADR y contexto alineados con lo que de verdad se hizo |
 
 > **Corrección registrada en el documento fuente:** `SP-05` y `CFG-23` estaban ausentes de la versión anterior del backlog y eran **bloqueantes del trabajo funcional**. Van en las fases 1 y 2, no al final. `SP-05` ya está decidido (ADR-0022); `CFG-23a/b/c` sigue abierto.

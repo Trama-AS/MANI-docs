@@ -224,10 +224,10 @@ con *Relates* a la historia de migración que las reemplaza.
 | Historia cerrada | Estado | Clasificación | Componente destino | Historias nuevas | Fase |
 |---|---|---|---|---|---|
 | `SCRUM-846` · US-02.1.1 Registro aliado persona natural | Done | PRESERVAR_Y_VALIDAR | Core Node + Auth/Storage | `US-02.1.1-M3`, `US-02.1.1-M4`, `US-02.1.1-M2` | Sprint 3 |
-| `SCRUM-847` · US-02.1.2 Registro aliado empresa | Done | PRESERVAR_Y_VALIDAR | Core Node + Auth/Storage | `US-02.1.2-M3`, `US-02.1.2-M2` | Sprint 3 |
+| `SCRUM-847` · US-02.1.2 Registro aliado empresa | Done | PRESERVAR_Y_VALIDAR | Core Node + Auth/Storage | `US-02.1.2-M3`, `US-02.1.2-M2`, `US-02.1.2-M4` | Sprint 3; su `-M4` en Incremento 2 |
 | `SCRUM-848` · US-02.1.3 Aprobar/rechazar registro de aliado | Done | PRESERVAR_Y_VALIDAR | Core Node | `US-02.1.3-M2` | Incremento 2 |
 | `SCRUM-849` · US-02.1.4 Declarar zona de cobertura | Done | REESPECIFICAR_Y_REUTILIZAR | Availability Node | `US-02.1.4-R1`, `US-02.1.4-M2` | Incremento 2 |
-| `SCRUM-851` · US-02.2.1 Registro cliente persona natural | Done | PRESERVAR_Y_VALIDAR | Core Node + Auth | `US-02.2.1-M2` | Sprint 3 |
+| `SCRUM-851` · US-02.2.1 Registro cliente persona natural | Done | PRESERVAR_Y_VALIDAR | Core Node + Auth | `US-02.2.1-M2`, `US-02.2.1-M4` | Sprint 3; su `-M4` en Incremento 2 |
 | `SCRUM-857` · US-03.1.1 Crear categoría con flujo operativo | Done | PRESERVAR_Y_VALIDAR | Core Node + Rules Java | `US-03.1.1-M2`, `US-03.1.1-M6` | Incremento 2 |
 | `SCRUM-859` · US-03.1.3 Aliado declara categorías que atiende | In Progress | Completar sobre el camino nuevo | Core Node / Availability | `US-03.1.3-M2` | Incremento 2 |
 | `SCRUM-860` · US-04.1.1 Crear solicitud | Done | PRESERVAR_Y_VALIDAR | Core Node + Dispatch .NET | `US-04.1.1-M2`, `US-04.1.1-M6` | Incremento 2 |
@@ -259,10 +259,12 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-Gateway** (NGINX) y **M
 | `US-02.2.1-M2` | Migracion: llevar el registro de cliente persona natural al camino Gateway - Core Node, incluyendo su datasource en Flutter | High | 4 | `SCRUM-851` |
 | `US-02.1.1-M2` | Migracion: implementar el registro de aliado persona natural en Core Node, migrando al servicio la logica de registrar_aliado_persona_natural, handle_new_user y el upsert a usuario (ADR-0022), expuesto por el contrato OpenAPI de CFG-16. | Highest | 5 | `SCRUM-846` |
 
-**Incremento 2** — 9 historias
+**Incremento 2** — 11 historias
 
 | Código | Historia | Prioridad | SP | Reemplaza |
 |---|---|---|---|---|
+| `US-02.1.2-M4` | Migracion: regresion funcional de US-02.1.2 desplegada en QA a traves del Gateway, mas el aislamiento multi-tenant de los documentos de la empresa y del representante legal | High | 4 | `SCRUM-847` |
+| `US-02.2.1-M4` | Migracion: regresion funcional de US-02.2.1 desplegada en QA a traves del Gateway, mas el aislamiento multi-tenant de los datos del cliente | High | 4 | `SCRUM-851` |
 | `US-02.1.3-M2` | Migracion: aprobacion y rechazo de registro de aliado en Core Node, con la visibilidad de documentos KYC resuelta en el nuevo modelo de identidad | High | 5 | `SCRUM-848` |
 | `US-02.1.4-R1` | Reespecificacion: sustituir la seleccion libre en mapa por el catalogo jerarquico de zonas | High | 5 | `SCRUM-849` |
 | `US-02.1.4-M2` | Migracion: declaracion de zona de cobertura sobre el Availability Service | High | 5 | `SCRUM-849` |
@@ -273,11 +275,31 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-Gateway** (NGINX) y **M
 | `US-04.1.1-M6` | Migracion: orquestacion de despacho de la solicitud en el Dispatch Service .NET | Highest | 3 | `SCRUM-860` |
 | `US-04.1.4-M6` | Migracion: aceptar o rechazar solicitud sin doble asignacion, con la exclusion concurrente en Dispatch .NET | Highest | 5 | `SCRUM-863` |
 
-### 3.6 Riesgo abierto de cobertura de regresión
+### 3.6 Cobertura de regresión
 
-La planificación dejó regresión solo para `US-02.1.1` (`US-02.1.1-M4`). **`US-02.1.2-M2/M3` y `US-02.2.1-M2`
-entran al sprint sin historia de regresión propia en QA**, por lo que su pasada de aislamiento multi-tenant
-no está planificada. Decisión pendiente del PO.
+**Cerrado el 2026-10-07 por decisión del PO.**
+
+La planificación original dejó regresión solo para `US-02.1.1` (`US-02.1.1-M4`): `US-02.1.2-M2/M3` y
+`US-02.2.1-M2` entraban al Sprint 3 sin historia de regresión propia en QA, por lo que su pasada de
+aislamiento multi-tenant no quedaba planificada.
+
+**Decisión:** cada historia migrada tiene su propia historia de regresión. Se crean `US-02.1.2-M4` y
+`US-02.2.1-M4` siguiendo la convención del §3.2, y **se programan en el Incremento 2**, no en el Sprint 3.
+El motivo es que la regresión por el Gateway no es ejecutable hasta que exista la cadena de verificación:
+`QA-01` a `QA-05` no están entregadas al corte de este sprint, el contrato OpenAPI de `CFG-16` no está
+publicado y `CFG-20` todavía no deja el Core desplegado en DEV y QA. Adelantarlas al Sprint 3 las dejaría
+bloqueadas desde el primer día.
+
+`US-02.1.1-M4` se mantiene en el Sprint 3: es la que abre camino y define los casos que las otras dos
+reutilizan.
+
+**Consecuencia que queda explícita:** al cierre del Sprint 3, `US-02.1.2` y `US-02.2.1` quedan migradas sin
+regresión propia ejecutada. Su comportamiento no puede declararse *preservado* en ese corte, solo
+*construido y verificado* en los términos del plan de pruebas de `DOC-38`. La declaración de paridad de las
+dos historias se emite en el Incremento 2, cuando corran sus `-M4`.
+
+Los números de sufijo no son continuos a propósito: `US-02.2.1` no tiene `-M3` porque su `-M2` ya incluye el
+delta del cliente Flutter. `-M4` significa regresión en cualquier historia, según el §3.2.
 ---
 
 ## 4. Tareas del Sprint 3

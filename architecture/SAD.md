@@ -715,42 +715,42 @@ Aplicable a:
 
 # 23. Riesgos arquitectónicos
 
-## KI-01 — Lógica de negocio en Flutter
+## Lógica de negocio en Flutter
 
 **Riesgo:** duplicación, exposición de reglas y clientes inconsistentes.  
 **Control:** mover lógica al backend.
 
-## KI-02 — Acceso directo indiscriminado a Supabase
+## Acceso directo indiscriminado a Supabase
 
 **Riesgo:** bypass de controles y acoplamiento.  
 **Control:** servicios como frontera principal; RLS como defensa adicional.
 
-## KI-03 — Servicios excesivamente pequeños
+## Servicios excesivamente pequeños
 
 **Riesgo:** monolito distribuido.  
 **Control:** dividir por capacidad de negocio, no por operación CRUD.
 
-## KI-04 — Dependencias síncronas largas
+## Dependencias síncronas largas
 
 **Riesgo:** fallos en cascada.  
 **Control:** eventos para efectos secundarios y circuit breaker.
 
-## KI-05 — Pérdida de aislamiento multi-tenant
+## Pérdida de aislamiento multi-tenant
 
 **Riesgo:** exposición de datos entre empresas.  
 **Control:** JWT + autorización + RLS + pruebas automatizadas.
 
-## KI-06 — Doble asignación
+## Doble asignación
 
 **Riesgo:** inconsistencia operacional.  
 **Control:** exclusión atómica en PostgreSQL.
 
-## KI-07 — Consultas analíticas sobre OLTP
+## Consultas analíticas sobre OLTP
 
 **Riesgo:** degradación del flujo operacional.  
 **Control:** Data Warehouse separado.
 
-## KI-08 — Complejidad políglota
+## Complejidad políglota
 
 **Riesgo:** mayor costo de operación y soporte.  
 **Control:** contratos estandarizados, CI/CD homogéneo y límites claros por servicio.

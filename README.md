@@ -84,7 +84,6 @@ La arquitectura objetivo de MANI es:
 | Rules Service | Java | Reglas configurables por tenant, ranking y tarifarios |
 | Dispatch Service | .NET | Despacho, asignación y control de concurrencia |
 | Core Services | Node.js | Tenants, usuarios, aliados, clientes, KYC, cotizaciones, ejecución y comunicación |
-| Availability Service | Node.js | Cobertura, disponibilidad y elegibilidad |
 | Persistencia | Supabase | Plataforma administrada |
 | Motor de datos | PostgreSQL | Persistencia relacional y RLS |
 

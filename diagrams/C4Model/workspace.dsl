@@ -12,7 +12,7 @@
  *   1. panorama      — System Landscape: el panorama de sistemas alrededor de MANI
  *   2. contexto      — C4 Nivel 1, System Context
  *   3. contenedores  — C4 Nivel 2, Containers
- *   4. componentes   — C4 Nivel 3, un diagrama por servicio de negocio
+ *   4. componentes   — C4 Nivel 3, un diagrama por servicio desplegable
  *   5. dinamico      — Vistas dinámicas: los flujos que la estructura estática no explica
  *   6. despliegue    — Vista de despliegue de producción
  *
@@ -91,23 +91,16 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             // Node opera. Núcleo funcional de la plataforma: lo transversal y lo operativo.
             group "MANI-Core-Node — opera" {
 
-                core = container "Core Services" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
+                core = container "Core Services" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación, disponibilidad y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
                     coreApi = component "Core API" "Expone los casos de uso de los dominios de Core." "Node.js"
                     coreUsers = component "Users / Tenants Component" "Tenants, usuarios, roles y acceso (RF-01, RF-03, RF-04)." "Node.js"
                     coreKyc = component "KYC Orchestrator" "Registro y verificación de aliados y documentos (RF-05, RF-06)." "Node.js"
                     coreCatalog = component "Catalog Component" "Categorías, clientes, sitios y asociaciones (RF-08..RF-11)." "Node.js"
+                    coreAvailability = component "Availability Component" "Cobertura del aliado, horarios y solapamientos, zonas y elegibilidad por categoría y zona (RF-07, RF-12, RNF-07). La lógica pertenece al servicio, no al cliente Flutter." "Node.js"
                     coreNotif = component "Notification Component" "Mensajería del servicio y notificaciones (RF-20, RF-21)." "Node.js"
                     coreReport = component "Operational Reporting" "Reportes operativos y de tarifario (RF-23)." "Node.js"
                     coreAdapters = component "External Adapters" "Encapsula proveedores externos: push, Storage, pagos. Durante el desarrollo pueden ser implementaciones mock sin tocar la lógica de negocio." "Node.js"
                     corePort = component "Repositories" "Contratos de persistencia de los dominios de Core." "Node.js — interfaces"
-                }
-
-                availability = container "Availability Service" "Cobertura del aliado, disponibilidad, horarios, zonas y elegibilidad por categoría y zona (RF-07, RF-12, RNF-07). Mismo bloque Node, servicio aparte porque Dispatch lo consulta en caliente." "Node.js" {
-                    availApi = component "Availability API" "Expone consulta de cobertura y elegibilidad." "Node.js"
-                    availApp = component "Availability Application Service" "Casos de uso de disponibilidad." "Node.js"
-                    availSchedule = component "Schedule Rules" "Horarios y solapamientos. La lógica pertenece al servicio, no al cliente." "Node.js"
-                    availQuery = component "Availability Query" "Elegibilidad por categoría y coincidencia exacta de zona (REST-01)." "Node.js"
-                    availPort = component "Availability Repository" "Contrato de persistencia de disponibilidad." "Node.js — interfaz"
                 }
             }
 
@@ -119,8 +112,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
                 dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de elegibilidad y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
                 dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, comunicación y reportes. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbAvailability = container "Supabase Availability" "Cobertura, horarios y zonas del aliado. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
 
                 storage = container "Supabase Storage" "Documentos KYC y multimedia en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
                 realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
@@ -157,13 +149,11 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         gateway -> rules "Enruta tras validar el token" "HTTPS / JSON"
         gateway -> dispatch "Enruta tras validar el token" "HTTPS / JSON"
         gateway -> core "Enruta tras validar el token" "HTTPS / JSON"
-        gateway -> availability "Enruta tras validar el token" "HTTPS / JSON"
 
         core -> auth "Integra identidad y acceso"
         rules -> dbRules "Lee reglas, tarifarios y criterios de elegibilidad del tenant" "SQL"
         dispatch -> dbDispatch "Persiste solicitudes, asignaciones, exclusiones y auditoría" "SQL"
-        core -> dbCore "Persiste tenants, aliados, clientes, catálogo, cotización y comunicación" "SQL"
-        availability -> dbAvailability "Lee y persiste cobertura y disponibilidad" "SQL"
+        core -> dbCore "Persiste tenants, aliados, clientes, catálogo, cotización, cobertura y comunicación" "SQL"
 
         core -> storage "Almacena y sirve documentos KYC aislados por tenant y aliado"
         core -> realtime "Publica eventos de mensajería del servicio"
@@ -175,14 +165,12 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         dbRules -> etl "Entrega carga incremental"
         dbDispatch -> etl "Entrega carga incremental"
         dbCore -> etl "Entrega carga incremental"
-        dbAvailability -> etl "Entrega carga incremental"
         etl -> dwh "Alimenta el Data Warehouse"
 
         gateway -> observabilidad "Métricas, logs y trazas"
         rules -> observabilidad "Métricas, logs y trazas"
         dispatch -> observabilidad "Métricas, logs y trazas"
         core -> observabilidad "Métricas, logs y trazas"
-        availability -> observabilidad "Métricas, logs y trazas"
 
         // ---------- Relaciones de componentes (SDD §4.3) ----------
 
@@ -206,13 +194,14 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         dispatchGuard -> dispatchPort "Actualización condicional atómica del estado de la asignación"
         dispatchPort -> dispatchAdapter "Implementado por"
         dispatchAdapter -> dbDispatch "Lee y escribe" "SQL"
-        dispatchSelector -> availApi "Consulta elegibilidad por categoría y zona" "HTTPS / JSON"
+        dispatchSelector -> coreApi "Consulta elegibilidad por categoría y zona" "HTTPS / JSON"
         dispatchApp -> rulesApi "Pide el orden del listado de aliados" "HTTPS / JSON"
 
         gateway -> coreApi "Enruta"
         coreApi -> coreUsers "Invoca"
         coreApi -> coreKyc "Invoca"
         coreApi -> coreCatalog "Invoca"
+        coreApi -> coreAvailability "Invoca"
         coreApi -> coreNotif "Invoca"
         coreApi -> coreReport "Invoca"
         coreKyc -> coreAdapters "Usa para Storage"
@@ -220,6 +209,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         coreUsers -> corePort "Persiste"
         coreKyc -> corePort "Persiste"
         coreCatalog -> corePort "Persiste"
+        coreAvailability -> corePort "Persiste y consulta"
         coreNotif -> corePort "Persiste"
         coreReport -> corePort "Consulta"
         corePort -> dbCore "Lee y escribe" "SQL"
@@ -229,16 +219,9 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         coreUsers -> auth "Integra identidad"
         coreApi -> rulesApi "Valida la cotización contra el tarifario de referencia" "HTTPS / JSON"
 
-        gateway -> availApi "Enruta"
-        availApi -> availApp "Invoca"
-        availApp -> availSchedule "Evalúa horarios y solapamientos"
-        availApp -> availQuery "Resuelve elegibilidad"
-        availApp -> availPort "Persiste y consulta"
-        availPort -> dbAvailability "Lee y escribe" "SQL"
-
         // ---------- Llamadas entre servicios ----------
         //
-        // Dispatch -> Availability, Dispatch -> Rules y Core -> Rules se declaran una sola vez,
+        // Dispatch -> Core y Core -> Rules se declaran una sola vez,
         // entre componentes (arriba). Structurizr las propaga solas al nivel de contenedor:
         // declararlas también aquí es una relación duplicada y el modelo no valida.
         // Las vistas dinámicas de nivel 2 referencian esas relaciones derivadas.
@@ -284,9 +267,6 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                     deploymentNode "Core Services — opera" "Núcleo funcional de la plataforma. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
                         coreProd = containerInstance core
                     }
-                    deploymentNode "Availability Service — opera" "Cobertura y disponibilidad. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
-                        availProd = containerInstance availability
-                    }
                 }
 
                 secretos = infrastructureNode "Gestor de secretos" "Credenciales y configuración viven fuera de la imagen: no se hornean en el contenedor ni se versionan en el repositorio." "Secret manager"
@@ -301,11 +281,8 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 deploymentNode "PostgreSQL — despacho" "Datos de asignación y auditoría. RLS por tenant." "PostgreSQL + RLS" {
                     containerInstance dbDispatch
                 }
-                deploymentNode "PostgreSQL — core" "Datos funcionales de la plataforma. RLS por tenant." "PostgreSQL + RLS" {
+                deploymentNode "PostgreSQL — core" "Datos funcionales de la plataforma, disponibilidad incluida. RLS por tenant." "PostgreSQL + RLS" {
                     containerInstance dbCore
-                }
-                deploymentNode "PostgreSQL — disponibilidad" "Cobertura, horarios y zonas. RLS por tenant." "PostgreSQL + RLS" {
-                    containerInstance dbAvailability
                 }
                 deploymentNode "Auth" "Emisión y validación del JWT del que se obtiene el tenant_id." "Supabase Auth" {
                     containerInstance auth
@@ -380,12 +357,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             autolayout lr
         }
 
-        component core "componentes-core" "C4 Nivel 3 — Core Services (Node.js). Fuente: SDD §4.3.3." {
-            include *
-            autolayout lr
-        }
-
-        component availability "componentes-availability" "C4 Nivel 3 — Availability Service (Node.js). Fuente: SDD §4.3.4." {
+        component core "componentes-core" "C4 Nivel 3 — Core Services (Node.js), disponibilidad incluida. Fuente: SDD §4.3.3." {
             include *
             autolayout lr
         }
@@ -400,7 +372,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             cliente -> flutter "Registra la solicitud de servicio"
             flutter -> gateway "POST de la solicitud con el JWT del tenant"
             gateway -> dispatch "Enruta tras validar el token"
-            dispatch -> availability "Pide los aliados elegibles por categoría y zona (RF-12)"
+            dispatch -> core "Pide los aliados elegibles por categoría y zona (RF-12)"
             dispatch -> rules "Pide el orden del listado según la regla del tenant (RF-13)"
             dispatch -> dbDispatch "Persiste la solicitud y los candidatos notificados"
             properties {

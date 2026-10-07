@@ -29,7 +29,7 @@ También sirve pegar el bloque en <https://www.plantuml.com/plantuml> o en la ex
 
 **Requisitos:** RF-12 (creación y coordinación de la solicitud), RF-13 (orden del listado según la regla del tenant).
 
-Lo que el diagrama debe dejar claro: **quien orquesta es Despacho**. Pregunta elegibilidad a Disponibilidades y orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada.
+Lo que el diagrama debe dejar claro: **quien orquesta es Despacho**. Pregunta elegibilidad al dominio de disponibilidad en Core y el orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada.
 
 ```plantuml
 @startuml seq-solicitud
@@ -51,7 +51,7 @@ actor "Cliente" as Cliente
 participant "Aplicación cliente\n[Flutter]" as App
 participant "API Gateway\n[NGINX]" as GW
 participant "Dispatch Service\n[.NET] — asigna" as Dispatch
-participant "Availability Service\n[Node.js] — opera" as Avail
+participant "Core Services\n[Node.js] — opera" as Core
 participant "Rules Service\n[Java] — decide" as Rules
 database "Supabase Dispatch\n[PostgreSQL + RLS]" as DbDispatch
 
@@ -63,10 +63,10 @@ GW -> Dispatch: enruta la solicitud
 deactivate GW
 activate Dispatch
 
-Dispatch -> Avail: aliados elegibles por categoría y zona (RF-12)
-activate Avail
-Avail --> Dispatch: candidatos elegibles
-deactivate Avail
+Dispatch -> Core: aliados elegibles por categoría y zona (RF-12)\n(Availability Component)
+activate Core
+Core --> Dispatch: candidatos elegibles
+deactivate Core
 
 Dispatch -> Rules: ordena el listado según la regla del tenant (RF-13)
 activate Rules
@@ -369,7 +369,7 @@ deactivate Core
 
 | Secuencia | Vista dinámica en el DSL | Servicios | Requisitos |
 |---|---|---|---|
-| 1. Solicitud | `dinamico-solicitud` | Dispatch · Availability · Rules | RF-12, RF-13 |
+| 1. Solicitud | `dinamico-solicitud` | Dispatch · Core · Rules | RF-12, RF-13 |
 | 2. Aceptación concurrente | `dinamico-aceptacion` | Dispatch | RF-14, RNF-03, RNF-05 |
 | 3. Cotización | `dinamico-cotizacion` | Core · Rules | RF-15, RF-16, RF-22 |
 | 4. KYC | `dinamico-kyc` | Core · Rules · Storage | RF-05, RF-06 |

@@ -30,7 +30,7 @@ Flutter Web / Mobile        ← presentación e interacción, sin reglas de nego
    ↓ HTTPS
 NGINX API Gateway           ← entrada única, routing y políticas transversales
    ↓
-Rules (Java) · Dispatch (.NET) · Core (Node.js) · Availability (Node.js)
+Rules (Java) · Dispatch (.NET) · Core (Node.js)
    ↓
 Supabase: Auth · PostgreSQL + RLS · Storage · Realtime
    ↓
@@ -43,13 +43,12 @@ Integraciones: FCM/APNs · operador de pagos (2.º incremento)
 |---|---|---|
 | **Rules Service** | Java | RF-02 evaluación de reglas por tenant · RF-13 ranking · RF-16 validación contra tarifario · RF-22 rangos tarifarios · parte de RNF-02 y RNF-10 |
 | **Dispatch Service** | .NET | RF-12 coordinación operacional de solicitudes · RF-14 aceptación/rechazo · RNF-03 idempotencia · RNF-05 exclusión concurrente · estados de asignación · auditoría del despacho |
-| **Core Services** | Node.js | RF-01 tenants · RF-03/RF-04 identidad y acceso · RF-05/RF-06 aliados y KYC · RF-08/RF-09 clientes y sitios · RF-10/RF-11 categorías · RF-15, RF-17, RF-18, RF-19 · RF-20/RF-21 comunicación · RF-23 reportes · RF-24..RF-28 cuando se implementen |
-| **Availability Service** | Node.js | RF-07 cobertura del aliado · RF-12 elegibilidad por categoría y zona · disponibilidad, horarios y zonas · soporte a RNF-07 en la ruta crítica de consulta |
+| **Core Services** | Node.js | RF-01 tenants · RF-03/RF-04 identidad y acceso · RF-05/RF-06 aliados y KYC · RF-07 cobertura del aliado · RF-08/RF-09 clientes y sitios · RF-10/RF-11 categorías · RF-12 elegibilidad por categoría y zona, horarios y disponibilidad (soporte a RNF-07) · RF-15, RF-17, RF-18, RF-19 · RF-20/RF-21 comunicación · RF-23 reportes · RF-24..RF-28 cuando se implementen |
 
 Notas que evitan errores de implementación:
 
 - Rules **no** guarda reglas fijas por tenant en código: las lee de persistencia (SAD §7.1).
-- Core puede dividirse internamente por dominios, pero **no** se convierte cada CRUD en un servicio independiente (SAD §7.3, riesgo KI-03).
+- Core puede dividirse internamente por dominios, pero **no** se convierte cada CRUD en un servicio independiente (SAD §7.3, riesgo KI-03). La disponibilidad es uno de esos dominios internos, no un servicio desplegable.
 - La primera aceptación válida se confirma con actualización condicional atómica; las siguientes reciben `409 Conflict` (SAD §7.2).
 
 ## Patrones
@@ -65,4 +64,4 @@ SDD §2.1: el diagrama de alto nivel muestra acceso directo de Flutter a Supabas
 - no se implementan reglas de negocio en Flutter;
 - no se exponen tablas sin controles de acceso;
 - todo acceso directo queda protegido por RLS y limitado a operaciones simples autorizadas;
-- la evolución objetivo es `Flutter → API Gateway → Availability Service → Supabase`.
+- la evolución objetivo es `Flutter → API Gateway → Core Services (dominio de disponibilidad) → Supabase`.

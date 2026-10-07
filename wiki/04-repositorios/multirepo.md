@@ -8,14 +8,15 @@ MANI adopta estrategia **multi-repo**: cada unidad desplegable mantiene ciclo t�
 
 ```text
 MANI-Flutter
-MANI-Gateway
+MANI-APIGateway  ← también es dueño de database/, scripts/, supabase/ y el Compose
 MANI-Rules-Java
 MANI-Dispatch-DotNet
 MANI-Core-Node
 MANI-Availability
-MANI-Infra
 MANI-Docs        ← este repositorio
 ```
+
+`MANI-Infra` ya no existe: DevOps lo borró el 2026-10-06 y su alcance quedó repartido según la [enmienda de ADR-0004](../../ADR/ADR-0004-cicd-multirepo-ambientes.md).
 
 Cada repositorio desplegable mantiene de forma independiente: código · dependencias · pruebas · `Dockerfile` · pipeline · configuración de build · versionamiento · artefactos · documentación técnica inmediata.
 
@@ -26,7 +27,7 @@ Cada repositorio desplegable mantiene de forma independiente: código · depende
 - Un cambio que cruza repositorios se parte en un PR por repositorio, cada uno con su referencia Jira.
 - Un contrato compartido (OpenAPI entre Gateway y servicios) se acuerda antes de implementar: es la tarea `CFG-16` del backlog de transición.
 - Crear los repositorios que faltan del modelo es `CFG-15`; replicar el pipeline en cada uno es `CFG-29`.
-- Los artefactos de infraestructura (`database/`, `docker-compose.yml`, `scripts/`, `nginx.conf`) deben salir del repositorio Flutter hacia su repositorio dueño: tarea `CFG-33`.
+- Los artefactos de infraestructura salieron del repositorio Flutter (tarea `CFG-33`, SCRUM-1110): `database/`, `scripts/`, `supabase/` y el Compose pasan a `MANI-APIGateway`; `nginx.conf` queda en `MANI-Flutter` como `docker/nginx-web.conf` porque sirve la SPA dentro de la imagen web. El responsable de las migraciones por ambiente es DevOps ([`INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §15).
 
 ## Estado real a tener en cuenta
 
@@ -34,7 +35,7 @@ Verificado sobre `MANI-Flutter` el 2026-10-07 (`CFG-38`, SCRUM-1097):
 
 - **`develop` es la base única de código**: `main` y `release` están contenidos en `develop` (no tienen commits propios);
 - las 13 ramas `feature`/`fix` que señalaba el Backlog V4 §3 quedaron reconciliadas: todas están fusionadas en `develop` o fueron reemplazadas por un PR posterior (detalle abajo). No queda trabajo sin fusionar;
-- la lógica de negocio está en ~32 funciones PL/pgSQL bajo `database/`, no en el cliente.
+- la lógica de negocio está en ~32 funciones PL/pgSQL bajo `database/` (hoy en `MANI-APIGateway`, antes en `MANI-Flutter`), no en el cliente.
 
 ### Reconciliación de ramas de MANI-Flutter (CFG-38)
 

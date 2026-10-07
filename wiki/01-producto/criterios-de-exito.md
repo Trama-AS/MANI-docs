@@ -32,7 +32,7 @@ Backlog V4 §9 — definición de llegada:
 - Dispatch conserva exactamente una asignación válida bajo concurrencia, con el PoC-001 revalidado.
 - RLS sigue aislando **con el modelo de identidad rediseñado** para un llamador que es un servicio, no el usuario final.
 - Auth, Storage y Realtime integrados según el SAD, y el destino de cada función PL/pgSQL decidido y registrado en ADR.
-- `database/`, Compose y scripts viven en su repositorio dueño, con responsable definido de las migraciones por ambiente.
+- `database/`, Compose y scripts viven en su repositorio dueño, con responsable definido de las migraciones por ambiente. Repositorio dueño: `MANI-APIGateway`; responsable: DevOps (`INFRAESTRUCTURA_MANI.md` §15; CFG-33).
 - Cada repositorio publica su imagen en GHCR y las VMs pueden levantarla con Compose.
 - CI/CD y pruebas de aislamiento funcionan por repositorio.
 - Las nueve historias preservadas pasan la regresión.

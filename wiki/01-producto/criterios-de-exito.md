@@ -28,7 +28,7 @@ Backlog V4 §9 — definición de llegada:
 
 - Flutter consume todo a través del NGINX Gateway y **no queda ningún acceso PostgREST desde el cliente**.
 - La `SUPABASE_ANON_KEY` ya no viaja en el artefacto web.
-- Rules corre en Java, Dispatch en .NET, Core y Availability en Node.js.
+- Rules corre en Java, Dispatch en .NET y Core en Node.js, con la disponibilidad como dominio interno de Core.
 - Dispatch conserva exactamente una asignación válida bajo concurrencia, con el PoC-001 revalidado.
 - RLS sigue aislando **con el modelo de identidad rediseñado** para un llamador que es un servicio, no el usuario final.
 - Auth, Storage y Realtime integrados según el SAD, y el destino de cada función PL/pgSQL decidido y registrado en ADR.

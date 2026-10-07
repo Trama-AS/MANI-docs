@@ -14,7 +14,7 @@
 | RF-04 | Recuperación segura de contraseña | Alta | Supabase Auth + Core Node |
 | RF-05 | Registrar aliados (persona natural, empresa, empleado directo) con documentos aislados por aliado y tenant | Crítica | Core Node |
 | RF-06 | Bandeja de verificación para aprobar o rechazar aliados sin exponer documentos ajenos | Alta | Core Node |
-| RF-07 | Declarar zonas de cobertura del aliado | Alta | Availability Node |
+| RF-07 | Declarar zonas de cobertura del aliado | Alta | Core Node |
 | RF-08 | Registrar clientes; cliente empresa con múltiples sitios | Alta | Core Node |
 | RF-09 | Reglas y condiciones por sitio, visibles al aliado antes de programar; todo sitio con zona | Media | Core Node |
 | RF-10 | Definir, activar y desactivar categorías de servicio | Alta | Core Node |

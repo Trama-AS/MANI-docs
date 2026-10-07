@@ -84,7 +84,6 @@ La arquitectura objetivo de MANI es:
 | Rules Service | Java | Reglas configurables por tenant, ranking y tarifarios |
 | Dispatch Service | .NET | Despacho, asignación y control de concurrencia |
 | Core Services | Node.js | Tenants, usuarios, aliados, clientes, KYC, cotizaciones, ejecución y comunicación |
-| Availability Service | Node.js | Cobertura, disponibilidad y elegibilidad |
 | Persistencia | Supabase | Plataforma administrada |
 | Motor de datos | PostgreSQL | Persistencia relacional y RLS |
 
@@ -268,6 +267,7 @@ MANI-Docs/
 ├── architecture/
 │   ├── SAD.md
 │   ├── SDD.md
+│   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
 │   └── TECH_RADAR.md
 ├── adr/
@@ -277,8 +277,8 @@ MANI-Docs/
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md
 │   └── INFRAESTRUCTURA_MANI.md
 ├── diagrams/
-│   ├── ALTO_NIVEL/          DHL, infraestructura y Tech Radar
-│   ├── C4Model/
+│   ├── HLD/          DHL, infraestructura y Tech Radar
+│   ├── LLD/
 │   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas C4
 │   │   └── png/             vistas exportadas que incrusta el SDD
 │   └── ModeloDatos.png
@@ -294,9 +294,10 @@ MANI-Docs/
 | Backlog | [`product/BACKLOG_MANI.md`](product/BACKLOG_MANI.md) |
 | Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
+| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
 | Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](adr/) |
-| Modelo C4 | [`diagrams/C4Model/workspace.dsl`](diagrams/C4Model/workspace.dsl) |
+| Modelo C4 | [`diagrams/LLD/workspace.dsl`](diagrams/LLD/workspace.dsl) |
 | Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |

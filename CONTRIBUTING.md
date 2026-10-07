@@ -11,6 +11,6 @@ Resumen:
 5. Un cambio de arquitectura necesita trazabilidad hacia un **ADR**. Un cambio en datos obliga a revisar migraciones, RLS y compatibilidad.
 6. Nada está `Done` con pruebas pendientes, documentación requerida incompleta, defectos bloqueantes abiertos o criterios incumplidos.
 
-En este repositorio (`MANI-Docs`) el cambio es documental: antes de editar, revisa [qué documento corresponde](wiki/05-proceso/documentacion.md) y [la estructura del repo](wiki/04-repositorios/estructura-de-mani-docs.md). Los diagramas C4 se editan en [`diagrams/C4Model/workspace.dsl`](diagrams/C4Model/workspace.dsl), no en imágenes.
+En este repositorio (`MANI-Docs`) el cambio es documental: antes de editar, revisa [qué documento corresponde](wiki/05-proceso/documentacion.md) y [la estructura del repo](wiki/04-repositorios/estructura-de-mani-docs.md). Los diagramas C4 se editan en [`diagrams/LLD/workspace.dsl`](diagrams/LLD/workspace.dsl), no en imágenes.
 
 Personas y asistentes de IA siguen las mismas reglas; la política de uso de IA está en [`wiki/05-proceso/trabajo-con-ia.md`](wiki/05-proceso/trabajo-con-ia.md).

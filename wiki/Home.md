@@ -27,7 +27,7 @@ Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`)
 Ninguna persona es dueña de un documento: la autoridad es del **rol** y del **artefacto**, según [`GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md) §2.3. Si dos fuentes se contradicen, prevalece la de menor número:
 
 1. **Requerimientos:** [`product/SRS.md`](../product/SRS.md).
-2. **Arquitectura y diseño:** [`architecture/SAD.md`](../architecture/SAD.md) y [`architecture/SDD.md`](../architecture/SDD.md).
+2. **Arquitectura y diseño:** [`architecture/SAD.md`](../architecture/SAD.md), [`architecture/SDD.md`](../architecture/SDD.md) y [`architecture/SECUENCIAS.md`](../architecture/SECUENCIAS.md).
 3. **Decisiones:** [`adr/`](../adr/) — una decisión vigente está `Aceptado`; una sustituida está `Superseded`.
 4. **Datos:** [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md).
 5. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).

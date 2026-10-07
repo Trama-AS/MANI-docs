@@ -384,6 +384,8 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 **Objetivo:** mostrar el orden de los flujos que la estructura estática no explica. Cada paso de estas vistas corresponde a una relación ya declarada en el modelo: una vista dinámica no inventa colaboraciones que la estructura no permita.
 
+> Los mismos flujos, en **PlantUML suelto y con las ramas de error** (`alt`, `409 Conflict`, destinatario desconectado), están en [`SECUENCIAS.md`](./SECUENCIAS.md). Esa notación admite lo que el modelo C4 no expresa: dos actores compitiendo y los caminos alternativos.
+
 | Vista | Flujo | Requisitos |
 |---|---|---|
 | `dinamico-solicitud` | solicitud y conformación del listado de aliados | RF-12, RF-13 |

@@ -7,7 +7,7 @@
 | Camino | Flutter -> NGINX Gateway -> Core Node -> Supabase |
 | Autor | Santiago (QA) |
 | Fecha | 6 de octubre de 2026 |
-| Estado | Borrador. Ningún caso se ha ejecutado. Rutas y códigos de estado pendientes del contrato de CFG-16 (SCRUM-1099) |
+| Estado | Borrador. Ningún caso se ha ejecutado. Rutas y códigos tomados del contrato borrador v0.2.0 de CFG-16 (SCRUM-1099, En revisión) cuando existen; lo que el contrato no cubre queda como marcador |
 | Fuente de los casos | `product/CRITERIOS_ACEPTACION_US-02.1.1.md` (SCRUM-1076, PR 13 de `MANI-docs`), escenarios A1 a A4 y B1 a B6 |
 
 ## 1. Propósito y reglas
@@ -21,6 +21,7 @@ Reglas:
 3. Rechazo de acceso cross-tenant: 403 o 404, o ausencia de datos ajenos; nunca 200 con datos. Para tokens inválidos: 401, del Gateway o del Core según PA-16.
 4. Evidencia redactada, sin JWT ni llaves. Las variables llevan nombre en camelCase.
 5. Los resultados esperados marcados como "según lectura" provienen de leer el código y no se han observado.
+6. Los marcadores se completan con el contrato borrador v0.2.0 cuando lo cubre. Donde el contrato falta o difiere de Flutter, se anota el punto abierto (PA-29 a PA-33 de `CRITERIOS_ACEPTACION_US-02.1.1.md`).
 
 ## 2. Dos juegos de casos
 
@@ -35,17 +36,17 @@ Según el ADR-0022 (decisión del equipo del 5 de octubre, documento aún Propue
 
 | Marcador | Significado | Se completa con |
 |---|---|---|
-| `{{urlGateway}}` | Base del Gateway en QA | `API_GATEWAY_URL` de Flutter |
-| `{{rutaRegistroAliado}}` | Endpoint público de registro de persona natural | CFG-16 |
-| `{{rutaDocumentos}}` | Endpoint privado de carga de documentos | CFG-16 |
-| `{{rutaEstado}}` | Endpoint privado de consulta de estado | CFG-16 |
-| `{{rutaAccesoDocumento}}` | Mecanismo de acceso temporal al documento (descarga o URL firmada) | CFG-16 y CFG-23a (PA-09) |
-| `{{campoCorrelacion}}` | Nombre del campo de correlación en la respuesta. Valor de partida: `correlationId`, según el `CLAUDE.md` de `MANI-Node` (PA-17) | CFG-16 |
-| `{{codigoRechazo}}` | Código exacto de rechazo, entre 403 y 404 | CFG-16 |
-| `{{formatoError}}` | Estructura del error. Valor de partida: `{ error, code?, correlationId }`, según el `CLAUDE.md` de `MANI-Node` (PA-17) | CFG-16 |
-| `{{ttlUrlFirmada}}` | Vida de la URL firmada | CFG-23a (la colección usa 60 s) |
+| `{{url_gateway}}` | Base del Gateway en QA | `API_GATEWAY_URL` de Flutter |
+| `{{ruta_registro_aliado}}` | Endpoint público de registro de persona natural | Contrato v0.2.0: `POST /api/v1/core/auth/register/ally` (JSON). Flutter usa `/api/v1/core/aliados/persona-natural` (multipart). Se fija al cerrar PA-31 |
+| `{{ruta_documentos}}` | Endpoint privado de carga de documentos | No existe en el contrato (PA-29) |
+| `{{ruta_estado}}` | Endpoint privado de consulta de estado | No existe en el contrato (PA-29) |
+| `{{ruta_acceso_documento}}` | Mecanismo de acceso temporal al documento (descarga o URL firmada) | CFG-23a (PA-09); no está en el contrato |
+| `{{campo_correlacion}}` | Campo de correlación en la respuesta | Contrato v0.2.0: `correlationId` en el cuerpo del error y el header `X-Correlation-ID` (PA-17) |
+| `{{codigo_rechazo}}` | Código exacto de rechazo cross-tenant, entre 403 y 404 | El contrato no define 403 ni 404 (solo 400, 401, 409 y 500); pendiente de CFG-16 |
+| `{{formato_error}}` | Estructura del error | Contrato v0.2.0: `{ error, code, correlationId }`, con `code` en `VALIDATION_ERROR`, `INVALID_CREDENTIALS`, `UNAUTHORIZED`, `TOKEN_INVALID`, `TOKEN_EXPIRED`, `TENANT_NOT_FOUND`, `EMAIL_ALREADY_REGISTERED`, `DOCUMENT_ALREADY_REGISTERED` e `INTERNAL_ERROR` |
+| `{{ttl_url_firmada}}` | Vida de la URL firmada | CFG-23a (la colección usa 60 s) |
 
-Usuarios de prueba (existen en la colección `mani-aislamiento`): `aliado.t1`, `aliado.t2`, `admin.t1`, `admin.t2`, `cliente.t1` y `hook.t1` (segundo aliado del tenant 1). Falta un `cliente.t2` (PA-10). Datos: dos tenants activos con su slug (`slugT1`, `slugT2`), un tenant inexistente (`slugInexistente`) y un tenant inactivo si existe en QA.
+Usuarios de prueba (existen en la colección `mani-aislamiento`): `aliado.t1`, `aliado.t2`, `admin.t1`, `admin.t2`, `cliente.t1` y `hook.t1` (segundo aliado del tenant 1). Falta un `cliente.t2` (PA-10). Datos: dos tenants activos con su slug (`slug_t1`, `slug_t2`), un tenant inexistente (`slug_inexistente`) y un tenant inactivo si existe en QA.
 
 ## 4. Casos funcionales (escenarios A1 a A4)
 
@@ -53,33 +54,34 @@ Usuarios de prueba (existen en la colección `mani-aislamiento`): `aliado.t1`, `
 
 | ID | Escenario | Tipo | Línea base | Precondición | Pasos | Resultado esperado |
 |---|---|---|---|---|---|---|
-| rgA1P | A1-P | Positivo | Parcial: el usuario se crea, pero no se invoca la RPC ni se persisten documentos (F1) | Tenant 1 activo. Todos los documentos exigidos disponibles | 1. Enviar a `{{urlGateway}}{{rutaRegistroAliado}}` el registro con datos y documentos, con la cabecera `X-Tenant-Slug: slugT1` | Registro aceptado (2xx según contrato). Existe usuario y aliado en el tenant 1, con rol aliado y `estado_verificacion` PENDIENTE. Cada documento está en `kyc-documentos` bajo `<tenant_id>/<uid>/` y hay una fila de `documento_kyc` por documento con `ruta_storage` igual a la real. La respuesta trae `{{campoCorrelacion}}`. El primer token del aliado trae el claim `tenant_id` del tenant 1 y el rol aliado |
-| rgA1V1 | A1-V | Violación | No | Mismo contexto | 1. Registrar con `rol: ADMIN_TENANT` en cuerpo o metadata. 2. Registrar con `estado_verificacion: VERIFICADO`. 3. Registrar con un `tenant_id` del tenant 2 en el cuerpo y `X-Tenant-Slug: slugT1` | En los tres casos el aliado queda con rol aliado, PENDIENTE y en el tenant 1, o la petición se rechaza (PA-05). Nunca queda nada en el tenant 2. Control positivo: rgA1P en la misma corrida |
+| rgA1P | A1-P | Positivo | Parcial: el usuario se crea, pero no se invoca la RPC ni se persisten documentos (F1) | Tenant 1 activo. Todos los documentos exigidos disponibles | 1. Enviar a `{{url_gateway}}{{ruta_registro_aliado}}` el registro con datos y documentos, con la cabecera `X-Tenant-Slug: slug_t1` | Registro aceptado (2xx según contrato). Existe usuario y aliado en el tenant 1, con rol aliado y `estado_verificacion` PENDIENTE. Cada documento está en `kyc-documentos` bajo `<tenant_id>/<uid>/` y hay una fila de `documento_kyc` por documento con `ruta_storage` igual a la real. La respuesta trae `{{campo_correlacion}}`. El primer token del aliado trae el claim `tenant_id` del tenant 1 y el rol aliado |
+| rgA1V1 | A1-V | Violación | No | Mismo contexto | 1. Registrar con `rol: ADMIN_TENANT` en cuerpo o metadata. 2. Registrar con `estado_verificacion: VERIFICADO`. 3. Registrar con un `tenant_id` del tenant 2 en el cuerpo y `X-Tenant-Slug: slug_t1` | En los tres casos el aliado queda con rol aliado, PENDIENTE y en el tenant 1, o la petición se rechaza (PA-05). Nunca queda nada en el tenant 2. Control positivo: rgA1P en la misma corrida |
 | rgA1V2 | A1-V (línea base) | Violación | Sí, **según lectura**: `handle_new_user` toma rol y tenant de la metadata (F3) | Camino directo en QA | 1. Hacer `signUp` directo con metadata `rol: ADMIN_TENANT` y `tenant_id` del tenant 2 | Resultado esperado de **aceptación**: el usuario no se crea con ese rol ni en ese tenant. Resultado esperado según lectura del código actual: sí se crea. Si se crea, es un defecto que se registra en Jira y verifica PA-06 |
 
 ### 4.2 A2: documento exigido faltante y ruta fuera de la carpeta
 
 | ID | Escenario | Tipo | Línea base | Precondición | Pasos | Resultado esperado |
 |---|---|---|---|---|---|---|
-| rgA2N | A2-N | Negativo | No: la regla no existe (F4) | Tenant que exige un documento adicional a la cédula (PA-03) | 1. Registrar sin ese documento | Rechazo con error `{{formatoError}}` que identifica el documento faltante y trae `{{campoCorrelacion}}`. El error no expone detalles de PL/pgSQL ni de Supabase. No queda usuario, aliado, fila de `documento_kyc` ni objeto en Storage. Control positivo: rgA1P |
-| rgA2V | A2-V | Violación | No | Registro con nombre de archivo o ruta apuntando a otro tenant u otro uid, p. ej. `../<tenantId2>/<uid>/cedula` | 1. Enviar el registro | El servidor construye la ruta `<tenant_id>/<uid>/` por sí mismo o rechaza la petición. Ningún objeto queda fuera de la carpeta del propio aliado. Control positivo: rgA1P |
+| rgA2N | A2-N | Negativo | No: la regla no existe (F4) | Tenant que exige un documento adicional a la cédula (PA-03) | 1. Registrar sin ese documento | Rechazo con error `{{formato_error}}` que identifica el documento faltante y trae `{{campo_correlacion}}`. El error no expone detalles de PL/pgSQL ni de Supabase. No queda usuario, aliado, fila de `documento_kyc` ni objeto en Storage. Control positivo: rgA1P |
+| rgA2V | A2-V | Violación | No | Registro con nombre de archivo o ruta apuntando a otro tenant u otro uid, p. ej. `../<tenant_id_2>/<uid>/cedula` | 1. Enviar el registro | El servidor construye la ruta `<tenant_id>/<uid>/` por sí mismo o rechaza la petición. Ningún objeto queda fuera de la carpeta del propio aliado. Control positivo: rgA1P |
+| rgA2D | Contrato v0.2.0 | Negativo | No | Aliado ya registrado en el tenant 1 con un email y un número de documento | 1. Registrar otro aliado con el mismo email. 2. Registrar otro con el mismo número de documento y otro email | 409 con `EMAIL_ALREADY_REGISTERED` en el primer caso y `DOCUMENT_ALREADY_REGISTERED` en el segundo, y `correlationId` en el error. No queda un segundo usuario. Control positivo: rgA1P |
 
 ### 4.3 A3: el tenant se resuelve por slug en el registro y por token en lo privado
 
 | ID | Escenario | Tipo | Línea base | Precondición | Pasos | Resultado esperado |
 |---|---|---|---|---|---|---|
-| rgA3P1 | A3-P | Positivo | No | Tenant 1 activo | 1. Registrar con `X-Tenant-Slug: slugT1` 2. Iniciar sesión y decodificar el claim (sin versionar el token) | El aliado queda en el tenant 1 y el claim `tenant_id` es el del tenant 1 |
-| rgA3P2 | A3-P | Positivo | No | Aliado autenticado en el tenant 1 | 1. Subir un documento a `{{rutaDocumentos}}`. 2. Consultar `{{rutaEstado}}` | 2xx. Solo se afectan registros del tenant 1 y del propio uid |
-| rgA3N1 | A3-N | Negativo | No: hoy se usa un tenant por defecto (F3) | `slugInexistente` y, si existe, un tenant inactivo | 1. Registrar con cada uno | Rechazo. Ningún tenant por defecto. No se crea usuario, aliado ni documento. Control positivo: rgA3P1 |
-| rgA3N2 | A3-N | Negativo | No | Sin sesión | 1. Llamar a `{{rutaDocumentos}}` y `{{rutaEstado}}` sin cabecera `Authorization`, con token expirado y con firma alterada | 401 en cada variante, del Gateway o del Core según PA-16, sin acceder a ningún dato. Control positivo: rgA3P2 |
-| rgA3V1 | A3-V | Violación | No | `X-Tenant-Slug: slugT1` | 1. Registrar con `tenant_id` del tenant 2 en el cuerpo | El cuerpo se ignora o se rechaza (PA-05). Nada queda en el tenant 2 |
-| rgA3V2 | A3-V | Violación | No | Aliado autenticado en el tenant 1 | 1. Operación privada con `tenant_id` del tenant 2 en el cuerpo. 2. La misma con `X-Tenant-Slug: slugT2` | El Core usa el claim del token. Nada se lee ni se escribe en el tenant 2. Control positivo: rgA3P2 |
+| rgA3P1 | A3-P | Positivo | No | Tenant 1 activo | 1. Registrar con `X-Tenant-Slug: slug_t1` 2. Iniciar sesión y decodificar el claim (sin versionar el token) | El aliado queda en el tenant 1 y el claim `tenant_id` es el del tenant 1 |
+| rgA3P2 | A3-P | Positivo | No | Aliado autenticado en el tenant 1 | 1. Subir un documento a `{{ruta_documentos}}`. 2. Consultar `{{ruta_estado}}` | 2xx. Solo se afectan registros del tenant 1 y del propio uid |
+| rgA3N1 | A3-N | Negativo | No: hoy se usa un tenant por defecto (F3) | `slug_inexistente` y, si existe, un tenant inactivo | 1. Registrar con cada uno | Rechazo con 400 y `code` `TENANT_NOT_FOUND` según el contrato v0.2.0. Ningún tenant por defecto. No se crea usuario, aliado ni documento. Control positivo: rgA3P1 |
+| rgA3N2 | A3-N | Negativo | No | Sin sesión | 1. Llamar a `{{ruta_documentos}}` y `{{ruta_estado}}` sin cabecera `Authorization`, con token expirado y con firma alterada | 401 del Core en cada variante, con `code` `UNAUTHORIZED` sin cabecera, `TOKEN_EXPIRED` si expiró y `TOKEN_INVALID` si la firma está alterada (contrato v0.2.0; el Gateway no valida, PA-16), sin acceder a ningún dato. Control positivo: rgA3P2 |
+| rgA3V1 | A3-V | Violación | No | `X-Tenant-Slug: slug_t1` | 1. Registrar con `tenant_id` del tenant 2 en el cuerpo | El cuerpo se ignora o se rechaza (PA-05). Nada queda en el tenant 2 |
+| rgA3V2 | A3-V | Violación | No | Aliado autenticado en el tenant 1 | 1. Operación privada con `tenant_id` del tenant 2 en el cuerpo. 2. La misma con `X-Tenant-Slug: slug_t2` | El Core usa el claim del token. Nada se lee ni se escribe en el tenant 2. Control positivo: rgA3P2 |
 
 ### 4.4 A4: solo Gateway
 
 | ID | Escenario | Tipo | Línea base | Precondición | Pasos | Resultado esperado |
 |---|---|---|---|---|---|---|
-| rgA4P | A4-P | Positivo | No | Build web de QA con M3 desplegado | 1. Ejecutar con Playwright el recorrido de registro y carga de documentos, capturando la red | Todas las peticiones de negocio van a `{{urlGateway}}`. Ninguna va a `rest/v1`, RPC ni Storage de Supabase. La excepción del inicio de sesión de Supabase Auth depende de CFG-35 (PA-07) |
+| rgA4P | A4-P | Positivo | No | Build web de QA con M3 desplegado | 1. Ejecutar con Playwright el recorrido de registro y carga de documentos, capturando la red | Todas las peticiones de negocio van a `{{url_gateway}}`. Ninguna va a `rest/v1`, RPC ni Storage de Supabase. La excepción del inicio de sesión de Supabase Auth depende de CFG-35 (PA-07) |
 | rgA4N | A4-N | Negativo | Sí, **según lectura**: la anon key está en el bundle (CFG-36) | Artefacto web publicado en QA | 1. Descargar el bundle. 2. Buscar `SUPABASE_ANON_KEY` y la llave de servicio, sin versionar el valor | No aparece ninguna de las dos. Hoy se espera que aparezca la anon key, y eso se reporta por nombre, sin copiar el valor |
 | rgA4V | A4-V | Violación | Sí | Token válido de `aliado.t1` | 1. Leer y escribir `aliado` y `documento_kyc` por Supabase REST. 2. Acceder a Storage directo | Acceso denegado o sin ruta. Control positivo: la misma operación por el Gateway funciona (rgA3P2) |
 
@@ -89,15 +91,15 @@ Los casos reutilizan los usuarios y las solicitudes de `mani-aislamiento`. La co
 
 | ID | Escenario | Negativo | Control positivo | Colección actual | Falta para el Gateway |
 |---|---|---|---|---|---|
-| rgB1 | B1 lectura | `aliado.t1` consulta el registro o estado de un aliado del tenant 2: 403 o 404 sin datos | Su propio registro: 200 | Carpeta 01 (lee `sitio`, que no es de US-02.1.1) | Solicitudes a `{{rutaEstado}}` |
+| rgB1 | B1 lectura | `aliado.t1` consulta el registro o estado de un aliado del tenant 2: 403 o 404 sin datos | Su propio registro: 200 | Carpeta 01 (lee `sitio`, que no es de US-02.1.1) | Solicitudes a `{{ruta_estado}}` |
 | rgB2 | B2 listado | `aliado.t1` y `admin.t1` listan: ninguna fila del tenant 2. Un aliado no ve documentos de otro aliado del tenant | Cada listado devuelve al menos una fila propia | Carpeta 02 (`sitio` y `usuario`) y el complemento de la fila de `documento_kyc` | Listados de documentos y aliados por el Gateway |
 | rgB3 | B3 escritura | `aliado.t1` intenta modificar el KYC o el estado del tenant 2. Verificar con `admin.t2` que sigue intacto. Variante de inserción con `tenant_id` ajeno. No puede cambiar su propio estado (403) | Reemplazar su propio documento si está PENDIENTE (PA-08) | Carpetas 03 y 03b. El control positivo actual pone `estado: aprobado` (auto-aprobación) y debe reemplazarse | Solicitudes por el Gateway y control positivo nuevo |
 | rgB4 | B4 borrado | `aliado.t1` intenta borrar un documento del tenant 2. Verificar con `admin.t2` | Retirar su propio documento si está PENDIENTE (PA-08) | Carpeta 04 | Solicitudes por el Gateway |
 | rgB5 | B5 tokens | Token con `tenant_id` reescrito, firma alterada, expirado y sin `Authorization`: 401, del Gateway o del Core según PA-16, y ninguna fila | Token válido de `aliado.t1`: 200 | Carpeta 05 (no cubre expirado ni ausencia total de token) | Variantes expirado y sin cabecera |
-| rgB6 | B6 KYC en Storage | `aliado.t2`, `admin.t2`, `hook.t1`, `cliente.t1` y anónimo no descargan, firman, listan ni suben. URLs firmadas alteradas, reutilizadas o vencidas se rechazan | El dueño y su admin descargan, firman y listan | Carpeta 06 completa (N1 a N11, P1 a P3, C1 y complemento) | Acceso por `{{rutaAccesoDocumento}}`; `cliente.t2` |
+| rgB6 | B6 KYC en Storage | `aliado.t2`, `admin.t2`, `hook.t1`, `cliente.t1` y anónimo no descargan, firman, listan ni suben. URLs firmadas alteradas, reutilizadas o vencidas se rechazan | El dueño y su admin descargan, firman y listan | Carpeta 06 completa (N1 a N11, P1 a P3, C1 y complemento) | Acceso por `{{ruta_acceso_documento}}`; `cliente.t2` |
 
 Controles adicionales del caso 6, para decidir el resultado esperado:
-- C1 documenta que una URL firmada filtrada funciona hasta su TTL. El criterio exige que `{{ttlUrlFirmada}}` no supere lo que fije CFG-23a.
+- C1 documenta que una URL firmada filtrada funciona hasta su TTL. El criterio exige que `{{ttl_url_firmada}}` no supere lo que fije CFG-23a.
 - N11 verifica que la ruta con `aliado.id` se deniega. Si el Core construye la ruta con `aliado_id` (PA-04), esa ruta pasa de "negativo esperado" a "ruta oficial" y el caso se invierte. Hasta cerrar PA-04 no se ejecuta en el Gateway.
 
 ## 6. Paridad: lo que debe preservarse antes de retirar la lógica vieja
@@ -146,7 +148,10 @@ Un comportamiento sin línea base no puede declararse "preservado": se declara "
 | PA-07 | rgA4P: excepción de Supabase Auth | Daniel Ávila |
 | PA-08 | rgB3 y rgB4: control positivo | Nicolás León |
 | PA-09 | rgB6: mecanismo y TTL | Juan Sebastián Álvarez |
-| PA-16 | rgA3N2 y rgB5: quién devuelve el 401 | Daniel Ávila y Juan Sebastián Álvarez |
+| PA-16 | rgA3N2 y rgB5: el contrato dice que el 401 lo devuelve el Core; falta corregir el ADR-0018 | Daniel Ávila y Juan Sebastián Álvarez |
+| PA-29 | rgA1P, rgA2N y rgB6: el contrato no cubre documentos KYC | Juan Sebastián Álvarez |
+| PA-30 | rgA3P1 y rgA3V1: `X-Tenant-Id` del contrato frente a `X-Tenant-Slug` de Flutter | Daniel Ávila, Juan Sebastián Álvarez y José Nicolás Álvarez |
+| PA-31 | Todos los casos de registro: ruta, formato y campos distintos entre contrato y Flutter | Juan Sebastián Álvarez y José Nicolás Álvarez |
 | PA-11 | Sección 6: falta publicar el ADR-0022 que registra la decisión | María Camila Beltrán |
 
 ## 10. Trazabilidad con Jira

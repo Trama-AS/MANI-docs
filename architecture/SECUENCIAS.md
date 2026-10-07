@@ -2,7 +2,7 @@
 
 **Proyecto:** MANI — TRAMA · Ingeniería de Software
 **Alcance:** los flujos críticos del ciclo Solicitud → Cotización → Ejecución → Calificación → Cierre, en notación de secuencia UML.
-**Fuente del modelo:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — las mismas colaboraciones están declaradas allí como vistas dinámicas (`dinamico-*`), descritas en [`SDD.md`](./SDD.md) §4.6.
+**Fuente del modelo:** [`workspace.dsl`](../diagrams/LLD/workspace.dsl) — las mismas colaboraciones están declaradas allí como vistas dinámicas (`dinamico-*`), descritas en [`SDD.md`](./SDD.md) §4.6.
 
 ---
 

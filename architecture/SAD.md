@@ -7,8 +7,8 @@
 **Despliegue:** Docker + Kubernetes  
 **Ambientes:** DEV → TEST/QA → PROD  
 **Estrategia de repositorios:** Multi-repo  
-**Diagramas de este documento:** diagramas de alto nivel (DHL) en [`diagrams/ALTO_NIVEL/`](../diagrams/ALTO_NIVEL/) — [DHL.png](../diagrams/ALTO_NIVEL/DHL.png), [Infra.png](../diagrams/ALTO_NIVEL/Infra.png), [TechRadar.png](../diagrams/ALTO_NIVEL/TechRadar.png)  
-**Modelo C4 formal:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentado vista por vista en [`SDD.md`](./SDD.md) §4  
+**Diagramas de este documento:** diagramas de alto nivel (DHL) en [`diagrams/HLD/`](../diagrams/HLD/) — [DHL.png](../diagrams/HLD/DHL.png), [Infra.png](../diagrams/HLD/Infra.png), [TechRadar.png](../diagrams/HLD/TechRadar.png)  
+**Modelo C4 formal:** [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentado vista por vista en [`SDD.md`](./SDD.md) §4  
 
 ---
 
@@ -109,10 +109,10 @@ MANI adopta una **arquitectura SOA distribuida**, con un **API Gateway** como fr
 
 # 5. Vista de contexto — C4 Nivel 1
 
-![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](../diagrams/ALTO_NIVEL/DHL.png)
+![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](../diagrams/HLD/DHL.png)
 
-> **Figura 1 — Diagrama de alto nivel (DHL).** Archivo: [`diagrams/ALTO_NIVEL/DHL.png`](../diagrams/ALTO_NIVEL/DHL.png).
-> La vista C4 formal correspondiente es `contexto` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §4.1.
+> **Figura 1 — Diagrama de alto nivel (DHL).** Archivo: [`diagrams/HLD/DHL.png`](../diagrams/HLD/DHL.png).
+> La vista C4 formal correspondiente es `contexto` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §4.1.
 
 ```text
 Actores
@@ -128,10 +128,10 @@ Sistemas externos
 
 # 6. Vista de contenedores — C4 Nivel 2
 
-![Vista de alto nivel de los componentes de MANI: cliente, gateway, servicios y Supabase](../diagrams/ALTO_NIVEL/DHL.png)
+![Vista de alto nivel de los componentes de MANI: cliente, gateway, servicios y Supabase](../diagrams/HLD/DHL.png)
 
-> **Figura 2 — Componentes de la solución en el DHL.** Archivo: [`diagrams/ALTO_NIVEL/DHL.png`](../diagrams/ALTO_NIVEL/DHL.png).
-> La vista C4 formal correspondiente es `contenedores` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §4.2.
+> **Figura 2 — Componentes de la solución en el DHL.** Archivo: [`diagrams/HLD/DHL.png`](../diagrams/HLD/DHL.png).
+> La vista C4 formal correspondiente es `contenedores` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §4.2.
 
 ```text
 Usuarios
@@ -431,10 +431,10 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 
 # 16. Vista de despliegue
 
-![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/ALTO_NIVEL/Infra.png)
+![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/HLD/Infra.png)
 
-> **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/ALTO_NIVEL/Infra.png`](../diagrams/ALTO_NIVEL/Infra.png).
-> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
+> **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/HLD/Infra.png`](../diagrams/HLD/Infra.png).
+> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
 
 MANI mantiene tres ambientes:
 
@@ -838,6 +838,6 @@ La arquitectura contempla explícitamente:
 - `ModeloDatos.md` — diseño conceptual, lógico, físico y analítico.
 - `SDD.md` — descripción detallada de diseño de software.
 - `/docs/adr/` — decisiones arquitectónicas.
-- [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `panorama`, `contexto`, `contenedores`, `componentes-*`, `dinamico-*` y `despliegue-prod`.
-- [`diagrams/ALTO_NIVEL/`](../diagrams/ALTO_NIVEL/) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.
+- [`workspace.dsl`](../diagrams/LLD/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `panorama`, `contexto`, `contenedores`, `componentes-*`, `dinamico-*` y `despliegue-prod`.
+- [`diagrams/HLD/`](../diagrams/HLD/) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.
 - [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.4.

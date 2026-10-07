@@ -6,7 +6,7 @@
 **Documento de datos asociado:** [ModeloDatos.md](./ModeloDatos.md)  
 **Estado:** Diseño arquitectónico objetivo  
 **Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.  
-**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y la de despliegue `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
+**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/LLD/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/LLD/`](../diagrams/LLD/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y la de despliegue `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
 
 ---
 
@@ -144,7 +144,7 @@ El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnolo
 
 # 4. Vistas C4
 
-Las vistas de esta sección se generan desde [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), que es su fuente. Cada subsección indica la vista que le corresponde y mantiene en texto la estructura y las responsabilidades, para que el documento se lea sin renderizar.
+Las vistas de esta sección se generan desde [`workspace.dsl`](../diagrams/LLD/workspace.dsl), que es su fuente. Cada subsección indica la vista que le corresponde y mantiene en texto la estructura y las responsabilidades, para que el documento se lea sin renderizar.
 
 El modelo cubre las cuatro vistas que Structurizr sí puede describir, y ninguna queda solo en prosa:
 
@@ -161,9 +161,9 @@ El Nivel 4 (Code) se mantiene en §4.4: Structurizr describe contenedores y comp
 
 **Objetivo:** mostrar MANI como un sistema y sus relaciones con personas y sistemas externos.
 
-![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](../diagrams/C4Model/png/contexto.png)
+![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](../diagrams/LLD/png/contexto.png)
 
-> **Figura 1 — Contexto del sistema (C4 Nivel 1).** Generada desde la vista `contexto` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/contexto.png`](../diagrams/C4Model/png/contexto.png).
+> **Figura 1 — Contexto del sistema (C4 Nivel 1).** Generada desde la vista `contexto` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/contexto.png`](../diagrams/LLD/png/contexto.png).
 
 ```text
 Cliente              → crea solicitudes y aprueba cotizaciones
@@ -190,9 +190,9 @@ Administrador tenant → administra usuarios, aliados, tenant y KYC
 
 **Objetivo:** mostrar las unidades desplegables y almacenes principales.
 
-![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](../diagrams/C4Model/png/contenedores.png)
+![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](../diagrams/LLD/png/contenedores.png)
 
-> **Figura 2 — Contenedores (C4 Nivel 2).** Generada desde la vista `contenedores` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/contenedores.png`](../diagrams/C4Model/png/contenedores.png).
+> **Figura 2 — Contenedores (C4 Nivel 2).** Generada desde la vista `contenedores` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/contenedores.png`](../diagrams/LLD/png/contenedores.png).
 
 ```text
 Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
@@ -227,9 +227,9 @@ Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el ord
 
 ### 4.3.1 Servicio de Reglas — Java
 
-![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](../diagrams/C4Model/png/componentes-rules.png)
+![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](../diagrams/LLD/png/componentes-rules.png)
 
-> **Figura 3 — Rules Service, Java (C4 Nivel 3).** Generada desde la vista `componentes-rules` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-rules.png`](../diagrams/C4Model/png/componentes-rules.png).
+> **Figura 3 — Rules Service, Java (C4 Nivel 3).** Generada desde la vista `componentes-rules` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-rules.png`](../diagrams/LLD/png/componentes-rules.png).
 
 ```text
 Rules REST Controller
@@ -248,9 +248,9 @@ Responsabilidades:
 
 ### 4.3.2 Servicio de Despacho — .NET
 
-![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](../diagrams/C4Model/png/componentes-dispatch.png)
+![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](../diagrams/LLD/png/componentes-dispatch.png)
 
-> **Figura 4 — Dispatch Service, .NET (C4 Nivel 3).** Generada desde la vista `componentes-dispatch` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-dispatch.png`](../diagrams/C4Model/png/componentes-dispatch.png).
+> **Figura 4 — Dispatch Service, .NET (C4 Nivel 3).** Generada desde la vista `componentes-dispatch` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-dispatch.png`](../diagrams/LLD/png/componentes-dispatch.png).
 
 ```text
 Dispatch API
@@ -272,9 +272,9 @@ Responsabilidades:
 
 ### 4.3.3 Core Services — Node.js
 
-![C4 Nivel 3 — Core Services (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/C4Model/png/componentes-core.png)
+![C4 Nivel 3 — Core Services (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/LLD/png/componentes-core.png)
 
-> **Figura 5 — Core Services, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-core.png`](../diagrams/C4Model/png/componentes-core.png).
+> **Figura 5 — Core Services, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-core.png`](../diagrams/LLD/png/componentes-core.png).
 
 ```text
 Core API
@@ -290,7 +290,7 @@ KYC Orchestrator y Notification Component → External Adapters → Storage · R
 
 **Availability Component** concentra cobertura del aliado, horarios y solapamientos, zonas y elegibilidad por categoría y zona (RF-07, RF-12, RNF-07). Es el componente que Despacho consulta en caliente antes de conformar el listado de candidatos. La lógica pertenece al servicio, no al cliente Flutter: esa es la condición para cerrar la excepción transitoria de §2.1.
 
-La disponibilidad **no es un servicio desplegable aparte**. Vive en el bloque Node como un dominio más de Core, igual que el catálogo o la comunicación: separarla en su propio despliegue sería convertir un dominio en un servicio sin ganar nada a cambio (riesgo KI-03 del SAD).
+La disponibilidad **no es un servicio desplegable aparte**. Vive en el bloque Node como un dominio más de Core, igual que el catálogo o la comunicación: separarla en su propio despliegue sería convertir un dominio en un servicio sin ganar nada a cambio (SAD, riesgo *Servicios excesivamente pequeños*).
 
 ---
 
@@ -352,9 +352,9 @@ DB / External Adapters
 
 **Objetivo:** mostrar el mapa de sistemas alrededor de MANI. Es una pregunta distinta de la del Nivel 1: el contexto mira hacia fuera *desde* MANI, el panorama mira el conjunto y deja ver que MANI es el único sistema propio y que todo lo demás es proveedor o plataforma de destino.
 
-![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](../diagrams/C4Model/png/panorama.png)
+![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](../diagrams/LLD/png/panorama.png)
 
-> **Figura 6 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/panorama.png`](../diagrams/C4Model/png/panorama.png).
+> **Figura 6 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/panorama.png`](../diagrams/LLD/png/panorama.png).
 
 ```text
 Cliente · Aliado · Administrador de tenant · Administrador de plataforma
@@ -385,9 +385,9 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 ### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
 
-![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](../diagrams/C4Model/png/dinamico-solicitud.png)
+![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](../diagrams/LLD/png/dinamico-solicitud.png)
 
-> **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/C4Model/png/dinamico-solicitud.png`](../diagrams/C4Model/png/dinamico-solicitud.png).
+> **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/LLD/png/dinamico-solicitud.png`](../diagrams/LLD/png/dinamico-solicitud.png).
 
 ```text
 1. Cliente            → Flutter          registra la solicitud
@@ -402,9 +402,9 @@ Quien orquesta es el despacho: pregunta elegibilidad al dominio de disponibilida
 
 ### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
 
-![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../diagrams/C4Model/png/dinamico-aceptacion.png)
+![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../diagrams/LLD/png/dinamico-aceptacion.png)
 
-> **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/C4Model/png/dinamico-aceptacion.png`](../diagrams/C4Model/png/dinamico-aceptacion.png).
+> **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/LLD/png/dinamico-aceptacion.png`](../diagrams/LLD/png/dinamico-aceptacion.png).
 
 Vista a nivel de componentes del Servicio de Despacho. Dos aliados aceptan la misma solicitud al mismo tiempo:
 
@@ -423,9 +423,9 @@ La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y re
 
 ### 4.6.3 Cotización y tarifario — `dinamico-cotizacion`
 
-![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../diagrams/C4Model/png/dinamico-cotizacion.png)
+![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../diagrams/LLD/png/dinamico-cotizacion.png)
 
-> **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/C4Model/png/dinamico-cotizacion.png`](../diagrams/C4Model/png/dinamico-cotizacion.png).
+> **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/LLD/png/dinamico-cotizacion.png`](../diagrams/LLD/png/dinamico-cotizacion.png).
 
 ```text
 1. Aliado        → Flutter        cotización separando mano de obra y materiales (RF-15)
@@ -440,9 +440,9 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 
 ### 4.6.4 KYC del aliado — `dinamico-kyc`
 
-![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../diagrams/C4Model/png/dinamico-kyc.png)
+![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../diagrams/LLD/png/dinamico-kyc.png)
 
-> **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/C4Model/png/dinamico-kyc.png`](../diagrams/C4Model/png/dinamico-kyc.png).
+> **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/LLD/png/dinamico-kyc.png`](../diagrams/LLD/png/dinamico-kyc.png).
 
 ```text
 1. Aliado                 → Flutter        carga los documentos requeridos por el tenant
@@ -457,9 +457,9 @@ La aprobación es una decisión humana del tenant, no un efecto automático de l
 
 ### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
 
-![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../diagrams/C4Model/png/dinamico-mensajeria.png)
+![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../diagrams/LLD/png/dinamico-mensajeria.png)
 
-> **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/C4Model/png/dinamico-mensajeria.png`](../diagrams/C4Model/png/dinamico-mensajeria.png).
+> **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/LLD/png/dinamico-mensajeria.png`](../diagrams/LLD/png/dinamico-mensajeria.png).
 
 ```text
 1. Cliente   → Flutter        escribe un mensaje del servicio
@@ -672,9 +672,9 @@ Los escenarios anteriores complementan los umbrales específicos definidos en la
 
 ## 9.1 Producción
 
-![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](../diagrams/C4Model/png/despliegue-prod.png)
+![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](../diagrams/LLD/png/despliegue-prod.png)
 
-> **Figura 12 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/despliegue-prod.png`](../diagrams/C4Model/png/despliegue-prod.png).
+> **Figura 12 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/despliegue-prod.png`](../diagrams/LLD/png/despliegue-prod.png).
 
 ```text
 Web / Mobile Users → DNS + TLS + balanceador → NGINX Ingress / API Gateway (2 réplicas)
@@ -853,7 +853,7 @@ GitHub / Organización MANI
     ├── architecture/   SAD.md, SDD.md, ModeloDatos.md, workspace.dsl, TECH_RADAR.md
     ├── adr/
     ├── governance/     gobierno, políticas DevOps e infraestructura
-    ├── diagrams/       ALTO_NIVEL (DHL) y C4Model (vistas exportadas)
+    ├── diagrams/       HLD (DHL) y LLD (vistas exportadas)
     └── wiki/           navegación y reglas derivadas
 ```
 
@@ -1002,6 +1002,6 @@ Una versión puede promoverse a producción únicamente si:
 # 20. Referencias
 
 - ISO/IEC 25010:2023, *Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model*.
-- C4 Model, vistas de contexto, contenedores, componentes y código. Modelo del proyecto en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl).
+- C4 Model, vistas de contexto, contenedores, componentes y código. Modelo del proyecto en [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
 - OpenAPI para contratos HTTP.
 - OWASP para controles de seguridad de aplicaciones y APIs.

@@ -105,7 +105,7 @@ La decisión queda registrada.
 | Diseño detallado | SDD |
 | Modelo de datos / DDL / DD | Modelo de Datos |
 | Decisiones técnicas | ADR |
-| C4 | `diagrams/C4Model/workspace.dsl` |
+| C4 | `diagrams/LLD/workspace.dsl` |
 | Tecnologías vigentes | `TECH_RADAR.md` |
 | Gobierno y proceso | Este documento |
 | DevOps y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
@@ -123,7 +123,7 @@ Documentación técnica versionable:
 - modelo de datos;
 - ADR;
 - diagramas;
-- `diagrams/C4Model/workspace.dsl`;
+- `diagrams/LLD/workspace.dsl`;
 - políticas DevOps;
 - infraestructura;
 - README técnico.

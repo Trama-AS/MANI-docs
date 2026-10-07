@@ -5,7 +5,7 @@
  * §8 multi-tenancy, §15 analítica) y SDD.md (§4 vistas C4, §9 despliegue, §10 ambientes).
  *
  * Este archivo es la fuente de los diagramas C4 del proyecto. El SDD referencia sus vistas.
- * Los diagramas de alto nivel (DHL) e infraestructura ilustrativa viven en diagrams/ALTO_NIVEL/
+ * Los diagramas de alto nivel (DHL) e infraestructura ilustrativa viven en diagrams/HLD/
  * y los referencia el SAD.
  *
  * Vistas definidas:

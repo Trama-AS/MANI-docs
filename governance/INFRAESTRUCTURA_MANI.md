@@ -464,6 +464,14 @@ Prohibiciones:
 - secrets dentro de imágenes;
 - reutilizar claves productivas en ambientes inferiores.
 
+## Secretos de CI
+
+Los secretos que usan los pipelines se guardan como GitHub Actions secrets del repositorio o del environment, nunca en archivos versionados.
+
+| Repositorio | Secreto | Uso | Estado al 7 oct 2026 |
+|---|---|---|---|
+| MANI-Node | `SONAR_TOKEN` | análisis de SonarCloud del workflow `Quality Gate` (CFG-41) | **pendiente de crear** por DevOps |
+
 ---
 
 # 18. Red y TLS
@@ -598,6 +606,18 @@ DEV → TEST/QA → PROD
 Infraestructura no redefine los Quality Gates.
 
 La fuente de verdad para gates es `POLITICAS_DEVOPS_HERRAMIENTAS.md`.
+
+## 24.1 Estado del análisis SonarCloud por repositorio
+
+Esta tabla registra solo el estado de la configuración, no los umbrales: los umbrales viven en `POLITICAS_DEVOPS_HERRAMIENTAS.md` §14.1 y ADR-0005.
+
+Un gate se considera **vinculante** solo cuando su check es obligatorio en un ruleset activo de GitHub y existe evidencia de un PR bloqueado. Mientras eso no ocurra, el estado es *preparado* o *activo sin bloqueo* (Políticas §6.2).
+
+| Repositorio | Proyecto SonarCloud | Configuración versionada | Check obligatorio en ruleset | Estado al 7 oct 2026 |
+|---|---|---|---|---|
+| MANI-Node | `Trama-AS_MANI-Node` (organización `trama-as`), **por crear** | `sonar-project.properties` y script `test:coverage` (etapa 1, en revisión en [MANI-Node#16](https://github.com/Trama-AS/MANI-Node/pull/16), sin fusionar); workflow `quality-gate.yml` preparado sin PR (etapa 2) | no; `develop` y `main` sin ruleset ni protección | **preparado, no activo** (CFG-41, SCRUM-1116) |
+
+Para MANI-Node, la activación requiere, en orden: crear el proyecto con el análisis automático desactivado, asociar el Quality Gate y fijar el *new code baseline*, crear `SONAR_TOKEN`, fusionar el workflow, obtener un primer análisis en `develop` y agregar `Sonar Quality Gate` como check obligatorio en el ruleset de `develop` y `main`.
 
 ---
 

@@ -268,6 +268,7 @@ MANI-Docs/
 ├── architecture/
 │   ├── SAD.md
 │   ├── SDD.md
+│   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
 │   └── TECH_RADAR.md
 ├── adr/
@@ -294,6 +295,7 @@ MANI-Docs/
 | Backlog | [`product/BACKLOG_MANI.md`](product/BACKLOG_MANI.md) |
 | Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
+| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
 | Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](adr/) |
 | Modelo C4 | [`diagrams/C4Model/workspace.dsl`](diagrams/C4Model/workspace.dsl) |

@@ -14,15 +14,15 @@
  *   3. contenedores  — C4 Nivel 2, Containers
  *   4. componentes   — C4 Nivel 3, un diagrama por servicio de negocio
  *   5. dinamico      — Vistas dinámicas: los flujos que la estructura estática no explica
- *   6. despliegue    — Vistas de despliegue de PROD y de TEST/QA
+ *   6. despliegue    — Vista de despliegue de producción
  *
  * Con esto el modelo cubre las cuatro vistas que Structurizr sí puede describir —panorama,
  * estática (contexto, contenedores, componentes), dinámica y de despliegue— y ninguna de ellas
  * queda solo en texto.
  *
  * El Nivel 4 (Code) no se modela aquí: Structurizr no describe clases. Se mantiene en SDD §4.4.
- * Los ambientes Local y DEV tampoco se modelan: su topología es la de TEST/QA con datos
- * sintéticos (SDD §10) y un nodo más no añadiría información arquitectónica.
+ * Tampoco se modela un nodo por ambiente: Local, DEV y TEST/QA comparten la topología de
+ * producción y solo cambian escalado, secretos y datos (SDD §10).
  *
  * Decisiones abiertas que este modelo NO fija: proveedor y topología del clúster Kubernetes
  * (INFRA-01 e INFRA-02 de INFRAESTRUCTURA_MANI.md §25). Los nodos de despliegue se nombran
@@ -51,56 +51,85 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
         mani = softwareSystem "MANI" "Formaliza el ciclo Solicitud → Cotización → Ejecución → Calificación → Cierre con aislamiento estricto por tenant." {
 
-            flutter = container "Aplicación cliente" "Presentación y lógica de interacción. No contiene reglas de negocio centrales (SAD §4.1)." "Flutter / Dart — Web y móvil"
+            group "Cliente y entrada" {
 
-            gateway = container "API Gateway" "Entrada única de toda API operacional. Routing, TLS y políticas transversales; valida el token. No implementa reglas de dominio." "NGINX"
+                flutter = container "Aplicación cliente" "Presentación y lógica de interacción. Una sola base de código para web y móvil. No contiene reglas de negocio centrales (SAD §4.1)." "Flutter / Dart — Web y móvil"
 
-            rules = container "Rules Service" "Reglas configurables por tenant, ranking de aliados y validación contra tarifario (RF-02, RF-13, RF-16, RF-22). Lee la configuración de persistencia, no del código." "Java" {
-                rulesApi = component "Rules REST Controller" "Expone la evaluación de reglas y el ranking." "Java"
-                rulesApp = component "Rules Application Service" "Orquesta evaluación y ranking." "Java"
-                rulesFactory = component "Rule Strategy Factory" "Resuelve la estrategia según el tipo de regla." "Java"
-                rulesRanking = component "Ranking Strategy" "Ordena aliados según la regla del tenant (RF-13)." "Java"
-                rulesTariff = component "Tariff Validation Strategy" "Valida la cotización contra el tarifario de referencia (RF-16, RF-22)." "Java"
-                rulesKyc = component "KYC Policy Strategy" "Evalúa los documentos requeridos por el tenant." "Java"
-                rulesPort = component "Rule Repository Port" "Contrato de acceso a reglas." "Java — interfaz"
-                rulesAdapter = component "Supabase Adapter" "Implementa el puerto contra PostgreSQL." "Java"
+                gateway = container "API Gateway" "Entrada única de toda API operacional: enrutamiento, terminación TLS, control de acceso, validación del token y rate limiting. La aplicación no necesita saber dónde vive cada servicio. No implementa reglas de dominio." "NGINX"
             }
 
-            dispatch = container "Dispatch Service" "Coordinación operacional de solicitudes, aceptación/rechazo, idempotencia y exclusión concurrente (RF-12, RF-14, RNF-03, RNF-05)." ".NET" {
-                dispatchApi = component "Dispatch API" "Expone creación de solicitud y aceptación/rechazo." ".NET"
-                dispatchApp = component "Dispatch Application Service" "Casos de uso de despacho." ".NET"
-                dispatchSelector = component "Candidate Selector" "Obtiene candidatos válidos para la solicitud." ".NET"
-                dispatchCoordinator = component "Assignment Coordinator" "Coordina la asignación de la solicitud." ".NET"
-                dispatchGuard = component "Concurrency Guard" "Actualización condicional atómica: la primera aceptación válida gana; las siguientes reciben 409 Conflict." ".NET"
-                dispatchAudit = component "Audit Component" "Audita cambios de estado del despacho (RNF-04)." ".NET"
-                dispatchPort = component "Dispatch Repository Port" "Contrato de persistencia del despacho." ".NET — interfaz"
-                dispatchAdapter = component "PostgreSQL Adapter" "Implementa el puerto contra PostgreSQL." ".NET"
+            // Java decide. El motor de reglas es lo único que vive aquí: no es un backend general.
+            group "MANI-Rules-Java — decide" {
+
+                rules = container "Rules Service" "Reglas configurables por tenant, ranking de aliados, elegibilidad, requisitos KYC y validación contra tarifario (RF-02, RF-13, RF-16, RF-22). Lee la configuración de persistencia, no del código." "Java" {
+                    rulesApi = component "Rules REST Controller" "Expone la evaluación de reglas y el ranking." "Java"
+                    rulesApp = component "Rules Application Service" "Orquesta evaluación y ranking." "Java"
+                    rulesFactory = component "Rule Strategy Factory" "Resuelve la estrategia según el tipo de regla." "Java"
+                    rulesRanking = component "Ranking Strategy" "Ordena aliados según la regla del tenant (RF-13)." "Java"
+                    rulesTariff = component "Tariff Validation Strategy" "Valida la cotización contra el tarifario de referencia (RF-16, RF-22)." "Java"
+                    rulesKyc = component "KYC Policy Strategy" "Evalúa los documentos requeridos por el tenant." "Java"
+                    rulesPort = component "Rule Repository Port" "Contrato de acceso a reglas." "Java — interfaz"
+                    rulesAdapter = component "Supabase Adapter" "Implementa el puerto contra PostgreSQL." "Java"
+                }
             }
 
-            core = container "Core Services" "Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cotización, ejecución, calificación, comunicación y reportes. Puede dividirse internamente por dominios sin convertir cada CRUD en un servicio (SAD §7.3)." "Node.js" {
-                coreApi = component "Core API" "Expone los casos de uso de los dominios de Core." "Node.js"
-                coreUsers = component "Users / Tenants Component" "Tenants, usuarios, roles y acceso (RF-01, RF-03, RF-04)." "Node.js"
-                coreKyc = component "KYC Orchestrator" "Registro y verificación de aliados y documentos (RF-05, RF-06)." "Node.js"
-                coreCatalog = component "Catalog Component" "Categorías, clientes, sitios y asociaciones (RF-08..RF-11)." "Node.js"
-                coreNotif = component "Notification Component" "Mensajería del servicio y notificaciones (RF-20, RF-21)." "Node.js"
-                coreReport = component "Operational Reporting" "Reportes operativos y de tarifario (RF-23)." "Node.js"
-                coreAdapters = component "External Adapters" "Encapsula proveedores externos: push, Storage, pagos." "Node.js"
-                corePort = component "Repositories" "Contratos de persistencia de los dominios de Core." "Node.js — interfaces"
+            // .NET asigna. Despacho y exclusión concurrente, nada más.
+            group "MANI-Dispatch-DotNet — asigna" {
+
+                dispatch = container "Dispatch Service" "Coordinación operacional de solicitudes, selección de aliados válidos, aceptación/rechazo, estados de asignación, idempotencia y exclusión concurrente (RF-12, RF-14, RNF-03, RNF-05). Consume Rules antes de asignar." ".NET" {
+                    dispatchApi = component "Dispatch API" "Expone creación de solicitud y aceptación/rechazo." ".NET"
+                    dispatchApp = component "Dispatch Application Service" "Casos de uso de despacho." ".NET"
+                    dispatchSelector = component "Candidate Selector" "Obtiene candidatos válidos para la solicitud." ".NET"
+                    dispatchCoordinator = component "Assignment Coordinator" "Coordina la asignación de la solicitud." ".NET"
+                    dispatchGuard = component "Concurrency Guard" "Actualización condicional atómica: la primera aceptación válida gana; las siguientes reciben 409 Conflict." ".NET"
+                    dispatchAudit = component "Audit Component" "Audita cambios de estado del despacho (RNF-04)." ".NET"
+                    dispatchPort = component "Dispatch Repository Port" "Contrato de persistencia del despacho." ".NET — interfaz"
+                    dispatchAdapter = component "PostgreSQL Adapter" "Implementa el puerto contra PostgreSQL." ".NET"
+                }
             }
 
-            availability = container "Availability Service" "Cobertura del aliado, disponibilidad, horarios, zonas y elegibilidad por categoría y zona (RF-07, RF-12, RNF-07)." "Node.js" {
-                availApi = component "Availability API" "Expone consulta de cobertura y elegibilidad." "Node.js"
-                availApp = component "Availability Application Service" "Casos de uso de disponibilidad." "Node.js"
-                availSchedule = component "Schedule Rules" "Horarios y solapamientos. La lógica pertenece al servicio, no al cliente." "Node.js"
-                availQuery = component "Availability Query" "Elegibilidad por categoría y coincidencia exacta de zona (REST-01)." "Node.js"
-                availPort = component "Availability Repository" "Contrato de persistencia de disponibilidad." "Node.js — interfaz"
+            // Node opera. Núcleo funcional de la plataforma: lo transversal y lo operativo.
+            group "MANI-Core-Node — opera" {
+
+                core = container "Core Services" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
+                    coreApi = component "Core API" "Expone los casos de uso de los dominios de Core." "Node.js"
+                    coreUsers = component "Users / Tenants Component" "Tenants, usuarios, roles y acceso (RF-01, RF-03, RF-04)." "Node.js"
+                    coreKyc = component "KYC Orchestrator" "Registro y verificación de aliados y documentos (RF-05, RF-06)." "Node.js"
+                    coreCatalog = component "Catalog Component" "Categorías, clientes, sitios y asociaciones (RF-08..RF-11)." "Node.js"
+                    coreNotif = component "Notification Component" "Mensajería del servicio y notificaciones (RF-20, RF-21)." "Node.js"
+                    coreReport = component "Operational Reporting" "Reportes operativos y de tarifario (RF-23)." "Node.js"
+                    coreAdapters = component "External Adapters" "Encapsula proveedores externos: push, Storage, pagos. Durante el desarrollo pueden ser implementaciones mock sin tocar la lógica de negocio." "Node.js"
+                    corePort = component "Repositories" "Contratos de persistencia de los dominios de Core." "Node.js — interfaces"
+                }
+
+                availability = container "Availability Service" "Cobertura del aliado, disponibilidad, horarios, zonas y elegibilidad por categoría y zona (RF-07, RF-12, RNF-07). Mismo bloque Node, servicio aparte porque Dispatch lo consulta en caliente." "Node.js" {
+                    availApi = component "Availability API" "Expone consulta de cobertura y elegibilidad." "Node.js"
+                    availApp = component "Availability Application Service" "Casos de uso de disponibilidad." "Node.js"
+                    availSchedule = component "Schedule Rules" "Horarios y solapamientos. La lógica pertenece al servicio, no al cliente." "Node.js"
+                    availQuery = component "Availability Query" "Elegibilidad por categoría y coincidencia exacta de zona (REST-01)." "Node.js"
+                    availPort = component "Availability Repository" "Contrato de persistencia de disponibilidad." "Node.js — interfaz"
+                }
             }
 
-            auth = container "Supabase Auth" "Autenticación de usuarios y emisión del JWT firmado del que se obtiene el tenant_id (ADR-0018)." "Supabase"
-            db = container "PostgreSQL" "Persistencia operacional separada por esquemas de dominio, con Row-Level Security por tenant (ADR-0012)." "Supabase — PostgreSQL + RLS" "Database"
-            storage = container "Supabase Storage" "Documentos KYC en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
-            realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
-            etl = container "CDC / ELT" "Carga incremental del OLTP hacia el Data Warehouse. No participa en transacciones operacionales." "Proceso desacoplado"
+            // Persistencia separada por contexto funcional: cada servicio es dueño de sus datos
+            // (ADR-0012, SAD ADR-004). Ningún servicio lee las tablas privadas de otro.
+            group "Supabase — datos y servicios administrados" {
+
+                auth = container "Supabase Auth" "Autenticación de usuarios y emisión del JWT firmado del que se obtiene el tenant_id (ADR-0018)." "Supabase"
+
+                dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de elegibilidad y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, comunicación y reportes. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbAvailability = container "Supabase Availability" "Cobertura, horarios y zonas del aliado. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+
+                storage = container "Supabase Storage" "Documentos KYC y multimedia en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
+                realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
+            }
+
+            group "Analítica" {
+
+                etl = container "CDC / ELT" "Carga incremental del OLTP hacia el Data Warehouse. No participa en transacciones operacionales." "Proceso desacoplado"
+            }
         }
 
         // ---------- Relaciones de contexto (SAD §5) ----------
@@ -131,10 +160,10 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         gateway -> availability "Enruta tras validar el token" "HTTPS / JSON"
 
         core -> auth "Integra identidad y acceso"
-        rules -> db "Lee reglas y tarifarios del tenant" "SQL"
-        dispatch -> db "Persiste solicitudes, asignaciones y auditoría" "SQL"
-        core -> db "Persiste tenants, aliados, clientes, catálogo, cotización y comunicación" "SQL"
-        availability -> db "Lee y persiste cobertura y disponibilidad" "SQL"
+        rules -> dbRules "Lee reglas, tarifarios y criterios de elegibilidad del tenant" "SQL"
+        dispatch -> dbDispatch "Persiste solicitudes, asignaciones, exclusiones y auditoría" "SQL"
+        core -> dbCore "Persiste tenants, aliados, clientes, catálogo, cotización y comunicación" "SQL"
+        availability -> dbAvailability "Lee y persiste cobertura y disponibilidad" "SQL"
 
         core -> storage "Almacena y sirve documentos KYC aislados por tenant y aliado"
         core -> realtime "Publica eventos de mensajería del servicio"
@@ -143,7 +172,10 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
         flutter -> realtime "Recibe mensajes en tiempo real mientras está conectado"
 
-        db -> etl "Entrega carga incremental"
+        dbRules -> etl "Entrega carga incremental"
+        dbDispatch -> etl "Entrega carga incremental"
+        dbCore -> etl "Entrega carga incremental"
+        dbAvailability -> etl "Entrega carga incremental"
         etl -> dwh "Alimenta el Data Warehouse"
 
         gateway -> observabilidad "Métricas, logs y trazas"
@@ -162,7 +194,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         rulesFactory -> rulesKyc "Instancia"
         rulesApp -> rulesPort "Consulta reglas del tenant"
         rulesPort -> rulesAdapter "Implementado por"
-        rulesAdapter -> db "Lee" "SQL"
+        rulesAdapter -> dbRules "Lee" "SQL"
 
         gateway -> dispatchApi "Enruta"
         dispatchApi -> dispatchApp "Invoca"
@@ -173,7 +205,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         dispatchApp -> dispatchPort "Persiste"
         dispatchGuard -> dispatchPort "Actualización condicional atómica del estado de la asignación"
         dispatchPort -> dispatchAdapter "Implementado por"
-        dispatchAdapter -> db "Lee y escribe" "SQL"
+        dispatchAdapter -> dbDispatch "Lee y escribe" "SQL"
         dispatchSelector -> availApi "Consulta elegibilidad por categoría y zona" "HTTPS / JSON"
         dispatchApp -> rulesApi "Pide el orden del listado de aliados" "HTTPS / JSON"
 
@@ -190,7 +222,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         coreCatalog -> corePort "Persiste"
         coreNotif -> corePort "Persiste"
         coreReport -> corePort "Consulta"
-        corePort -> db "Lee y escribe" "SQL"
+        corePort -> dbCore "Lee y escribe" "SQL"
         coreAdapters -> storage "Lee y escribe documentos KYC"
         coreAdapters -> realtime "Publica eventos"
         coreAdapters -> push "Envía notificaciones"
@@ -202,7 +234,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         availApp -> availSchedule "Evalúa horarios y solapamientos"
         availApp -> availQuery "Resuelve elegibilidad"
         availApp -> availPort "Persiste y consulta"
-        availPort -> db "Lee y escribe" "SQL"
+        availPort -> dbAvailability "Lee y escribe" "SQL"
 
         // ---------- Llamadas entre servicios ----------
         //
@@ -211,7 +243,15 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         // declararlas también aquí es una relación duplicada y el modelo no valida.
         // Las vistas dinámicas de nivel 2 referencian esas relaciones derivadas.
 
-        // ---------- Despliegue (SDD §9.1 y §10) ----------
+        // ---------- Despliegue de producción (SDD §9.1, §10 y §11) ----------
+        //
+        // Se modela un solo ambiente. Local, DEV y TEST/QA comparten esta topología y cambian
+        // únicamente escalado, secretos y datos (SDD §10): un nodo por ambiente repetiría la
+        // misma información sin añadir ninguna decisión arquitectónica.
+        //
+        // La vista muestra además de dónde sale lo que se ejecuta —el pipeline promueve la
+        // misma imagen validada— y quién lo vigila, porque ambas cosas son parte del despliegue
+        // y no de la estructura lógica.
 
         produccion = deploymentEnvironment "PROD" {
 
@@ -221,100 +261,85 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 }
             }
 
-            borde = deploymentNode "DNS + TLS" "Resolución y terminación TLS del tráfico externo." {
-                deploymentNode "NGINX Ingress / API Gateway" "Entrada única de la plataforma." "NGINX" {
-                    containerInstance gateway
+            borde = deploymentNode "Borde — DNS, TLS y balanceo" "Resolución de nombres, terminación TLS y reparto del tráfico externo." {
+                balanceador = infrastructureNode "Balanceador" "Reparte el tráfico HTTPS entre las réplicas del Gateway." "Balanceador de carga"
+
+                nodoGateway = deploymentNode "NGINX Ingress / API Gateway" "Entrada única: enrutamiento, control de acceso, validación del token y rate limiting." "NGINX" 2 {
+                    gatewayProd = containerInstance gateway
                 }
+
+                balanceador -> gatewayProd "Reparte el tráfico entrante" "HTTPS"
             }
 
             cluster = deploymentNode "Clúster Kubernetes — producción" "Orquestador requerido por el proyecto (PROY-08). Proveedor y topología pendientes: INFRA-01 e INFRA-02." "Kubernetes" {
-                deploymentNode "Namespace de servicios" "Contenedores inmutables, readiness y liveness probes, requests/limits y HPA para servicios sensibles a carga." "" {
-                    deploymentNode "Rules Service" "Mínimo 2 réplicas en producción." "Pod — 2..6 réplicas" {
-                        containerInstance rules
+
+                namespaceServicios = deploymentNode "Namespace de servicios" "Contenedores inmutables, readiness y liveness probes, requests/limits y HPA para servicios sensibles a carga." "" {
+
+                    deploymentNode "Rules Service — decide" "Motor de reglas. Mínimo 2 réplicas; HPA hasta 6." "Pod — Java" 2 {
+                        rulesProd = containerInstance rules
                     }
-                    deploymentNode "Dispatch Service" "Mínimo 2 réplicas en producción." "Pod — 2..6 réplicas" {
-                        containerInstance dispatch
+                    deploymentNode "Dispatch Service — asigna" "Despacho y exclusión concurrente. Mínimo 2 réplicas; HPA hasta 6. La garantía de no doble asignación es de la base, no del número de réplicas." "Pod — .NET" 2 {
+                        dispatchProd = containerInstance dispatch
                     }
-                    deploymentNode "Core Services" "Mínimo 2 réplicas en producción." "Pod — 2..6 réplicas" {
-                        containerInstance core
+                    deploymentNode "Core Services — opera" "Núcleo funcional de la plataforma. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
+                        coreProd = containerInstance core
                     }
-                    deploymentNode "Availability Service" "Mínimo 2 réplicas en producción." "Pod — 2..6 réplicas" {
-                        containerInstance availability
+                    deploymentNode "Availability Service — opera" "Cobertura y disponibilidad. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
+                        availProd = containerInstance availability
                     }
                 }
+
+                secretos = infrastructureNode "Gestor de secretos" "Credenciales y configuración viven fuera de la imagen: no se hornean en el contenedor ni se versionan en el repositorio." "Secret manager"
+                secretos -> namespaceServicios "Inyecta credenciales y configuración en tiempo de arranque"
             }
 
             plataformaDatos = deploymentNode "Supabase — proyecto productivo" "Plataforma administrada. Bases no accesibles desde Internet pública salvo controles explícitos; acceso administrativo con privilegio mínimo." "Supabase" {
-                deploymentNode "PostgreSQL" "Esquemas por dominio con RLS por tenant." "PostgreSQL" {
-                    containerInstance db
+
+                deploymentNode "PostgreSQL — reglas" "Datos del motor de reglas. RLS por tenant." "PostgreSQL + RLS" {
+                    containerInstance dbRules
                 }
-                deploymentNode "Auth" "" "Supabase Auth" {
+                deploymentNode "PostgreSQL — despacho" "Datos de asignación y auditoría. RLS por tenant." "PostgreSQL + RLS" {
+                    containerInstance dbDispatch
+                }
+                deploymentNode "PostgreSQL — core" "Datos funcionales de la plataforma. RLS por tenant." "PostgreSQL + RLS" {
+                    containerInstance dbCore
+                }
+                deploymentNode "PostgreSQL — disponibilidad" "Cobertura, horarios y zonas. RLS por tenant." "PostgreSQL + RLS" {
+                    containerInstance dbAvailability
+                }
+                deploymentNode "Auth" "Emisión y validación del JWT del que se obtiene el tenant_id." "Supabase Auth" {
                     containerInstance auth
                 }
-                deploymentNode "Storage" "Bucket privado de documentos KYC." "Supabase Storage" {
+                deploymentNode "Storage" "Bucket privado de documentos KYC y multimedia." "Supabase Storage" {
                     containerInstance storage
                 }
-                deploymentNode "Realtime" "" "Supabase Realtime" {
+                deploymentNode "Realtime" "Transporte de eventos de mensajería." "Supabase Realtime" {
                     containerInstance realtime
                 }
             }
+
+            cicd = deploymentNode "GitHub Actions — CI/CD" "De dónde sale lo que corre en el clúster." "GitHub Actions" {
+                pipeline = infrastructureNode "Pipeline de calidad y seguridad" "Pruebas unitarias, de integración y de contrato, SonarQube (SAST), build, escaneo de dependencias e imagen, Newman y OWASP ZAP. Un artefacto que no pasa los gates no se reconstruye para producción." "GitHub Actions"
+                registro = infrastructureNode "Registro de imágenes" "Imágenes inmutables versionadas. A producción se promueve exactamente la imagen ya verificada en TEST/QA (SDD §11)." "Container registry"
+
+                pipeline -> registro "Publica la imagen validada"
+            }
+
+            registro -> cluster "Despliega la imagen promovida" "kubectl / GitOps"
+
+            observabilidadProd = deploymentNode "Plataforma de observabilidad" "Supervisa disponibilidad, tiempos de respuesta, errores y consumo de recursos." "" {
+                prometheus = infrastructureNode "Prometheus" "Recolecta métricas del Gateway y de los servicios." "Prometheus"
+                grafana = infrastructureNode "Grafana" "Dashboards y alertas sobre las métricas recolectadas." "Grafana"
+
+                prometheus -> grafana "Alimenta dashboards y alertas"
+            }
+
+            prometheus -> namespaceServicios "Recolecta métricas de los pods" "HTTP /metrics"
+            prometheus -> nodoGateway "Recolecta métricas del Gateway" "HTTP /metrics"
 
             analitica = deploymentNode "Plataforma analítica" "Desacoplada del OLTP; no participa en transacciones operacionales." "" {
-                deploymentNode "Proceso CDC / ELT" "Carga incremental." "" {
+                deploymentNode "Proceso CDC / ELT" "Carga incremental hacia el Data Warehouse." "" {
                     containerInstance etl
-                }
-            }
-        }
-
-        // ---------- Despliegue TEST/QA (SDD §10) ----------
-        //
-        // Misma topología que PROD con la imagen ya validada: lo que cambia es el escalado,
-        // los secretos y los datos. Base e instancia separadas de producción; dataset
-        // controlado y anonimizado; nunca datos KYC reales (SDD §10, reglas).
-
-        pruebas = deploymentEnvironment "TEST/QA" {
-
-            accesoQa = deploymentNode "Acceso controlado" "Equipo de desarrollo y QA. El ambiente no se expone públicamente." {
-                deploymentNode "Estación de pruebas" "" "Navegador / app móvil" {
-                    containerInstance flutter
-                }
-            }
-
-            bordeQa = deploymentNode "DNS + TLS — QA" "Resolución y terminación TLS del ambiente de pruebas." {
-                deploymentNode "NGINX Ingress / API Gateway" "Misma configuración que PROD; parámetros externos distintos." "NGINX" {
-                    containerInstance gateway
-                }
-            }
-
-            clusterQa = deploymentNode "Clúster Kubernetes — TEST/QA" "Aislamiento lógico del ambiente. Se promueve la misma imagen de contenedor validada." "Kubernetes" {
-                deploymentNode "Namespace de pruebas" "Mismas probes y límites que producción; escalado reducido." "" {
-                    deploymentNode "Rules Service" "Una réplica: el ambiente valida funcionalidad, no carga." "Pod — 1 réplica" {
-                        containerInstance rules
-                    }
-                    deploymentNode "Dispatch Service" "Una réplica. Las pruebas de concurrencia atacan la actualización condicional, no el número de réplicas." "Pod — 1 réplica" {
-                        containerInstance dispatch
-                    }
-                    deploymentNode "Core Services" "Una réplica." "Pod — 1 réplica" {
-                        containerInstance core
-                    }
-                    deploymentNode "Availability Service" "Una réplica." "Pod — 1 réplica" {
-                        containerInstance availability
-                    }
-                }
-            }
-
-            datosQa = deploymentNode "Supabase — proyecto de pruebas" "Instancia y base separadas de producción. No comparte bases, secretos ni credenciales con PROD." "Supabase" {
-                deploymentNode "PostgreSQL" "Dataset controlado y anonimizado, con los mismos esquemas y RLS por tenant." "PostgreSQL" {
-                    containerInstance db
-                }
-                deploymentNode "Auth" "" "Supabase Auth" {
-                    containerInstance auth
-                }
-                deploymentNode "Storage" "Bucket privado con documentos sintéticos: no se copian KYC reales." "Supabase Storage" {
-                    containerInstance storage
-                }
-                deploymentNode "Realtime" "" "Supabase Realtime" {
-                    containerInstance realtime
                 }
             }
         }
@@ -377,8 +402,10 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             gateway -> dispatch "Enruta tras validar el token"
             dispatch -> availability "Pide los aliados elegibles por categoría y zona (RF-12)"
             dispatch -> rules "Pide el orden del listado según la regla del tenant (RF-13)"
-            dispatch -> db "Persiste la solicitud y los candidatos notificados"
-            autolayout lr
+            dispatch -> dbDispatch "Persiste la solicitud y los candidatos notificados"
+            properties {
+                "plantuml.sequenceDiagram" "true"
+            }
         }
 
         dynamic dispatch "dinamico-aceptacion" "Exclusión concurrente en la aceptación (RF-14, RNF-05). Dos aliados aceptan a la vez: la actualización condicional atómica deja pasar la primera y la segunda recibe 409 Conflict. Fuente: SAD §7.2, ADR-0016, ADR-0021." {
@@ -388,9 +415,11 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             dispatchCoordinator -> dispatchGuard "Delega la exclusión concurrente"
             dispatchGuard -> dispatchPort "Actualización condicional: solo si la asignación sigue libre"
             dispatchPort -> dispatchAdapter "Implementado por"
-            dispatchAdapter -> db "UPDATE condicionado al estado previo; la segunda aceptación no afecta filas"
+            dispatchAdapter -> dbDispatch "UPDATE condicionado al estado previo; la segunda aceptación no afecta filas"
             dispatchApp -> dispatchAudit "Audita el cambio de estado y el resultado (RNF-04)"
-            autolayout lr
+            properties {
+                "plantuml.sequenceDiagram" "true"
+            }
         }
 
         dynamic mani "dinamico-cotizacion" "Cotización del aliado y alerta contra el tarifario de referencia (RF-15, RF-16, RF-22). Core es dueño de la cotización; Reglas es dueño del tarifario. Fuente: SAD §7.1 y §7.3." {
@@ -398,9 +427,11 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             flutter -> gateway "Envía la cotización"
             gateway -> core "Enruta tras validar el token"
             core -> rules "Pide validar el valor contra el rango del tarifario (RF-16)"
-            rules -> db "Lee los rangos mínimo, típico y máximo del tenant (RF-22)"
-            core -> db "Persiste la cotización con el resultado de la validación"
-            autolayout lr
+            rules -> dbRules "Lee los rangos mínimo, típico y máximo del tenant (RF-22)"
+            core -> dbCore "Persiste la cotización con el resultado de la validación"
+            properties {
+                "plantuml.sequenceDiagram" "true"
+            }
         }
 
         dynamic mani "dinamico-kyc" "Carga y verificación de documentos KYC (RF-05, RF-06). Los documentos viven en bucket privado bajo tenant_id/aliado_id/documento; la aprobación es del administrador del tenant. Fuente: ADR-0013, SAD §7.3." {
@@ -408,29 +439,28 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             flutter -> gateway "Envía los documentos"
             gateway -> core "Enruta tras validar el token"
             core -> storage "Guarda el documento en el bucket privado, aislado por tenant y aliado"
-            core -> db "Registra el documento y deja al aliado en verificación"
+            core -> dbCore "Registra el documento y deja al aliado en verificación"
             adminTenant -> flutter "Revisa la documentación y aprueba o rechaza al aliado (RF-06)"
-            autolayout lr
+            properties {
+                "plantuml.sequenceDiagram" "true"
+            }
         }
 
         dynamic mani "dinamico-mensajeria" "Mensajería del servicio con notificación de respaldo (RF-20, RF-21). Realtime transporta mientras el destinatario está conectado; si no lo está, se entrega por push. Fuente: ADR-0017, SAD §7.3." {
             cliente -> flutter "Escribe un mensaje asociado al servicio"
             flutter -> gateway "Envía el mensaje"
             gateway -> core "Enruta tras validar el token"
-            core -> db "Persiste el mensaje: la conversación no vive solo en el transporte"
+            core -> dbCore "Persiste el mensaje: la conversación no vive solo en el transporte"
             core -> realtime "Publica el evento de mensajería"
             flutter -> realtime "El destinatario conectado lo recibe casi en tiempo real"
             core -> push "Si el destinatario no está conectado, lo notifica por push (RF-21)"
-            autolayout lr
+            properties {
+                "plantuml.sequenceDiagram" "true"
+            }
         }
 
         // ---------- Vista 6 — Despliegue ----------
-        deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción. Fuente: SDD §9.1 y §10." {
-            include *
-            autolayout tb
-        }
-
-        deployment mani "TEST/QA" "despliegue-qa" "Vista de despliegue de TEST/QA: misma imagen validada, una réplica por servicio, instancia y base separadas de producción. Fuente: SDD §10." {
+        deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción: borde con balanceo, clúster Kubernetes con réplicas y secretos externos, Supabase por dominio, el pipeline que promueve la imagen y la observabilidad que la vigila. Fuente: SDD §9.1, §10 y §11." {
             include *
             autolayout tb
         }
@@ -462,6 +492,10 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
             element "Deployment Node" {
                 background #ffffff
+                color #000000
+            }
+            element "Infrastructure Node" {
+                background #e8eef7
                 color #000000
             }
         }

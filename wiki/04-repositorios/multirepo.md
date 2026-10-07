@@ -40,10 +40,10 @@ Verificado sobre `MANI-Flutter` el 2026-10-07 (`CFG-38`, SCRUM-1097):
 
 | Rama / PR | Commits fuera de `develop` | Dictamen |
 |---|---|---|
-| `feature/SCRUM-1060-registro-empresa-gateway` (#33) | 0 | Fusionada; se retira del remoto |
-| `feature/SCRUM-1061-auth-remote-gateway` (#34) | 0 | Fusionada; se retira del remoto |
-| `feature/SCRUM-1111-capa-http-gateway` (#33) | 0 | Fusionada; se retira del remoto |
-| `feature/SCRUM-1114-trazabilidad-jira-github` (#32) | 0 | Fusionada; se retira del remoto |
+| `feature/SCRUM-1060-registro-empresa-gateway` (#33) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| `feature/SCRUM-1061-auth-remote-gateway` (#34) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| `feature/SCRUM-1111-capa-http-gateway` (#33) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| `feature/SCRUM-1114-trazabilidad-jira-github` (#32) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
 | #11, #12, #13 (`develop` → `main` / `Feature-RegisterAndLogin`) | 0 | Sin trabajo pendiente; descartados |
 | #15 `feature/SCRUM-927-poc-cobertura-geografica` | 0 (parches equivalentes en `develop`) | Reemplazado por #16 |
 | #2 `feature/SCRUM-923-pipeline-pruebas-automatizadas` | 7 | Reemplazado por #4 (SCRUM-955), #21 (asignación en arquitectura limpia) y los workflows actuales |

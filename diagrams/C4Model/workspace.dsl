@@ -9,12 +9,20 @@
  * y los referencia el SAD.
  *
  * Vistas definidas:
- *   1. contexto      — C4 Nivel 1, System Context
- *   2. contenedores  — C4 Nivel 2, Containers
- *   3. componentes   — C4 Nivel 3, un diagrama por servicio de negocio
- *   4. despliegue    — Vista de despliegue de producción
+ *   1. panorama      — System Landscape: el panorama de sistemas alrededor de MANI
+ *   2. contexto      — C4 Nivel 1, System Context
+ *   3. contenedores  — C4 Nivel 2, Containers
+ *   4. componentes   — C4 Nivel 3, un diagrama por servicio de negocio
+ *   5. dinamico      — Vistas dinámicas: los flujos que la estructura estática no explica
+ *   6. despliegue    — Vistas de despliegue de PROD y de TEST/QA
+ *
+ * Con esto el modelo cubre las cuatro vistas que Structurizr sí puede describir —panorama,
+ * estática (contexto, contenedores, componentes), dinámica y de despliegue— y ninguna de ellas
+ * queda solo en texto.
  *
  * El Nivel 4 (Code) no se modela aquí: Structurizr no describe clases. Se mantiene en SDD §4.4.
+ * Los ambientes Local y DEV tampoco se modelan: su topología es la de TEST/QA con datos
+ * sintéticos (SDD §10) y un nodo más no añadiría información arquitectónica.
  *
  * Decisiones abiertas que este modelo NO fija: proveedor y topología del clúster Kubernetes
  * (INFRA-01 e INFRA-02 de INFRAESTRUCTURA_MANI.md §25). Los nodos de despliegue se nombran
@@ -163,6 +171,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         dispatchCoordinator -> dispatchGuard "Delega la exclusión concurrente"
         dispatchApp -> dispatchAudit "Registra cambios de estado"
         dispatchApp -> dispatchPort "Persiste"
+        dispatchGuard -> dispatchPort "Actualización condicional atómica del estado de la asignación"
         dispatchPort -> dispatchAdapter "Implementado por"
         dispatchAdapter -> db "Lee y escribe" "SQL"
         dispatchSelector -> availApi "Consulta elegibilidad por categoría y zona" "HTTPS / JSON"
@@ -186,6 +195,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         coreAdapters -> realtime "Publica eventos"
         coreAdapters -> push "Envía notificaciones"
         coreUsers -> auth "Integra identidad"
+        coreApi -> rulesApi "Valida la cotización contra el tarifario de referencia" "HTTPS / JSON"
 
         gateway -> availApi "Enruta"
         availApi -> availApp "Invoca"
@@ -193,6 +203,13 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         availApp -> availQuery "Resuelve elegibilidad"
         availApp -> availPort "Persiste y consulta"
         availPort -> db "Lee y escribe" "SQL"
+
+        // ---------- Llamadas entre servicios ----------
+        //
+        // Dispatch -> Availability, Dispatch -> Rules y Core -> Rules se declaran una sola vez,
+        // entre componentes (arriba). Structurizr las propaga solas al nivel de contenedor:
+        // declararlas también aquí es una relación duplicada y el modelo no valida.
+        // Las vistas dinámicas de nivel 2 referencian esas relaciones derivadas.
 
         // ---------- Despliegue (SDD §9.1 y §10) ----------
 
@@ -248,23 +265,86 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 }
             }
         }
+
+        // ---------- Despliegue TEST/QA (SDD §10) ----------
+        //
+        // Misma topología que PROD con la imagen ya validada: lo que cambia es el escalado,
+        // los secretos y los datos. Base e instancia separadas de producción; dataset
+        // controlado y anonimizado; nunca datos KYC reales (SDD §10, reglas).
+
+        pruebas = deploymentEnvironment "TEST/QA" {
+
+            accesoQa = deploymentNode "Acceso controlado" "Equipo de desarrollo y QA. El ambiente no se expone públicamente." {
+                deploymentNode "Estación de pruebas" "" "Navegador / app móvil" {
+                    containerInstance flutter
+                }
+            }
+
+            bordeQa = deploymentNode "DNS + TLS — QA" "Resolución y terminación TLS del ambiente de pruebas." {
+                deploymentNode "NGINX Ingress / API Gateway" "Misma configuración que PROD; parámetros externos distintos." "NGINX" {
+                    containerInstance gateway
+                }
+            }
+
+            clusterQa = deploymentNode "Clúster Kubernetes — TEST/QA" "Aislamiento lógico del ambiente. Se promueve la misma imagen de contenedor validada." "Kubernetes" {
+                deploymentNode "Namespace de pruebas" "Mismas probes y límites que producción; escalado reducido." "" {
+                    deploymentNode "Rules Service" "Una réplica: el ambiente valida funcionalidad, no carga." "Pod — 1 réplica" {
+                        containerInstance rules
+                    }
+                    deploymentNode "Dispatch Service" "Una réplica. Las pruebas de concurrencia atacan la actualización condicional, no el número de réplicas." "Pod — 1 réplica" {
+                        containerInstance dispatch
+                    }
+                    deploymentNode "Core Services" "Una réplica." "Pod — 1 réplica" {
+                        containerInstance core
+                    }
+                    deploymentNode "Availability Service" "Una réplica." "Pod — 1 réplica" {
+                        containerInstance availability
+                    }
+                }
+            }
+
+            datosQa = deploymentNode "Supabase — proyecto de pruebas" "Instancia y base separadas de producción. No comparte bases, secretos ni credenciales con PROD." "Supabase" {
+                deploymentNode "PostgreSQL" "Dataset controlado y anonimizado, con los mismos esquemas y RLS por tenant." "PostgreSQL" {
+                    containerInstance db
+                }
+                deploymentNode "Auth" "" "Supabase Auth" {
+                    containerInstance auth
+                }
+                deploymentNode "Storage" "Bucket privado con documentos sintéticos: no se copian KYC reales." "Supabase Storage" {
+                    containerInstance storage
+                }
+                deploymentNode "Realtime" "" "Supabase Realtime" {
+                    containerInstance realtime
+                }
+            }
+        }
     }
 
     views {
 
-        // ---------- Vista 1 — C4 Nivel 1: Contexto ----------
+        // ---------- Vista 1 — System Landscape: panorama ----------
+        //
+        // Responde a una pregunta distinta de la de contexto: no "qué rodea a MANI", sino qué
+        // sistemas existen en el mapa y a cuáles toca cada actor. MANI es el único sistema
+        // propio; los demás son proveedores o plataformas de destino. Fuente: SAD §5, SRS §2.3.
+        systemLandscape "panorama" "Panorama de sistemas: MANI, los actores que lo usan y las plataformas externas de las que depende. Fuente: SAD §5, SRS §2.3." {
+            include *
+            autolayout lr
+        }
+
+        // ---------- Vista 2 — C4 Nivel 1: Contexto ----------
         systemContext mani "contexto" "C4 Nivel 1 — MANI, sus actores y los sistemas externos. Fuente: SAD §5, SDD §4.1." {
             include *
             autolayout lr
         }
 
-        // ---------- Vista 2 — C4 Nivel 2: Contenedores ----------
+        // ---------- Vista 3 — C4 Nivel 2: Contenedores ----------
         container mani "contenedores" "C4 Nivel 2 — unidades desplegables y almacenes. Toda API operacional entra por el Gateway. Fuente: SAD §6, SDD §4.2." {
             include *
             autolayout lr
         }
 
-        // ---------- Vista 3 — C4 Nivel 3: Componentes, uno por servicio ----------
+        // ---------- Vista 4 — C4 Nivel 3: Componentes, uno por servicio ----------
         component rules "componentes-rules" "C4 Nivel 3 — Rules Service (Java). Fuente: SDD §4.3.1." {
             include *
             autolayout lr
@@ -285,8 +365,72 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             autolayout lr
         }
 
-        // ---------- Vista 4 — Despliegue ----------
+        // ---------- Vista 5 — Dinámicas: los flujos que la estructura no explica ----------
+        //
+        // Las vistas estáticas muestran qué existe; estas muestran el orden en que ocurre.
+        // Cada paso corresponde a una relación ya declarada en el modelo: una vista dinámica
+        // no puede inventar colaboraciones que la estructura no permita.
+
+        dynamic mani "dinamico-solicitud" "Solicitud y conformación del listado de aliados (RF-12, RF-13). El despacho orquesta: pregunta elegibilidad a Disponibilidades y orden a Reglas. Fuente: SAD §7.2, SDD §4.2." {
+            cliente -> flutter "Registra la solicitud de servicio"
+            flutter -> gateway "POST de la solicitud con el JWT del tenant"
+            gateway -> dispatch "Enruta tras validar el token"
+            dispatch -> availability "Pide los aliados elegibles por categoría y zona (RF-12)"
+            dispatch -> rules "Pide el orden del listado según la regla del tenant (RF-13)"
+            dispatch -> db "Persiste la solicitud y los candidatos notificados"
+            autolayout lr
+        }
+
+        dynamic dispatch "dinamico-aceptacion" "Exclusión concurrente en la aceptación (RF-14, RNF-05). Dos aliados aceptan a la vez: la actualización condicional atómica deja pasar la primera y la segunda recibe 409 Conflict. Fuente: SAD §7.2, ADR-0016, ADR-0021." {
+            gateway -> dispatchApi "Aceptación del aliado, con clave de idempotencia (RNF-03)"
+            dispatchApi -> dispatchApp "Invoca el caso de uso de aceptación"
+            dispatchApp -> dispatchCoordinator "Coordina la asignación"
+            dispatchCoordinator -> dispatchGuard "Delega la exclusión concurrente"
+            dispatchGuard -> dispatchPort "Actualización condicional: solo si la asignación sigue libre"
+            dispatchPort -> dispatchAdapter "Implementado por"
+            dispatchAdapter -> db "UPDATE condicionado al estado previo; la segunda aceptación no afecta filas"
+            dispatchApp -> dispatchAudit "Audita el cambio de estado y el resultado (RNF-04)"
+            autolayout lr
+        }
+
+        dynamic mani "dinamico-cotizacion" "Cotización del aliado y alerta contra el tarifario de referencia (RF-15, RF-16, RF-22). Core es dueño de la cotización; Reglas es dueño del tarifario. Fuente: SAD §7.1 y §7.3." {
+            aliado -> flutter "Elabora la cotización separando mano de obra y materiales (RF-15)"
+            flutter -> gateway "Envía la cotización"
+            gateway -> core "Enruta tras validar el token"
+            core -> rules "Pide validar el valor contra el rango del tarifario (RF-16)"
+            rules -> db "Lee los rangos mínimo, típico y máximo del tenant (RF-22)"
+            core -> db "Persiste la cotización con el resultado de la validación"
+            autolayout lr
+        }
+
+        dynamic mani "dinamico-kyc" "Carga y verificación de documentos KYC (RF-05, RF-06). Los documentos viven en bucket privado bajo tenant_id/aliado_id/documento; la aprobación es del administrador del tenant. Fuente: ADR-0013, SAD §7.3." {
+            aliado -> flutter "Carga los documentos requeridos por el tenant"
+            flutter -> gateway "Envía los documentos"
+            gateway -> core "Enruta tras validar el token"
+            core -> storage "Guarda el documento en el bucket privado, aislado por tenant y aliado"
+            core -> db "Registra el documento y deja al aliado en verificación"
+            adminTenant -> flutter "Revisa la documentación y aprueba o rechaza al aliado (RF-06)"
+            autolayout lr
+        }
+
+        dynamic mani "dinamico-mensajeria" "Mensajería del servicio con notificación de respaldo (RF-20, RF-21). Realtime transporta mientras el destinatario está conectado; si no lo está, se entrega por push. Fuente: ADR-0017, SAD §7.3." {
+            cliente -> flutter "Escribe un mensaje asociado al servicio"
+            flutter -> gateway "Envía el mensaje"
+            gateway -> core "Enruta tras validar el token"
+            core -> db "Persiste el mensaje: la conversación no vive solo en el transporte"
+            core -> realtime "Publica el evento de mensajería"
+            flutter -> realtime "El destinatario conectado lo recibe casi en tiempo real"
+            core -> push "Si el destinatario no está conectado, lo notifica por push (RF-21)"
+            autolayout lr
+        }
+
+        // ---------- Vista 6 — Despliegue ----------
         deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción. Fuente: SDD §9.1 y §10." {
+            include *
+            autolayout tb
+        }
+
+        deployment mani "TEST/QA" "despliegue-qa" "Vista de despliegue de TEST/QA: misma imagen validada, una réplica por servicio, instancia y base separadas de producción. Fuente: SDD §10." {
             include *
             autolayout tb
         }

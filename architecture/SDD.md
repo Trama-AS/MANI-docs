@@ -6,7 +6,7 @@
 **Documento de datos asociado:** [ModeloDatos.md](./ModeloDatos.md)  
 **Estado:** Diseño arquitectónico objetivo  
 **Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.  
-**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core`, `componentes-availability` (N3) y `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
+**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core`, `componentes-availability` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y las de despliegue `despliegue-prod` y `despliegue-qa`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
 
 ---
 
@@ -131,6 +131,17 @@ El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnolo
 # 4. Vistas C4
 
 Las vistas de esta sección se generan desde [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), que es su fuente. Cada subsección indica la vista que le corresponde y mantiene en texto la estructura y las responsabilidades, para que el documento se lea sin renderizar.
+
+El modelo cubre las cuatro vistas que Structurizr sí puede describir, y ninguna queda solo en prosa:
+
+| Vista | Pregunta que responde | Dónde |
+|---|---|---|
+| Panorama — System Landscape | qué sistemas existen en el mapa y a cuáles toca cada actor | §4.5 |
+| Estática — contexto, contenedores, componentes | qué existe y cómo se relaciona | §4.1 a §4.3 |
+| Dinámica | en qué orden ocurre cada flujo crítico | §4.6 |
+| Despliegue | dónde se ejecuta cada contenedor | §9 |
+
+El Nivel 4 (Code) se mantiene en §4.4: Structurizr describe contenedores y componentes, no clases.
 
 ## 4.1 Nivel 1 — System Context
 
@@ -326,6 +337,109 @@ Ports / Interfaces
         ↑
 DB / External Adapters
 ```
+
+---
+
+## 4.5 Panorama de sistemas — System Landscape
+
+**Objetivo:** mostrar el mapa de sistemas alrededor de MANI. Es una pregunta distinta de la del Nivel 1: el contexto mira hacia fuera *desde* MANI, el panorama mira el conjunto y deja ver que MANI es el único sistema propio y que todo lo demás es proveedor o plataforma de destino.
+
+> **Vista `panorama`** de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl).
+
+```text
+Cliente · Aliado · Administrador de tenant · Administrador de plataforma
+                              ↓
+                          [ MANI ]  ← único sistema propio
+                              ↓
+   FCM / APNs · Operador de pagos · Observabilidad · Data Warehouse / BI
+                     (proveedores y plataformas de destino)
+```
+
+Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, nunca por acoplamiento directo de un servicio al proveedor (§6 y §14).
+
+---
+
+## 4.6 Vistas dinámicas
+
+**Objetivo:** mostrar el orden de los flujos que la estructura estática no explica. Cada paso de estas vistas corresponde a una relación ya declarada en el modelo: una vista dinámica no inventa colaboraciones que la estructura no permita.
+
+| Vista | Flujo | Requisitos |
+|---|---|---|
+| `dinamico-solicitud` | solicitud y conformación del listado de aliados | RF-12, RF-13 |
+| `dinamico-aceptacion` | exclusión concurrente en la aceptación | RF-14, RNF-03, RNF-05 |
+| `dinamico-cotizacion` | cotización y alerta contra el tarifario | RF-15, RF-16, RF-22 |
+| `dinamico-kyc` | carga y verificación de documentos KYC | RF-05, RF-06 |
+| `dinamico-mensajeria` | mensajería con notificación de respaldo | RF-20, RF-21 |
+
+### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
+
+```text
+1. Cliente            → Flutter          registra la solicitud
+2. Flutter            → API Gateway      POST con el JWT del tenant
+3. API Gateway        → Dispatch         enruta tras validar el token
+4. Dispatch           → Availability     aliados elegibles por categoría y zona (RF-12)
+5. Dispatch           → Rules            orden del listado según la regla del tenant (RF-13)
+6. Dispatch           → PostgreSQL       persiste solicitud y candidatos notificados
+```
+
+Quien orquesta es el despacho: pregunta elegibilidad a Disponibilidades y orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada de esto.
+
+### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
+
+Vista a nivel de componentes del Servicio de Despacho. Dos aliados aceptan la misma solicitud al mismo tiempo:
+
+```text
+1. API Gateway          → Dispatch API             aceptación con clave de idempotencia (RNF-03)
+2. Dispatch API         → Application Service      invoca el caso de uso
+3. Application Service  → Assignment Coordinator   coordina la asignación
+4. Coordinator          → Concurrency Guard        delega la exclusión concurrente
+5. Concurrency Guard    → Repository Port          actualización condicional: solo si sigue libre
+6. Repository Port      → PostgreSQL Adapter       implementación
+7. Adapter              → PostgreSQL               UPDATE condicionado al estado previo
+8. Application Service  → Audit Component          audita el cambio de estado (RNF-04)
+```
+
+La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y recibe `409 Conflict`. La garantía está en la actualización condicional, no en la aplicación.
+
+### 4.6.3 Cotización y tarifario — `dinamico-cotizacion`
+
+```text
+1. Aliado        → Flutter        cotización separando mano de obra y materiales (RF-15)
+2. Flutter       → API Gateway    envía la cotización
+3. API Gateway   → Core           enruta tras validar el token
+4. Core          → Rules          valida el valor contra el rango del tarifario (RF-16)
+5. Rules         → PostgreSQL     lee mínimo, típico y máximo del tenant (RF-22)
+6. Core          → PostgreSQL     persiste la cotización con el resultado
+```
+
+Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifario (§7.1 del SAD): la validación es una llamada entre servicios, no lógica duplicada en Core.
+
+### 4.6.4 KYC del aliado — `dinamico-kyc`
+
+```text
+1. Aliado                 → Flutter        carga los documentos requeridos por el tenant
+2. Flutter                → API Gateway    envía los documentos
+3. API Gateway            → Core           enruta tras validar el token
+4. Core                   → Storage        bucket privado tenant_id/aliado_id/documento
+5. Core                   → PostgreSQL     registra el documento; aliado en verificación
+6. Administrador tenant   → Flutter        aprueba o rechaza al aliado (RF-06)
+```
+
+La aprobación es una decisión humana del tenant, no un efecto automático de la carga.
+
+### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
+
+```text
+1. Cliente   → Flutter        escribe un mensaje del servicio
+2. Flutter   → API Gateway    envía el mensaje
+3. Gateway   → Core           enruta tras validar el token
+4. Core      → PostgreSQL     persiste el mensaje
+5. Core      → Realtime       publica el evento de mensajería
+6. Flutter   → Realtime       el destinatario conectado lo recibe casi en tiempo real
+7. Core      → FCM / APNs     si no está conectado, lo notifica por push (RF-21)
+```
+
+El mensaje se persiste antes de transportarse: la conversación no vive en el canal de tiempo real. Realtime transporta, no decide.
 
 ---
 
@@ -551,6 +665,24 @@ Gateway y servicios → Prometheus → Grafana · logs y trazas → Datadog
 - secretos suministrados desde gestor seguro;
 - bases productivas no accesibles desde Internet pública salvo controles explícitos;
 - acceso administrativo con privilegio mínimo.
+
+## 9.2 TEST/QA
+
+> **Vista `despliegue-qa`** de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl).
+
+```text
+Acceso controlado (sin exposición pública) → DNS + TLS QA → NGINX Ingress / API Gateway
+                                          ↓
+Clúster Kubernetes — TEST/QA, aislamiento lógico del ambiente
+  Rules · Dispatch · Core · Availability — 1 réplica cada uno
+                                          ↓
+Supabase — proyecto de pruebas: instancia y base separadas de producción
+  PostgreSQL con los mismos esquemas y RLS · Storage con documentos sintéticos
+```
+
+Lo que cambia respecto de producción es el escalado, los secretos y los datos: se promueve **la misma imagen de contenedor validada** (§10 y §11). Una réplica basta porque el ambiente valida funcionalidad; las pruebas de concurrencia atacan la actualización condicional atómica, que no depende del número de réplicas.
+
+Los ambientes Local y DEV no se modelan en el DSL: su topología es la de TEST/QA con datos sintéticos y un nodo más no añadiría información arquitectónica.
 
 ---
 

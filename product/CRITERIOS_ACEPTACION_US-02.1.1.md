@@ -358,7 +358,7 @@ Si las dependencias del punto 6 no llegan a QA antes del cierre del sprint, la a
 | PA-32 | Valores del contrato frente al proyecto: perfil con `CLIENT`, `ALLY`, `ADMIN` y estados `PENDING`, `VERIFIED`, `REJECTED`, mientras el claim `user_role` usa `aliado`, `cliente`, `admin_tenant`, y el JSON está en camelCase frente a la regla de snake_case del proyecto | Juan Sebastián Álvarez, con Nicolás León |
 | PA-33 | El ADR-0027 deja `signUp` de Supabase en el cliente, pero el contrato hace que el Core registre al aliado y emita los tokens, y M3 ya envía el registro al Gateway. Hay que fijar quién crea el usuario en Supabase Auth | Daniel Ávila y Juan Sebastián Álvarez |
 
-## 8.1 Supuestos adoptados el 7 de octubre de 2026
+### 8.1 Supuestos adoptados el 7 de octubre de 2026
 
 No hubo tiempo de consultar a los responsables antes del cierre del sprint. Por decisión de QA se adoptó lo que dice la documentación vigente. Cada supuesto indica su fuente y puede revertirse si el responsable decide otra cosa.
 
@@ -380,16 +380,20 @@ Siguen abiertos porque la documentación no los resuelve: PA-02, PA-06, PA-09, P
 
 ## 9. Solapes con PO-05 (SCRUM-1083)
 
-PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descripción de SCRUM-1083 en Jira no contiene criterios comunes. El borrador anterior citaba criterios CC-1 a CC-4 de un comentario del 5 de octubre; no se reverificaron en esta revisión, por lo que la alineación se tratará con María Camila Beltrán en SCRUM-1130.
+PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descripción de SCRUM-1083 en Jira no contiene criterios comunes. El borrador anterior citaba criterios CC-1 a CC-4 de un comentario del 5 de octubre.
 
-| Escenario de PO-01 | Tema | Tratamiento propuesto |
+**Alineación cerrada el 7 de octubre de 2026** con María Camila Beltrán en SCRUM-1130, que quedó en `Done`. El tratamiento de la tabla es el acordado, no una propuesta pendiente.
+
+| Escenario de PO-01 | Tema | Tratamiento acordado |
 |---|---|---|
 | A4 (solo Gateway) | CC-1, según el borrador anterior | Mantener un único texto y referenciarlo desde ambas historias. A4-N y A4-V (anon key y acceso directo) son aportes propios |
 | A3 (tenant por token, 401 sin token) | CC-2 y CC-3 | Mantener un único texto. El registro de US-02.1.1 es público y no entra en CC-2 ni CC-3; A3-N lo cubre |
 | `correlation_id` en A1 y A2 | CC-4 | Alinear el nombre del campo con CFG-16 |
 | B1 a B6 por historia | CA-5 de SCRUM-1063 y CA-7 de SCRUM-1066 | US-02.1.1 cubre el KYC y el registro del aliado; SCRUM-1066 cubre la bandeja y la aprobación. Ejecutar el caso 6 una vez y referenciarlo desde ambas historias |
 
-## 10. Revisores propuestos
+## 10. Revisores
+
+Revisión cerrada el 7 de octubre de 2026 (SCRUM-1130, en `Done`). La revisión del par técnico quedó registrada en el PR #13 de `MANI-docs`, fusionado a `main`.
 
 | Revisor | Motivo |
 |---|---|
@@ -403,6 +407,8 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 
 ## 11. Cambios propuestos en Jira (no ejecutados)
 
+Estado verificado el 7 de octubre de 2026: ninguno de los ajustes de abajo se ha aplicado. Siguen en su valor anterior SCRUM-1062 (`Low`), SCRUM-1065 (`High`), SCRUM-1102, SCRUM-1103, SCRUM-1112 y SCRUM-1116 (`Medium`), SCRUM-1104 (`Low`) y SCRUM-1118 (`High`), y los títulos de SCRUM-1075 y SCRUM-1099 conservan el error señalado.
+
 | Ticket | Propuesta |
 |---|---|
 | SCRUM-1062 y 1184 a 1188 | Prioridad Low a Highest. El backlog fija M4 en Highest |
@@ -415,7 +421,7 @@ PO-05 cubre US-02.1.2-M2/M3, US-02.1.3-M2 y US-02.2.1-M2, no US-02.1.1. La descr
 | SCRUM-1102, 1103, 1104 y 1112 | Prioridad Medium o Low a Highest, como en el backlog |
 | SCRUM-1116 (CFG-41) | Prioridad Medium a Highest, como en el backlog |
 | SCRUM-1118 (QA-01) | Prioridad High a Highest, como en el backlog |
-| SCRUM-1126 a 1129 | Pasar a "En curso" |
+| SCRUM-1126 a 1129 | ~~Pasar a "En curso"~~ Ya no aplica: PO-01a a PO-01d quedaron en `Done` el 7 de octubre de 2026 con el merge del PR #13 |
 | SCRUM-1076 | Corregir el destino "Backlog V4" una vez responda la Scrum Master |
 | Enlaces | Verificar enlaces "bloquea" entre 1099, 1065, 1061 y 1062, y entre 1103, 1104, 1102 y 1105. No se pudieron leer los enlaces existentes |
 

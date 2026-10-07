@@ -6,29 +6,31 @@
 
 Esta página existe para que nadie —persona o asistente— «resuelva» en un PR algo que el equipo todavía no decidió.
 
-## Architectural killers (SAD §23)
+## Riesgos arquitectónicos (SAD §23)
 
-| ID | Riesgo |
+Los riesgos se nombran, no se numeran: el SAD §23 es la fuente y cada uno trae su riesgo y su control.
+
+| Riesgo | Control (SAD §23) |
 |---|---|
-| KI-01 | Lógica de negocio en Flutter |
-| KI-02 | Acceso directo indiscriminado a Supabase |
-| KI-03 | Servicios excesivamente pequeños |
-| KI-04 | Dependencias síncronas largas |
-| KI-05 | Pérdida de aislamiento multi-tenant |
-| KI-06 | Doble asignación |
-| KI-07 | Consultas analíticas sobre OLTP |
-| KI-08 | Complejidad políglota |
+| Lógica de negocio en Flutter | Mover la lógica al backend |
+| Acceso directo indiscriminado a Supabase | Servicios como frontera principal; RLS como defensa adicional |
+| Servicios excesivamente pequeños | Dividir por capacidad de negocio, no por operación CRUD |
+| Dependencias síncronas largas | Eventos para efectos secundarios y circuit breaker |
+| Pérdida de aislamiento multi-tenant | JWT + autorización + RLS + pruebas automatizadas |
+| Doble asignación | Exclusión atómica en PostgreSQL |
+| Consultas analíticas sobre OLTP | Data Warehouse separado |
+| Complejidad políglota | Contratos estandarizados, CI/CD homogéneo y límites claros por servicio |
 
-**Corrección registrada:** el backlog V4 §3 documenta que KI-01 y KI-02 están mal calibrados en el SAD vigente. La lógica de negocio no está en Flutter, sino en ~32 funciones PL/pgSQL; lo que hay en Flutter son casos de uso que orquestan llamadas RPC. Corregir SAD y SDD es la tarea `DOC-28`.
+**Corrección registrada:** el backlog V4 §3 documenta que los dos primeros están mal calibrados en el SAD vigente. La lógica de negocio no está en Flutter, sino en ~32 funciones PL/pgSQL; lo que hay en Flutter son casos de uso que orquestan llamadas RPC. Corregir SAD y SDD es la tarea `DOC-28`.
 
 ## Decisiones abiertas
 
 | ID | Decisión pendiente | Dónde se registra |
 |---|---|---|
-| `SP-05` | Si los servicios **reescriben** la lógica PL/pgSQL o la **invocan**. Bloquea la estimación de todo el trabajo funcional de migración | Backlog V4 §4.1; resultado se registra en ADR (`DOC-26`) |
 | `INFRA-01` | Hosting de Kubernetes | `INFRAESTRUCTURA_MANI.md` §25 |
 | `INFRA-02` | Topología final del clúster | `INFRAESTRUCTURA_MANI.md` §25 |
-| `CFG-31` | Hosting y topología concretos, como tarea ejecutable | Backlog V4 §4.2 |
+
+**Ya decidido — `SP-05`.** Si los servicios reescriben la lógica PL/pgSQL o la invocan. **Resuelto en la daily del 2026-10-05: la lógica se reescribe en los servicios.** Registrado en [`adr/ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) (tarea `DOC-26`, cerrada). El ADR está en estado **Propuesto**: pasarlo a Aceptado requiere sesión formal de la Mesa (Gobierno §2.6). Ya no bloquea ninguna estimación.
 
 Hasta que exista decisión sobre Kubernetes (Políticas DevOps §12): no se inventan nodos, no se fija proveedor, no se documenta capacidad como definitiva, y Docker Compose sobre VMs sigue siendo el mecanismo operativo. **No se asume AKS ni Azure.**
 
@@ -36,7 +38,7 @@ Hasta que exista decisión sobre Kubernetes (Políticas DevOps §12): no se inve
 
 Backlog V4 §4.2 los señala como los tres no contemplados antes y de mayor riesgo:
 
-- **`CFG-23`** — las políticas RLS derivan tenant y usuario de `auth.uid()` porque hoy el llamador es el cliente. Con un servicio `service-role` como llamador, **dejan de aislar**. Es el punto que puede tumbar RNF-01.
+- **`CFG-23a`, `CFG-23b` y `CFG-23c`** — las políticas RLS derivan tenant y usuario de `auth.uid()` porque hoy el llamador es el cliente. Con un servicio `service-role` como llamador, **dejan de aislar**. Es el punto que puede tumbar RNF-01.
 - **`CFG-36`** — el artefacto web publicado hoy incluye la `SUPABASE_ANON_KEY`: cualquiera puede llamar a PostgREST directamente y sólo RLS lo contiene. Hay que sacarla del bundle y rotarla.
 - **`CFG-38`** — hay 13 ramas vivas con trabajo sin fusionar en `MANI-Flutter`. Sin reconciliarlas primero, el trabajo funcional se ejecuta sobre una base incompleta.
 

@@ -16,7 +16,7 @@ Una historia puede entrar a Planning cuando tiene, como mínimo:
 - dependencias conocidas;
 - **sin spike bloqueante abierto** que impida desarrollarla.
 
-> Hoy esto importa de forma concreta: `SP-05` está abierto y **bloquea la estimación** de las subtareas `-M2` de todas las historias de migración ([Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md)).
+> `SP-05`, que bloqueaba la estimación de las subtareas `-M2` de todas las historias de migración, **quedó decidido el 2026-10-05** y registrado en [`ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md). Los spikes que siguen abiertos están en [Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md).
 
 ## Definition of Done
 

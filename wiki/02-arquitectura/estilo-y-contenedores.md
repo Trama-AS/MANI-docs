@@ -49,7 +49,7 @@ Integraciones: FCM/APNs · operador de pagos (2.º incremento)
 Notas que evitan errores de implementación:
 
 - Rules **no** guarda reglas fijas por tenant en código: las lee de persistencia (SAD §7.1).
-- Core puede dividirse internamente por dominios, pero **no** se convierte cada CRUD en un servicio independiente (SAD §7.3, riesgo KI-03).
+- Core puede dividirse internamente por dominios, pero **no** se convierte cada CRUD en un servicio independiente (SAD §7.3, riesgo *Servicios excesivamente pequeños*).
 - La primera aceptación válida se confirma con actualización condicional atómica; las siguientes reciben `409 Conflict` (SAD §7.2).
 
 ## Patrones

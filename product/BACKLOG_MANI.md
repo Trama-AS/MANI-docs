@@ -204,7 +204,7 @@ Ese cierre **no acredita la arquitectura vigente**. Dos consecuencias concretas:
 
 1. **La evidencia no sirve.** Las pruebas que cerraron esas historias ejercitaban un llamador que ya no existe.
 2. **El control de aislamiento cambia de sujeto.** Con Core llamando por `service-role`, `auth.uid()` deja de
-   filtrar, por lo que el aislamiento multi-tenant (KI-05) debe demostrarse de nuevo, historia por historia.
+   filtrar, por lo que el aislamiento multi-tenant (riesgo *Perdida de aislamiento multi-tenant*, SAD §23) debe demostrarse de nuevo, historia por historia.
 
 Las historias originales **no se reabren**: conservan su estado como registro histórico y quedan vinculadas
 con *Relates* a la historia de migración que las reemplaza.
@@ -242,7 +242,7 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-Gateway** (NGINX) y **M
 - **Queda en Incremento 2** la que necesita Rules Java, Dispatch .NET o Availability Node. Donde hay una parte
   que Core sí sostiene hoy, la historia se **parte** (`-M2` ahora, `-M6` después) en vez de arrastrarse completa.
 - `SCRUM-863` es el único caso que migra completo al Incremento 2: su valor es la exclusión concurrente en el
-  servicio de despacho (KI-06, ADR-0021), y no tiene porción que Core Node pueda sostener.
+  servicio de despacho (riesgo *Doble asignacion* del SAD §23, ADR-0021), y no tiene porción que Core Node pueda sostener.
 - `SCRUM-848` sale del Sprint 3 **por capacidad, no por dependencia técnica**: Gateway y Core ya la soportan,
   así que es la primera candidata a volver si se libera holgura.
 
@@ -305,8 +305,8 @@ Actualización documental y diagramas de las vistas.
 
 | Tarea | Prioridad | PH | Épica |
 |---|---|---|---|
-| `DOC-26` — Registrar en ADR la decision de SP-05, revisada en la daily del 2026-10-05: la logica de negocio vive en los servicios y se retira de Flutter y de las funciones PL/pgSQL (ADR-0022) | Highest | 3 | `SCRUM-453` |
-| `DOC-28` — Actualizar el SAD y el SDD con el resultado real de la transicion y cerrar KI-01 y KI-02 | Highest | 4 | `SCRUM-453` |
+| ~~`DOC-26` — Registrar en ADR la decision de SP-05~~ **CERRADA el 2026-10-07.** La decision de la daily del 2026-10-05 (la logica de negocio vive en los servicios y se retira de Flutter y de las funciones PL/pgSQL) quedo registrada en [`adr/ADR-0022`](../adr/ADR-0022-logica-de-negocio-en-servicios.md), publicado en `main`. El ADR queda en estado **Propuesto**: pasarlo a Aceptado requiere sesion formal de la Mesa (Gobierno §2.6) | Highest | 3 | `SCRUM-453` |
+| `DOC-28` — Actualizar el SAD y el SDD con el resultado real de la transicion y cerrar los dos riesgos mal calibrados del SAD §23: *Logica de negocio en Flutter* y *Acceso directo indiscriminado a Supabase* | Highest | 4 | `SCRUM-453` |
 | `DOC-29` — Reorganizar el repositorio de diagramas a la estructura de ADR-0008 y versionar la fuente editable | High | 2 | `SCRUM-453` |
 | `DOC-30` — Rehacer las vistas C4 de contexto y de contenedores con el camino real del incremento | Highest | 3 | `SCRUM-453` |
 | `DOC-31` — Diagramar la vista C4 de componentes de MANI-Gateway y de MANI-Core | Highest | 3 | `SCRUM-453` |

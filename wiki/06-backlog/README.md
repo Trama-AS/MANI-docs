@@ -26,7 +26,7 @@ Así no se borra trabajo real ni se finge que la migración ya ocurrió.
 Backlog V4 §3: la arquitectura anterior **no es un backend que haya que mover de lenguaje**. Es un cliente Flutter hablando directo con Supabase y la lógica de negocio en ~32 funciones PL/pgSQL. Por tanto:
 
 1. la migración consiste en **crear el backend que no existe y sacar al cliente de la base de datos**;
-2. los riesgos KI-01 y KI-02 del SAD están mal calibrados y su corrección es la tarea `DOC-28`.
+2. los riesgos *Lógica de negocio en Flutter* y *Acceso directo indiscriminado a Supabase* del SAD §23 están mal calibrados y su corrección es la tarea `DOC-28`.
 
 ## Qué se conserva
 

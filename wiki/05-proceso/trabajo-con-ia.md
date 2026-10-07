@@ -31,7 +31,7 @@ Un asistente que trabaje aquí sigue **el mismo proceso que una persona**: no ha
 
 Derivado de las reglas anteriores y de la jerarquía de fuentes, no de preferencias:
 
-- **no decide arquitectura** ni «cierra» un punto abierto: `SP-05`, `INFRA-01` e `INFRA-02` se resuelven en Mesa de Arquitectura y producen ADR;
+- **no decide arquitectura** ni «cierra» un punto abierto: `INFRA-01` e `INFRA-02` se resuelven en Mesa de Arquitectura y producen ADR, como se hizo con `SP-05` y `ADR-0022`;
 - **no edita un documento fuente para que coincida con el código**: una contradicción se reporta en el PR o en el issue y se resuelve en el documento correspondiente;
 - no inventa umbrales, rutas, credenciales, nombres de tabla, endpoints ni versiones: si el dato no está documentado, pregunta;
 - no introduce dependencias prohibidas ([Reglas arquitectónicas](../02-arquitectura/reglas-arquitectonicas.md));

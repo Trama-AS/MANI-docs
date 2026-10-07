@@ -24,7 +24,7 @@
 Dos reglas que se olvidan a menudo:
 
 - Un **hotfix** no termina al desplegarse: termina cuando su corrección volvió a la línea de desarrollo.
-- Un **spike no se convierte automáticamente en decisión arquitectónica** (Políticas §5.2). Su resultado se lleva a Mesa de Arquitectura y produce un ADR si corresponde. Ejemplo vigente: `SP-05` en [Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md).
+- Un **spike no se convierte automáticamente en decisión arquitectónica** (Políticas §5.2). Su resultado se lleva a Mesa de Arquitectura y produce un ADR si corresponde. Ejemplo: `SP-05`, cuyo resultado se registró en [`ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md).
 
 ## Reglas de integración
 

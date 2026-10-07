@@ -27,7 +27,7 @@ Jira exportado: **250 issues** — 155 `Done`, 88 `To Do`, 2 `In Progress`, 5 `I
 
 | Destino | Qué recibe | Convención |
 |---|---|---|
-| **EP-09** — gestión y configuración | Plataforma, repositorios, Gateway, esqueletos de servicio, identidad, CI/CD, GHCR, Compose, Kubernetes, configuración del cliente y regresión | `CFG-15 … CFG-40`, más `SP-05` |
+| **EP-09** — gestión y configuración | Plataforma, repositorios, Gateway, esqueletos de servicio, identidad, CI/CD, GHCR, Compose, Kubernetes, configuración del cliente y regresión | tareas `CFG-` (23 en el backlog §4, serie no continua), más el spike `SP-05`, ya decidido |
 | **EP-10** — documentación y entregables | ADR de la decisión PL/pgSQL, matriz de trazabilidad, actualización de SAD/SDD y del contexto de IA | `DOC-25 … DOC-28` |
 | **Las 9 historias ya desarrolladas** | El trabajo funcional de migrar y revalidar cada caso de uso | Subtareas `US-xx-M1 … -Mn` |
 | **Épicas funcionales** (EP-01, EP-02, EP-04D) | Historias que el SRS exige y el backlog legacy no cubre | `HU-N-01 … HU-N-05` |

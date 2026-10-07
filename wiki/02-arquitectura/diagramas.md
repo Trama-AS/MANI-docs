@@ -23,12 +23,11 @@ Declaradas en [`workspace.dsl`](../../diagrams/C4Model/workspace.dsl):
 |---|---|---|---|
 | `panorama` | Landscape | El mapa de sistemas: MANI como único sistema propio, sus cuatro actores y las plataformas externas de las que depende | [PNG](../../diagrams/C4Model/png/panorama.png) |
 | `contexto` | 1 | MANI, sus cuatro actores y los sistemas externos | [PNG](../../diagrams/C4Model/png/contexto.png) |
-| `contenedores` | 2 | Flutter, Gateway y los servicios agrupados por bloque —Java decide, .NET asigna, Node opera—, Supabase por dominio (Rules, Dispatch, Core, Availability) más Auth, Storage y Realtime, CDC/ELT e integraciones | [PNG](../../diagrams/C4Model/png/contenedores.png) |
+| `contenedores` | 2 | Flutter, Gateway y los tres servicios agrupados por bloque —Java decide, .NET asigna, Node opera—, Supabase por dominio (Rules, Dispatch, Core) más Auth, Storage y Realtime, CDC/ELT e integraciones | [PNG](../../diagrams/C4Model/png/contenedores.png) |
 | `componentes-rules` | 3 | Rules Service (Java): controller, application service, estrategias, puerto y adaptador | [PNG](../../diagrams/C4Model/png/componentes-rules.png) |
 | `componentes-dispatch` | 3 | Dispatch Service (.NET): selector, coordinador, **Concurrency Guard**, auditoría, puerto y adaptador | [PNG](../../diagrams/C4Model/png/componentes-dispatch.png) |
-| `componentes-core` | 3 | Core Services (Node.js): usuarios/tenants, KYC, catálogo, notificación, reportes, adaptadores externos | [PNG](../../diagrams/C4Model/png/componentes-core.png) |
-| `componentes-availability` | 3 | Availability Service (Node.js): reglas de horario, consulta de elegibilidad, repositorio | [PNG](../../diagrams/C4Model/png/componentes-availability.png) |
-| `dinamico-solicitud` | Dinámica | Solicitud y conformación del listado de aliados: el despacho pregunta elegibilidad a Disponibilidades y orden a Reglas (RF-12, RF-13) | [PNG](../../diagrams/C4Model/png/dinamico-solicitud.png) |
+| `componentes-core` | 3 | Core Services (Node.js): usuarios/tenants, KYC, catálogo, **disponibilidad**, notificación, reportes, adaptadores externos | [PNG](../../diagrams/C4Model/png/componentes-core.png) |
+| `dinamico-solicitud` | Dinámica | Solicitud y conformación del listado de aliados: el despacho pregunta elegibilidad a Core y el orden a Reglas (RF-12, RF-13) | [PNG](../../diagrams/C4Model/png/dinamico-solicitud.png) |
 | `dinamico-aceptacion` | Dinámica | Exclusión concurrente a nivel de componentes de Despacho: la primera aceptación gana, la segunda recibe `409 Conflict` (RF-14, RNF-05) | [PNG](../../diagrams/C4Model/png/dinamico-aceptacion.png) |
 | `dinamico-cotizacion` | Dinámica | Cotización en Core y validación contra el tarifario en Reglas (RF-15, RF-16, RF-22) | [PNG](../../diagrams/C4Model/png/dinamico-cotizacion.png) |
 | `dinamico-kyc` | Dinámica | Carga de documentos al bucket privado y aprobación por el administrador del tenant (RF-05, RF-06) | [PNG](../../diagrams/C4Model/png/dinamico-kyc.png) |
@@ -101,8 +100,6 @@ El DHL muestra acceso directo de Flutter a Supabase para disponibilidades: es la
 <img src="../../diagrams/C4Model/png/componentes-dispatch.png" alt="C4 Nivel 3 — Dispatch Service en .NET" width="620">
 
 <img src="../../diagrams/C4Model/png/componentes-core.png" alt="C4 Nivel 3 — Core Services en Node.js" width="620">
-
-<img src="../../diagrams/C4Model/png/componentes-availability.png" alt="C4 Nivel 3 — Availability Service en Node.js" width="620">
 
 **Despliegue — producción**
 

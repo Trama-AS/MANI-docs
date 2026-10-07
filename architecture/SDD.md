@@ -6,7 +6,7 @@
 **Documento de datos asociado:** [ModeloDatos.md](./ModeloDatos.md)  
 **Estado:** Diseño arquitectónico objetivo  
 **Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.  
-**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core`, `componentes-availability` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y la de despliegue `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
+**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y la de despliegue `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
 
 ---
 
@@ -69,7 +69,7 @@ Reglas para esa excepción:
 - no se implementan reglas de negocio en Flutter;
 - no se exponen tablas sin controles de acceso;
 - cualquier acceso directo debe estar protegido por RLS y limitarse a operaciones simples autorizadas;
-- la evolución objetivo es `Flutter → API Gateway → Servicio de Disponibilidades → Supabase`.
+- la evolución objetivo es `Flutter → API Gateway → Core Services (dominio de disponibilidad) → Supabase`.
 
 ---
 
@@ -198,24 +198,24 @@ Administrador tenant → administra usuarios, aliados, tenant y KYC
 Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
                       enrutamiento · control de acceso · token · rate limiting
                                                    ↓
-   ┌── decide ──────┬── asigna ────────┬── opera ─────────────────────────────┐
-   Rules Service     Dispatch Service    Core Services      Availability Service
-   (Java)            (.NET)              (Node.js)          (Node.js)
-        ↓                 ↓                   ↓                    ↓
-   Supabase Rules    Supabase Dispatch   Supabase Core     Supabase Availability
-        └──────────────── PostgreSQL + RLS por tenant ─────────────────┘
+   ┌── decide ──────┬── asigna ────────┬── opera ──────────────────┐
+   Rules Service     Dispatch Service    Core Services
+   (Java)            (.NET)              (Node.js)
+        ↓                 ↓                   ↓
+   Supabase Rules    Supabase Dispatch   Supabase Core
+        └────────── PostgreSQL + RLS por tenant ──────────┘
                                                    ↓
    Core → FCM/APNs · Operador de pagos · Storage · Realtime
    Gateway y servicios → telemetría → Prometheus / Grafana / Datadog
    PostgreSQL → carga incremental → CDC/ELT → Data Warehouse → BI
 ```
 
-Dispatch consulta Availability y Rules; Core consulta Rules para validar la cotización contra el tarifario. Son llamadas HTTPS entre servicios, no accesos cruzados a datos.
+Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el orden del listado; Core consulta a Rules para validar la cotización contra el tarifario. Son llamadas HTTPS entre servicios, no accesos cruzados a datos.
 
 ### Reglas de dependencia
 
 - Flutter consume contratos expuestos por el Gateway.
-- Cada servicio es dueño de su almacén: Rules de `Supabase Rules`, Dispatch de `Supabase Dispatch`, Core de `Supabase Core` y Availability de `Supabase Availability`.
+- Cada servicio es dueño de su almacén: Rules de `Supabase Rules`, Dispatch de `Supabase Dispatch` y Core de `Supabase Core`, que incluye el dominio de disponibilidad.
 - Los servicios no acceden directamente a tablas propiedad de otro dominio.
 - Las integraciones externas se encapsulan mediante adaptadores.
 - El Data Warehouse no participa en transacciones operacionales.
@@ -280,28 +280,17 @@ Responsabilidades:
 Core API
   → Users/Tenants Component ─┐
   → KYC Orchestrator ────────┤
-  → Catalog Component ───────┼→ Repositories → Core DB
+  → Catalog Component ───────┤
+  → Availability Component ──┼→ Repositories → Core DB
   → Notification Component ──┤
   → Operational Reporting ───┘
 
 KYC Orchestrator y Notification Component → External Adapters → Storage · Realtime · FCM/APNs
 ```
 
-### 4.3.4 Servicio de Disponibilidades
+**Availability Component** concentra cobertura del aliado, horarios y solapamientos, zonas y elegibilidad por categoría y zona (RF-07, RF-12, RNF-07). Es el componente que Despacho consulta en caliente antes de conformar el listado de candidatos. La lógica pertenece al servicio, no al cliente Flutter: esa es la condición para cerrar la excepción transitoria de §2.1.
 
-![C4 Nivel 3 — Availability Service (Node.js): reglas de horario, consulta de elegibilidad y repositorio](../diagrams/C4Model/png/componentes-availability.png)
-
-> **Figura 6 — Availability Service, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-availability` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/componentes-availability.png`](../diagrams/C4Model/png/componentes-availability.png).
-
-```text
-Availability API
-  → Availability Application Service
-       → Schedule Rules
-       → Availability Query
-       → Availability Repository → Availability DB
-```
-
-La lógica de horarios, solapamientos, zonas y elegibilidad pertenece al servicio, no al cliente Flutter.
+La disponibilidad **no es un servicio desplegable aparte**. Vive en el bloque Node como un dominio más de Core, igual que el catálogo o la comunicación: separarla en su propio despliegue sería convertir un dominio en un servicio sin ganar nada a cambio (riesgo KI-03 del SAD).
 
 ---
 
@@ -365,7 +354,7 @@ DB / External Adapters
 
 ![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](../diagrams/C4Model/png/panorama.png)
 
-> **Figura 7 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/panorama.png`](../diagrams/C4Model/png/panorama.png).
+> **Figura 6 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/panorama.png`](../diagrams/C4Model/png/panorama.png).
 
 ```text
 Cliente · Aliado · Administrador de tenant · Administrador de plataforma
@@ -396,26 +385,26 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 ### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
 
-![Vista dinámica — solicitud: el despacho consulta elegibilidad a Disponibilidades y orden a Reglas](../diagrams/C4Model/png/dinamico-solicitud.png)
+![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](../diagrams/C4Model/png/dinamico-solicitud.png)
 
-> **Figura 8 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/C4Model/png/dinamico-solicitud.png`](../diagrams/C4Model/png/dinamico-solicitud.png).
+> **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/C4Model/png/dinamico-solicitud.png`](../diagrams/C4Model/png/dinamico-solicitud.png).
 
 ```text
 1. Cliente            → Flutter          registra la solicitud
 2. Flutter            → API Gateway      POST con el JWT del tenant
 3. API Gateway        → Dispatch         enruta tras validar el token
-4. Dispatch           → Availability     aliados elegibles por categoría y zona (RF-12)
+4. Dispatch           → Core             aliados elegibles por categoría y zona (RF-12)
 5. Dispatch           → Rules            orden del listado según la regla del tenant (RF-13)
 6. Dispatch           → PostgreSQL       persiste solicitud y candidatos notificados
 ```
 
-Quien orquesta es el despacho: pregunta elegibilidad a Disponibilidades y orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada de esto.
+Quien orquesta es el despacho: pregunta elegibilidad al dominio de disponibilidad en Core y el orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada de esto.
 
 ### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
 
 ![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../diagrams/C4Model/png/dinamico-aceptacion.png)
 
-> **Figura 9 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/C4Model/png/dinamico-aceptacion.png`](../diagrams/C4Model/png/dinamico-aceptacion.png).
+> **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/C4Model/png/dinamico-aceptacion.png`](../diagrams/C4Model/png/dinamico-aceptacion.png).
 
 Vista a nivel de componentes del Servicio de Despacho. Dos aliados aceptan la misma solicitud al mismo tiempo:
 
@@ -436,7 +425,7 @@ La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y re
 
 ![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../diagrams/C4Model/png/dinamico-cotizacion.png)
 
-> **Figura 10 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/C4Model/png/dinamico-cotizacion.png`](../diagrams/C4Model/png/dinamico-cotizacion.png).
+> **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/C4Model/png/dinamico-cotizacion.png`](../diagrams/C4Model/png/dinamico-cotizacion.png).
 
 ```text
 1. Aliado        → Flutter        cotización separando mano de obra y materiales (RF-15)
@@ -453,7 +442,7 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 
 ![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../diagrams/C4Model/png/dinamico-kyc.png)
 
-> **Figura 11 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/C4Model/png/dinamico-kyc.png`](../diagrams/C4Model/png/dinamico-kyc.png).
+> **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/C4Model/png/dinamico-kyc.png`](../diagrams/C4Model/png/dinamico-kyc.png).
 
 ```text
 1. Aliado                 → Flutter        carga los documentos requeridos por el tenant
@@ -470,7 +459,7 @@ La aprobación es una decisión humana del tenant, no un efecto automático de l
 
 ![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../diagrams/C4Model/png/dinamico-mensajeria.png)
 
-> **Figura 12 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/C4Model/png/dinamico-mensajeria.png`](../diagrams/C4Model/png/dinamico-mensajeria.png).
+> **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/C4Model/png/dinamico-mensajeria.png`](../diagrams/C4Model/png/dinamico-mensajeria.png).
 
 ```text
 1. Cliente   → Flutter        escribe un mensaje del servicio
@@ -667,7 +656,7 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 |---|---|---|:---:|---|---|---|---|---|---|---|
 | **QAS-01** | **Seguridad** | **Confidencialidad** | P1 | Usuario autenticado de un tenant | Intenta consultar o modificar información perteneciente a otro tenant | TEST/QA o PROD en operación normal | API Gateway, servicio de dominio y PostgreSQL/RLS | El sistema rechaza la operación, no expone información del tenant destino y registra el evento cuando corresponda | **100% de accesos cross-tenant rechazados** | QA ejecuta pruebas automatizadas con tokens y recursos de tenants distintos sobre operaciones de lectura y escritura; verifica rechazo de acceso, ausencia de datos ajenos y evidencia de auditoría |
 | **QAS-02** | **Fiabilidad** | **Tolerancia a fallos** | P1 | Proveedor externo de notificaciones | FCM/APNs deja de responder después de confirmarse una operación de negocio | TEST/QA con dependencia externa degradada o indisponible | Core Services, Notification Component y adaptador externo | La operación principal permanece confirmada y la notificación queda disponible para reintento controlado | **0 operaciones confirmadas revertidas únicamente por fallo de notificación** | QA simula timeout, error y caída del proveedor; verifica estado final de la operación, persistencia del evento, logs y ejecución del mecanismo de retry |
-| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | TEST/QA bajo carga nominal | Availability Service, persistencia y componentes involucrados en la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta pruebas de carga, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral |
+| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | TEST/QA bajo carga nominal | Core Services (dominio de disponibilidad), persistencia y componentes involucrados en la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta pruebas de carga, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral |
 | **QAS-04** | **Mantenibilidad** | **Capacidad para ser modificado** | P1 | Equipo de desarrollo | Modifica una regla de ranking o comportamiento configurable de un tenant manteniendo el contrato externo | DEV y TEST/QA | Rules Service, configuración y contratos de integración | El cambio se implementa sin exigir modificaciones en consumidores externos compatibles | **0 cambios obligatorios en Flutter, Gateway o Dispatch para un cambio interno compatible** | QA ejecuta pruebas de regresión, integración y contract tests; verifica que los consumidores existentes continúen operando sin modificaciones derivadas del cambio |
 | **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad objetivo de las réplicas actuales | Kubernetes en TEST/QA bajo carga controlada | Deployment, HPA y servicio crítico contenerizado | La plataforma incrementa horizontalmente la capacidad del servicio sin modificar código ni reconstruir el artefacto | **Escalamiento de 2 a 6 réplicas sin cambio de código** | QA genera carga progresiva y monitorea réplicas, CPU, memoria, latencia, errores y continuidad del servicio mediante Kubernetes y la plataforma de observabilidad |
 | **QAS-06** | **Compatibilidad** | **Interoperabilidad** | P2 | Servicio interno o consumidor autorizado | Consume una API publicada por un servicio implementado en otra tecnología | TEST/QA de integración | APIs REST, API Gateway y contratos OpenAPI | Productor y consumidor intercambian información respetando el contrato publicado | **100% de APIs documentadas con OpenAPI y contract tests críticos aprobados antes de promoción** | QA ejecuta contract tests y pruebas de integración/Newman; valida códigos HTTP, payloads, tipos de datos, campos obligatorios y compatibilidad del contrato |
@@ -685,20 +674,19 @@ Los escenarios anteriores complementan los umbrales específicos definidos en la
 
 ![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](../diagrams/C4Model/png/despliegue-prod.png)
 
-> **Figura 13 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/despliegue-prod.png`](../diagrams/C4Model/png/despliegue-prod.png).
+> **Figura 12 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/despliegue-prod.png`](../diagrams/C4Model/png/despliegue-prod.png).
 
 ```text
 Web / Mobile Users → DNS + TLS + balanceador → NGINX Ingress / API Gateway (2 réplicas)
                                           ↓
 Clúster Kubernetes — producción (proveedor y topología pendientes: INFRA-01, INFRA-02)
   Namespace de servicios
-    Rules — decide (Java)     · Dispatch — asigna (.NET)
-    Core — opera (Node.js)    · Availability — opera (Node.js)
+    Rules — decide (Java) · Dispatch — asigna (.NET) · Core — opera (Node.js)
     2 réplicas mínimo cada uno, HPA hasta 6
   Gestor de secretos → inyecta credenciales y configuración fuera de la imagen
                                           ↓
 Supabase — proyecto productivo
-  PostgreSQL por dominio: reglas · despacho · core · disponibilidad (RLS por tenant)
+  PostgreSQL por dominio: reglas · despacho · core (RLS por tenant)
   Auth · Storage (bucket privado) · Realtime
                                           ↓
 Core → FCM/APNs + Operador de pagos
@@ -852,7 +840,7 @@ GitHub / Organización MANI
 ├── MANI-Core-Node
 │   └── servicios de usuarios, tenants, KYC, catálogos y notificaciones
 ├── MANI-Availability
-│   └── servicio/módulo de disponibilidades
+│   └── módulo de disponibilidades — ver nota
 ├── MANI-Infra
 │   ├── docker/
 │   ├── k8s/
@@ -877,6 +865,8 @@ GitHub / Organización MANI
 - GitHub Actions puede reutilizar workflows compartidos, pero cada artefacto se construye y versiona de manera independiente;
 - la promoción entre ambientes preserva el mismo artefacto validado;
 - la estrategia multi-repo es una decisión explícita del proyecto y debe quedar reflejada en ADR-0004.
+
+> **Pendiente de decisión — `MANI-Availability`.** Desde §4.3.3 la disponibilidad es un dominio interno de Core, no un servicio desplegable, así que ese repositorio ya no corresponde a ningún artefacto desplegable propio. La lista de repositorios la fija [ADR-0004](../ADR/ADR-0004-cicd-multirepo-ambientes.md), de modo que retirarlo o reconvertirlo en librería compartida exige un ADR nuevo que lo supersede, no una edición de este documento. Mientras tanto el repositorio queda declarado aquí tal como lo definió esa decisión.
 
 ---
 

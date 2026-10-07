@@ -140,7 +140,7 @@ Flutter Web / Mobile                    presentación e interacción
    ↓ HTTPS
 NGINX API Gateway                       entrada única, routing y políticas transversales
    ↓
-Rules (Java) · Dispatch (.NET) · Core (Node.js) · Availability (Node.js)
+Rules (Java) · Dispatch (.NET) · Core (Node.js)
    ↓
 Supabase: Auth · PostgreSQL + RLS · Storage · Realtime
    ↓
@@ -188,18 +188,11 @@ Responsable de:
 - RF-15, RF-17, RF-18, RF-19;
 - RF-20 y RF-21;
 - RF-23;
+- RF-07: cobertura del aliado;
+- RF-12: consulta de elegibilidad por categoría y zona, disponibilidad, horarios y zonas, con soporte a RNF-07 en la ruta crítica de consulta;
 - segundo incremento RF-24..RF-28, cuando se implemente.
 
-En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente.
-
-## 7.4 Availability Service — Node.js
-
-Responsable de:
-
-- RF-07: cobertura del aliado;
-- RF-12: consulta de elegibilidad por categoría + zona;
-- disponibilidad, horarios y zonas;
-- soporte a RNF-07 para la ruta crítica de consulta.
+En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente. La **disponibilidad es uno de esos dominios internos**, no un servicio desplegable aparte: vive en el bloque Node junto al catálogo y la comunicación, y es lo que Despacho consulta antes de conformar el listado de candidatos.
 
 ---
 
@@ -552,7 +545,6 @@ La instrumentación cubre:
 - Rules Service;
 - Dispatch Service;
 - Core Services;
-- Availability Service;
 - infraestructura Kubernetes.
 
 ---
@@ -769,12 +761,12 @@ Aplicable a:
 | RF-04 | Supabase Auth/Core | recuperación segura |
 | RF-05 | Core + Storage | registro + KYC |
 | RF-06 | Core | workflow de aprobación |
-| RF-07 | Availability | cobertura por zonas |
+| RF-07 | Core | cobertura por zonas |
 | RF-08 | Core | clientes y sitios |
-| RF-09 | Core/Availability | sitio + zona + condiciones |
+| RF-09 | Core | sitio + zona + condiciones |
 | RF-10 | Core | categorías |
-| RF-11 | Core/Availability | aliado-categoría |
-| RF-12 | Dispatch + Availability | solicitud y aliados válidos |
+| RF-11 | Core | aliado-categoría |
+| RF-12 | Dispatch + Core | solicitud y aliados válidos |
 | RF-13 | Rules | ranking |
 | RF-14 | Dispatch | broadcast + exclusión atómica |
 | RF-15 | Core/Dispatch | cotización |
@@ -833,7 +825,7 @@ La arquitectura contempla explícitamente:
 6. Se fijan tres ambientes: DEV, TEST/QA y PROD.
 7. Se elimina STAGING como cuarto ambiente.
 8. Se mantiene Kubernetes como orquestador.
-9. Se incorpora explícitamente Availability Service.
+9. Se incorpora explícitamente el dominio de disponibilidad (RF-07, RF-12) dentro de Core Services.
 10. Se incorpora trazabilidad completa RF/RNF → componente.
 11. Se incorpora Data Warehouse para RF-28 y analítica.
 12. Se amplía el diseño para RF-19, RF-20, RF-21, RF-22 y RF-23, que no deben quedar implícitos.

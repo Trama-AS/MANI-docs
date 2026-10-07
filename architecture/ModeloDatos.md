@@ -1369,7 +1369,7 @@ Umbrales iniciales:
 | `core.*` | Core Services — Node.js |
 | `comunicaciones.*` | Core/Notification Service — Node.js |
 | `pagos.*` | Payment Integration / Core Service |
-| `disponibilidad.*` | Availability Service |
+| `disponibilidad.*` | Core Services (dominio de disponibilidad) |
 | `dw.*` | Plataforma analítica |
 
 La propiedad implica **escritura exclusiva** del servicio responsable. Otros servicios acceden mediante API, evento o réplica analítica, no mediante escritura directa a tablas privadas.

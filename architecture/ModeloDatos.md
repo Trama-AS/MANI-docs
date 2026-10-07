@@ -1074,7 +1074,7 @@ CREATE TABLE despacho.solicitud (
     FOREIGN KEY (id_sitio) REFERENCES core.sitio_servicio(id_sitio),
     FOREIGN KEY (id_categoria) REFERENCES core.categoria(id_categoria),
     FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona),
-    -- Sin sitio registrado la direccion es obligatoria; con sitio, la zona la fija el sitio.
+    -- Sin sitio registrado la direccion es obligatoria. Con sitio, la zona la fija el sitio.
     CONSTRAINT ck_solicitud_ubicacion
         CHECK (id_sitio IS NOT NULL OR direccion IS NOT NULL)
 );

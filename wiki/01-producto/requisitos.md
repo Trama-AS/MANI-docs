@@ -14,12 +14,12 @@
 | RF-04 | Recuperación segura de contraseña | Alta | Supabase Auth + Core Node |
 | RF-05 | Registrar aliados (persona natural, empresa, empleado directo) con documentos aislados por aliado y tenant | Crítica | Core Node |
 | RF-06 | Bandeja de verificación para aprobar o rechazar aliados sin exponer documentos ajenos | Alta | Core Node |
-| RF-07 | Declarar zonas de cobertura del aliado | Alta | Availability Node |
+| RF-07 | Declarar zonas de cobertura del aliado | Alta | Core Service — módulo de disponibilidades |
 | RF-08 | Registrar clientes; cliente empresa con múltiples sitios | Alta | Core Node |
 | RF-09 | Reglas y condiciones por sitio, visibles al aliado antes de programar; todo sitio con zona | Media | Core Node |
 | RF-10 | Definir, activar y desactivar categorías de servicio | Alta | Core Node |
 | RF-11 | Asociar aliados con categorías que atienden | Media | Core Node |
-| RF-12 | Crear solicitudes y presentar aliados válidos por categoría y cobertura | Crítica | Core Node + Availability + Dispatch |
+| RF-12 | Crear solicitudes y presentar aliados válidos por categoría y cobertura | Crítica | Dispatch, con la elegibilidad por la API del Core Service |
 | RF-13 | Ordenar aliados según la regla configurada por el tenant | Alta | Rules Java |
 | RF-14 | Aceptar o rechazar solicitud sin dobles asignaciones | Crítica | Dispatch .NET |
 | RF-15 | Cotización separando mano de obra y materiales | Alta | Core Node |
@@ -62,4 +62,8 @@ Los umbrales que verifican estos RNF están en [Atributos de calidad](../02-arqu
 
 **Del proyecto (PROY):** Scrum (PROY-01) · alcance académico limitado al MVP (PROY-02) · gobierno documental del equipo (PROY-03) · siete integrantes con responsabilidad técnica distribuida (PROY-04) · decisiones costosas de revertir documentadas formalmente (PROY-05) · sólo herramientas aprobadas (PROY-06) · **Java y .NET obligatorios en algún módulo de backend** (PROY-07) · **Kubernetes como orquestador** (PROY-08).
 
-PROY-07 y PROY-08 explican por qué la arquitectura es políglota y por qué Kubernetes no es opcional: ver [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md) y [Ambientes y promoción](../03-entrega/ambientes-y-promocion.md).
+PROY-07 explica por qué la arquitectura es políglota: ver [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md).
+
+PROY-08 exige Kubernetes como orquestador **objetivo**. No está adoptado todavía: la decisión sigue abierta como `INFRA-01` e `INFRA-02`, y el despliegue vigente es Docker sobre VM. Ver [Ambientes y promoción](../03-entrega/ambientes-y-promocion.md) y [ADR-0023](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md).
+
+El componente responsable de cada RF está en [`SAD.md`](../../architecture/SAD.md) §24 y las tablas que lo soportan en [`ModeloDatos.md`](../../architecture/ModeloDatos.md) §14.

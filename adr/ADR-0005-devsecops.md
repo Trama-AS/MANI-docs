@@ -19,7 +19,7 @@ MANI requiere controles automáticos de seguridad antes de promover cambios haci
 Se utiliza:
 - **SonarQube** para SAST y Quality Gate;
 - **Newman** para pruebas automatizadas de API y contratos;
-- **OWASP ZAP** para DAST en TEST/QA;
+- **OWASP ZAP** para DAST en QA;
 - escaneo de dependencias e imágenes antes de promoción.
 
 Aplica a Flutter, NGINX/API Gateway, Java, .NET y Node.js.

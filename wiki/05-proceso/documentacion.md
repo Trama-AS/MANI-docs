@@ -10,7 +10,7 @@
 |---|---|
 | Requisito nuevo o modificado | `product/SRS.md` |
 | Arquitectura de alto nivel | `architecture/SAD.md` (+ el DHL si cambia el dibujo) |
-| Diseño, componentes o vistas C4 | `diagrams/C4Model/workspace.dsl` y la sección correspondiente del `SDD.md` |
+| Diseño, componentes o vistas C4 | `diagrams/LLD/workspace.dsl` y la sección correspondiente del `SDD.md` |
 | Tablas, DDL, diccionario, modelo dimensional | `architecture/ModeloDatos.md` |
 | Decisión técnica costosa de revertir | ADR nuevo en `adr/` |
 | Tecnología que entra o sale | `architecture/TECH_RADAR.md` |

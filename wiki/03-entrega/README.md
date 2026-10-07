@@ -6,7 +6,7 @@
 
 | Página | Tema |
 |---|---|
-| [Ambientes y promoción](ambientes-y-promocion.md) | DEV → TEST/QA → PROD, build once deploy many, Kubernetes y Compose |
+| [Ambientes y promoción](ambientes-y-promocion.md) | DEV → QA → PROD, build once deploy many, Docker sobre VM y la orquestación abierta |
 | [CI/CD y calidad](cicd-y-calidad.md) | Pipeline, pruebas exigidas y gates de seguridad |
 | [Secretos](secretos.md) | Qué está prohibido y qué aplica por ambiente |
 | [Observabilidad](observabilidad.md) | Métricas, dashboards, logs, trazas e incidentes |

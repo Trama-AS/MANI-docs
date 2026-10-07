@@ -17,7 +17,7 @@ Push / Pull Request
   → Build Docker/OCI
   → Escaneo de dependencias e imagen
   → Publicación en GHCR
-  → Promoción a TEST/QA
+  → Promoción a QA
   → Newman: contratos y aislamiento
   → k6 cuando corresponda
   → OWASP ZAP
@@ -41,7 +41,7 @@ Los umbrales funcionales provienen del SRS/SAD/SDD y **no se inventan** en el pi
 
 **SAST — SonarQube.** Analiza vulnerabilidades, bugs, code smells, duplicación y cobertura. **Ningún cambio con vulnerabilidades `Blocker` o `Critical` puede promoverse.**
 
-**DAST — OWASP ZAP.** Se ejecuta sobre TEST/QA y debe cubrir, según exposición: autenticación, headers, inyección, XSS, configuración HTTP y endpoints publicados. Las APIs deben exponer contratos OpenAPI actualizados cuando facilite el escaneo automatizado.
+**DAST — OWASP ZAP.** Se ejecuta sobre QA y debe cubrir, según exposición: autenticación, headers, inyección, XSS, configuración HTTP y endpoints publicados. Las APIs deben exponer contratos OpenAPI actualizados cuando facilite el escaneo automatizado.
 
 **Dependencias e imágenes.** Antes de promover se analizan dependencias, vulnerabilidades conocidas e imagen OCI. La herramienta concreta puede cambiar sin modificar la política, salvo que su elección sea una decisión arquitectónica.
 

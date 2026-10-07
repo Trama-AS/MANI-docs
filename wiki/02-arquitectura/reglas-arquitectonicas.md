@@ -40,7 +40,7 @@ Servicio           → credenciales hard-coded
 DEV/QA             → base de datos PROD
 ```
 
-La única desviación admitida hoy es la [excepción transitoria de disponibilidades](estilo-y-contenedores.md#excepción-transitoria-vigente), con sus condiciones.
+**No hay desviaciones admitidas.** La «excepción transitoria de disponibilidades» que figuraba aquí quedó retirada: la consulta de elegibilidad entra por el Gateway al Core Service como cualquier otra lectura de negocio. El cliente alcanza Supabase solo por Auth y Realtime ([ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md), [ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md), [SAD §8.3](../../architecture/SAD.md)).
 
 ## Reglas complementarias
 

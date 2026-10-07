@@ -23,7 +23,9 @@ El detalle vive en [`architecture/ModeloDatos.md`](../../architecture/ModeloDato
 
 La persistencia es PostgreSQL sobre Supabase, separada por esquemas que corresponden a los dominios: `core`, `disponibilidad`, `despacho`, `reglas`, `comunicaciones`, `pagos` (Modelo de Datos §6.1 y §8).
 
-Regla operativa: **un servicio no escribe tablas privadas de otro dominio** (SAD §4.1, SDD §14, umbral de mantenibilidad del SAD §20.4). Si un caso de uso necesita datos de otro dominio, se pide por la API de su dueño.
+Regla operativa: **un servicio no escribe tablas privadas de otro dominio** (SAD §4.1, SDD §14, umbral de mantenibilidad del SDD §7.5). Si un caso de uso necesita datos de otro dominio, se pide por la API de su dueño.
+
+El dueño de cada esquema está en [`ModeloDatos.md`](../../architecture/ModeloDatos.md) §13, y la cobertura de cada requisito funcional a nivel de tabla en §14.
 
 ## Capacidades de Supabase utilizadas
 

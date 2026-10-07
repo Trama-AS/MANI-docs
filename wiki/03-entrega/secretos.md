@@ -19,10 +19,10 @@ Sin secretos en repositorio es uno de los diez principios de DevOps del proyecto
 | Ambiente | Regla |
 |---|---|
 | **DEV** | Variables locales fuera de Git; credenciales exclusivamente de desarrollo |
-| **TEST/QA** | Secretos propios del ambiente; sin acceso a credenciales productivas |
+| **QA** | Secretos propios del ambiente; sin acceso a credenciales productivas |
 | **PROD** | Secretos exclusivos, acceso restringido, aprobación de despliegue y rotación según necesidad |
 
-Al migrar a Kubernetes se usarán Secrets/ConfigMaps o un gestor equivalente aprobado.
+Si se adopta una plataforma de orquestación, los secretos pasan a su gestor nativo —Secrets/ConfigMaps o equivalente aprobado— sin cambiar el principio: la configuración y los secretos son externos al artefacto.
 
 ## Identidad de tenant en tránsito
 

@@ -38,7 +38,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0001](../../adr/ADR-0001-gestion-documental.md) | Gestión documental del proyecto |
 | [ADR-0002](../../adr/ADR-0002-jira-github.md) | Jira para gestión, GitHub para desarrollo técnico |
 | [ADR-0003](../../adr/ADR-0003-mesa-arquitectura.md) | Gobierno mediante Mesa de Arquitectura |
-| [ADR-0004](../../adr/ADR-0004-cicd-multirepo-ambientes.md) | CI/CD multi-repositorio y promoción de ambientes |
+| [ADR-0004](../../adr/ADR-0004-cicd-multirepo-ambientes.md) | CI/CD multi-repositorio y promoción de ambientes — *parcialmente superseded por ADR-0023 en la lista de repositorios y la plataforma de ambientes* |
 | [ADR-0005](../../adr/ADR-0005-devsecops.md) | DevSecOps con SAST, DAST y pruebas de API |
 | [ADR-0006](../../adr/ADR-0006-observabilidad.md) | Observabilidad distribuida y gestión de incidentes |
 | [ADR-0008](../../adr/ADR-0008-diagramacion-tecnica.md) | Organización y versionado de diagramas técnicos |
@@ -46,7 +46,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0012](../../adr/ADR-0012-persistencia-multitenant.md) | Persistencia operacional y aislamiento multi-tenant |
 | [ADR-0018](../../adr/ADR-0018-identificacion-tenant.md) | Identificación y propagación segura del tenant |
 | [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md) | Arquitectura SOA distribuida, multi-tenant y políglota |
-| [ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md) | Alcance de supabase_flutter en el cliente (retiro de PostgREST y Storage) |
+| [ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md) | Alcance de `supabase_flutter`: solo Auth y Realtime; retiro de PostgREST, RPC y Storage |
 
 ### Pendientes de aprobación — `Propuesto`
 
@@ -56,6 +56,8 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0015](../../adr/ADR-0015-pruebas-aislamiento-multitenant.md) | Pruebas automatizadas de aislamiento multi-tenant | RNF-01 |
 | [ADR-0016](../../adr/ADR-0016-despacho-concurrencia.md) | Despacho broadcast y exclusión concurrente (absorbe ADR-0021) | RF-14, RNF-03, RNF-05 |
 | [ADR-0017](../../adr/ADR-0017-realtime-notificaciones.md) | Mensajería en tiempo real y notificaciones push | RF-20, RF-21 |
+| [ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) | La lógica de negocio vive en los servicios; se retira de Flutter y de las funciones PL/pgSQL | RF-05, RF-06, RF-08, RF-10, RF-11, RF-12, RNF-01 |
+| [ADR-0023](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md) | Consolidación de repositorios, servicios desplegables y ambientes | PROY-07, PROY-08, RNF-07 |
 
 ### Descartado — `Rejected`
 
@@ -77,4 +79,17 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 
 ## Numeración
 
-El backlog de transición registra la tarea `DOC-27`: reconstruir la matriz de trazabilidad de ADR y recuperar **ADR-0022 a ADR-0026**, que no están en este repositorio. Hasta que se ejecute, el rango vigente localizable es ADR-0001..ADR-0021.
+La secuencia vigente es **ADR-0001 a ADR-0023, más ADR-0027**. Los números **0024, 0025 y 0026
+nunca se emitieron** en este repositorio.
+
+El hueco tiene una causa concreta: los documentos de [`Entregas/`](../../Entregas/) usaron una
+numeración distinta y hoy abandonada, en la que `ADR-0022` era «proveedor de identidad» y
+`ADR-0023` era el cierre de KI-02. Esa numeración **no es la vigente**: `Entregas/` es un histórico
+académico y no es fuente de verdad. En el esquema vigente `ADR-0022` es la lógica de negocio en los
+servicios y `ADR-0023` la consolidación de repositorios y ambientes.
+
+`ADR-0027` conserva su número aunque rompa la secuencia, porque está referenciado por la tarea
+`CFG-35` y por el commit que lo introdujo. Renumerarlo rompería esa trazabilidad para ganar sólo
+estética.
+
+**No se reutilizan 0024, 0025 ni 0026**: el siguiente ADR que se emita es `ADR-0028`.

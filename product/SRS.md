@@ -2,8 +2,8 @@
 
 **Empresa:** TRAMA · Ingeniería de Software  
 **Producto:** MANI — plataforma multi-tenant de formalización de operaciones de servicio  
-**Versión:** V4 — depurada  
-**Estado:** Borrador para revisión  
+**Documento vivo:** sin número de versión; la vigente es la de `main` y el historial está en el log del repositorio.  
+**Alcance:** requerimientos funcionales, no funcionales, restricciones e interfaces externas.  
 
 ---
 
@@ -277,7 +277,7 @@ El sistema debe ser accesible remotamente y soportar múltiples tenants de forma
 |---|---|---:|
 | **RNF-03** | Las operaciones críticas deben ser resistentes a reintentos y no generar operaciones duplicadas. | Alta |
 | **RNF-05** | El proceso de despacho debe resolver de forma determinista las aceptaciones concurrentes, garantizando exactamente una asignación válida por solicitud. | Alta |
-| **RNF-07** | La plataforma debe soportar concurrencia en consultas de aliados, aceptación de solicitudes y mecanismos de comunicación. | Media |
+| **RNF-07** | La plataforma debe soportar concurrencia en consultas de aliados, aceptación de solicitudes y mecanismos de comunicación. Los umbrales medibles de latencia y carga se definen en el SDD §7.4 y se verifican con el escenario QAS-03; este SRS no fija cifras. | Media |
 
 ## 6.4 Auditabilidad y trazabilidad
 
@@ -318,7 +318,7 @@ El sistema debe ser accesible remotamente y soportar múltiples tenants de forma
 Este SRS no contiene:
 
 - decisiones de arquitectura;
-- diagramas C4;
+- diagramas;
 - tecnologías de implementación;
 - configuración de despliegue;
 - ambientes;
@@ -328,6 +328,10 @@ Este SRS no contiene:
 - modelo físico de datos;
 - DDL;
 - ADR;
-- decisiones de infraestructura.
+- decisiones de infraestructura;
+- **umbrales de calidad medibles**, que viven únicamente en el SDD §7 y §8.
 
-Esos elementos pertenecen al SAD, SDD, documento de datos y ADR del proyecto.
+Esos elementos pertenecen al SAD, al SDD, al documento de datos y a los ADR del proyecto.
+
+La cobertura de cada requisito funcional a nivel de tablas y restricciones está en
+`architecture/ModeloDatos.md` §14, y su componente responsable en `architecture/SAD.md` §24.

@@ -19,7 +19,7 @@ Las historias cerradas con la arquitectura anterior se rehacen como subtareas de
 
 ## Alternativas
 
-1. **Invocar las funciones PL/pgSQL existentes desde los servicios.** Fue la propuesta inicial de SP-05. Descartada: mantiene la lógica de negocio en la base de datos, contradice el principio del SAD según el cual la lógica de dominio vive en servicios (§4.1) y el patrón Ports and Adapters (§21.4), no resuelve la lógica que quedó en Flutter y deja a Rules y Dispatch sin la lógica de su propio dominio.
+1. **Invocar las funciones PL/pgSQL existentes desde los servicios.** Fue la propuesta inicial de SP-05. Descartada: mantiene la lógica de negocio en la base de datos, contradice el principio del SAD según el cual la lógica de dominio vive en servicios (SAD §4.1) y el patrón Ports and Adapters (SDD §5), no resuelve la lógica que quedó en Flutter y deja a Rules y Dispatch sin la lógica de su propio dominio.
 2. **La lógica de negocio vive en los servicios, cada uno con la de su dominio, y Supabase queda como persistencia.** Elegida.
 
 ## Decisión
@@ -52,7 +52,7 @@ El registro formal en SAD/SDD lo hace DOC-28 (SCRUM-1079).
 ## Consecuencias
 
 ### Positivas
-- Cumplimiento pleno de los principios del SAD (§4.1 y §21.4).
+- Cumplimiento pleno de los principios del SAD (§4.1) y del patrón Ports and Adapters (SDD §5).
 - Reglas de negocio con pruebas unitarias directas en cada servicio; la cobertura mayor al 80 % mide lógica real.
 - Rules y Dispatch quedan con la lógica de su propio dominio desde el inicio.
 - La evolución hacia bases de datos propias por servicio no exige volver a mover la lógica.
@@ -68,7 +68,7 @@ El registro formal en SAD/SDD lo hace DOC-28 (SCRUM-1079).
 Revisar si:
 - la capacidad del sprint no permite reimplementar la lógica de una historia `-M2` y es necesario un paso intermedio;
 - se decide que Rules o Dispatch tengan base de datos propia (requiere un ADR nuevo sobre persistencia por servicio, que revisa ADR-0012);
-- la medición de k6 (QA-04, SCRUM-1121) muestra un p95 mayor a 3 s atribuible a la nueva lógica en servicios.
+- la medición de k6 (QA-04, SCRUM-1121) muestra un p95 que incumple el umbral de desempeño del SDD §7.4, de forma atribuible a la nueva lógica en servicios.
 
 ## Trazabilidad
 

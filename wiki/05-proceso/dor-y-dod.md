@@ -16,7 +16,7 @@ Una historia puede entrar a Planning cuando tiene, como mínimo:
 - dependencias conocidas;
 - **sin spike bloqueante abierto** que impida desarrollarla.
 
-> Hoy esto importa de forma concreta: `SP-05` está abierto y **bloquea la estimación** de las subtareas `-M2` de todas las historias de migración ([Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md)).
+> `SP-05` ya está resuelto por [ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md): las subtareas `-M2` **reimplementan** la lógica en el servicio dueño, no invocan la función PL/pgSQL. Fueron reestimadas en consecuencia. Lo que sigue abierto está en [Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md).
 
 ## Definition of Done
 
@@ -48,10 +48,14 @@ Issue, PR, pruebas y aceptación quedan vinculados en Jira/GitHub cuando corresp
 
 No son un DoD paralelo: son requisitos del propio cambio.
 
-| Si la historia toca… | Debe demostrar |
-|---|---|
-| Autenticación, tenant, RLS, endpoints de datos o Storage | Los seis casos cross-tenant, con resultado de rechazo o ausencia de datos |
-| Despacho o asignación | Cero dobles asignaciones bajo concurrencia e idempotencia (QAS-02) |
-| Reglas o tarifario | Que un cambio de regla del tenant surte efecto **sin despliegue** (QAS-05) |
-| Notificaciones | Que un fallo de push no revierte una operación confirmada (QAS-04) |
-| Consulta de disponibilidad o ranking | p95 ≤ 1 s en el escenario del SRS |
+| Si la historia toca… | Debe demostrar | Escenario |
+|---|---|---|
+| Autenticación, tenant, RLS, endpoints de datos o Storage | Los casos cross-tenant, con resultado de rechazo o ausencia de datos | `QAS-01` |
+| Notificaciones | Que un fallo de push no revierte una operación confirmada | `QAS-02` |
+| Consulta de disponibilidad o ranking | La latencia dentro del umbral que fija el SDD | `QAS-03` |
+| Reglas o tarifario | Que un cambio de regla del tenant surte efecto **sin despliegue** ni cambios en los consumidores | `QAS-04` |
+| Despacho o asignación | Cero dobles asignaciones bajo concurrencia, e idempotencia | `QAS-07` |
+| Contratos entre servicios | Contract tests en verde contra el contrato OpenAPI publicado | `QAS-06` |
+
+Los escenarios y sus umbrales están en [`SDD.md`](../../architecture/SDD.md) §7 y §8. **Esta página
+no repite cifras:** si necesitas el número, ve al SDD.

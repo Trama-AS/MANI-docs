@@ -15,7 +15,7 @@ Se permite IA para apoyo de código, pruebas, documentación, diagramas y explor
 5. **una respuesta de IA no constituye una decisión arquitectónica;**
 6. una decisión relevante debe pasar por el proceso de gobierno correspondiente.
 
-La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o TEST/QA** ([Ambientes y promoción](../03-entrega/ambientes-y-promocion.md)). Tampoco se pegan en una herramienta de IA.
+La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o QA** ([Ambientes y promoción](../03-entrega/ambientes-y-promocion.md)). Tampoco se pegan en una herramienta de IA.
 
 ## Cómo se aplica en este repositorio
 

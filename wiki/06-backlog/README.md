@@ -32,4 +32,4 @@ Backlog V4 §3: la arquitectura anterior **no es un backend que haya que mover d
 
 Supabase, Auth, RLS y aislamiento multi-tenant · registro y aprobación de aliados · registro de cliente · categorías · creación de solicitud · exclusión concurrente · las PoC de despacho, identidad y Storage/KYC · pipelines, GHCR, secretos y promoción de ambientes · seeds multi-tenant · documentación y diagramas consolidados.
 
-Ese trabajo **cambia de ubicación**, no se desecha: parte de la lógica se mueve a Gateway, Rules (Java), Dispatch (.NET), Core (Node) y Availability (Node), y el cliente deja de invocarla.
+Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa en Rules (Java), Dispatch (.NET) y Core Service (Node, incluido el módulo de disponibilidades), y el cliente deja de invocarla ([ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md)).

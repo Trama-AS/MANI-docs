@@ -14,8 +14,8 @@
 ## Obligaciones de los servicios
 
 - emitir **logs estructurados**;
-- propagar **`correlation_id`** en requests distribuidos — es además umbral de mantenibilidad (SAD §20.4);
-- exponer la telemetría necesaria para que la saturación se detecte por observabilidad, no por reporte de usuario (SAD §20.3);
+- propagar **`correlation_id`** en requests distribuidos — es obligación arquitectónica (SAD §19) y umbral de mantenibilidad (SDD §7.5);
+- exponer la telemetría necesaria para que la saturación se detecte por observabilidad, no por reporte de usuario (SDD §7.4);
 - tener telemetría de las operaciones críticas antes de promover a producción (SDD §19.6).
 
 Extender la observabilidad al Gateway y a todos los servicios es la tarea `CFG-30` del backlog de transición.

@@ -255,6 +255,40 @@ Controles:
 
 Esto responde a RF-05, RF-06 y REST-02.
 
+## 8.4 Vista de interfaz del registro y la verificación de aliados
+
+Las historias migradas de `EP-02` tienen mockup aprobado en Figma (`PO-06`, `SCRUM-1093`). El archivo fuente es
+[MANI — Figma Make](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link) y las exportaciones
+versionadas viven en [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/). Las dos figuras siguientes ilustran cómo la
+interfaz materializa los controles de esta sección: la carga de documentos KYC definidos por el tenant y una
+bandeja de verificación limitada a la empresa del administrador.
+
+![Figura 8.1 — Registro de aliado persona natural](../diagrams/MOCKUPS/registro-aliado-persona-natural.png)
+
+**Figura 8.1 — Registro de aliado (persona natural).** Selector de tipo de aliado, datos de identificación y
+sección de documentos requeridos, cuya lista la configura cada tenant (RF-02, RNF-10). Ilustra `US-02.1.1`
+Registro aliado persona natural (`SCRUM-846`), migrada en `US-02.1.1-M2` (`SCRUM-1065`); la variante de empresa
+corresponde a `US-02.1.2` (`SCRUM-847`). Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
+
+![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](../diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
+
+**Figura 8.2 — Bandeja de verificación del Backoffice.** El administrador ve solo los aliados pendientes de su
+tenant, consulta sus documentos y aprueba o rechaza; el rechazo exige un motivo. Ilustra `US-02.1.3`
+Aprobar/rechazar registro de aliado (`SCRUM-848`), migrada en `US-02.1.3-M2` (`SCRUM-1066`), y responde a RF-06 y
+RNF-01. Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
+
+Exportaciones disponibles en `diagrams/MOCKUPS/`:
+
+| Archivo | Pantalla | Historia |
+|---|---|---|
+| `perfil-acceso-registros.png` | Acceso a los registros desde el perfil | `US-02.1.1`, `US-02.2.1` |
+| `registro-aliado-persona-natural.png` | Registro de aliado persona natural | `US-02.1.1` (`SCRUM-846`) |
+| `registro-aliado-empresa.png` | Registro de aliado empresa | `US-02.1.2` (`SCRUM-847`) |
+| `registro-aliado-confirmacion.png` | Confirmación: registro pendiente de verificación | `US-02.1.1`, `US-02.1.2` |
+| `backoffice-verificacion-aliados.png` | Bandeja de verificación de aliados | `US-02.1.3` (`SCRUM-848`) |
+| `backoffice-aliado-aprobado.png` | Aliado aprobado en la bandeja | `US-02.1.3` (`SCRUM-848`) |
+| `registro-cliente.png` | Registro de cliente persona natural | `US-02.2.1` (`SCRUM-851`) |
+
 ---
 
 # 9. Configuración por tenant
@@ -814,3 +848,4 @@ La arquitectura contempla explícitamente:
 - `/docs/adr/` — decisiones arquitectónicas.
 - [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `contexto`, `contenedores`, `componentes-*` y `despliegue-prod`.
 - [`diagrams/ALTO_NIVEL/`](../diagrams/ALTO_NIVEL/) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.
+- [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.4.

@@ -79,13 +79,15 @@ El archivo `nginx.conf` en **`MANI-APIGateway`** gobierna la redirección del tr
 
 ## 4. Estándares Transversales de Comunicación
 
-### 4.1 Identificación de Tenant y Autenticación
-* Todas las operaciones autenticadas deben enviar el encabezado estándar:
-  ```text
-  Authorization: Bearer <JWT>
-  ```
-* El API Gateway reenvía este encabezado de forma transparente.
-* Cada microservicio inspecciona el token para extraer los claims `user_id` y `tenant_id`, garantizando que ninguna consulta acceda a datos de otra organización (*RNF-01*).
+### 4.1 Identificación de Tenant y Autenticación (CFG-22 / ADR-0018)
+* **Validación en el API Gateway:** Todas las rutas protegidas (`/api/v1/core/*`, `/api/v1/rules/*`, `/api/v1/dispatch/*`) ejecutan una subpetición interna de validación (`auth_request /_auth_validate`) contra el servicio Core antes de permitir el paso del tráfico.
+* **Rechazo Inmediato:** Peticiones sin encabezado `Authorization: Bearer <JWT>`, con token expirado/inválido o **sin claim obligatorio `tenant_id`** son rechazadas directamente en el Gateway con HTTP **`401 Unauthorized`**, sin alcanzar jamás a los microservicios backend.
+* **Propagación Confiable de Claims:** Tras validar el token criptográficamente y verificar que contiene `app_metadata.tenant_id` y `user_role`, el Gateway inyecta los encabezados autenticados limpios:
+  - `X-Tenant-Id: <tenant_id>`
+  - `X-User-Role: <user_role>`
+  - `X-User-Id: <user_id>`
+  - `Authorization: Bearer <JWT>` (Token Relay)
+* **Anti-Spoofing:** En peticiones pre-autenticadas (ej. `/api/v1/core/auth/*`) se acepta `X-Tenant-Slug` únicamente para resolución previa de tenant, y el Gateway descarta cualquier encabezado `X-Tenant-Id` provisto externamente por el cliente para impedir suplantación.
 
 ### 4.2 Trazabilidad Distribuida con Correlation ID
 * Si el cliente no suministra un encabezado `X-Correlation-ID`, NGINX genera automáticamente un identificador único por petición.

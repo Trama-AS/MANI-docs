@@ -747,6 +747,11 @@ Aplicable a:
 **Riesgo:** mayor costo de operación y soporte.  
 **Control:** contratos estandarizados, CI/CD homogéneo y límites claros por servicio.
 
+## Custodia de pagos del segundo incremento
+
+**Riesgo:** si MANI retiene en cuentas propias el dinero de los clientes (escrow), podría incurrir en captación masiva y habitual de dineros del público sin autorización (Código Penal art. 316; Decreto 1981 de 1988).  
+**Control:** la custodia del dinero queda en un operador de pagos regulado y MANI solo gestiona el estado del pago (ADR-0023, ADR-0024; RNF-06, RNF-11).
+
 ---
 
 # 24. Matriz de trazabilidad SRS → Arquitectura

@@ -19,22 +19,21 @@ Declaradas en [`workspace.dsl`](../../diagrams/C4Model/workspace.dsl):
 
 | Vista | Nivel C4 | Contenido | Imagen |
 |---|---|---|---|
-| `panorama` | Landscape | El mapa de sistemas: MANI como único sistema propio, sus cuatro actores y las plataformas externas de las que depende | pendiente de render |
+| `panorama` | Landscape | El mapa de sistemas: MANI como único sistema propio, sus cuatro actores y las plataformas externas de las que depende | [PNG](../../diagrams/C4Model/png/panorama.png) |
 | `contexto` | 1 | MANI, sus cuatro actores y los sistemas externos | [PNG](../../diagrams/C4Model/png/contexto.png) |
-| `contenedores` | 2 | Flutter, Gateway, los cuatro servicios, Supabase (Auth, PostgreSQL+RLS, Storage, Realtime), CDC/ELT e integraciones | [PNG](../../diagrams/C4Model/png/contenedores.png) |
+| `contenedores` | 2 | Flutter, Gateway y los servicios agrupados por bloque —Java decide, .NET asigna, Node opera—, Supabase por dominio (Rules, Dispatch, Core, Availability) más Auth, Storage y Realtime, CDC/ELT e integraciones | [PNG](../../diagrams/C4Model/png/contenedores.png) |
 | `componentes-rules` | 3 | Rules Service (Java): controller, application service, estrategias, puerto y adaptador | [PNG](../../diagrams/C4Model/png/componentes-rules.png) |
 | `componentes-dispatch` | 3 | Dispatch Service (.NET): selector, coordinador, **Concurrency Guard**, auditoría, puerto y adaptador | [PNG](../../diagrams/C4Model/png/componentes-dispatch.png) |
 | `componentes-core` | 3 | Core Services (Node.js): usuarios/tenants, KYC, catálogo, notificación, reportes, adaptadores externos | [PNG](../../diagrams/C4Model/png/componentes-core.png) |
 | `componentes-availability` | 3 | Availability Service (Node.js): reglas de horario, consulta de elegibilidad, repositorio | [PNG](../../diagrams/C4Model/png/componentes-availability.png) |
-| `dinamico-solicitud` | Dinámica | Solicitud y conformación del listado de aliados: el despacho pregunta elegibilidad a Disponibilidades y orden a Reglas (RF-12, RF-13) | pendiente de render |
-| `dinamico-aceptacion` | Dinámica | Exclusión concurrente a nivel de componentes de Despacho: la primera aceptación gana, la segunda recibe `409 Conflict` (RF-14, RNF-05) | pendiente de render |
-| `dinamico-cotizacion` | Dinámica | Cotización en Core y validación contra el tarifario en Reglas (RF-15, RF-16, RF-22) | pendiente de render |
-| `dinamico-kyc` | Dinámica | Carga de documentos al bucket privado y aprobación por el administrador del tenant (RF-05, RF-06) | pendiente de render |
-| `dinamico-mensajeria` | Dinámica | Mensaje persistido, transportado por Realtime y notificado por push cuando el destinatario no está conectado (RF-20, RF-21) | pendiente de render |
-| `despliegue-prod` | Despliegue | Producción: borde TLS, clúster Kubernetes con 2..6 réplicas, plataforma de datos administrada y analítica | [PNG](../../diagrams/C4Model/png/despliegue-prod.png) |
-| `despliegue-qa` | Despliegue | TEST/QA: misma imagen validada, una réplica por servicio, instancia y base separadas de producción | pendiente de render |
+| `dinamico-solicitud` | Dinámica | Solicitud y conformación del listado de aliados: el despacho pregunta elegibilidad a Disponibilidades y orden a Reglas (RF-12, RF-13) | [PNG](../../diagrams/C4Model/png/dinamico-solicitud.png) |
+| `dinamico-aceptacion` | Dinámica | Exclusión concurrente a nivel de componentes de Despacho: la primera aceptación gana, la segunda recibe `409 Conflict` (RF-14, RNF-05) | [PNG](../../diagrams/C4Model/png/dinamico-aceptacion.png) |
+| `dinamico-cotizacion` | Dinámica | Cotización en Core y validación contra el tarifario en Reglas (RF-15, RF-16, RF-22) | [PNG](../../diagrams/C4Model/png/dinamico-cotizacion.png) |
+| `dinamico-kyc` | Dinámica | Carga de documentos al bucket privado y aprobación por el administrador del tenant (RF-05, RF-06) | [PNG](../../diagrams/C4Model/png/dinamico-kyc.png) |
+| `dinamico-mensajeria` | Dinámica | Mensaje persistido, transportado por Realtime y notificado por push cuando el destinatario no está conectado (RF-20, RF-21) | [PNG](../../diagrams/C4Model/png/dinamico-mensajeria.png) |
+| `despliegue-prod` | Despliegue | Producción: borde con balanceo, clúster Kubernetes con 2..6 réplicas y secretos externos, Supabase por dominio, pipeline de CI/CD que promueve la imagen y observabilidad Prometheus/Grafana | [PNG](../../diagrams/C4Model/png/despliegue-prod.png) |
 
-Las cuatro vistas del C4 que Structurizr puede describir están cubiertas: **panorama**, **estática** (contexto, contenedores, componentes), **dinámica** y **despliegue**. Las vistas nuevas ya están en el DSL y validan; sus PNG se generan en el siguiente render, que necesita Graphviz o el contenedor de Structurizr (ver más abajo).
+Las cuatro vistas del C4 que Structurizr puede describir están cubiertas: **panorama**, **estática** (contexto, contenedores, componentes), **dinámica** y **despliegue**. No hay vista por ambiente: Local, DEV y TEST/QA comparten la topología de producción y solo cambian escalado, secretos y datos ([`SDD.md`](../../architecture/SDD.md) §10).
 
 El **Nivel 4 (Code)** no se modela en el DSL —Structurizr describe contenedores y componentes, no clases— y se mantiene en [`SDD.md`](../../architecture/SDD.md) §4.4.
 
@@ -46,7 +45,15 @@ structurizr validate -w workspace.dsl               # comprueba el modelo antes 
 structurizr export -w workspace.dsl -f plantuml     # también: dot, websequencediagrams, json
 ```
 
-`validate` termina en 0 y sin salida cuando el modelo está bien; el PlantUML exportado se convierte a PNG con PlantUML + Graphviz.
+`validate` termina en 0 y sin salida cuando el modelo está bien.
+
+Los PNG publicados se generaron desde ese PlantUML con el motor **Smetana**, que no necesita Graphviz instalado:
+
+```bash
+java -jar plantuml.jar -tpng -Playout=smetana structurizr-*.puml
+```
+
+Las vistas dinámicas llevan la propiedad `plantuml.sequenceDiagram` en el DSL y por eso se dibujan como diagramas de secuencia, que es como se lee un flujo.
 
 Las imágenes publicadas viven en [`diagrams/C4Model/`](../../diagrams/C4Model/) y se regeneran cuando cambia el modelo: **el DSL es la fuente, el PNG es el resultado.**
 
@@ -97,11 +104,23 @@ El DHL muestra acceso directo de Flutter a Supabase para disponibilidades: es la
 
 **Despliegue — producción**
 
-<img src="../../diagrams/C4Model/png/despliegue-prod.png" alt="Vista de despliegue de producción: borde TLS, clúster Kubernetes, plataforma de datos administrada y analítica" width="760">
+<img src="../../diagrams/C4Model/png/despliegue-prod.png" alt="Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, CI/CD y observabilidad" width="760">
 
-**Panorama, dinámicas y despliegue de TEST/QA**
+**Panorama — System Landscape**
 
-Definidas en el DSL y pendientes de exportar a PNG. Su contenido está en texto en [`SDD.md`](../../architecture/SDD.md) §4.5, §4.6 y §9.2, de modo que el diseño se lee sin renderizar.
+<img src="../../diagrams/C4Model/png/panorama.png" alt="Panorama de sistemas: MANI como único sistema propio y las plataformas externas" width="760">
+
+**Vistas dinámicas**
+
+<img src="../../diagrams/C4Model/png/dinamico-solicitud.png" alt="Vista dinámica — solicitud y listado de aliados" width="760">
+
+<img src="../../diagrams/C4Model/png/dinamico-aceptacion.png" alt="Vista dinámica — aceptación concurrente y 409 Conflict" width="760">
+
+<img src="../../diagrams/C4Model/png/dinamico-cotizacion.png" alt="Vista dinámica — cotización y validación contra el tarifario" width="760">
+
+<img src="../../diagrams/C4Model/png/dinamico-kyc.png" alt="Vista dinámica — carga y verificación de documentos KYC" width="760">
+
+<img src="../../diagrams/C4Model/png/dinamico-mensajeria.png" alt="Vista dinámica — mensajería con notificación de respaldo" width="760">
 
 ### Diagramas de alto nivel (DHL) — los referencia el [`SAD.md`](../../architecture/SAD.md)
 

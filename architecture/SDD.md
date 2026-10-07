@@ -6,7 +6,7 @@
 **Documento de datos asociado:** [ModeloDatos.md](./ModeloDatos.md)  
 **Estado:** Diseño arquitectónico objetivo  
 **Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.  
-**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core`, `componentes-availability` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y las de despliegue `despliegue-prod` y `despliegue-qa`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
+**Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/C4Model/`](../diagrams/C4Model/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core`, `componentes-availability` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y la de despliegue `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
 
 ---
 
@@ -124,6 +124,20 @@ La solución utiliza diferentes tecnologías de implementación según el servic
 | Orquestación | Kubernetes |
 | CI/CD | GitHub Actions |
 
+El reparto no es por gusto ni por coleccionar frameworks: cada stack tiene una responsabilidad delimitada y los diagramas C4 la muestran agrupando los contenedores por bloque.
+
+```text
+JAVA            .NET            NODE
+decide          asigna          opera
+  ↓               ↓               ↓
+reglas de       despacho y      servicios funcionales
+negocio         asignación      de la plataforma
+```
+
+- **MANI-Rules-Java — decide.** Un único servicio: evalúa si una condición de negocio se cumple. Ranking, elegibilidad, requisitos KYC, tarifarios y reglas por tenant. No es un backend general.
+- **MANI-Dispatch-DotNet — asigna.** Un único servicio: selecciona aliados válidos, asigna, controla estados y exclusiones. Consume Rules antes de asignar; no reimplementa las reglas.
+- **MANI-Core-Node — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, solicitudes, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación.
+
 El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnología debe justificar su existencia, mantener contratos estables y cumplir los mismos criterios de seguridad, observabilidad, pruebas y despliegue.
 
 ---
@@ -139,7 +153,7 @@ El modelo cubre las cuatro vistas que Structurizr sí puede describir, y ninguna
 | Panorama — System Landscape | qué sistemas existen en el mapa y a cuáles toca cada actor | §4.5 |
 | Estática — contexto, contenedores, componentes | qué existe y cómo se relaciona | §4.1 a §4.3 |
 | Dinámica | en qué orden ocurre cada flujo crítico | §4.6 |
-| Despliegue | dónde se ejecuta cada contenedor | §9 |
+| Despliegue | dónde se ejecuta cada contenedor, de dónde sale y quién lo vigila | §9 |
 
 El Nivel 4 (Code) se mantiene en §4.4: Structurizr describe contenedores y componentes, no clases.
 
@@ -182,21 +196,26 @@ Administrador tenant → administra usuarios, aliados, tenant y KYC
 
 ```text
 Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
+                      enrutamiento · control de acceso · token · rate limiting
                                                    ↓
-        ┌──────────────┬───────────────┬───────────────┬────────────────────┐
-   Rules Service   Dispatch Service   Core Services   Availability Service
-     (Java)            (.NET)          (Node.js)          (Node.js)
-        ↓                 ↓                ↓                   ↓
-   Supabase/PostgreSQL por dominio: reglas · despacho · core · disponibilidad
+   ┌── decide ──────┬── asigna ────────┬── opera ─────────────────────────────┐
+   Rules Service     Dispatch Service    Core Services      Availability Service
+   (Java)            (.NET)              (Node.js)          (Node.js)
+        ↓                 ↓                   ↓                    ↓
+   Supabase Rules    Supabase Dispatch   Supabase Core     Supabase Availability
+        └──────────────── PostgreSQL + RLS por tenant ─────────────────┘
                                                    ↓
    Core → FCM/APNs · Operador de pagos · Storage · Realtime
    Gateway y servicios → telemetría → Prometheus / Grafana / Datadog
    PostgreSQL → carga incremental → CDC/ELT → Data Warehouse → BI
 ```
 
+Dispatch consulta Availability y Rules; Core consulta Rules para validar la cotización contra el tarifario. Son llamadas HTTPS entre servicios, no accesos cruzados a datos.
+
 ### Reglas de dependencia
 
 - Flutter consume contratos expuestos por el Gateway.
+- Cada servicio es dueño de su almacén: Rules de `Supabase Rules`, Dispatch de `Supabase Dispatch`, Core de `Supabase Core` y Availability de `Supabase Availability`.
 - Los servicios no acceden directamente a tablas propiedad de otro dominio.
 - Las integraciones externas se encapsulan mediante adaptadores.
 - El Data Warehouse no participa en transacciones operacionales.
@@ -344,7 +363,9 @@ DB / External Adapters
 
 **Objetivo:** mostrar el mapa de sistemas alrededor de MANI. Es una pregunta distinta de la del Nivel 1: el contexto mira hacia fuera *desde* MANI, el panorama mira el conjunto y deja ver que MANI es el único sistema propio y que todo lo demás es proveedor o plataforma de destino.
 
-> **Vista `panorama`** de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl).
+![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](../diagrams/C4Model/png/panorama.png)
+
+> **Figura 7 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/panorama.png`](../diagrams/C4Model/png/panorama.png).
 
 ```text
 Cliente · Aliado · Administrador de tenant · Administrador de plataforma
@@ -373,6 +394,10 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 ### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
 
+![Vista dinámica — solicitud: el despacho consulta elegibilidad a Disponibilidades y orden a Reglas](../diagrams/C4Model/png/dinamico-solicitud.png)
+
+> **Figura 8 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/C4Model/png/dinamico-solicitud.png`](../diagrams/C4Model/png/dinamico-solicitud.png).
+
 ```text
 1. Cliente            → Flutter          registra la solicitud
 2. Flutter            → API Gateway      POST con el JWT del tenant
@@ -385,6 +410,10 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 Quien orquesta es el despacho: pregunta elegibilidad a Disponibilidades y orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada de esto.
 
 ### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
+
+![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../diagrams/C4Model/png/dinamico-aceptacion.png)
+
+> **Figura 9 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/C4Model/png/dinamico-aceptacion.png`](../diagrams/C4Model/png/dinamico-aceptacion.png).
 
 Vista a nivel de componentes del Servicio de Despacho. Dos aliados aceptan la misma solicitud al mismo tiempo:
 
@@ -403,6 +432,10 @@ La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y re
 
 ### 4.6.3 Cotización y tarifario — `dinamico-cotizacion`
 
+![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../diagrams/C4Model/png/dinamico-cotizacion.png)
+
+> **Figura 10 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/C4Model/png/dinamico-cotizacion.png`](../diagrams/C4Model/png/dinamico-cotizacion.png).
+
 ```text
 1. Aliado        → Flutter        cotización separando mano de obra y materiales (RF-15)
 2. Flutter       → API Gateway    envía la cotización
@@ -416,6 +449,10 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 
 ### 4.6.4 KYC del aliado — `dinamico-kyc`
 
+![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../diagrams/C4Model/png/dinamico-kyc.png)
+
+> **Figura 11 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/C4Model/png/dinamico-kyc.png`](../diagrams/C4Model/png/dinamico-kyc.png).
+
 ```text
 1. Aliado                 → Flutter        carga los documentos requeridos por el tenant
 2. Flutter                → API Gateway    envía los documentos
@@ -428,6 +465,10 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 La aprobación es una decisión humana del tenant, no un efecto automático de la carga.
 
 ### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
+
+![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../diagrams/C4Model/png/dinamico-mensajeria.png)
+
+> **Figura 12 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/C4Model/png/dinamico-mensajeria.png`](../diagrams/C4Model/png/dinamico-mensajeria.png).
 
 ```text
 1. Cliente   → Flutter        escribe un mensaje del servicio
@@ -640,20 +681,32 @@ Los escenarios anteriores complementan los umbrales específicos definidos en la
 
 ## 9.1 Producción
 
-![Vista de despliegue — producción: borde TLS, clúster Kubernetes, plataforma de datos administrada y analítica](../diagrams/C4Model/png/despliegue-prod.png)
+![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](../diagrams/C4Model/png/despliegue-prod.png)
+
+> **Figura 13 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl); imagen en [`diagrams/C4Model/png/despliegue-prod.png`](../diagrams/C4Model/png/despliegue-prod.png).
 
 ```text
-Web / Mobile Users → DNS + TLS → NGINX Ingress / API Gateway
+Web / Mobile Users → DNS + TLS + balanceador → NGINX Ingress / API Gateway (2 réplicas)
                                           ↓
 Clúster Kubernetes — producción (proveedor y topología pendientes: INFRA-01, INFRA-02)
-  Rules (Java) · Dispatch (.NET) · Core (Node.js) · Availability — 2..6 réplicas cada uno
+  Namespace de servicios
+    Rules — decide (Java)     · Dispatch — asigna (.NET)
+    Core — opera (Node.js)    · Availability — opera (Node.js)
+    2 réplicas mínimo cada uno, HPA hasta 6
+  Gestor de secretos → inyecta credenciales y configuración fuera de la imagen
                                           ↓
-Plataforma de datos administrada
-  PostgreSQL por dominio: reglas · despacho · core · disponibilidad
+Supabase — proyecto productivo
+  PostgreSQL por dominio: reglas · despacho · core · disponibilidad (RLS por tenant)
+  Auth · Storage (bucket privado) · Realtime
                                           ↓
 Core → FCM/APNs + Operador de pagos
-Gateway y servicios → Prometheus → Grafana · logs y trazas → Datadog
+PostgreSQL → CDC/ELT → Data Warehouse
+
+GitHub Actions → pipeline de calidad y seguridad → registro de imágenes → clúster
+Prometheus → recolecta métricas del Gateway y de los pods → Grafana (dashboards y alertas)
 ```
+
+La vista incluye deliberadamente **de dónde sale** lo que corre —el pipeline promueve exactamente la misma imagen verificada— y **quién lo vigila**. Ambas cosas son parte del despliegue y no se deducen de la estructura lógica.
 
 ### Reglas físicas
 
@@ -666,23 +719,7 @@ Gateway y servicios → Prometheus → Grafana · logs y trazas → Datadog
 - bases productivas no accesibles desde Internet pública salvo controles explícitos;
 - acceso administrativo con privilegio mínimo.
 
-## 9.2 TEST/QA
-
-> **Vista `despliegue-qa`** de [`workspace.dsl`](../diagrams/C4Model/workspace.dsl).
-
-```text
-Acceso controlado (sin exposición pública) → DNS + TLS QA → NGINX Ingress / API Gateway
-                                          ↓
-Clúster Kubernetes — TEST/QA, aislamiento lógico del ambiente
-  Rules · Dispatch · Core · Availability — 1 réplica cada uno
-                                          ↓
-Supabase — proyecto de pruebas: instancia y base separadas de producción
-  PostgreSQL con los mismos esquemas y RLS · Storage con documentos sintéticos
-```
-
-Lo que cambia respecto de producción es el escalado, los secretos y los datos: se promueve **la misma imagen de contenedor validada** (§10 y §11). Una réplica basta porque el ambiente valida funcionalidad; las pruebas de concurrencia atacan la actualización condicional atómica, que no depende del número de réplicas.
-
-Los ambientes Local y DEV no se modelan en el DSL: su topología es la de TEST/QA con datos sintéticos y un nodo más no añadiría información arquitectónica.
+Los demás ambientes no se modelan como vistas aparte: Local, DEV y TEST/QA comparten esta topología y solo cambian escalado, secretos y datos (§10). Un diagrama por ambiente repetiría la misma información sin añadir ninguna decisión arquitectónica.
 
 ---
 

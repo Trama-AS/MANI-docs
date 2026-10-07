@@ -1,9 +1,9 @@
 # Backlog MANI — versión final
 
 - **Versión:** final, Sprint 3
-- **Fecha:** 2026-10-03
+- **Fecha:** 2026-10-03 (actualizado el 2026-10-06 por PO-02 y ADR-0022)
 - **Proyecto Jira:** MANI (`SCRUM`)
-- **Arquitectura vigente:** `Flutter → NGINX API Gateway → Core Node → funciones PL/pgSQL`, con Supabase Auth emitiendo el token y el tenant viajando como claim
+- **Arquitectura vigente:** `Flutter → NGINX API Gateway → Core Node (lógica de negocio en el servicio) → Supabase/PostgreSQL`, con Supabase Auth emitiendo el token y el tenant viajando como claim. La lógica que estaba en Flutter y en las funciones PL/pgSQL se migra a los servicios (ADR-0022)
 
 Este documento es la única fuente del backlog. Reemplaza las versiones anteriores y el inventario de transición.
 
@@ -140,6 +140,53 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 | `US-08.2.2` | `SCRUM-899` | Registrar campañas y ver desempeño | To Do | High | 5.0 | — |
 | `US-08.3.1` | `SCRUM-900` | Métricas operativas por tenant | To Do | High | 2.0 | — |
 | `US-08.3.2` | `SCRUM-901` | Administrar estado de tenants | To Do | High | 8.0 | — |
+
+### 2.1 Repriorización del incremento (PO-02)
+
+Clasificación ratificada en `PO-02` (`SCRUM-1077`) el 2026-10-06. En Jira, cada historia tiene la etiqueta
+correspondiente y un comentario con la razón y la referencia al SRS.
+
+**Incremento 2** — etiqueta `postergar-incremento-2`
+
+| Clave | Historia | Referencia SRS |
+|---|---|---|
+| `SCRUM-450` | EP-07 Pagos y facturación (épica) | RF-24 a RF-28, §1.2 y §4.7 |
+| `SCRUM-451` | EP-08 Operación y comercialización (épica) | RF-24 a RF-28, §1.2 y §4.7 |
+| `SCRUM-888` | Pago en línea al aceptar cotización | RF-24 |
+| `SCRUM-889` | Registro de transacciones (Audit Log inmutable) | RF-24, RNF-04 |
+| `SCRUM-893` | Liquidación al aliado (Comisión configurable) | RF-25 |
+| `SCRUM-895` | Cliente registra queja | RF-26 |
+| `SCRUM-896` | Tenant gestiona estado de quejas | RF-26 |
+| `SCRUM-900` | Métricas operativas por tenant | RF-28 |
+| `SCRUM-901` | Administrar estado de tenants | RF-27, RF-28 |
+
+Al postergarse las épicas `EP-07` y `EP-08`, sus demás historias tampoco entran en el incremento actual.
+
+**Fuera del MVP** — etiqueta `retirar-mvp`
+
+| Clave | Historia | Referencia SRS |
+|---|---|---|
+| `SCRUM-871` | Cliente rastrea ubicación del aliado en vivo | §1.2 "Fuera de alcance del MVP" y REST-01 |
+
+**Backlog secundario** — etiqueta `backlog-secundario`
+
+| Clave | Historia | Razón |
+|---|---|---|
+| `SCRUM-862` | Filtrar por tipo de aliado | Mejora opcional; no es un RF del SRS actual |
+| `SCRUM-872` | Aliado solicita adición por imprevisto | Posible evolución, no compromiso del MVP |
+| `SCRUM-873` | Registrar evidencias sin conexión (Offline) | El SRS actual no exige modo offline |
+| `SCRUM-876` | Calificación agregada visible en el listado | Puede alimentar el ranking (RF-13), no es RF independiente |
+| `SCRUM-877` | Cancelar solicitud antes de la ejecución | Posible regla futura del ciclo del servicio |
+| `SCRUM-879` | Consultar historial de servicios | Trazabilidad (RNF-04), no es RF independiente |
+| `SCRUM-880` | Aliado consulta historial de trabajos | Trazabilidad (RNF-04), no es RF independiente |
+
+**Se mantienen en el Sprint 3** por decisión del equipo (2026-10-06), aunque su clasificación es backlog
+secundario: `SCRUM-854` Editar perfil propio, como tarea de desarrollo de la PO, y `SCRUM-856` Aceptación de
+Términos y Condiciones. Ninguna desplaza a las historias de migración críticas.
+
+**Ratificación de dependencias:** ninguna historia del Sprint 3 depende de las historias que salen del
+incremento, y ninguna de ellas estaba en el sprint.
+
 ---
 
 ## 3. Historias cerradas rehechas sobre la arquitectura vigente
@@ -190,7 +237,7 @@ con *Relates* a la historia de migración que las reemplaza.
 
 En el Sprint 3 solo existen dos servicios nuevos: **MANI-Gateway** (NGINX) y **MANI-Core** (Node). Por tanto:
 
-- **Entra al Sprint 3** la historia cuyo componente destino se resuelve con Gateway + Core + PL/pgSQL, y que
+- **Entra al Sprint 3** la historia cuyo componente destino se resuelve con Gateway + Core (con la lógica en el servicio, ADR-0022), y que
   además reutiliza el modelo de identidad y el cliente HTTP que construye `US-02.1.1`.
 - **Queda en Incremento 2** la que necesita Rules Java, Dispatch .NET o Availability Node. Donde hay una parte
   que Core sí sostiene hoy, la historia se **parte** (`-M2` ahora, `-M6` después) en vez de arrastrarse completa.
@@ -208,9 +255,9 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-Gateway** (NGINX) y **M
 | `US-02.1.2-M3` | Migracion: reescribir el datasource de registro de empresa en Flutter contra el Gateway, retirando .rpc() y .storage.from() y conservando la interfaz del repositorio | High | 3 | `SCRUM-847` |
 | `US-02.1.1-M3` | Migracion: reescribir auth_remote_datasource.dart contra el Gateway en lugar de SupabaseClient, conservando la interfaz de domain/repositories. | Highest | 4 | `SCRUM-846` |
 | `US-02.1.1-M4` | Migracion: regresion funcional de US-02.1.1 desplegada en QA a traves del Gateway, mas las pruebas de aislamiento multi-tenant de los documentos KYC. | Highest | 4 | `SCRUM-846` |
-| `US-02.1.2-M2` | Migracion: implementar el registro de aliado empresa en Core Node invocando las funciones PL/pgSQL existentes, con el representante legal y los documentos de la empresa entrando por el Gateway | High | 4 | `SCRUM-847` |
+| `US-02.1.2-M2` | Migracion: implementar el registro de aliado empresa en Core Node con la logica del registro en el servicio (ADR-0022), con el representante legal y los documentos de la empresa entrando por el Gateway | High | 4 | `SCRUM-847` |
 | `US-02.2.1-M2` | Migracion: llevar el registro de cliente persona natural al camino Gateway - Core Node, incluyendo su datasource en Flutter | High | 4 | `SCRUM-851` |
-| `US-02.1.1-M2` | Migracion: implementar el registro de aliado persona natural en Core Node invocando registrar_aliado_persona_natural, handle_new_user y el upsert a usuario, expuesto por el contrato OpenAPI de CFG-16. | Highest | 5 | `SCRUM-846` |
+| `US-02.1.1-M2` | Migracion: implementar el registro de aliado persona natural en Core Node, migrando al servicio la logica de registrar_aliado_persona_natural, handle_new_user y el upsert a usuario (ADR-0022), expuesto por el contrato OpenAPI de CFG-16. | Highest | 5 | `SCRUM-846` |
 
 **Incremento 2** — 9 historias
 
@@ -258,7 +305,7 @@ Actualización documental y diagramas de las vistas.
 
 | Tarea | Prioridad | PH | Épica |
 |---|---|---|---|
-| `DOC-26` — Registrar en ADR la decision de SP-05: los servicios invocan las funciones PL/pgSQL existentes y no reescriben la logica | Highest | 3 | `SCRUM-453` |
+| `DOC-26` — Registrar en ADR la decision de SP-05, revisada en la daily del 2026-10-05: la logica de negocio vive en los servicios y se retira de Flutter y de las funciones PL/pgSQL (ADR-0022) | Highest | 3 | `SCRUM-453` |
 | `DOC-28` — Actualizar el SAD y el SDD con el resultado real de la transicion y cerrar KI-01 y KI-02 | Highest | 4 | `SCRUM-453` |
 | `DOC-29` — Reorganizar el repositorio de diagramas a la estructura de ADR-0008 y versionar la fuente editable | High | 2 | `SCRUM-453` |
 | `DOC-30` — Rehacer las vistas C4 de contexto y de contenedores con el camino real del incremento | Highest | 3 | `SCRUM-453` |

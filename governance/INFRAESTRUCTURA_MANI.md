@@ -127,6 +127,8 @@ La variante local puede incluir:
 
 Cuando una funcionalidad dependa específicamente de Auth, Storage, Realtime o RLS de Supabase, debe probarse también contra un entorno que reproduzca esas capacidades antes de considerarse validada.
 
+El Docker Compose local y el esquema versionado viven en `MANI-APIGateway` (perfil `db` para PostgreSQL y Adminer; perfil `web` para el cliente Flutter Web, cuya imagen `mani-web:local` se construye en `MANI-Flutter`). Ver §15.
+
 ## 5.4 Datos
 
 Solo:
@@ -424,6 +426,20 @@ Principio **schema-first**:
 Queda prohibido modificar manualmente el esquema productivo como procedimiento ordinario.
 
 Los tres ambientes deben conservar compatibilidad estructural.
+
+## 15.1 Dónde viven las migraciones
+
+Las migraciones versionadas (`database/migrations/NNN_descripcion.sql`, idempotentes e inmutables una vez fusionadas), los scripts de `database/init/` y las verificaciones de `database/verify/` viven en el repositorio **`MANI-APIGateway`** (ADR-0004, enmienda del 2026-10-07). Ya no están en `MANI-Flutter`.
+
+Todo cambio de esquema se propone por PR a `MANI-APIGateway`, con su referencia Jira.
+
+## 15.2 Responsable por ambiente
+
+| Ambiente | Responsable | Cómo |
+|---|---|---|
+| DEV local | Cada desarrollador | `scripts/migrate-local.*` contra el contenedor `mani-postgres` (perfil `db` del Compose) |
+| DEV / TEST-QA (Supabase) | DevOps | Aplica `database/migrations/` en orden, después de fusionar el PR. Automatizarlo en el pipeline de `MANI-APIGateway` queda en CFG-29 |
+| PROD | DevOps, con aprobación del PR de release | Solo migraciones ya validadas en TEST/QA. Nunca cambios manuales al esquema |
 
 ---
 

@@ -407,7 +407,7 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 ![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/ALTO_NIVEL/Infra.png)
 
 > **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/ALTO_NIVEL/Infra.png`](../diagrams/ALTO_NIVEL/Infra.png).
-> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentada en SDD §9.
+> Las vistas C4 de despliegue formales son `despliegue-prod` y `despliegue-qa` en [`workspace.dsl`](../diagrams/C4Model/workspace.dsl), documentadas en SDD §9.1 y §9.2.
 
 MANI mantiene tres ambientes:
 
@@ -812,5 +812,5 @@ La arquitectura contempla explícitamente:
 - `ModeloDatos.md` — diseño conceptual, lógico, físico y analítico.
 - `SDD.md` — descripción detallada de diseño de software.
 - `/docs/adr/` — decisiones arquitectónicas.
-- [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `contexto`, `contenedores`, `componentes-*` y `despliegue-prod`.
+- [`workspace.dsl`](../diagrams/C4Model/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `panorama`, `contexto`, `contenedores`, `componentes-*`, `dinamico-*` y `despliegue-prod` / `despliegue-qa`.
 - [`diagrams/ALTO_NIVEL/`](../diagrams/ALTO_NIVEL/) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.

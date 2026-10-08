@@ -1,0 +1,39 @@
+PROCESO 03 — REGISTRO DE CLIENTE Y SITIOS DE SERVICIO
+=====================================================
+
+Cliente: (inicio: cliente necesita solicitar servicios)
+user Seleccionar tipo de cliente
+
+¿Tipo de cliente?
+Persona natural
+user Diligenciar datos personales y direccion
+script Asignar zona del catalogo a la direccion
+script Crear sitio de servicio unico
+...
+
+¿Tipo de cliente?
+Empresa
+user Diligenciar datos de la empresa
+user Registrar sitios de servicio
+script Asignar zona del catalogo a cada sitio
+Cliente: user Registrar reglas y condiciones particulares por sitio
+...
+
+Cliente: script Crear cuenta de cliente en el tenant
+(enviar correo de verificacion)
+(recibir correo de verificacion)
+user Confirmar cuenta
+script Habilitar cliente en el tenant
+(fin: cliente habilitado para crear solicitudes)
+
+...
+
+Cliente: user Registrar sitios de servicio
+¿Sitio tiene zona asignada?
+No
+script Rechazar alta del sitio
+(notificar zona obligatoria)
+user Seleccionar zona del catalogo
+...
+
+TRAZABILIDAD: RF-02, RF-03, RF-04, RF-08, RF-09, RNF-01, RNF-08, RNF-09, REST-01

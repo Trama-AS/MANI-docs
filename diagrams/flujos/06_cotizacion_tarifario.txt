@@ -1,0 +1,51 @@
+PROCESO 06 — COTIZACION Y TARIFARIO DE REFERENCIA
+=================================================
+Subproceso invocado desde 04_ciclo_servicio.txt
+
+Administrador de tenant: (inicio: definicion del tarifario)
+user Definir tarifas de referencia por categoria (minimo, tipico, maximo)
+script Publicar tarifario vigente del tenant
+
+Aliado: (inicio: solicitud asignada al aliado)
+user Registrar costos de mano de obra
+user Registrar costos de materiales
+script Calcular total de la cotizacion
+script Comparar total contra el rango del tarifario de la categoria
+
+¿Cotizacion dentro del rango de referencia?
+No
+script Alertar al aliado por cotizacion fuera de rango
+Aliado: user Revisar la alerta
+
+¿Aliado ajusta el valor?
+Si
+user Ajustar costos de mano de obra y materiales
+script Comparar total contra el rango del tarifario de la categoria
+...
+
+¿Aliado ajusta el valor?
+No
+user Justificar la cotizacion fuera de rango
+script Marcar cotizacion como fuera de rango y registrar justificacion
+...
+
+¿Cotizacion dentro del rango de referencia?
+Si
+script Marcar cotizacion dentro de rango
+...
+
+Aliado: user Enviar cotizacion
+(enviar cotizacion al cliente)
+script Registrar cotizacion en el historial del servicio
+(fin: cotizacion enviada - continua en 04_ciclo_servicio.txt)
+
+...
+
+Administrador de tenant:
+(timer cierre de periodo)
+user Consultar reporte de cotizaciones fuera de rango por periodo
+script Generar reporte de desviaciones del tarifario
+user Ajustar tarifario de referencia si corresponde
+(fin: tarifario revisado)
+
+TRAZABILIDAD: RF-15, RF-16, RF-17, RF-22, RF-23, RNF-02, RNF-04, RNF-10

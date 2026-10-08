@@ -1,0 +1,63 @@
+PROCESO 09 — GESTION DE QUEJAS
+==============================
+Segundo incremento.
+
+Cliente: (inicio: inconformidad con un servicio)
+user Seleccionar el servicio afectado
+user Registrar queja con motivo y evidencia
+(enviar queja)
+
+Sistema MANI: script Asociar queja al servicio y abrir caso
+(notificar queja al administrador de tenant)
+
+Administrador de tenant:
+(recibir notificacion de queja)
+user Revisar la queja
+script Recuperar bitacora, cotizacion y conversaciones del servicio
+user Analizar el caso
+
+¿Se requiere version del aliado?
+Si
+(solicitar descargos al aliado)
+Aliado: (recibir solicitud de descargos)
+user Registrar descargos
+(enviar descargos)
+(timer sin descargos en 3 dias)
+Administrador de tenant: user Analizar el caso
+...
+
+¿Se requiere version del aliado?
+No
+user Analizar el caso
+...
+
+Administrador de tenant: user Definir la resolucion
+
+¿Resolucion del caso?
+Queja procedente
+user Aplicar medida al aliado o compensacion al cliente
+script Registrar resolucion y medida aplicada
+...
+
+¿Resolucion del caso?
+Queja no procedente
+user Registrar sustentacion del cierre
+script Registrar resolucion sin medida
+...
+
+Sistema MANI: script Cerrar el caso de queja
+(notificar resolucion al cliente y al aliado)
+Cliente: (recibir resolucion)
+user Consultar la resolucion de la queja
+(fin: queja cerrada)
+
+...
+
+Administrador de tenant: user Revisar la queja
+(timer queja sin atender en 5 dias)
+script Escalar caso en la bandeja del tenant
+Administrador de plataforma: user Supervisar quejas escaladas del tenant
+Administrador de tenant: user Revisar la queja
+...
+
+TRAZABILIDAD: RF-18, RF-19, RF-21, RF-26, RF-28, RNF-01, RNF-04

@@ -1,0 +1,68 @@
+PROCESO 05 — DESPACHO Y ASIGNACION (EXCLUSION CONCURRENTE)
+==========================================================
+Subproceso invocado desde 04_ciclo_servicio.txt
+Base: ADR-0016 (broadcast + actualizacion condicional atomica)
+
+Sistema MANI: (inicio: solicitud creada en estado pendiente)
+script Determinar aliados elegibles por categoria y zona
+script Ordenar aliados segun la regla configurada del tenant
+script Publicar solicitud en broadcast a los aliados elegibles
+(publicar solicitud a aliados elegibles)
+
+Aliado: (recibir solicitud)
+user Aceptar o rechazar la solicitud
+
+¿Respuesta del aliado?
+Rechazar
+script Registrar rechazo del aliado
+script Mantener solicitud en estado pendiente
+...
+
+¿Respuesta del aliado?
+Aceptar
+(enviar aceptacion)
+Sistema MANI: script Intentar actualizacion condicional pendiente -> asignado
+
+¿La actualizacion condicional gano?
+Si
+script Asignar solicitud al aliado y registrar traza
+(notificar asignacion al aliado y al cliente)
+script Retirar solicitud de los demas aliados
+(retirar solicitud del listado de los otros aliados)
+(fin: exactamente una asignacion valida)
+
+¿La actualizacion condicional gano?
+No
+script Responder 409 Conflict - solicitud ya no disponible
+(notificar solicitud ya asignada)
+Aliado: (recibir solicitud ya no disponible)
+(fin: aceptacion descartada sin doble asignacion)
+
+...
+
+Sistema MANI: script Mantener solicitud en estado pendiente
+(timer sin aceptacion en 30 min)
+script Ampliar el conjunto de aliados elegibles o reordenar
+script Publicar solicitud en broadcast a los aliados elegibles
+...
+
+Sistema MANI: script Mantener solicitud en estado pendiente
+(timer sin aceptacion en 24 h)
+script Expirar la solicitud
+(notificar al cliente solicitud sin aliado disponible)
+Cliente: user Reformular o cancelar la solicitud
+(fin: solicitud expirada)
+
+...
+
+Sistema MANI: script Intentar actualizacion condicional pendiente -> asignado
+(error base de datos no disponible)
+script Rechazar la aceptacion sin asignar
+(notificar reintentar mas tarde)
+Aliado: user Aceptar o rechazar la solicitud
+...
+
+NOTA: la operacion de aceptacion es idempotente; un reintento del mismo aliado
+sobre una solicitud ya asignada a el no genera una segunda asignacion (RNF-03).
+
+TRAZABILIDAD: RF-12, RF-13, RF-14, RNF-03, RNF-05, RNF-07, ADR-0016, ADR-0021

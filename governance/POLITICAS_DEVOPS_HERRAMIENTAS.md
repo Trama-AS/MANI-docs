@@ -4,7 +4,7 @@
 **Responsable técnico principal:** Daniel Ávila — DevOps titular  
 **Apoyo:** Nicolás León — DevOps secundario  
 **Ámbito:** desarrollo, repositorios, CI/CD, pruebas, seguridad, observabilidad y herramientas  
-**Estado:** Línea base consolidada conforme a los ADR vigentes  
+**Documento vivo:** sin número de versión; la vigente es la de `main`  
 **Socialización:** [Video — Políticas DevOps: Gitflow y ambientes](https://livejaverianaedu-my.sharepoint.com/:v:/g/personal/ds_avilam_javeriana_edu_co/IQDJum5FxLZUT7eaGJrT-VSUAa4MTwcZkgTP_k2EMLSW_QQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=dhFbaF) · OneDrive institucional, requiere cuenta Javeriana  
 
 ---
@@ -31,7 +31,7 @@ No redefine:
 3. **Automatización primero:** build, test y gates deben ejecutarse en CI.
 4. **Seguridad desde CI:** SAST, DAST y pruebas de aislamiento forman parte del ciclo.
 5. **Sin secretos en repositorio.**
-6. **Ambientes segregados:** DEV → TEST/QA → PROD.
+6. **Ambientes segregados:** DEV → QA → PROD.
 7. **Misma definición de esquema y políticas de seguridad entre ambientes.**
 8. **Observabilidad integrada.**
 9. **Decisiones estructurales mediante ADR.**
@@ -53,7 +53,6 @@ Stack vigente relevante para DevOps:
 - Supabase
 - PostgreSQL
 - Docker / OCI
-- Kubernetes
 - GitHub Actions
 - GHCR
 - Postman / Newman
@@ -64,6 +63,10 @@ Stack vigente relevante para DevOps:
 - Grafana
 - Datadog
 - Jira
+
+Kubernetes **no está en el stack vigente**: es la plataforma de orquestación objetivo exigida por
+PROY-08, con la decisión abierta en INFRA-01 e INFRA-02. El despliegue vigente de QA y PROD es
+Docker sobre una máquina virtual por ambiente (§12).
 
 No forman parte de la línea base actual:
 
@@ -76,18 +79,23 @@ No forman parte de la línea base actual:
 
 # 4. Estrategia multi-repositorio
 
-Repositorios objetivo:
+Seis repositorios, con estos nombres exactos:
 
-```text
-MANI-Flutter
-MANI-Gateway
-MANI-Rules-Java
-MANI-Dispatch-DotNet
-MANI-Core-Node
-MANI-Availability
-MANI-Infra
-MANI-Docs
-```
+| Repositorio | Tecnología | Responsabilidad principal |
+|---|---|---|
+| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
+| `MANI-API-Gateway` | NGINX | Punto de entrada y enrutamiento de APIs |
+| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
+| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
+| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
+
+Cinco repositorios desplegables; `MANI-Docs` no se despliega.
+
+`MANI-API-Gateway` guarda además el Compose por ambiente y la configuración de observabilidad. No
+existe un repositorio de infraestructura aparte.
+
+Las disponibilidades no tienen repositorio propio: son un módulo del `MANI-Core-Service`.
 
 Cada repositorio desplegable debe mantener:
 
@@ -143,7 +151,7 @@ fix/BUG-XX-descripcion
 release/*
 ```
 
-Se utiliza para estabilización y promoción hacia TEST/QA.
+Se utiliza para estabilización y promoción hacia QA.
 
 ### Hotfix
 
@@ -196,10 +204,10 @@ Ningún documento debe asumir que una regla está forzada por GitHub si el rules
 Secuencia oficial:
 
 ```text
-DEV → TEST/QA → PROD
+DEV → QA → PROD
 ```
 
-`TEST/QA` es un único ambiente. El término `staging` puede aparecer como etiqueta técnica histórica, pero no representa un cuarto entorno oficial.
+`QA` es un único ambiente. El término `staging` puede aparecer como etiqueta técnica histórica, pero no representa un cuarto entorno oficial.
 
 ## 7.1 DEV
 
@@ -210,7 +218,7 @@ Objetivos:
 - pruebas locales;
 - validación previa al release.
 
-## 7.2 TEST/QA
+## 7.2 QA
 
 Objetivos:
 
@@ -255,7 +263,7 @@ Escaneo de dependencias e imagen
         ↓
 Publicación en GHCR
         ↓
-Promoción a TEST/QA
+Promoción a QA
         ↓
 Newman / contratos / aislamiento
         ↓
@@ -332,29 +340,36 @@ La configuración de Compose debe:
 - utilizar variables externas;
 - evitar secretos embebidos;
 - fijar imágenes por tag/digest;
-- separar redes cuando aplique;
-- declarar health checks cuando aplique.
+- declarar la red interna de los servicios;
+- declarar health checks y límites de CPU y memoria por contenedor;
+- usar `restart: unless-stopped`.
 
-> Docker Compose no sustituye el requisito de Kubernetes. La infraestructura vigente puede usar Compose mientras se define el proveedor y despliegue concreto del clúster requerido por el proyecto.
+> Compose es el mecanismo de despliegue vigente de QA y PROD (§12). No cierra el requisito de
+> orquestación de PROY-08, que sigue abierto como INFRA-01 e INFRA-02.
 
 ---
 
-# 12. Kubernetes
+# 12. Orquestación
 
-Kubernetes es un requisito obligatorio del proyecto.
+**El despliegue vigente de QA y PROD es Docker sobre una máquina virtual por ambiente**, con
+Compose. DEV corre en las máquinas personales del equipo.
 
-Está definido como **arquitectura objetivo de orquestación**, pero el proveedor de cómputo y la distribución concreta del clúster continúan pendientes de decisión.
+Kubernetes es el orquestador exigido como objetivo por PROY-08, pero **la decisión está abierta**:
+no está elegida la plataforma, ni el proveedor, ni la topología. Son INFRA-01 e INFRA-02 de
+[`INFRAESTRUCTURA_MANI.md`](./INFRAESTRUCTURA_MANI.md) §25 y requieren ADR.
 
 No se asume AKS ni Azure.
 
-Hasta que exista decisión:
+Hasta que exista esa decisión:
 
 - no se inventan nodos;
 - no se fija proveedor;
 - no se documenta capacidad como definitiva;
-- Compose puede continuar como mecanismo operativo de despliegue en VMs.
+- ningún pipeline, documento ni diagrama declara un clúster como estado actual;
+- Compose sobre VM es el mecanismo de despliegue, no un paso intermedio hacia algo ya decidido.
 
-La transición a Kubernetes debe conservar los mismos artefactos OCI publicados en GHCR.
+La transición futura debe conservar los mismos artefactos OCI publicados en GHCR: ese es el
+requisito que mantiene la decisión reversible.
 
 ---
 
@@ -415,7 +430,12 @@ k6 se utiliza cuando el escenario lo requiera para:
 - mensajería;
 - consultas de disponibilidad.
 
-Los umbrales funcionales deben provenir del SRS/SAD/SDD, no inventarse en este documento.
+Los umbrales de desempeño y carga **viven únicamente en [`SDD.md`](../architecture/SDD.md) §7 y
+§8**. No se repiten ni se redefinen en este documento, en el backlog, en el SAD ni en la wiki: un
+umbral que aparezca en otro sitio está desactualizado por definición.
+
+Una tarea de QA que fije su propio objetivo de latencia o de usuarios concurrentes está mal
+especificada: debe citar el escenario del SDD §8 que verifica.
 
 ---
 
@@ -437,7 +457,7 @@ Los umbrales adicionales se mantienen sincronizados con SDD y ADR-0005.
 
 ## 14.2 DAST — OWASP ZAP
 
-OWASP ZAP se ejecuta sobre TEST/QA.
+OWASP ZAP se ejecuta sobre QA.
 
 Debe cubrir, según exposición:
 
@@ -476,7 +496,7 @@ Prohibido:
 - variables locales fuera de Git;
 - credenciales exclusivamente de desarrollo.
 
-## 15.2 TEST/QA
+## 15.2 QA
 
 - secretos propios del ambiente;
 - sin acceso a credenciales productivas.
@@ -488,7 +508,9 @@ Prohibido:
 - aprobación de despliegue;
 - rotación según necesidad.
 
-Cuando se migre a Kubernetes, se utilizarán Secrets/ConfigMaps o un gestor equivalente aprobado.
+Si se adopta una plataforma de orquestación, los secretos pasarán a su gestor nativo
+—Secrets/ConfigMaps o equivalente aprobado— sin cambiar el principio: la configuración y los
+secretos son externos al artefacto.
 
 ---
 
@@ -573,8 +595,9 @@ Reglas:
 | Performance | k6 |
 | SAST | SonarQube |
 | DAST | OWASP ZAP |
-| Orquestación objetivo | Kubernetes |
-| Despliegue operativo actual/transición | Docker Compose sobre VMs |
+| Despliegue vigente de QA y PROD | Docker Compose sobre una VM por ambiente |
+| Ambiente DEV | Docker local en máquinas personales |
+| Orquestación objetivo | Kubernetes — **decisión abierta**: INFRA-01, INFRA-02 |
 | Métricas | Prometheus |
 | Dashboards | Grafana |
 | APM / logs | Datadog |
@@ -591,7 +614,7 @@ artefacto no se reconstruye, y esta sección define cómo se lo nombra, se lo re
 
 ## 20.1 Versión semántica por repositorio
 
-Cada repositorio desplegable —`MANI-Flutter`, `MANI-Gateway`, `MANI-Core`— versiona de forma independiente con
+Cada repositorio desplegable —`MANI-Frontend`, `MANI-API-Gateway`, `MANI-Core-Service`— versiona de forma independiente con
 **SemVer** `MAJOR.MINOR.PATCH`:
 
 | Incremento | Cuándo |
@@ -600,17 +623,17 @@ Cada repositorio desplegable —`MANI-Flutter`, `MANI-Gateway`, `MANI-Core`— v
 | `MINOR` | Capacidad nueva compatible hacia atrás |
 | `PATCH` | Corrección que no altera el contrato |
 
-Los repositorios no comparten numeración. `MANI-Gateway v1.4.0` y `MANI-Core v2.1.3` conviven sin relación entre
+Los repositorios no comparten numeración. `MANI-API-Gateway v1.4.0` y `MANI-Core-Service v2.1.3` conviven sin relación entre
 sus números, porque se despliegan por separado.
 
-`MANI-docs` no versiona por SemVer: su unidad de versión es el commit y la entrega académica.
+`MANI-Docs` no versiona por SemVer: su unidad de versión es el commit y la entrega académica.
 
 ## 20.2 Identidad de un despliegue
 
 Un despliegue queda identificado por cuatro datos, y ninguno es opcional:
 
 ```text
-repositorio      MANI-Core
+repositorio      MANI-Core-Service
 versión          v2.1.3
 digest           sha256:9f2c...            <- identidad inmutable real
 commit           a7b3c91                   <- trazabilidad al código
@@ -652,7 +675,7 @@ Cada ambiente mantiene un registro de qué está corriendo, versionado en el rep
 | Campo | Ejemplo |
 |---|---|
 | Ambiente | `QA` |
-| Servicio | `MANI-Core` |
+| Servicio | `MANI-Core-Service` |
 | Versión | `v2.1.3` |
 | Digest | `sha256:9f2c...` |
 | Commit | `a7b3c91` |

@@ -15,7 +15,7 @@ ADR-0023 registró que, si MANI retiene en cuentas propias el dinero de los clie
 
 El Product Owner confirmó que MANI debe conocer el estado de cada pago, pero que la custodia real del dinero debe estar en una pasarela de pagos regulada. Las dos opciones planteadas en ADR-0023 (intermediario tecnológico o control del estado) no eran excluyentes sino complementarias.
 
-La documentación vigente ya apunta en esa dirección: el SRS exige que el modelo de pagos use un operador certificado (RNF-11) y que la responsabilidad PCI DSS recaiga en ese operador y no en MANI (RNF-06); el SAD §24.2 resuelve RF-24 con un "Adapter a operador de pagos" en el segundo incremento, y la wiki asigna RF-24..RF-28 a Core Services.
+La documentación vigente ya apunta en esa dirección: el SRS exige que el modelo de pagos use un operador certificado (RNF-11) y que la responsabilidad PCI DSS recaiga en ese operador y no en MANI (RNF-06); el SAD §24.2 resuelve RF-24 con un "Adapter a operador de pagos" en el segundo incremento, y la wiki asigna RF-24..RF-28 a Core Service.
 
 ## Alternativas
 
@@ -28,7 +28,7 @@ La documentación vigente ya apunta en esa dirección: el SRS exige que el model
 **Usaremos un modelo híbrido: la custodia real del dinero queda a cargo de un operador de pagos regulado (por ejemplo, PayU o Wompi) y MANI gestiona el estado lógico del pago en su propio sistema. MANI nunca recibe ni retiene fondos de clientes en cuentas propias.**
 
 Reglas que se derivan:
-- La integración con el operador se hace mediante el Adapter a operador de pagos previsto en el SAD §24.2, dentro de Core Services.
+- La integración con el operador se hace mediante el Adapter a operador de pagos previsto en el SAD §24.2, dentro de Core Service.
 - El operador concreto (PayU, Wompi u otro) no se elige en este ADR; se elige al refinar EP-07 en el segundo incremento.
 - Cada cambio de estado de un pago se registra de forma inmutable, como exige el SAD §13 (US-07.1.2, SCRUM-889).
 - Este ADR define **quién custodia el dinero**, no si MANI ofrecerá retención en garantía (escrow) ni liberación automática. Esas funciones (SCRUM-891, SCRUM-892) siguen sujetas a la decisión de alcance del segundo incremento, como indica `wiki/06-backlog/transicion-v4.md`. Si se aprueban, deben implementarse con los mecanismos de retención del operador, nunca con cuentas de MANI.

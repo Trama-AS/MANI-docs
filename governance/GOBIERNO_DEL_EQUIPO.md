@@ -5,7 +5,7 @@
 **Documento:** Gobierno del Equipo  
 **Responsable:** Scrum Master  
 **Ámbito:** Gestión del proyecto y reglas de trabajo  
-**Estado:** Línea base consolidada  
+**Documento vivo:** sin número de versión; la vigente es la de `main`  
 
 ---
 

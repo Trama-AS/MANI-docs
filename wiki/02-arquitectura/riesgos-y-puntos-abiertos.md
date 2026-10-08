@@ -40,7 +40,7 @@ Backlog V4 §4.2 los señala como los tres no contemplados antes y de mayor ries
 
 - **`CFG-23a`, `CFG-23b` y `CFG-23c`** — las políticas RLS derivan tenant y usuario de `auth.uid()` porque hoy el llamador es el cliente. Con un servicio `service-role` como llamador, **dejan de aislar**. Es el punto que puede tumbar RNF-01.
 - **`CFG-36`** — el artefacto web publicado hoy incluye la `SUPABASE_ANON_KEY`: cualquiera puede llamar a PostgREST directamente y sólo RLS lo contiene. Hay que sacarla del bundle y rotarla.
-- **`CFG-38`** — había 13 ramas vivas con trabajo sin fusionar en `MANI-Flutter`. **Mitigado el 2026-10-07**: todas quedaron fusionadas en `develop` o reemplazadas por un PR posterior, y `develop` es la base única ([detalle](../04-repositorios/multirepo.md#reconciliación-de-ramas-de-mani-flutter-cfg-38)).
+- **`CFG-38`** — había 13 ramas vivas con trabajo sin fusionar en `MANI-Frontend`. **Mitigado el 2026-10-07**: todas quedaron fusionadas en `develop` o reemplazadas por un PR posterior, y `develop` es la base única ([detalle](../04-repositorios/multirepo.md#reconciliación-de-ramas-de-mani-flutter-cfg-38)).
 
 Además, `US-04.1.4` concentra el mayor riesgo de regresión funcional: la exclusión concurrente la garantiza hoy la transacción de PostgreSQL y hay que decidir dónde vive la atomicidad y revalidar el PoC-001.
 

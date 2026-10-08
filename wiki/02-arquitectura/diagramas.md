@@ -26,7 +26,7 @@ Declaradas en [`workspace.dsl`](../../diagrams/LLD/workspace.dsl):
 | `contenedores` | 2 | Flutter, Gateway y los tres servicios agrupados por bloque —Java decide, .NET asigna, Node opera—, Supabase por dominio (Rules, Dispatch, Core) más Auth, Storage y Realtime, CDC/ELT e integraciones | [PNG](../../diagrams/LLD/png/contenedores.png) |
 | `componentes-rules` | 3 | Rules Service (Java): controller, application service, estrategias, puerto y adaptador | [PNG](../../diagrams/LLD/png/componentes-rules.png) |
 | `componentes-dispatch` | 3 | Dispatch Service (.NET): selector, coordinador, **Concurrency Guard**, auditoría, puerto y adaptador | [PNG](../../diagrams/LLD/png/componentes-dispatch.png) |
-| `componentes-core` | 3 | Core Services (Node.js): usuarios/tenants, KYC, catálogo, **disponibilidad**, notificación, reportes, adaptadores externos | [PNG](../../diagrams/LLD/png/componentes-core.png) |
+| `componentes-core` | 3 | Core Service (Node.js): usuarios/tenants, KYC, catálogo, **disponibilidad**, notificación, reportes, adaptadores externos | [PNG](../../diagrams/LLD/png/componentes-core.png) |
 | `dinamico-solicitud` | Dinámica | Solicitud y conformación del listado de aliados: el despacho pregunta elegibilidad a Core y el orden a Reglas (RF-12, RF-13) | [PNG](../../diagrams/LLD/png/dinamico-solicitud.png) |
 | `dinamico-aceptacion` | Dinámica | Exclusión concurrente a nivel de componentes de Despacho: la primera aceptación gana, la segunda recibe `409 Conflict` (RF-14, RNF-05) | [PNG](../../diagrams/LLD/png/dinamico-aceptacion.png) |
 | `dinamico-cotizacion` | Dinámica | Cotización en Core y validación contra el tarifario en Reglas (RF-15, RF-16, RF-22) | [PNG](../../diagrams/LLD/png/dinamico-cotizacion.png) |
@@ -34,7 +34,7 @@ Declaradas en [`workspace.dsl`](../../diagrams/LLD/workspace.dsl):
 | `dinamico-mensajeria` | Dinámica | Mensaje persistido, transportado por Realtime y notificado por push cuando el destinatario no está conectado (RF-20, RF-21) | [PNG](../../diagrams/LLD/png/dinamico-mensajeria.png) |
 | `despliegue-prod` | Despliegue | Producción: borde con balanceo, clúster Kubernetes con 2..6 réplicas y secretos externos, Supabase por dominio, pipeline de CI/CD que promueve la imagen y observabilidad Prometheus/Grafana | [PNG](../../diagrams/LLD/png/despliegue-prod.png) |
 
-Las cuatro vistas del C4 que Structurizr puede describir están cubiertas: **panorama**, **estática** (contexto, contenedores, componentes), **dinámica** y **despliegue**. No hay vista por ambiente: Local, DEV y TEST/QA comparten la topología de producción y solo cambian escalado, secretos y datos ([`SDD.md`](../../architecture/SDD.md) §10).
+Las cuatro vistas del C4 que Structurizr puede describir están cubiertas: **panorama**, **estática** (contexto, contenedores, componentes), **dinámica** y **despliegue**. No hay vista por ambiente: Local, DEV y QA comparten la topología de producción y solo cambian escalado, secretos y datos ([`SDD.md`](../../architecture/SDD.md) §10).
 
 El **Nivel 4 (Code)** no se modela en el DSL —Structurizr describe contenedores y componentes, no clases— y se mantiene en [`SDD.md`](../../architecture/SDD.md) §4.4.
 
@@ -79,7 +79,7 @@ Notas de uso comprobadas al crear el modelo:
 | [`Infra.png`](../../diagrams/HLD/Infra.png) | Vista de infraestructura | SAD §16, SDD §9.1 |
 | [`TechRadar.png`](../../diagrams/HLD/TechRadar.png) | Tech Radar en imagen | Encabezado del SAD |
 
-El DHL muestra acceso directo de Flutter a Supabase para disponibilidades: es la [excepción transitoria](estilo-y-contenedores.md#excepción-transitoria-vigente) de SDD §2.1, no el estado objetivo. El modelo C4 del DSL describe la arquitectura objetivo.
+El DHL muestra acceso directo de Flutter a Supabase para disponibilidades. **Eso ya no es la arquitectura:** el único acceso del cliente a Supabase es Auth y Realtime ([Acceso del cliente a Supabase](estilo-y-contenedores.md#acceso-del-cliente-a-supabase), SAD §8.3, SDD §2.2). La imagen está desactualizada y hay que regenerarla; manda el documento, no el dibujo.
 
 ## Galería
 
@@ -99,7 +99,7 @@ El DHL muestra acceso directo de Flutter a Supabase para disponibilidades: es la
 
 <img src="../../diagrams/LLD/png/componentes-dispatch.png" alt="C4 Nivel 3 — Dispatch Service en .NET" width="620">
 
-<img src="../../diagrams/LLD/png/componentes-core.png" alt="C4 Nivel 3 — Core Services en Node.js" width="620">
+<img src="../../diagrams/LLD/png/componentes-core.png" alt="C4 Nivel 3 — Core Service en Node.js" width="620">
 
 **Despliegue — producción**
 

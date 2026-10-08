@@ -2,15 +2,15 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** arquitectura de integración frontend y seguridad
-- **Relacionado con:** CFG-34, CFG-35, CFG-36, ADR-0012, ADR-0018, ADR-0019, SAD V3 (§4.1), RNF-01, RNF-02, REST-02, PROY-07
+- **Relacionado con:** CFG-34, CFG-35, CFG-36, ADR-0012, ADR-0018, ADR-0019, SAD §4.1, RNF-01, RNF-02, REST-02, PROY-07
 
 ---
 
 ## Contexto
 
-En las etapas tempranas del proyecto, el cliente móvil y web `MANI-Flutter` interactuaba de forma directa con Supabase mediante el SDK `supabase_flutter`, consumiendo tablas vía PostgREST (`.from()`), invocando funciones almacenadas (`.rpc()`) y subiendo documentos directamente a Supabase Storage (`.storage.from()`).
+En las etapas tempranas del proyecto, el cliente móvil y web `MANI-Frontend` interactuaba de forma directa con Supabase mediante el SDK `supabase_flutter`, consumiendo tablas vía PostgREST (`.from()`), invocando funciones almacenadas (`.rpc()`) y subiendo documentos directamente a Supabase Storage (`.storage.from()`).
 
-Con la adopción formal de la arquitectura orientada a servicios (SOA) distribuida y políglota (**ADR-0019**), se incorporó el **API Gateway NGINX** como punto único de entrada perimetral y se asignaron responsabilidades operativas a microservicios independientes (`MANI-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet`).
+Con la adopción formal de la arquitectura orientada a servicios (SOA) distribuida y políglota (**ADR-0019**), se incorporó el **API Gateway NGINX** como punto único de entrada perimetral y se asignaron responsabilidades operativas a microservicios independientes (`MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service`).
 
 Mantener llamadas directas desde Flutter a PostgREST/Storage vulnera la frontera del Gateway, desacopla la gobernanza de seguridad, acopla la interfaz gráfica al esquema relacional de la base de datos y expone claves (`SUPABASE_ANON_KEY`) en el bundle del cliente Web.
 
@@ -20,11 +20,11 @@ Mantener llamadas directas desde Flutter a PostgREST/Storage vulnera la frontera
 
 1. **BaaS Directo Total (Mantener `supabase_flutter` completo).**
    - *Descripción:* Flutter continúa ejecutando consultas directas a tablas con `.from()`, lógica de negocio mediante `.rpc()` y carga de archivos con `.storage.from()`.
-   - *Descarte:* Viola el principio de punto único de entrada del SAD V3 (§4.1), elude la inspección y enrutamiento del API Gateway, acopla la UI a la estructura SQL e impide centralizar políticas transversales (rate limiting, observabilidad distribuida con `X-Correlation-ID`).
+   - *Descarte:* Viola el principio de punto único de entrada del SAD §4.1, elude la inspección y enrutamiento del API Gateway, acopla la UI a la estructura SQL e impide centralizar políticas transversales (rate limiting, observabilidad distribuida con `X-Correlation-ID`).
 
 2. **Retiro Total de `supabase_flutter` (Eliminar incluso Auth).**
    - *Descripción:* Retirar completamente la dependencia del cliente Flutter y construir endpoints propios de inicio de sesión, registro y refresco de tokens en el backend.
-   - *Descarte:* Reimplementar la gestión criptográfica de sesiones, refresh tokens y rotación de credenciales añade sobrecosto innecesario, descartando la solución de identidad ya validada en **ADR-0018** y **ADR-0022** con Supabase GoTrue.
+   - *Descarte:* Reimplementar la gestión criptográfica de sesiones, refresh tokens y rotación de credenciales añade sobrecosto innecesario, descartando la solución de identidad ya validada en **ADR-0018** con Supabase GoTrue.
 
 3. **Consumo Híbrido Delimitado: Conservar únicamente Auth y retirar PostgREST/Storage/RPC (Elegida).**
    - *Descripción:* Se conserva `supabase_flutter` **estrictamente para la gestión de identidad y sesión** (`Auth`). Se retira cualquier consumo de datos operacionales vía PostgREST (`.from()`), procedimientos almacenados (`.rpc()`) y almacenamiento de archivos (`.storage.from()`). Todo el intercambio de datos y operaciones de negocio se canaliza a través del API Gateway hacia los microservicios backend.
@@ -33,7 +33,7 @@ Mantener llamadas directas desde Flutter a PostgREST/Storage vulnera la frontera
 
 ## Decisión
 
-Se aprueba la delimitación estricta de `supabase_flutter` en el cliente `MANI-Flutter`:
+Se aprueba la delimitación estricta de `supabase_flutter` en el cliente `MANI-Frontend`:
 
 1. **Se conserva únicamente `supabase.auth`:**
    - Inicio de sesión (`signInWithPassword`).
@@ -44,7 +44,7 @@ Se aprueba la delimitación estricta de `supabase_flutter` en el cliente `MANI-F
    - **Ningún acceso RPC directo:** Se eliminan todas las invocaciones a `.rpc()`.
    - **Ningún acceso directo a Storage:** Se eliminan todas las invocaciones a `.storage.from()`.
 3. **Canalización exclusiva vía API Gateway:**
-   - La capa de red de Flutter (`CFG-34`) reemplaza las llamadas a la base de datos por peticiones HTTP REST dirigidas al **`MANI-APIGateway`** en el puerto `80`.
+   - La capa de red de Flutter (`CFG-34`) reemplaza las llamadas a la base de datos por peticiones HTTP REST dirigidas al **`MANI-API-Gateway`** en el puerto `80`.
    - El cliente adjunta el JWT emitido por Auth en el encabezado `Authorization: Bearer <JWT>` y un identificador único en `X-Correlation-ID`.
 
 ---
@@ -76,11 +76,11 @@ Se aprueba la delimitación estricta de `supabase_flutter` en el cliente `MANI-F
 
 ### Positivas
 * Desacoplamiento definitivo entre la interfaz de usuario y el motor de base de datos relacional.
-* Centralización de validaciones de negocio en los microservicios (`MANI-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet`).
+* Centralización de validaciones de negocio en los microservicios (`MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service`).
 * Cumplimiento estricto de las directrices de seguridad multi-tenant (RNF-01).
 
 ### Negativas / Costo de Migración
-* Requiere refactorizar los datasources existentes en `MANI-Flutter` para sustituir `SupabaseClient` por clientes HTTP (`Dio`/`http`) que consuman el Gateway (`CFG-34`).
+* Requiere refactorizar los datasources existentes en `MANI-Frontend` para sustituir `SupabaseClient` por clientes HTTP (`Dio`/`http`) que consuman el Gateway (`CFG-34`).
 * La carga de documentos KYC deberá realizarse mediante endpoints intermediarios o URLs prefirmadas gestionadas por el backend Core.
 
 ---

@@ -54,4 +54,4 @@ No son un DoD paralelo: son requisitos del propio cambio.
 | Despacho o asignación | Cero dobles asignaciones bajo concurrencia e idempotencia (QAS-02) |
 | Reglas o tarifario | Que un cambio de regla del tenant surte efecto **sin despliegue** (QAS-05) |
 | Notificaciones | Que un fallo de push no revierte una operación confirmada (QAS-04) |
-| Consulta de disponibilidad o ranking | p95 ≤ 1 s en el escenario del SRS |
+| Consulta de disponibilidad o ranking | la latencia dentro del umbral del [SDD §7.4](../../architecture/SDD.md), verificada con el escenario `QAS-03` del §8 |

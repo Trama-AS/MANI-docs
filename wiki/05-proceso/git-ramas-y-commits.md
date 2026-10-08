@@ -17,7 +17,7 @@
 |---|---|---|---|
 | Feature | `feature/US-XX-descripcion` | `develop` | Pull Request |
 | Fix | `fix/BUG-XX-descripcion` | `develop` | Pull Request |
-| Release | `release/*` | `develop` | Estabilización y promoción hacia TEST/QA |
+| Release | `release/*` | `develop` | Estabilización y promoción hacia QA |
 | Hotfix | `hotfix/*` | `main` | Tras la corrección debe **sincronizarse de nuevo con la línea de desarrollo** |
 | Spike | `spike/*` | `develop` | Experimentación técnica |
 
@@ -43,6 +43,6 @@ Práctica recomendable mientras no exista regla: mensaje imperativo, en español
 
 Si el equipo quiere convertir esto en norma (por ejemplo Conventional Commits), es un **cambio de reglas de proceso**: se aprueba en retrospectiva y aplica al sprint siguiente (`GOBIERNO_DEL_EQUIPO.md` §1.4), y se documenta en `POLITICAS_DEVOPS_HERRAMIENTAS.md`, no en esta wiki.
 
-## Caso especial: MANI-Flutter
+## Caso especial: MANI-Frontend
 
 `CFG-37` y `CFG-38` ya se cerraron: `main` y `release` están contenidos en `develop`, que es la base única, y no quedan ramas con trabajo sin fusionar. Las ramas nuevas salen de `develop` y vuelven por PR, como en el resto de repositorios. El detalle de la reconciliación está en [Multi-repo](../04-repositorios/multirepo.md); el orden de trabajo, en [Orden de ejecución](../06-backlog/orden-de-ejecucion.md).

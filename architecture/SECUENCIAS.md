@@ -51,7 +51,7 @@ actor "Cliente" as Cliente
 participant "Aplicación cliente\n[Flutter]" as App
 participant "API Gateway\n[NGINX]" as GW
 participant "Dispatch Service\n[.NET] — asigna" as Dispatch
-participant "Core Services\n[Node.js] — opera" as Core
+participant "Core Service\n[Node.js] — opera" as Core
 participant "Rules Service\n[Java] — decide" as Rules
 database "Supabase Dispatch\n[PostgreSQL + RLS]" as DbDispatch
 
@@ -189,7 +189,7 @@ skinparam sequence {
 actor "Aliado" as Aliado
 participant "Aplicación cliente\n[Flutter]" as App
 participant "API Gateway\n[NGINX]" as GW
-participant "Core Services\n[Node.js] — opera" as Core
+participant "Core Service\n[Node.js] — opera" as Core
 participant "Rules Service\n[Java] — decide" as Rules
 database "Supabase Rules\n[PostgreSQL + RLS]" as DbRules
 database "Supabase Core\n[PostgreSQL + RLS]" as DbCore
@@ -253,7 +253,7 @@ actor "Aliado" as Aliado
 actor "Administrador\ndel tenant" as Admin
 participant "Aplicación cliente\n[Flutter]" as App
 participant "API Gateway\n[NGINX]" as GW
-participant "Core Services\n[Node.js] — opera" as Core
+participant "Core Service\n[Node.js] — opera" as Core
 participant "Rules Service\n[Java] — decide" as Rules
 participant "Supabase Storage\n[bucket privado]" as Storage
 database "Supabase Core\n[PostgreSQL + RLS]" as DbCore
@@ -326,7 +326,7 @@ actor "Cliente" as Cliente
 actor "Aliado\n(destinatario)" as Aliado
 participant "Aplicación cliente\n[Flutter]" as App
 participant "API Gateway\n[NGINX]" as GW
-participant "Core Services\n[Node.js] — opera" as Core
+participant "Core Service\n[Node.js] — opera" as Core
 database "Supabase Core\n[PostgreSQL + RLS]" as DbCore
 participant "Supabase Realtime" as RT
 participant "FCM / APNs" as Push

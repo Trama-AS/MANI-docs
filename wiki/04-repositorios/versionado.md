@@ -9,7 +9,7 @@ El detalle completo está en SDD §12. Resumen operativo:
 | Qué | Cómo se versiona |
 |---|---|
 | **Servicios** | SemVer por repositorio (SDD §12.1); la imagen lleva además `dev-<sha>`, `qa-<sha>` o la versión semántica |
-| **API** | Contratos versionados; es umbral de mantenibilidad (SAD §20.4). Reglas en SDD §12.2 |
+| **API** | Contratos versionados; es umbral de mantenibilidad (SDD §7.5). Reglas en SDD §12.2 |
 | **Base de datos** | Migraciones con estrategia de compatibilidad y rollback (SDD §12.3, §19.5) |
 | **Releases** | Etiquetado semántico sobre `main`, que representa la versión productiva (SDD §12.4, Políticas §5.1) |
 | **Rollback** | SDD §12.5 |

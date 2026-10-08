@@ -4,7 +4,7 @@
 **Arquitectura objetivo:** SOA + API Gateway + enfoque políglota  
 **Norma de calidad de referencia:** ISO/IEC 25010:2023  
 **Documento de datos asociado:** [ModeloDatos.md](./ModeloDatos.md)  
-**Estado:** Diseño arquitectónico objetivo  
+**Documento vivo:** sin número de versión; la vigente es la de `main`. Es el **único lugar** donde viven los umbrales de calidad (§7 y §8).  
 **Alcance:** arquitectura de software, vistas C4, atributos de calidad, patrones, despliegue, ambientes y vista física.  
 **Fuente de los diagramas C4:** [`workspace.dsl`](../diagrams/LLD/workspace.dsl) — modelo Structurizr DSL, exportado a [`diagrams/LLD/`](../diagrams/LLD/), con las vistas `panorama` (System Landscape), `contexto` (N1), `contenedores` (N2), `componentes-rules`, `componentes-dispatch`, `componentes-core` (N3), las dinámicas `dinamico-solicitud`, `dinamico-aceptacion`, `dinamico-cotizacion`, `dinamico-kyc`, `dinamico-mensajeria`, y la de despliegue `despliegue-prod`. Los diagramas de alto nivel (DHL) los referencia el [`SAD.md`](./SAD.md).
 
@@ -43,13 +43,13 @@ Los principios que gobiernan el diseño son:
 6. **Los datos analíticos se separan del procesamiento transaccional.**
 7. **Las decisiones arquitectónicas deben responder a atributos de calidad medibles.**
 
-## 2.2 Decisiones explícitas de línea base
+## 2.1 Decisiones explícitas de línea base
 
 Para evitar ambigüedades entre ADR, diagramas y despliegue, se fijan las siguientes decisiones:
 
 | Tema | Decisión |
 |---|---|
-| Ambientes | **3 ambientes: DEV → TEST/QA → PROD** |
+| Ambientes | **3 ambientes: DEV → QA → PROD** |
 | Repositorios | **Multi-repo** |
 | Persistencia | **Supabase como plataforma administrada** |
 | Motor de base de datos | **PostgreSQL provisto por Supabase** |
@@ -60,16 +60,34 @@ Para evitar ambigüedades entre ADR, diagramas y despliegue, se fijan las siguie
 
 **Supabase y PostgreSQL no son dos alternativas de persistencia.** Supabase es la plataforma administrada utilizada por MANI y PostgreSQL es su motor relacional subyacente.
 
-### 2.1 Excepción transitoria de disponibilidades
+## 2.2 Acceso del cliente a Supabase
 
-El diagrama de alto nivel vigente muestra acceso directo de Flutter a Supabase para disponibilidades. Se considera una **excepción transitoria**, no el estado arquitectónico objetivo.
+El cliente Flutter alcanza Supabase por **exactamente dos caminos**, y **no existe ninguna
+excepción**:
 
-Reglas para esa excepción:
+| Camino | Para qué | Por qué es legítimo |
+|---|---|---|
+| `Flutter → Supabase Auth` | iniciar sesión, registrar usuario y refrescar el JWT | la identidad la emite Supabase GoTrue y el tenant viaja como claim firmado (ADR-0018, ADR-0027) |
+| `Flutter ← Supabase Realtime` | recibir eventos de mensajería mientras el usuario está conectado | Realtime es un **transporte de eventos**: no lee tablas de negocio, no ejecuta reglas y no decide nada. El evento lo publica el Core después de persistir el mensaje |
 
-- no se implementan reglas de negocio en Flutter;
-- no se exponen tablas sin controles de acceso;
-- cualquier acceso directo debe estar protegido por RLS y limitarse a operaciones simples autorizadas;
-- la evolución objetivo es `Flutter → API Gateway → Core Services (dominio de disponibilidad) → Supabase`.
+Todo lo demás —consultas, escrituras, archivos, procedimientos— va por
+`Flutter → API Gateway → servicio → Supabase`.
+
+Queda prohibido y retirado, **sin excepción transitoria ni de disponibilidades**:
+
+- `.from()` — acceso a tablas vía PostgREST;
+- `.rpc()` — invocación de funciones almacenadas;
+- `.storage.from()` — acceso directo a Storage. Los documentos KYC se suben por endpoint
+  intermediario o URL prefirmada que emite el Core.
+
+La consulta de disponibilidades **no** es una excepción: entra por el Gateway al Core como
+cualquier otra lectura de negocio.
+
+> **Esta sección sustituye a la «excepción transitoria de disponibilidades».** Esa excepción
+> quedaba abierta sin fecha de cierre y contradecía a [ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md),
+> que está `Aceptado` y retira `.from()`, `.rpc()` y `.storage.from()` del cliente, y a
+> [ADR-0022](../adr/ADR-0022-logica-de-negocio-en-servicios.md), que saca la lógica de negocio del
+> cliente y de las funciones PL/pgSQL.
 
 ---
 
@@ -134,9 +152,9 @@ reglas de       despacho y      servicios funcionales
 negocio         asignación      de la plataforma
 ```
 
-- **MANI-Rules-Java — decide.** Un único servicio: evalúa si una condición de negocio se cumple. Ranking, elegibilidad, requisitos KYC, tarifarios y reglas por tenant. No es un backend general.
-- **MANI-Dispatch-DotNet — asigna.** Un único servicio: selecciona aliados válidos, asigna, controla estados y exclusiones. Consume Rules antes de asignar; no reimplementa las reglas.
-- **MANI-Core-Node — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, solicitudes, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación.
+- **MANI-Rules-Service — decide.** Un único servicio: evalúa si una condición de negocio se cumple. Ranking, elegibilidad, requisitos KYC, tarifarios y reglas por tenant. No es un backend general.
+- **MANI-Dispatch-Service — asigna.** Un único servicio: selecciona aliados válidos, asigna, controla estados y exclusiones. Consume Rules antes de asignar; no reimplementa las reglas.
+- **MANI-Core-Service — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, solicitudes, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación.
 
 El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnología debe justificar su existencia, mantener contratos estables y cumplir los mismos criterios de seguridad, observabilidad, pruebas y despliegue.
 
@@ -156,6 +174,39 @@ El modelo cubre las cuatro vistas que Structurizr sí puede describir, y ninguna
 | Despliegue | dónde se ejecuta cada contenedor, de dónde sale y quién lo vigila | §9 |
 
 El Nivel 4 (Code) se mantiene en §4.4: Structurizr describe contenedores y componentes, no clases.
+
+## 4.0 Inventario de diagramas
+
+**Las doce vistas del proyecto están definidas en [`workspace.dsl`](../diagrams/LLD/workspace.dsl)
+y exportadas a [`diagrams/LLD/png/`](../diagrams/LLD/png/).** El DSL es la fuente: un diagrama no se
+edita en la imagen, se cambia en el modelo y se vuelve a exportar. Si una vista no aparece en esta
+tabla, no es oficial.
+
+| # | Vista en el DSL | Tipo | Qué muestra | Imagen | Sección |
+|---|---|---|---|---|---|
+| 1 | `panorama` | System Landscape | El mapa completo: MANI como único sistema propio, sus cuatro actores y las plataformas externas con las que convive. Es la vista para explicar el proyecto a quien no lo conoce | [`panorama.png`](../diagrams/LLD/png/panorama.png) | §4.5 |
+| 2 | `contexto` | C4 Nivel 1 | MANI como una sola caja, sus actores y los sistemas externos. A diferencia del panorama, pone el foco en un único sistema | [`contexto.png`](../diagrams/LLD/png/contexto.png) | §4.1 |
+| 3 | `contenedores` | C4 Nivel 2 | Las unidades desplegables —cliente, Gateway y los tres servicios—, los almacenes de Supabase, las integraciones y la analítica | [`contenedores.png`](../diagrams/LLD/png/contenedores.png) | §4.2 |
+| 4 | `componentes-rules` | C4 Nivel 3 | Dentro del Rules Service: controlador, servicio de aplicación, las estrategias por tipo de regla, el puerto y su adaptador | [`componentes-rules.png`](../diagrams/LLD/png/componentes-rules.png) | §4.3.1 |
+| 5 | `componentes-dispatch` | C4 Nivel 3 | Dentro del Dispatch Service: selector de candidatos, coordinador de asignación, **concurrency guard** y auditoría | [`componentes-dispatch.png`](../diagrams/LLD/png/componentes-dispatch.png) | §4.3.2 |
+| 6 | `componentes-core` | C4 Nivel 3 | Dentro del Core Service: identidad y tenants, KYC, catálogo, cobertura y disponibilidad, ciclo del servicio, comunicaciones, reportes y adaptadores externos | [`componentes-core.png`](../diagrams/LLD/png/componentes-core.png) | §4.3.3 |
+| 7 | `dinamico-solicitud` | Dinámica | El orden en que se crea una solicitud: el despacho pide elegibilidad al Core y el orden del listado al Rules Service | [`dinamico-solicitud.png`](../diagrams/LLD/png/dinamico-solicitud.png) | §4.6.1 |
+| 8 | `dinamico-aceptacion` | Dinámica | Dos aliados aceptan a la vez y la actualización condicional atómica deja pasar solo al primero; el segundo recibe `409` | [`dinamico-aceptacion.png`](../diagrams/LLD/png/dinamico-aceptacion.png) | §4.6.2 |
+| 9 | `dinamico-cotizacion` | Dinámica | El Core persiste la cotización y el Rules Service la contrasta contra el tarifario de referencia | [`dinamico-cotizacion.png`](../diagrams/LLD/png/dinamico-cotizacion.png) | §4.6.3 |
+| 10 | `dinamico-kyc` | Dinámica | Los documentos del aliado llegan al bucket privado y el administrador del tenant aprueba o rechaza | [`dinamico-kyc.png`](../diagrams/LLD/png/dinamico-kyc.png) | §4.6.4 |
+| 11 | `dinamico-mensajeria` | Dinámica | El mensaje se persiste primero, Realtime lo transporta al participante conectado y el push cubre al desconectado | [`dinamico-mensajeria.png`](../diagrams/LLD/png/dinamico-mensajeria.png) | §4.6.5 |
+| 12 | `despliegue-prod` | Despliegue | Dónde se ejecuta cada contenedor en producción, de dónde sale su imagen y quién lo vigila | [`despliegue-prod.png`](../diagrams/LLD/png/despliegue-prod.png) | §9 |
+
+Dos aclaraciones sobre el alcance de la tabla:
+
+- **El Nivel 4 (Code) no está en el DSL** y por eso no tiene fila: Structurizr describe
+  contenedores y componentes, no clases. Vive como texto en §4.4.
+- **Los diagramas de alto nivel no son vistas del modelo.** `DHL.png`, `Infra.png` y
+  `TechRadar.png` viven en [`diagrams/HLD/`](../diagrams/HLD/), no se generan desde el DSL y los
+  referencian el [`SAD.md`](./SAD.md) y el [`TECH_RADAR.md`](./TECH_RADAR.md).
+
+Cada subsección de abajo repite en texto la estructura de su vista, para que el documento se pueda
+leer sin abrir las imágenes.
 
 ## 4.1 Nivel 1 — System Context
 
@@ -199,7 +250,7 @@ Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
                       enrutamiento · control de acceso · token · rate limiting
                                                    ↓
    ┌── decide ──────┬── asigna ────────┬── opera ──────────────────┐
-   Rules Service     Dispatch Service    Core Services
+   Rules Service     Dispatch Service    Core Service
    (Java)            (.NET)              (Node.js)
         ↓                 ↓                   ↓
    Supabase Rules    Supabase Dispatch   Supabase Core
@@ -225,7 +276,7 @@ Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el ord
 
 ## 4.3 Nivel 3 — Components
 
-### 4.3.1 Servicio de Reglas — Java
+### 4.3.1 Rules Service — Java
 
 ![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](../diagrams/LLD/png/componentes-rules.png)
 
@@ -246,7 +297,7 @@ Responsabilidades:
 - validar requisitos KYC;
 - desacoplar lógica de reglas de la persistencia.
 
-### 4.3.2 Servicio de Despacho — .NET
+### 4.3.2 Dispatch Service — .NET
 
 ![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](../diagrams/LLD/png/componentes-dispatch.png)
 
@@ -270,11 +321,11 @@ Responsabilidades:
 - responder conflicto `409` cuando la asignación ya fue tomada;
 - auditar cambios de estado.
 
-### 4.3.3 Core Services — Node.js
+### 4.3.3 Core Service — Node.js
 
-![C4 Nivel 3 — Core Services (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/LLD/png/componentes-core.png)
+![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/LLD/png/componentes-core.png)
 
-> **Figura 5 — Core Services, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-core.png`](../diagrams/LLD/png/componentes-core.png).
+> **Figura 5 — Core Service, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-core.png`](../diagrams/LLD/png/componentes-core.png).
 
 ```text
 Core API
@@ -593,7 +644,7 @@ Controles: índices, consultas acotadas, paginación, caché selectiva, HPA, poo
 
 | Subcaracterística | Prioridad | Umbral / criterio |
 |---|---:|---|
-| Adaptabilidad | P1 | misma imagen desplegable en DEV/TEST-QA/PROD mediante configuración externa |
+| Adaptabilidad | P1 | misma imagen desplegable en DEV/QA/PROD mediante configuración externa |
 | Escalabilidad | P1 | servicios críticos escalables horizontalmente de 2 a 6 réplicas sin cambio de código |
 | Instalabilidad | P1 | despliegue automatizado por ambiente ≤ 10 min en condiciones normales |
 | Reemplazabilidad | P2 | proveedores externos encapsulados por Adapter; cambio de proveedor sin alterar dominio |
@@ -658,11 +709,11 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 > QA-05, ninguna entregada a la fecha de corte: Testcontainers (QA-01, SCRUM-1118), Playwright
 > (QA-02, SCRUM-1119), la colección de contrato con Newman (QA-03, SCRUM-1120), k6 (QA-04,
 > SCRUM-1121) y OWASP ZAP (QA-05, SCRUM-1122). Maestro, que aparece en QAS-08, no tiene ticket.
-> Las colecciones de Newman y los scripts de k6 que existen hoy en `MANI-Flutter/qa/` son del
+> Las colecciones de Newman y los scripts de k6 que existen hoy en `MANI-Frontend/qa/` son del
 > Sprint 2 y recorren el camino directo a Supabase: sirven como línea base y para verificar RLS como
 > defensa adicional, no como contrato Gateway–Core ni como escenario de carga de estos QAS.
-> Los gates de ADR-0005 que dependen de SonarQube no son medibles para `MANI-Node` ni
-> `MANI-APIGateway` hasta CFG-40 (SCRUM-1115) y CFG-41 (SCRUM-1116).
+> Los gates de ADR-0005 que dependen de SonarQube no son medibles para `MANI-Core-Service` ni
+> `MANI-API-Gateway` hasta CFG-40 (SCRUM-1115) y CFG-41 (SCRUM-1116).
 > Prometheus y Grafana, que aparecen en QAS-05, no se han verificado como aprovisionados; mientras no
 > lo estén, aplica la misma salvedad.
 > Mientras una herramienta no esté entregada, el escenario que depende de ella se reporta como
@@ -671,15 +722,15 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 
 | ID | Característica ISO/IEC 25010:2023 | Subcaracterística seleccionada | Prioridad | Fuente | Estímulo | Entorno | Artefacto | Respuesta esperada | Umbral / criterio de aceptación | ¿Cómo lo mide QA? |
 |---|---|---|:---:|---|---|---|---|---|---|---|
-| **QAS-01** | **Seguridad** | **Confidencialidad** | P1 | Usuario autenticado de un tenant | Intenta consultar o modificar información perteneciente a otro tenant | TEST/QA o PROD en operación normal | API Gateway, servicios de dominio y PostgreSQL/RLS | El servicio rechaza la operación tomando el tenant del claim del JWT firmado y no de un dato enviado por el cliente, no expone información del tenant destino y registra el evento cuando corresponda; RLS actúa como capa adicional de defensa en profundidad | **100% de accesos cross-tenant rechazados** | QA ejecuta con Postman/Newman, a través del Gateway, los seis casos cross-tenant de las Políticas DevOps §13.4 (lectura de otro tenant, listado de recursos ajenos, escritura en otro tenant, borrado ajeno, token expirado o alterado, y documentos KYC de otro tenant o aliado), con tokens y recursos de al menos dos tenants; verifica rechazo de acceso, ausencia de datos ajenos, evidencia de auditoría y que el rechazo ocurre en la autorización del servicio y no solo en RLS. Evidencia: reporte de Newman con versión del servicio y fecha |
-| **QAS-02** | **Fiabilidad** | **Tolerancia a fallos** | P1 | Proveedor externo de notificaciones | FCM/APNs deja de responder después de confirmarse una operación de negocio | TEST/QA con dependencia externa degradada o indisponible, simulada mediante un adaptador de prueba | Core Services, Notification Component y adaptador externo | La operación principal permanece confirmada y la notificación queda disponible para reintento controlado | **0 operaciones confirmadas revertidas únicamente por fallo de notificación** | QA simula timeout, error y caída del proveedor con un adaptador de prueba; tras cada fallo verifica el estado final de la operación, la persistencia del evento de notificación, los logs con correlation ID y la ejecución del mecanismo de retry. Evidencia: registro de cada simulación con el estado final de la operación |
-| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | TEST/QA bajo carga nominal: 300 sesiones concurrentes y 50 req/s sostenidos (sección 7.4) | API Gateway, Core Services (dominio de disponibilidad), persistencia y componentes involucrados en la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta un escenario k6 propio de la consulta por categoría y zona con la carga nominal sostenida, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral. El resultado declara el camino medido (Gateway → Core Services, dominio de disponibilidad, o, mientras rija la excepción de la sección 2.1, acceso directo a Supabase), la carga, el ambiente y la fecha, y no se extrapola desde otro escenario |
-| **QAS-04** | **Mantenibilidad** | **Capacidad para ser modificado** | P1 | Equipo de desarrollo | Modifica una regla de ranking o comportamiento configurable de un tenant manteniendo el contrato externo | DEV y TEST/QA | Rules Service (estrategias de ranking, tarifa y KYC por tenant), su configuración y los contratos de integración | El cambio se implementa solo en Rules Service y su configuración, sin exigir modificaciones en consumidores externos compatibles | **0 cambios obligatorios en Flutter, Gateway, Dispatch ni en otros servicios consumidores de Rules para un cambio interno compatible** | QA ejecuta pruebas de regresión, integración y contract tests (Newman); toma el PR del cambio y verifica por su diff que solo toca Rules Service y su configuración, y que los consumidores existentes continúan operando sin modificaciones derivadas del cambio. Evidencia: enlace al PR y reporte de contract tests |
-| **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad objetivo de las réplicas actuales | Kubernetes en TEST/QA bajo carga controlada | Deployment, HPA y servicio crítico contenerizado (Rules, Dispatch o Core) | La plataforma incrementa horizontalmente la capacidad del servicio cuando la utilización sostenida de CPU por pod supera el 70% (sección 7.4), sin modificar código ni reconstruir el artefacto | **Escalamiento de 2 a 6 réplicas sin cambio de código** | QA genera carga progresiva con k6 y monitorea réplicas, CPU, memoria, latencia, errores y continuidad del servicio mediante Kubernetes y la plataforma de observabilidad (Prometheus/Grafana); verifica que el servicio escala de 2 a 6 réplicas con la misma imagen. Evidencia: gráficas de réplicas y CPU junto con la configuración del HPA |
-| **QAS-06** | **Compatibilidad** | **Interoperabilidad** | P2 | Servicio interno o consumidor autorizado | Consume una API publicada por un servicio implementado en otra tecnología | TEST/QA de integración | APIs REST de los servicios publicadas por el API Gateway y sus contratos OpenAPI | Productor y consumidor intercambian información respetando el contrato publicado | **100% de APIs documentadas con OpenAPI y contract tests críticos aprobados antes de promoción** | QA contrasta las APIs publicadas por el Gateway con los contratos OpenAPI (cada API publicada debe tener el suyo), ejecuta contract tests y pruebas de integración/Newman entre servicios de distinta tecnología; valida códigos HTTP, payloads, tipos de datos, campos obligatorios y compatibilidad del contrato. Evidencia: tabla API ↔ contrato y reporte de contract tests |
-| **QAS-07** | **Adecuación funcional** | **Corrección funcional** | P2 | Usuarios o servicios que ejecutan reglas y operaciones críticas | Ejecutan escenarios críticos de ranking, tarifa, asignación o conflicto | TEST/QA con datos de prueba controlados | Rules Service, Dispatch Service y servicios involucrados | El sistema produce el resultado funcional definido para cada regla, asignación y transición de estado | **100% de escenarios críticos de ranking, tarifa, asignación y conflicto aprobados** | QA mantiene casos de prueba trazados a los requisitos críticos y verifica resultados esperados, estados persistidos, códigos de respuesta y reglas de negocio; para asignación y conflicto incluye la aceptación concurrente de una misma solicitud sobre Dispatch con k6 (una aceptación confirmada con 200, las demás con 409, 0 dobles asignaciones y reintentos idempotentes). Evidencia: matriz requisito ↔ caso y reporte de ejecución |
+| **QAS-01** | **Seguridad** | **Confidencialidad** | P1 | Usuario autenticado de un tenant | Intenta consultar o modificar información perteneciente a otro tenant | QA o PROD en operación normal | API Gateway, servicios de dominio y PostgreSQL/RLS | El servicio rechaza la operación tomando el tenant del claim del JWT firmado y no de un dato enviado por el cliente, no expone información del tenant destino y registra el evento cuando corresponda; RLS actúa como capa adicional de defensa en profundidad | **100% de accesos cross-tenant rechazados** | QA ejecuta con Postman/Newman, a través del Gateway, los seis casos cross-tenant de las Políticas DevOps §13.4 (lectura de otro tenant, listado de recursos ajenos, escritura en otro tenant, borrado ajeno, token expirado o alterado, y documentos KYC de otro tenant o aliado), con tokens y recursos de al menos dos tenants; verifica rechazo de acceso, ausencia de datos ajenos, evidencia de auditoría y que el rechazo ocurre en la autorización del servicio y no solo en RLS. Evidencia: reporte de Newman con versión del servicio y fecha |
+| **QAS-02** | **Fiabilidad** | **Tolerancia a fallos** | P1 | Proveedor externo de notificaciones | FCM/APNs deja de responder después de confirmarse una operación de negocio | QA con dependencia externa degradada o indisponible, simulada mediante un adaptador de prueba | Core Service, Notification Component y adaptador externo | La operación principal permanece confirmada y la notificación queda disponible para reintento controlado | **0 operaciones confirmadas revertidas únicamente por fallo de notificación** | QA simula timeout, error y caída del proveedor con un adaptador de prueba; tras cada fallo verifica el estado final de la operación, la persistencia del evento de notificación, los logs con correlation ID y la ejecución del mecanismo de retry. Evidencia: registro de cada simulación con el estado final de la operación |
+| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | QA bajo carga nominal: 300 sesiones concurrentes y 50 req/s sostenidos (sección 7.4) | API Gateway, Core Service (dominio de disponibilidad), persistencia y componentes involucrados en la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta un escenario k6 propio de la consulta por categoría y zona con la carga nominal sostenida, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral. El resultado declara el camino medido (Gateway → Core Service, dominio de disponibilidad, o, mientras rija la excepción de la sección 2.1, acceso directo a Supabase), la carga, el ambiente y la fecha, y no se extrapola desde otro escenario |
+| **QAS-04** | **Mantenibilidad** | **Capacidad para ser modificado** | P1 | Equipo de desarrollo | Modifica una regla de ranking o comportamiento configurable de un tenant manteniendo el contrato externo | DEV y QA | Rules Service (estrategias de ranking, tarifa y KYC por tenant), su configuración y los contratos de integración | El cambio se implementa solo en Rules Service y su configuración, sin exigir modificaciones en consumidores externos compatibles | **0 cambios obligatorios en Flutter, Gateway, Dispatch ni en otros servicios consumidores de Rules para un cambio interno compatible** | QA ejecuta pruebas de regresión, integración y contract tests (Newman); toma el PR del cambio y verifica por su diff que solo toca Rules Service y su configuración, y que los consumidores existentes continúan operando sin modificaciones derivadas del cambio. Evidencia: enlace al PR y reporte de contract tests |
+| **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad objetivo de las réplicas actuales | Kubernetes en QA bajo carga controlada | Deployment, HPA y servicio crítico contenerizado (Rules, Dispatch o Core) | La plataforma incrementa horizontalmente la capacidad del servicio cuando la utilización sostenida de CPU por pod supera el 70% (sección 7.4), sin modificar código ni reconstruir el artefacto | **Escalamiento de 2 a 6 réplicas sin cambio de código** | QA genera carga progresiva con k6 y monitorea réplicas, CPU, memoria, latencia, errores y continuidad del servicio mediante Kubernetes y la plataforma de observabilidad (Prometheus/Grafana); verifica que el servicio escala de 2 a 6 réplicas con la misma imagen. Evidencia: gráficas de réplicas y CPU junto con la configuración del HPA |
+| **QAS-06** | **Compatibilidad** | **Interoperabilidad** | P2 | Servicio interno o consumidor autorizado | Consume una API publicada por un servicio implementado en otra tecnología | QA de integración | APIs REST de los servicios publicadas por el API Gateway y sus contratos OpenAPI | Productor y consumidor intercambian información respetando el contrato publicado | **100% de APIs documentadas con OpenAPI y contract tests críticos aprobados antes de promoción** | QA contrasta las APIs publicadas por el Gateway con los contratos OpenAPI (cada API publicada debe tener el suyo), ejecuta contract tests y pruebas de integración/Newman entre servicios de distinta tecnología; valida códigos HTTP, payloads, tipos de datos, campos obligatorios y compatibilidad del contrato. Evidencia: tabla API ↔ contrato y reporte de contract tests |
+| **QAS-07** | **Adecuación funcional** | **Corrección funcional** | P2 | Usuarios o servicios que ejecutan reglas y operaciones críticas | Ejecutan escenarios críticos de ranking, tarifa, asignación o conflicto | QA con datos de prueba controlados | Rules Service, Dispatch Service y servicios involucrados | El sistema produce el resultado funcional definido para cada regla, asignación y transición de estado | **100% de escenarios críticos de ranking, tarifa, asignación y conflicto aprobados** | QA mantiene casos de prueba trazados a los requisitos críticos y verifica resultados esperados, estados persistidos, códigos de respuesta y reglas de negocio; para asignación y conflicto incluye la aceptación concurrente de una misma solicitud sobre Dispatch con k6 (una aceptación confirmada con 200, las demás con 409, 0 dobles asignaciones y reintentos idempotentes). Evidencia: matriz requisito ↔ caso y reporte de ejecución |
 | **QAS-08** | **Capacidad de interacción** | **Protección contra errores de usuario** | P2 | Usuario autorizado | Intenta ejecutar una acción irreversible o envía información inválida en un flujo crítico | Aplicación web/móvil en operación normal | Flutter (presentación) y servicio de dominio asociado al caso de uso, detrás del Gateway | El sistema previene la ejecución accidental mediante validación o confirmación y devuelve errores accionables; el servicio valida también las entradas y no depende solo del cliente | **100% de acciones irreversibles definidas requieren validación o confirmación previa** | QA recorre los flujos críticos de pantalla en Flutter con Maestro y prueba entradas inválidas, cancelaciones y acciones irreversibles; verifica validaciones, confirmaciones, mensajes y conservación del estado previo cuando la operación es rechazada, y comprueba con Newman que el servicio rechaza con error accionable las entradas inválidas enviadas sin pasar por la interfaz. Evidencia: reporte de Maestro y de Newman |
-| **QAS-09** | **Protección / Safety** | **Protección ante fallos** | P3 | Servicio o integración externa | Se produce una falla durante una operación que modifica información crítica | TEST/QA con falla controlada de una dependencia | Servicio de negocio (por ejemplo Core con el adaptador de Storage en la carga de documentos KYC), adaptador externo y persistencia | El sistema evita estados parciales o ambiguos y conserva un estado consistente o recuperable | **0 transacciones críticas en estado ambiguo por fallas de terceros** | QA aplica fault injection, timeouts o respuestas inválidas con adaptadores de prueba durante operaciones críticas y valida estados persistidos, logs, eventos y posibilidad de recuperación sin inconsistencias. A diferencia de QAS-02, la falla ocurre durante la operación y no después de confirmarla. Evidencia: registro de cada inyección con el estado persistido resultante |
+| **QAS-09** | **Protección / Safety** | **Protección ante fallos** | P3 | Servicio o integración externa | Se produce una falla durante una operación que modifica información crítica | QA con falla controlada de una dependencia | Servicio de negocio (por ejemplo Core con el adaptador de Storage en la carga de documentos KYC), adaptador externo y persistencia | El sistema evita estados parciales o ambiguos y conserva un estado consistente o recuperable | **0 transacciones críticas en estado ambiguo por fallas de terceros** | QA aplica fault injection, timeouts o respuestas inválidas con adaptadores de prueba durante operaciones críticas y valida estados persistidos, logs, eventos y posibilidad de recuperación sin inconsistencias. A diferencia de QAS-02, la falla ocurre durante la operación y no después de confirmarla. Evidencia: registro de cada inyección con el estado persistido resultante |
 
 Los escenarios anteriores complementan los umbrales específicos definidos en las subsecciones 7.2 a 7.10. Cuando exista diferencia entre un escenario de esta tabla y un criterio más restrictivo definido para una subcaracterística en la sección 7, **prevalece el criterio más restrictivo**.
 
@@ -726,7 +777,7 @@ La vista incluye deliberadamente **de dónde sale** lo que corre —el pipeline 
 - bases productivas no accesibles desde Internet pública salvo controles explícitos;
 - acceso administrativo con privilegio mínimo.
 
-Los demás ambientes no se modelan como vistas aparte: Local, DEV y TEST/QA comparten esta topología y solo cambian escalado, secretos y datos (§10). Un diagrama por ambiente repetiría la misma información sin añadir ninguna decisión arquitectónica.
+Los demás ambientes no se modelan como vistas aparte: Local, DEV y QA comparten esta topología y solo cambian escalado, secretos y datos (§10). Un diagrama por ambiente repetiría la misma información sin añadir ninguna decisión arquitectónica.
 
 ---
 
@@ -738,17 +789,17 @@ MANI adopta **tres ambientes de despliegue**. No se define un ambiente STAGING i
 |---|---|---|---|
 | Local | desarrollo individual | Docker Compose + Flutter + servicios + Supabase local | datos sintéticos |
 | DEV | integración continua temprana | Kubernetes con aislamiento lógico del ambiente | datos sintéticos |
-| TEST / QA | pruebas funcionales, integración, seguridad y validación previa a producción | Kubernetes con aislamiento lógico + instancia/base separada | dataset controlado y anonimizado |
+| QA | pruebas funcionales, integración, seguridad y validación previa a producción | Kubernetes con aislamiento lógico + instancia/base separada | dataset controlado y anonimizado |
 | PROD | operación real | Kubernetes productivo + Supabase productivo | datos reales |
 
 ### Reglas
 
-- el flujo oficial es **DEV → TEST/QA → PROD**;
+- el flujo oficial es **DEV → QA → PROD**;
 - no existe STAGING como ambiente obligatorio;
 - no compartir bases, secretos ni credenciales entre ambientes;
-- no copiar datos KYC o datos personales reales a DEV o TEST/QA;
+- no copiar datos KYC o datos personales reales a DEV o QA;
 - configuración y secretos son externos a las imágenes;
-- la misma imagen de contenedor validada se promueve entre TEST/QA y PROD;
+- la misma imagen de contenedor validada se promueve entre QA y PROD;
 - únicamente cambian parámetros externos, secretos y escalado;
 - Kubernetes sigue siendo el orquestador; la separación física por clúster o namespace puede ajustarse sin cambiar esta decisión.
 
@@ -762,7 +813,7 @@ Commit / Pull Request
   → SonarQube (SAST)
   → Build Images
   → Dependency / Image Scan
-  → Deploy TEST/QA
+  → Deploy QA
   → Newman + OWASP ZAP
   → Promoción del mismo artefacto validado a PROD
   → Verificación post-despliegue
@@ -846,25 +897,19 @@ MANI mantiene una estrategia **multi-repositorio**. La arquitectura distribuida 
 
 ```text
 GitHub / Organización MANI
-├── MANI-Flutter
+├── MANI-Frontend
 │   └── aplicación web/móvil Flutter
-├── MANI-Gateway
+├── MANI-API-Gateway
 │   └── configuración NGINX / API Gateway
-├── MANI-Rules-Java
+├── MANI-Rules-Service
 │   └── servicio de reglas por tenant
-├── MANI-Dispatch-DotNet
+├── MANI-Dispatch-Service
 │   └── servicio de despacho y asignación
-├── MANI-Core-Node
-│   └── servicios de usuarios, tenants, KYC, catálogos y notificaciones
-├── MANI-Availability
-│   └── módulo de disponibilidades — ver nota
-├── MANI-Infra
-│   ├── docker/
-│   ├── k8s/
-│   │   ├── dev/
-│   │   ├── test-qa/
-│   │   └── prod/
-│   └── observability/
+├── MANI-Core-Service
+│   ├── tenants, identidad, clientes y sitios, aliados y KYC, catálogo
+│   ├── cobertura, disponibilidad y elegibilidad
+│   ├── cotización, ejecución y calificación
+│   └── comunicaciones
 └── MANI-Docs
     ├── product/        SRS y backlog
     ├── architecture/   SAD.md, SDD.md, ModeloDatos.md, workspace.dsl, TECH_RADAR.md
@@ -877,13 +922,18 @@ GitHub / Organización MANI
 ### Responsabilidades
 
 - cada repositorio desplegable mantiene su propio ciclo de build, test y versionamiento;
-- `MANI-Infra` centraliza manifests de Kubernetes, configuración transversal y observabilidad;
-- `MANI-Docs` contiene la documentación técnica oficial;
+- `MANI-API-Gateway` es además la raíz de composición del despliegue: guarda `database/`, `scripts/`,
+  `supabase/` y el Compose por ambiente (ADR-0004, enmienda del 2026-10-07);
+- **no existe `MANI-Infra`**: DevOps lo borró el 2026-10-06. Dónde vivirán los manifests de
+  orquestación y la configuración de observabilidad queda abierto con INFRA-01 e INFRA-02;
+- **no existe `MANI-Availability`**: la cobertura y la disponibilidad son un dominio del
+  `MANI-Core-Service` ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md));
+- `MANI-Docs` contiene la documentación técnica oficial y no se despliega;
 - GitHub Actions puede reutilizar workflows compartidos, pero cada artefacto se construye y versiona de manera independiente;
 - la promoción entre ambientes preserva el mismo artefacto validado;
-- la estrategia multi-repo es una decisión explícita del proyecto y debe quedar reflejada en ADR-0004.
+- la estrategia multi-repo es una decisión explícita del proyecto (ADR-0004) y los nombres los fija [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md).
 
-> **Pendiente de decisión — `MANI-Availability`.** Desde §4.3.3 la disponibilidad es un dominio interno de Core, no un servicio desplegable, así que ese repositorio ya no corresponde a ningún artefacto desplegable propio. La lista de repositorios la fija [ADR-0004](../ADR/ADR-0004-cicd-multirepo-ambientes.md), de modo que retirarlo o reconvertirlo en librería compartida exige un ADR nuevo que lo supersede, no una edición de este documento. Mientras tanto el repositorio queda declarado aquí tal como lo definió esa decisión.
+> **Pendiente de decisión — `MANI-Availability`.** Desde §4.3.3 la disponibilidad es un dominio interno de Core, no un servicio desplegable, así que ese repositorio ya no corresponde a ningún artefacto desplegable propio. La lista de repositorios la fija [ADR-0004](../adr/ADR-0004-cicd-multirepo-ambientes.md), de modo que retirarlo o reconvertirlo en librería compartida exige un ADR nuevo que lo supersede, no una edición de este documento. Mientras tanto el repositorio queda declarado aquí tal como lo definió esa decisión.
 
 ---
 

@@ -14,7 +14,7 @@ ADR-0002 separó la gestión del trabajo (Jira) del desarrollo técnico (GitHub)
 
 Sin integración, la trazabilidad Jira ↔ GitHub depende de pegar enlaces a mano en los comentarios: se omite con facilidad, se desactualiza y no muestra el estado real de una rama o de un PR. Esto afecta directamente la evidencia que exige el DoD y el seguimiento del Scrum Master (SM-02).
 
-La tarea CFG-39 (SCRUM-1114) conectó GitHub con Jira en los cuatro repositorios del incremento: `MANI-Flutter`, `MANI-Gateway`, `MANI-Core` y `MANI-docs`. Este ADR registra la decisión que esa implementación materializa.
+La tarea CFG-39 (SCRUM-1114) conectó GitHub con Jira en los cuatro repositorios del incremento: `MANI-Frontend`, `MANI-API-Gateway`, `MANI-Core-Service` y `MANI-docs`. Este ADR registra la decisión que esa implementación materializa.
 
 ## Alternativas
 
@@ -24,7 +24,7 @@ La tarea CFG-39 (SCRUM-1114) conectó GitHub con Jira en los cuatro repositorios
 
 ## Decisión
 
-Se usa la aplicación **GitHub for Atlassian**, conectada al sitio `maniservices.atlassian.net` y a los repositorios `MANI-Flutter`, `MANI-Gateway`, `MANI-Core` y `MANI-docs`, con *smart commits* habilitados.
+Se usa la aplicación **GitHub for Atlassian**, conectada al sitio `maniservices.atlassian.net` y a los repositorios `MANI-Frontend`, `MANI-API-Gateway`, `MANI-Core-Service` y `MANI-docs`, con *smart commits* habilitados.
 
 La vinculación se basa en la **clave del ticket de Jira** (`SCRUM-<id>`), que es obligatoria en tres lugares:
 
@@ -67,7 +67,7 @@ La aplicación oficial entrega la trazabilidad que ADR-0002 dejó pendiente con 
 - Una rama, commit o PR sin la clave `SCRUM-<id>` no aparece en Jira. Mitigación: la plantilla del PR exige el identificador y la revisión lo verifica.
 - La aplicación necesita acceso a los repositorios de la organización. Mitigación: se limita a los repositorios del proyecto.
 - `CONTRIBUTING.md` todavía indica la convención anterior (`feature/US-XX-descripcion` desde `develop`). Debe actualizarse para reflejar este ADR.
-- Cada repositorio nuevo (por ejemplo `MANI-Rules-Java`, `MANI-Dispatch-DotNet` o `MANI-Availability`) debe agregarse a la aplicación al crearse.
+- Cada repositorio nuevo (por ejemplo `MANI-Rules-Service`, `MANI-Dispatch-Service` o `MANI-Availability`) debe agregarse a la aplicación al crearse.
 
 ## Condición de revisión
 

@@ -10,7 +10,7 @@ Fijadas en SDD §2.2 para que ADR, diagramas y despliegue no se contradigan:
 
 | Tema | Decisión |
 |---|---|
-| Ambientes | 3: DEV → TEST/QA → PROD |
+| Ambientes | 3: DEV → QA → PROD |
 | Repositorios | Multi-repo |
 | Persistencia | Supabase como plataforma administrada |
 | Motor de base de datos | PostgreSQL provisto por Supabase |
@@ -43,7 +43,7 @@ Integraciones: FCM/APNs · operador de pagos (2.º incremento)
 |---|---|---|
 | **Rules Service** | Java | RF-02 evaluación de reglas por tenant · RF-13 ranking · RF-16 validación contra tarifario · RF-22 rangos tarifarios · parte de RNF-02 y RNF-10 |
 | **Dispatch Service** | .NET | RF-12 coordinación operacional de solicitudes · RF-14 aceptación/rechazo · RNF-03 idempotencia · RNF-05 exclusión concurrente · estados de asignación · auditoría del despacho |
-| **Core Services** | Node.js | RF-01 tenants · RF-03/RF-04 identidad y acceso · RF-05/RF-06 aliados y KYC · RF-07 cobertura del aliado · RF-08/RF-09 clientes y sitios · RF-10/RF-11 categorías · RF-12 elegibilidad por categoría y zona, horarios y disponibilidad (soporte a RNF-07) · RF-15, RF-17, RF-18, RF-19 · RF-20/RF-21 comunicación · RF-23 reportes · RF-24..RF-28 cuando se implementen |
+| **Core Service** | Node.js | RF-01 tenants · RF-03/RF-04 identidad y acceso · RF-05/RF-06 aliados y KYC · RF-07 cobertura del aliado · RF-08/RF-09 clientes y sitios · RF-10/RF-11 categorías · RF-12 elegibilidad por categoría y zona, horarios y disponibilidad (soporte a RNF-07) · RF-15, RF-17, RF-18, RF-19 · RF-20/RF-21 comunicación · RF-23 reportes · RF-24..RF-28 cuando se implementen |
 
 Notas que evitan errores de implementación:
 
@@ -57,11 +57,23 @@ Notas que evitan errores de implementación:
 
 **De diseño** (SAD §22, SDD §6): se aplican según el documento; un patrón nuevo con impacto estructural pasa por [Mesa de Arquitectura](../05-proceso/roles-y-decisiones.md).
 
-## Excepción transitoria vigente
+## Acceso del cliente a Supabase
 
-SDD §2.1: el diagrama de alto nivel muestra acceso directo de Flutter a Supabase para disponibilidades. Es **excepción transitoria**, no estado objetivo. Mientras exista:
+**No hay excepciones.** El cliente Flutter alcanza Supabase por exactamente dos caminos
+([SAD §8.3](../../architecture/SAD.md), [SDD §2.2](../../architecture/SDD.md)):
 
-- no se implementan reglas de negocio en Flutter;
-- no se exponen tablas sin controles de acceso;
-- todo acceso directo queda protegido por RLS y limitado a operaciones simples autorizadas;
-- la evolución objetivo es `Flutter → API Gateway → Core Services (dominio de disponibilidad) → Supabase`.
+| Camino | Para qué |
+|---|---|
+| `Flutter → Supabase Auth` | sesión, registro y refresco del JWT |
+| `Flutter ← Supabase Realtime` | recepción de eventos de mensajería; es **transporte**, no acceso a datos |
+
+Todo lo demás va por `Flutter → API Gateway → servicio → Supabase`. Están retirados del cliente
+`.from()`, `.rpc()` y `.storage.from()`
+([ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md)).
+
+La consulta de disponibilidades **no** es una excepción: entra por el Gateway al Core como
+cualquier otra lectura de negocio
+([ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md)).
+
+La «excepción transitoria de disponibilidades» que figuraba aquí quedó **retirada**: contradecía a
+ADR-0027, que está `Aceptado`.

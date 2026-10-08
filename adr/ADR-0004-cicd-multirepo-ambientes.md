@@ -32,6 +32,11 @@ Repositorios de referencia:
 - `MANI-Docs`.
 
 > Lista actualizada por la enmienda del 2026-10-07 (ver abajo): `MANI-Infra` ya no existe y `MANI-Gateway` es `MANI-APIGateway`.
+>
+> **Superseded por [ADR-0028](./ADR-0028-nombres-repositorios-y-ambientes.md)** en cuanto a los
+> nombres de los repositorios y de los ambientes. La decisión de fondo de este ADR —multi-repo,
+> GitHub Actions, build once deploy many, promoción sin reconstrucción y rollback por imagen
+> previa— sigue vigente. La lista de arriba se conserva como registro histórico.
 
 Se utiliza versionamiento semántico para releases y rollback mediante una imagen previamente validada.
 

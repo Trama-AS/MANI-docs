@@ -50,15 +50,15 @@ En `-M3` **sólo cambia `data/datasources`**: las interfaces de `domain/reposito
 
 | Historia | Jira | Estado | RF | Servicio destino |
 |---|---|---|---|---|
-| `US-02.1.1` Registro aliado persona natural | SCRUM-846 | Done | RF-05 | Core Node |
-| `US-02.1.2` Registro aliado empresa | SCRUM-847 | Done | RF-05 | Core Node |
-| `US-02.1.3` Aprobar/rechazar aliado | SCRUM-848 | Done | RF-06 | Core Node |
-| `US-02.1.4` Declarar zona de cobertura | SCRUM-849 | Done | RF-07 | Availability Node |
-| `US-02.2.1` Registro cliente persona natural | SCRUM-851 | Done | RF-08 | Core Node |
-| `US-03.1.1` Crear categoría con flujo operativo | SCRUM-857 | Done | RF-10 | Core Node + Rules Java |
-| `US-03.1.3` Aliado declara categorías | SCRUM-859 | In Progress | RF-11 | Core Node |
-| `US-04.1.1` Crear solicitud | SCRUM-860 | Done | RF-12 | Core Node + Availability |
-| `US-04.1.4` Aceptar/rechazar sin doble asignación | SCRUM-863 | Done | RF-14 | Dispatch .NET |
+| `US-02.1.1` Registro aliado persona natural | SCRUM-846 | Done | RF-05 | Core Service |
+| `US-02.1.2` Registro aliado empresa | SCRUM-847 | Done | RF-05 | Core Service |
+| `US-02.1.3` Aprobar/rechazar aliado | SCRUM-848 | Done | RF-06 | Core Service |
+| `US-02.1.4` Declarar zona de cobertura | SCRUM-849 | Done | RF-07 | Core Service |
+| `US-02.2.1` Registro cliente persona natural | SCRUM-851 | Done | RF-08 | Core Service |
+| `US-03.1.1` Crear categoría con flujo operativo | SCRUM-857 | Done | RF-10 | Core Service + Rules Service |
+| `US-03.1.3` Aliado declara categorías | SCRUM-859 | In Progress | RF-11 | Core Service |
+| `US-04.1.1` Crear solicitud | SCRUM-860 | Done | RF-12 | Core Service + Availability |
+| `US-04.1.4` Aceptar/rechazar sin doble asignación | SCRUM-863 | Done | RF-14 | Dispatch Service |
 
 Subtareas adicionales fuera del patrón, por historia: revalidar aislamiento de KYC entre aliados (`US-02.1.3`) · reemplazar selección libre de zona por catálogo jerárquico con coincidencia exacta (`US-02.1.4`) · separar gestión de categoría en Core de las reglas evaluables en Rules (`US-03.1.1`) · separar creación en Core de la orquestación del despacho (`US-04.1.1`) · **decidir dónde vive la atomicidad y revalidar PoC-001**, más idempotencia y ausencia de doble asignación bajo concurrencia (`US-04.1.4`).
 
@@ -66,11 +66,11 @@ Subtareas adicionales fuera del patrón, por historia: revalidar aislamiento de 
 
 | ID | Épica | RF | Historia | Componente |
 |---|---|---|---|---|
-| `HU-N-01` | EP-01 | RF-01 | Administrar tenants y su estado base | Core Node |
-| `HU-N-02` | EP-01 | RF-02 / RNF-02 / REST-05 | Configurar reglas por tenant sin despliegue | Rules Java + Core Node |
+| `HU-N-01` | EP-01 | RF-01 | Administrar tenants y su estado base | Core Service |
+| `HU-N-02` | EP-01 | RF-02 / RNF-02 / REST-05 | Configurar reglas por tenant sin despliegue | Rules Service + Core Service |
 | `HU-N-03` | EP-01 | RF-03 / RNF-01 | Autenticar y autorizar por tenant y rol | Supabase Auth + Gateway + servicios |
-| `HU-N-04` | EP-02 | RF-04 | Recuperar contraseña de forma segura | Supabase Auth + Core Node |
-| `HU-N-05` | EP-04D | RF-19 | Cerrar servicio sólo tras calificación bidireccional | Core Node |
+| `HU-N-04` | EP-02 | RF-04 | Recuperar contraseña de forma segura | Supabase Auth + Core Service |
+| `HU-N-05` | EP-04D | RF-19 | Cerrar servicio sólo tras calificación bidireccional | Core Service |
 
 ## Cambios de alcance que ya están decididos
 

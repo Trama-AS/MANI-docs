@@ -21,7 +21,7 @@
  * queda solo en texto.
  *
  * El Nivel 4 (Code) no se modela aquí: Structurizr no describe clases. Se mantiene en SDD §4.4.
- * Tampoco se modela un nodo por ambiente: Local, DEV y TEST/QA comparten la topología de
+ * Tampoco se modela un nodo por ambiente: Local, DEV y QA comparten la topología de
  * producción y solo cambian escalado, secretos y datos (SDD §10).
  *
  * Decisiones abiertas que este modelo NO fija: proveedor y topología del clúster Kubernetes
@@ -59,7 +59,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
 
             // Java decide. El motor de reglas es lo único que vive aquí: no es un backend general.
-            group "MANI-Rules-Java — decide" {
+            group "MANI-Rules-Service — decide" {
 
                 rules = container "Rules Service" "Reglas configurables por tenant, ranking de aliados, elegibilidad, requisitos KYC y validación contra tarifario (RF-02, RF-13, RF-16, RF-22). Lee la configuración de persistencia, no del código." "Java" {
                     rulesApi = component "Rules REST Controller" "Expone la evaluación de reglas y el ranking." "Java"
@@ -74,7 +74,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
 
             // .NET asigna. Despacho y exclusión concurrente, nada más.
-            group "MANI-Dispatch-DotNet — asigna" {
+            group "MANI-Dispatch-Service — asigna" {
 
                 dispatch = container "Dispatch Service" "Coordinación operacional de solicitudes, selección de aliados válidos, aceptación/rechazo, estados de asignación, idempotencia y exclusión concurrente (RF-12, RF-14, RNF-03, RNF-05). Consume Rules antes de asignar." ".NET" {
                     dispatchApi = component "Dispatch API" "Expone creación de solicitud y aceptación/rechazo." ".NET"
@@ -89,9 +89,9 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
 
             // Node opera. Núcleo funcional de la plataforma: lo transversal y lo operativo.
-            group "MANI-Core-Node — opera" {
+            group "MANI-Core-Service — opera" {
 
-                core = container "Core Services" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación, disponibilidad y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
+                core = container "Core Service" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación, disponibilidad y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
                     coreApi = component "Core API" "Expone los casos de uso de los dominios de Core." "Node.js"
                     coreUsers = component "Users / Tenants Component" "Tenants, usuarios, roles y acceso (RF-01, RF-03, RF-04)." "Node.js"
                     coreKyc = component "KYC Orchestrator" "Registro y verificación de aliados y documentos (RF-05, RF-06)." "Node.js"
@@ -228,7 +228,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
         // ---------- Despliegue de producción (SDD §9.1, §10 y §11) ----------
         //
-        // Se modela un solo ambiente. Local, DEV y TEST/QA comparten esta topología y cambian
+        // Se modela un solo ambiente. Local, DEV y QA comparten esta topología y cambian
         // únicamente escalado, secretos y datos (SDD §10): un nodo por ambiente repetiría la
         // misma información sin añadir ninguna decisión arquitectónica.
         //
@@ -264,7 +264,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                     deploymentNode "Dispatch Service — asigna" "Despacho y exclusión concurrente. Mínimo 2 réplicas; HPA hasta 6. La garantía de no doble asignación es de la base, no del número de réplicas." "Pod — .NET" 2 {
                         dispatchProd = containerInstance dispatch
                     }
-                    deploymentNode "Core Services — opera" "Núcleo funcional de la plataforma. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
+                    deploymentNode "Core Service — opera" "Núcleo funcional de la plataforma. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
                         coreProd = containerInstance core
                     }
                 }
@@ -297,7 +297,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
             cicd = deploymentNode "GitHub Actions — CI/CD" "De dónde sale lo que corre en el clúster." "GitHub Actions" {
                 pipeline = infrastructureNode "Pipeline de calidad y seguridad" "Pruebas unitarias, de integración y de contrato, SonarQube (SAST), build, escaneo de dependencias e imagen, Newman y OWASP ZAP. Un artefacto que no pasa los gates no se reconstruye para producción." "GitHub Actions"
-                registro = infrastructureNode "Registro de imágenes" "Imágenes inmutables versionadas. A producción se promueve exactamente la imagen ya verificada en TEST/QA (SDD §11)." "Container registry"
+                registro = infrastructureNode "Registro de imágenes" "Imágenes inmutables versionadas. A producción se promueve exactamente la imagen ya verificada en QA (SDD §11)." "Container registry"
 
                 pipeline -> registro "Publica la imagen validada"
             }
@@ -357,7 +357,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             autolayout lr
         }
 
-        component core "componentes-core" "C4 Nivel 3 — Core Services (Node.js), disponibilidad incluida. Fuente: SDD §4.3.3." {
+        component core "componentes-core" "C4 Nivel 3 — Core Service (Node.js), disponibilidad incluida. Fuente: SDD §4.3.3." {
             include *
             autolayout lr
         }

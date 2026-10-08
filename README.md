@@ -83,7 +83,7 @@ La arquitectura objetivo de MANI es:
 | API Gateway | NGINX | Entrada única, routing y políticas transversales |
 | Rules Service | Java | Reglas configurables por tenant, ranking y tarifarios |
 | Dispatch Service | .NET | Despacho, asignación y control de concurrencia |
-| Core Services | Node.js | Tenants, usuarios, aliados, clientes, KYC, cotizaciones, ejecución y comunicación |
+| Core Service | Node.js | Tenants, usuarios, aliados, clientes, KYC, cotizaciones, ejecución y comunicación |
 | Persistencia | Supabase | Plataforma administrada |
 | Motor de datos | PostgreSQL | Persistencia relacional y RLS |
 
@@ -118,7 +118,7 @@ MANI contempla integración con:
 La línea base contempla exactamente tres ambientes:
 
 ```text
-DEV → TEST/QA → PROD
+DEV → QA → PROD
 ```
 
 No se define un cuarto ambiente STAGING independiente.
@@ -164,7 +164,7 @@ Build Docker/OCI
    ↓
 Escaneo de dependencias e imagen
    ↓
-TEST/QA
+QA
    ↓
 Newman
    ↓
@@ -176,7 +176,7 @@ Promoción a PROD
 Herramientas principales:
 
 - **SonarQube:** SAST y Quality Gates.
-- **OWASP ZAP:** DAST sobre TEST/QA.
+- **OWASP ZAP:** DAST sobre QA.
 - **Postman / Newman:** pruebas funcionales, contratos y aislamiento multi-tenant.
 - **k6:** pruebas de carga y concurrencia cuando corresponda.
 
@@ -200,16 +200,17 @@ MANI adopta una estrategia **multi-repo**.
 
 Estructura objetivo:
 
-```text
-MANI-Flutter
-MANI-Gateway
-MANI-Rules-Java
-MANI-Dispatch-DotNet
-MANI-Core-Node
-MANI-Availability
-MANI-Infra
-MANI-Docs
-```
+| Repositorio | Tecnología | Responsabilidad principal |
+|---|---|---|
+| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
+| `MANI-API-Gateway` | NGINX | Punto de entrada, enrutamiento y raíz de composición del despliegue |
+| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
+| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
+| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
+
+Son **seis repositorios** y cinco desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+No existe `MANI-Availability` ni `MANI-Infra`.
 
 Cada unidad desplegable mantiene de forma independiente:
 
@@ -332,7 +333,7 @@ La arquitectura, requerimientos, ADR y modelo de datos ya fueron depurados hacia
 
 Se mantiene pendiente el cierre con DevOps de tres decisiones de infraestructura:
 
-1. ubicación concreta de Kubernetes en TEST/QA y PROD;
+1. ubicación concreta de Kubernetes en QA y PROD;
 2. estrategia definitiva de DEV para Supabase/local;
 3. registro oficial de imágenes.
 

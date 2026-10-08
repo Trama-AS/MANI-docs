@@ -2,56 +2,55 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §20 · [`architecture/SDD.md`](../../architecture/SDD.md) §7 y §8 (ISO/IEC 25010:2023).
+**Fuente:** [`architecture/SDD.md`](../../architecture/SDD.md) §7 y §8 (ISO/IEC 25010:2023) · [`architecture/SAD.md`](../../architecture/SAD.md) §20.
 
-Los umbrales de esta página son los que se verifican en CI y en revisión. No se ajustan en un PR: se ajustan en el SAD/SDD.
+> **Esta página no contiene umbrales.** Los umbrales de calidad del proyecto viven en **un solo
+> lugar**: [`SDD.md`](../../architecture/SDD.md) §7, y los escenarios con los que QA los verifica en
+> §8. Antes esta página los repetía, y la copia se desincronizó: llegó a decir `p95 ≤ 1 s` mientras
+> el SDD decía `p95 ≤ 500 ms`.
+>
+> Si necesitas un número, ve al SDD. Si un número aparece en otro documento, está desactualizado.
+
+## Qué decide cada documento
+
+| Pregunta | Dónde se responde |
+|---|---|
+| ¿Qué atributo es prioritario y por qué? | [`SAD.md`](../../architecture/SAD.md) §20 |
+| ¿Qué decisión de arquitectura obliga esa prioridad? | [`SAD.md`](../../architecture/SAD.md) §20.1 |
+| ¿Con qué umbral se verifica? | [`SDD.md`](../../architecture/SDD.md) §7 |
+| ¿Con qué escenario lo comprueba QA? | [`SDD.md`](../../architecture/SDD.md) §8 |
 
 ## Prioridades
 
-P1: seguridad, fiabilidad, eficiencia de desempeño, mantenibilidad, flexibilidad. P2: compatibilidad, adecuación funcional, capacidad de interacción. P3: protección/safety (SDD §7.1).
+| Prioridad | Atributos |
+|---|---|
+| **P1 — crítico** | seguridad · fiabilidad · eficiencia de desempeño · mantenibilidad · flexibilidad |
+| **P2 — alto** | compatibilidad · adecuación funcional · capacidad de interacción |
+| **P3 — controlado** | protección / safety |
 
-## Umbrales P1 (SAD §20)
-
-### Seguridad
-
-- 100 % de endpoints privados autenticados;
-- 100 % de pruebas cross-tenant deben **negar** acceso;
-- 0 vulnerabilidades `Blocker` / `Critical` en release;
-- 0 `High` conocidas abiertas en producción;
-- TLS para tráfico externo;
-- cambios críticos auditados.
-
-### Fiabilidad
-
-- disponibilidad objetivo de APIs críticas ≥ 99.9 %;
-- **0 dobles asignaciones**;
-- operaciones críticas idempotentes;
-- un fallo de push no revierte una operación confirmada.
-
-### Eficiencia de desempeño
-
-- consulta de disponibilidad/ranking **p95 ≤ 1 s** en el escenario provisional del SRS;
-- objetivo inicial de pruebas: **20 usuarios concurrentes** para el escenario de RNF-07;
-- la saturación se detecta por observabilidad.
-
-Los volúmenes definitivos se ajustan cuando existan datos reales del cliente.
-
-### Mantenibilidad
-
-- un servicio no escribe tablas privadas de otro dominio;
-- cobertura de código nuevo **≥ 80 %**; casos críticos **≥ 90 %**;
-- `correlation_id` en requests distribuidos;
-- contratos de API versionados.
-
-### Flexibilidad
-
-- la misma imagen es promovible entre ambientes;
-- configuración externa al artefacto;
-- integraciones externas encapsuladas mediante Adapter;
-- servicios escalables de forma independiente.
+P1 condiciona decisiones estructurales y la aceptación del sistema. P2 debe cumplirse antes de
+producción. P3 se verifica, pero su impacto arquitectónico es menor para el alcance actual.
 
 ## Escenarios de calidad
 
-El SDD §8 define los escenarios con los que se comprueban estos atributos: QAS-01 aislamiento multi-tenant · QAS-02 concurrencia de asignación · QAS-03 disponibilidad · QAS-04 falla de notificaciones · QAS-05 modificación de regla · QAS-06 recuperación.
+[`SDD.md`](../../architecture/SDD.md) §8 define **nueve** escenarios, uno por característica de
+ISO/IEC 25010:2023, cada uno con fuente, estímulo, entorno, respuesta esperada, umbral y cómo lo
+mide QA:
 
-Una historia que toque uno de esos temas debe demostrar su escenario, no solo sus criterios funcionales.
+| ID | Característica | Qué comprueba |
+|---|---|---|
+| `QAS-01` | Seguridad | que un usuario de un tenant no alcance datos de otro |
+| `QAS-02` | Fiabilidad | que un fallo del proveedor de notificaciones no revierta una operación confirmada |
+| `QAS-03` | Eficiencia de desempeño | la latencia de la consulta de elegibilidad por categoría y zona |
+| `QAS-04` | Mantenibilidad | que un cambio interno compatible no obligue a tocar consumidores |
+| `QAS-05` | Flexibilidad | que se añada capacidad sin cambiar código ni reconstruir la imagen |
+| `QAS-06` | Compatibilidad | que productor y consumidor respeten el contrato OpenAPI |
+| `QAS-07` | Adecuación funcional | ranking, tarifa, asignación y conflicto |
+| `QAS-08` | Capacidad de interacción | protección ante acciones irreversibles y entradas inválidas |
+| `QAS-09` | Protección / safety | que una falla de terceros no deje transacciones ambiguas |
+
+Una historia que toque uno de esos temas debe demostrar su escenario, no solo sus criterios
+funcionales ([DoR y DoD](../05-proceso/dor-y-dod.md)).
+
+Cuando un escenario y un criterio de la sección §7 del SDD difieran, **prevalece el más
+restrictivo** (SDD §8).

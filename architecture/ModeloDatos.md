@@ -22,6 +22,7 @@
 11. DDL del Data Warehouse
 12. Calidad de datos y controles
 13. Relación datos ↔ servicios
+14. Cobertura de requisitos funcionales
 
 ---
 
@@ -61,8 +62,14 @@ para conceptos que no sean específicamente de datos.
 | **KYC** | Información y documentación utilizada para verificar un aliado. |
 | **Categoría** | Tipo de servicio ofrecido dentro de MANI. |
 | **Zona** | Unidad administrativa del catálogo geográfico utilizada para definir cobertura. |
-| **Cobertura** | Asociación entre un aliado y las zonas en las que declara prestar servicios. |
-| **Disponibilidad** | Intervalo o condición operacional en la que un aliado puede atender servicios. |
+| **Cobertura** | Conjunto de zonas en las que un aliado declara prestar servicios. Es una declaración estable del aliado y no depende del calendario. |
+| **Disponibilidad** | Franja de agenda concreta (fecha y horas) en la que un aliado puede atender servicios. **No es lo mismo que cobertura:** la cobertura dice *dónde*, la disponibilidad dice *cuándo*. |
+| **Sitio de servicio** | Ubicación registrada por un cliente empresa donde se presta el servicio. Tiene siempre una zona asignada y puede declarar reglas y condiciones propias visibles al aliado. |
+| **Tarifario** | Tabla de referencia por tenant y categoría con valores mínimo, típico y máximo, usada para alertar cotizaciones fuera de rango. No fija el precio: lo contrasta. |
+| **Calificación** | Valoración que una parte emite sobre la otra al finalizar el servicio. Es bidireccional y condición de cierre. |
+| **Conversación** | Hilo de mensajería asociado a una solicitud, consultable después de cerrada. |
+| **Mensaje** | Entrada individual de una conversación. |
+| **Queja** | Reclamación registrada sobre un servicio. Pertenece al segundo incremento. |
 | **Solicitud** | Petición de servicio creada por un cliente para un sitio y una categoría determinados. |
 | **Cotización** | Propuesta económica asociada a una solicitud, diferenciando los componentes definidos por el negocio. |
 | **Asignación** | Vinculación efectiva entre una solicitud y el aliado que obtuvo la aceptación válida. |
@@ -86,12 +93,13 @@ El modelo conceptual describe las entidades del negocio sin depender de PostgreS
 
 Dominios:
 
-- **Identidad:** Tenant, Usuario, Rol, Aliado, Documento KYC.
+- **Identidad:** Tenant, Usuario, Rol, Aliado, Documento KYC, categorías atendidas, cobertura declarada y agenda de disponibilidad.
+- **Clientes:** Cliente y Sitio de servicio.
 - **Catálogo:** Categoría y Zona.
-- **Disponibilidad:** disponibilidad operacional de aliados.
-- **Operación:** Solicitud, Cotización, Asignación e Historial.
-- **Reglas:** reglas configurables por tenant.
-- **Comunicaciones:** notificaciones.
+- **Despacho:** Solicitud y Asignación.
+- **Ciclo del servicio:** Cotización, Historial de ejecución y Calificación.
+- **Reglas:** reglas configurables por tenant y tarifario de referencia.
+- **Comunicaciones:** conversaciones, mensajes, notificaciones y quejas.
 - **Pagos:** transacciones y referencias de proveedor.
 
 ```mermaid
@@ -100,33 +108,55 @@ erDiagram
     TENANT ||--o{ CATEGORIA : configura
     TENANT ||--o{ ZONA : configura
     TENANT ||--o{ REGLA_TENANT : define
+    TENANT ||--o{ TARIFARIO : publica
 
     USUARIO ||--o{ USUARIO_ROL : tiene
     ROL ||--o{ USUARIO_ROL : asigna
     USUARIO ||--o| ALIADO : puede_ser
+    USUARIO ||--o| CLIENTE : puede_ser
 
     ALIADO ||--o{ DOCUMENTO_KYC : presenta
-    ALIADO ||--o{ DISPONIBILIDAD : registra
+    ALIADO ||--o{ ALIADO_CATEGORIA : atiende
+    ALIADO ||--o{ ALIADO_COBERTURA : cubre
+    ALIADO ||--o{ DISPONIBILIDAD : publica
+
+    CATEGORIA ||--o{ ALIADO_CATEGORIA : clasifica
+    ZONA ||--o{ ALIADO_COBERTURA : delimita
+    CATEGORIA ||--o{ TARIFARIO : tarifa
+
+    CLIENTE ||--o{ SITIO_SERVICIO : administra
+    ZONA ||--|| SITIO_SERVICIO : ubica
 
     CATEGORIA ||--o{ DISPONIBILIDAD : clasifica
     ZONA ||--o{ DISPONIBILIDAD : localiza
 
-    USUARIO ||--o{ SOLICITUD : crea
+    CLIENTE ||--o{ SOLICITUD : crea
+    SITIO_SERVICIO ||--o{ SOLICITUD : localiza
     CATEGORIA ||--o{ SOLICITUD : corresponde
     ZONA ||--o{ SOLICITUD : ocurre_en
 
     SOLICITUD ||--o{ COTIZACION : recibe
     ALIADO ||--o{ COTIZACION : realiza
+    TARIFARIO ||--o{ COTIZACION : contrasta
 
     SOLICITUD ||--o{ ASIGNACION : genera
     ALIADO ||--o{ ASIGNACION : recibe
 
     SOLICITUD ||--o{ HISTORIAL_SOLICITUD : registra
+    SOLICITUD ||--o{ CALIFICACION : cierra_con
+
+    SOLICITUD ||--o| CONVERSACION : tiene
+    CONVERSACION ||--o{ MENSAJE : contiene
+    USUARIO ||--o{ MENSAJE : escribe
     USUARIO ||--o{ NOTIFICACION : recibe
 
+    SOLICITUD ||--o{ QUEJA : origina
     SOLICITUD ||--o{ PAGO : genera
     USUARIO ||--o{ PAGO : realiza
 ```
+
+El cierre de una solicitud exige **dos** filas de `CALIFICACION`, una por cada parte (RF-19). La relación
+`ZONA ||--|| SITIO_SERVICIO` es obligatoria en ambos sentidos de lectura: todo sitio tiene zona (RF-09).
 
 ---
 
@@ -183,9 +213,10 @@ PK/FK id_rol
 Aliado
 PK id_aliado
 FK id_usuario
+tipo_aliado          PERSONA_NATURAL | EMPRESA | EMPLEADO_DIRECTO
 estado
 nivel_verificacion
-calificacion
+calificacion         promedio derivado de Calificacion
 fecha_registro
 ```
 
@@ -202,7 +233,79 @@ fecha_carga
 fecha_validacion
 ```
 
-## 4.2 Catálogo
+### AliadoCategoria
+
+Categorías que el aliado declara atender (RF-11).
+
+```text
+AliadoCategoria
+PK/FK id_aliado
+PK/FK id_categoria
+estado
+```
+
+### AliadoCobertura
+
+Zonas en las que el aliado declara prestar servicio (RF-07). Es la declaración de
+cobertura, independiente de la agenda.
+
+```text
+AliadoCobertura
+PK/FK id_aliado
+PK/FK id_zona
+estado
+```
+
+### Disponibilidad
+
+Agenda del aliado: dice *cuándo* puede atender. La cobertura —*dónde*— es `AliadoCobertura`.
+Ambas pertenecen al mismo dominio de identidad del aliado y viven en el esquema `core`.
+
+```text
+Disponibilidad
+PK id_disponibilidad
+FK id_aliado
+FK id_categoria
+FK id_zona
+fecha
+hora_inicio
+hora_fin
+estado
+```
+
+## 4.2 Clientes y sitios de servicio
+
+### Cliente
+
+```text
+Cliente
+PK id_cliente
+FK id_usuario
+tipo_cliente         PERSONA_NATURAL | EMPRESA
+razon_social         obligatorio cuando tipo_cliente = EMPRESA
+documento_fiscal
+estado
+fecha_registro
+```
+
+### SitioServicio
+
+Un cliente empresa administra varios sitios (RF-08). Todo sitio tiene zona (RF-09) y puede
+declarar reglas y condiciones que el aliado debe ver antes de la programación.
+
+```text
+SitioServicio
+PK id_sitio
+FK id_cliente
+FK id_zona           obligatorio
+nombre
+direccion
+reglas_acceso
+condiciones
+estado
+```
+
+## 4.3 Catálogo
 
 ```text
 Categoria
@@ -222,46 +325,21 @@ descripcion
 estado
 ```
 
-## 4.3 Disponibilidad
-
-```text
-Disponibilidad
-PK id_disponibilidad
-FK id_aliado
-FK id_categoria
-FK id_zona
-fecha
-hora_inicio
-hora_fin
-estado
-```
-
-## 4.4 Operación
+## 4.4 Despacho
 
 ```text
 Solicitud
 PK id_solicitud
 FK id_tenant
 FK id_cliente
+FK id_sitio          opcional: presente cuando el cliente es empresa con sitios
 FK id_categoria
 FK id_zona
 descripcion
-direccion
+direccion            usada cuando la solicitud no proviene de un sitio registrado
 fecha_servicio
 estado
 fecha_creacion
-```
-
-```text
-Cotizacion
-PK id_cotizacion
-FK id_solicitud
-FK id_aliado
-valor
-moneda
-estado
-fecha_creacion
-fecha_expiracion
 ```
 
 ```text
@@ -272,6 +350,24 @@ FK id_aliado
 estado
 fecha_asignacion
 fecha_respuesta
+```
+
+## 4.5 Ciclo del servicio
+
+```text
+Cotizacion
+PK id_cotizacion
+FK id_solicitud
+FK id_aliado
+FK id_tarifa         tarifa de referencia contra la que se contrastó
+valor_mano_obra
+valor_materiales
+valor                total = mano de obra + materiales
+moneda
+fuera_de_rango       resultado de la validación contra el tarifario
+estado
+fecha_creacion
+fecha_expiracion
 ```
 
 ```text
@@ -285,7 +381,20 @@ observacion
 fecha
 ```
 
-## 4.5 Reglas
+```text
+Calificacion
+PK id_calificacion
+FK id_solicitud
+FK id_autor          usuario que califica
+rol_autor            CLIENTE | ALIADO
+puntaje              1..5
+comentario
+fecha
+```
+
+Una solicitud admite **una sola** calificación por `rol_autor`. El cierre requiere las dos.
+
+## 4.6 Reglas y tarifario
 
 ```text
 ReglaTenant
@@ -299,7 +408,40 @@ estado
 fecha_creacion
 ```
 
-## 4.6 Comunicaciones
+```text
+Tarifario
+PK id_tarifa
+FK id_tenant
+FK id_categoria
+valor_minimo
+valor_tipico
+valor_maximo
+moneda
+vigencia_desde
+vigencia_hasta
+estado
+```
+
+## 4.7 Comunicaciones
+
+```text
+Conversacion
+PK id_conversacion
+FK id_tenant
+FK id_solicitud      una conversación por solicitud
+estado
+fecha_creacion
+```
+
+```text
+Mensaje
+PK id_mensaje
+FK id_conversacion
+FK id_autor
+contenido
+fecha_envio
+fecha_lectura
+```
 
 ```text
 Notificacion
@@ -314,7 +456,22 @@ fecha_creacion
 fecha_envio
 ```
 
-## 4.7 Pagos
+```text
+Queja
+PK id_queja
+FK id_solicitud
+FK id_usuario
+motivo
+descripcion
+estado
+fecha_creacion
+fecha_cierre
+```
+
+`Queja` pertenece al segundo incremento (RF-26) y se modela aquí para no reabrir el esquema
+cuando entre al alcance.
+
+## 4.8 Pagos
 
 ```text
 Pago
@@ -367,10 +524,44 @@ erDiagram
     ALIADO {
         uuid id_aliado PK
         uuid id_usuario FK
+        varchar tipo_aliado
         varchar estado
         varchar nivel_verificacion
         numeric calificacion
         timestamptz fecha_registro
+    }
+
+    ALIADO_CATEGORIA {
+        uuid id_aliado PK,FK
+        uuid id_categoria PK,FK
+        varchar estado
+    }
+
+    ALIADO_COBERTURA {
+        uuid id_aliado PK,FK
+        uuid id_zona PK,FK
+        varchar estado
+    }
+
+    CLIENTE {
+        uuid id_cliente PK
+        uuid id_usuario FK
+        varchar tipo_cliente
+        varchar razon_social
+        varchar documento_fiscal
+        varchar estado
+        timestamptz fecha_registro
+    }
+
+    SITIO_SERVICIO {
+        uuid id_sitio PK
+        uuid id_cliente FK
+        uuid id_zona FK
+        varchar nombre
+        text direccion
+        text reglas_acceso
+        text condiciones
+        varchar estado
     }
 
     DOCUMENTO_KYC {
@@ -414,6 +605,7 @@ erDiagram
         uuid id_solicitud PK
         uuid id_tenant FK
         uuid id_cliente FK
+        uuid id_sitio FK
         uuid id_categoria FK
         uuid id_zona FK
         text descripcion
@@ -427,11 +619,25 @@ erDiagram
         uuid id_cotizacion PK
         uuid id_solicitud FK
         uuid id_aliado FK
+        uuid id_tarifa FK
+        numeric valor_mano_obra
+        numeric valor_materiales
         numeric valor
         char moneda
+        boolean fuera_de_rango
         varchar estado
         timestamptz fecha_creacion
         timestamptz fecha_expiracion
+    }
+
+    CALIFICACION {
+        uuid id_calificacion PK
+        uuid id_solicitud FK
+        uuid id_autor FK
+        varchar rol_autor
+        smallint puntaje
+        text comentario
+        timestamptz fecha
     }
 
     ASIGNACION {
@@ -464,6 +670,36 @@ erDiagram
         timestamptz fecha_creacion
     }
 
+    TARIFARIO {
+        uuid id_tarifa PK
+        uuid id_tenant FK
+        uuid id_categoria FK
+        numeric valor_minimo
+        numeric valor_tipico
+        numeric valor_maximo
+        char moneda
+        date vigencia_desde
+        date vigencia_hasta
+        varchar estado
+    }
+
+    CONVERSACION {
+        uuid id_conversacion PK
+        uuid id_tenant FK
+        uuid id_solicitud FK
+        varchar estado
+        timestamptz fecha_creacion
+    }
+
+    MENSAJE {
+        uuid id_mensaje PK
+        uuid id_conversacion FK
+        uuid id_autor FK
+        text contenido
+        timestamptz fecha_envio
+        timestamptz fecha_lectura
+    }
+
     NOTIFICACION {
         uuid id_notificacion PK
         uuid id_usuario FK
@@ -474,6 +710,17 @@ erDiagram
         varchar estado
         timestamptz fecha_creacion
         timestamptz fecha_envio
+    }
+
+    QUEJA {
+        uuid id_queja PK
+        uuid id_solicitud FK
+        uuid id_usuario FK
+        varchar motivo
+        text descripcion
+        varchar estado
+        timestamptz fecha_creacion
+        timestamptz fecha_cierre
     }
 
     PAGO {
@@ -492,29 +739,52 @@ erDiagram
     TENANT ||--o{ CATEGORIA : configura
     TENANT ||--o{ ZONA : configura
     TENANT ||--o{ REGLA_TENANT : define
+    TENANT ||--o{ TARIFARIO : publica
+    TENANT ||--o{ CONVERSACION : aisla
 
     USUARIO ||--o{ USUARIO_ROL : tiene
     ROL ||--o{ USUARIO_ROL : asigna
     USUARIO ||--o| ALIADO : especializa
+    USUARIO ||--o| CLIENTE : especializa
 
     ALIADO ||--o{ DOCUMENTO_KYC : presenta
+    ALIADO ||--o{ ALIADO_CATEGORIA : atiende
+    ALIADO ||--o{ ALIADO_COBERTURA : cubre
     ALIADO ||--o{ DISPONIBILIDAD : publica
+
+    CATEGORIA ||--o{ ALIADO_CATEGORIA : clasifica
+    ZONA ||--o{ ALIADO_COBERTURA : delimita
+    CATEGORIA ||--o{ TARIFARIO : tarifa
+
+    CLIENTE ||--o{ SITIO_SERVICIO : administra
+    ZONA ||--o{ SITIO_SERVICIO : ubica
 
     CATEGORIA ||--o{ DISPONIBILIDAD : clasifica
     ZONA ||--o{ DISPONIBILIDAD : ubica
 
-    USUARIO ||--o{ SOLICITUD : crea
+    CLIENTE ||--o{ SOLICITUD : crea
+    SITIO_SERVICIO ||--o{ SOLICITUD : localiza
     CATEGORIA ||--o{ SOLICITUD : tipifica
     ZONA ||--o{ SOLICITUD : ubica
 
     SOLICITUD ||--o{ COTIZACION : recibe
     ALIADO ||--o{ COTIZACION : realiza
+    TARIFARIO ||--o{ COTIZACION : contrasta
 
     SOLICITUD ||--o{ ASIGNACION : registra
     ALIADO ||--o{ ASIGNACION : atiende
 
     SOLICITUD ||--o{ HISTORIAL_SOLICITUD : cambia
+    SOLICITUD ||--o{ CALIFICACION : cierra_con
+    USUARIO ||--o{ CALIFICACION : emite
+
+    SOLICITUD ||--o| CONVERSACION : tiene
+    CONVERSACION ||--o{ MENSAJE : contiene
+    USUARIO ||--o{ MENSAJE : escribe
     USUARIO ||--o{ NOTIFICACION : recibe
+
+    SOLICITUD ||--o{ QUEJA : origina
+    USUARIO ||--o{ QUEJA : registra
     SOLICITUD ||--o{ PAGO : genera
     USUARIO ||--o{ PAGO : realiza
 ```
@@ -532,30 +802,65 @@ core
 ├── rol
 ├── usuario_rol
 ├── aliado
+├── aliado_categoria
+├── aliado_cobertura
+├── disponibilidad
 ├── documento_kyc
+├── cliente
+├── sitio_servicio
 ├── categoria
 └── zona
 
 reglas
-└── regla_tenant
-
-disponibilidad
-└── disponibilidad
+├── regla_tenant
+└── tarifario
 
 despacho
 ├── solicitud
+└── asignacion
+
+servicio
 ├── cotizacion
-├── asignacion
-└── historial_solicitud
+├── historial_solicitud
+└── calificacion
 
 comunicaciones
-└── notificacion
+├── conversacion
+├── mensaje
+├── notificacion
+└── queja
 
 pagos
 └── pago
 ```
 
 La separación por esquema organiza el modelo por dominio. En una evolución hacia bases totalmente independientes, los IDs remotos pueden mantenerse como referencias lógicas sin FK física entre bases.
+
+Hay **seis esquemas**, y cada uno tiene un único servicio dueño (§13).
+
+El esquema `servicio` existe para que el dueño de los datos coincida con el dueño de la
+capacidad: el despacho (solicitud y asignación) pertenece a Dispatch, mientras cotización,
+ejecución y calificación pertenecen al Core Service, que es quien implementa esos casos de uso
+(SAD §7). Sin esta separación, `cotizacion` quedaba en un esquema de Dispatch mientras el SAD
+asignaba el caso de uso a Core.
+
+**La disponibilidad no tiene esquema propio.** `core.disponibilidad` está junto a
+`core.aliado_cobertura` y `core.aliado_categoria` porque las tres describen al mismo aliado: qué
+atiende, dónde y cuándo. Separarlas en un esquema aparte sugería una frontera de servicio que no
+existe.
+
+## 6.2 Aislamiento por tenant en el modelo físico
+
+`id_tenant` se denormaliza en toda tabla que sea frontera de consulta directa —`tenant`, `usuario`,
+`categoria`, `zona`, `cliente`, `solicitud`, `regla_tenant`, `tarifario`, `conversacion`— para que la
+política RLS filtre sin recorrer joins. Las tablas que solo se alcanzan a través de una de ellas
+(`documento_kyc`, `disponibilidad`, `aliado_cobertura`, `aliado_categoria`, `mensaje`,
+`calificacion`, `cotizacion`, `asignacion`, `historial_solicitud`) heredan el aislamiento por su
+clave foránea y lo verifican en la política correspondiente.
+
+La regla operativa: ninguna política RLS depende de `auth.uid()` cuando el llamador es un servicio.
+El tenant se toma del claim del JWT que el servicio propaga, y RLS actúa como defensa adicional,
+no como única barrera (ADR-0012, ADR-0018).
 
 ---
 
@@ -566,8 +871,8 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE SCHEMA IF NOT EXISTS reglas;
-CREATE SCHEMA IF NOT EXISTS disponibilidad;
 CREATE SCHEMA IF NOT EXISTS despacho;
+CREATE SCHEMA IF NOT EXISTS servicio;
 CREATE SCHEMA IF NOT EXISTS comunicaciones;
 CREATE SCHEMA IF NOT EXISTS pagos;
 
@@ -612,6 +917,8 @@ CREATE TABLE core.usuario_rol (
 CREATE TABLE core.aliado (
     id_aliado UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_usuario UUID NOT NULL UNIQUE,
+    tipo_aliado VARCHAR(20) NOT NULL
+        CHECK (tipo_aliado IN ('PERSONA_NATURAL','EMPRESA','EMPLEADO_DIRECTO')),
     estado VARCHAR(30) NOT NULL DEFAULT 'PENDIENTE'
         CHECK (estado IN ('PENDIENTE','ACTIVO','SUSPENDIDO','INACTIVO')),
     nivel_verificacion VARCHAR(30),
@@ -654,7 +961,90 @@ CREATE TABLE core.zona (
     UNIQUE (id_tenant, nombre)
 );
 
-CREATE TABLE disponibilidad.disponibilidad (
+-- Categorias que el aliado declara atender (RF-11).
+CREATE TABLE core.aliado_categoria (
+    id_aliado UUID NOT NULL,
+    id_categoria UUID NOT NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
+        CHECK (estado IN ('ACTIVO','INACTIVO')),
+    PRIMARY KEY (id_aliado, id_categoria),
+    FOREIGN KEY (id_aliado) REFERENCES core.aliado(id_aliado),
+    FOREIGN KEY (id_categoria) REFERENCES core.categoria(id_categoria)
+);
+
+-- Cobertura declarada del aliado (RF-07). Match exacto por zona, sin radio ni
+-- geolocalizacion (REST-01, RNF-09, ADR-0011).
+CREATE TABLE core.aliado_cobertura (
+    id_aliado UUID NOT NULL,
+    id_zona UUID NOT NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
+        CHECK (estado IN ('ACTIVO','INACTIVO')),
+    PRIMARY KEY (id_aliado, id_zona),
+    FOREIGN KEY (id_aliado) REFERENCES core.aliado(id_aliado),
+    FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona)
+);
+
+-- RF-08: cliente persona natural o empresa.
+CREATE TABLE core.cliente (
+    id_cliente UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    id_usuario UUID NOT NULL UNIQUE,
+    tipo_cliente VARCHAR(20) NOT NULL
+        CHECK (tipo_cliente IN ('PERSONA_NATURAL','EMPRESA')),
+    razon_social VARCHAR(180),
+    documento_fiscal VARCHAR(50),
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
+        CHECK (estado IN ('ACTIVO','INACTIVO')),
+    fecha_registro TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
+    CONSTRAINT ck_cliente_empresa_razon_social
+        CHECK (tipo_cliente <> 'EMPRESA' OR razon_social IS NOT NULL)
+);
+
+-- RF-09: sitios de servicio del cliente empresa. Todo sitio tiene zona.
+CREATE TABLE core.sitio_servicio (
+    id_sitio UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_cliente UUID NOT NULL,
+    id_zona UUID NOT NULL,
+    nombre VARCHAR(150) NOT NULL,
+    direccion TEXT NOT NULL,
+    reglas_acceso TEXT,
+    condiciones TEXT,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
+        CHECK (estado IN ('ACTIVO','INACTIVO')),
+    FOREIGN KEY (id_cliente) REFERENCES core.cliente(id_cliente),
+    FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona),
+    UNIQUE (id_cliente, nombre)
+);
+
+-- RF-22: tarifario de referencia por tenant y categoria.
+CREATE TABLE reglas.tarifario (
+    id_tarifa UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    id_categoria UUID NOT NULL,
+    valor_minimo NUMERIC(14,2) NOT NULL CHECK (valor_minimo >= 0),
+    valor_tipico NUMERIC(14,2) NOT NULL,
+    valor_maximo NUMERIC(14,2) NOT NULL,
+    moneda CHAR(3) NOT NULL DEFAULT 'COP',
+    vigencia_desde DATE NOT NULL,
+    vigencia_hasta DATE,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
+        CHECK (estado IN ('ACTIVO','INACTIVO')),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    FOREIGN KEY (id_categoria) REFERENCES core.categoria(id_categoria),
+    CONSTRAINT ck_tarifario_rango
+        CHECK (valor_minimo <= valor_tipico AND valor_tipico <= valor_maximo),
+    CONSTRAINT ck_tarifario_vigencia
+        CHECK (vigencia_hasta IS NULL OR vigencia_hasta > vigencia_desde),
+    CONSTRAINT uq_tarifario_vigente
+        UNIQUE (id_tenant, id_categoria, vigencia_desde)
+);
+
+-- Agenda del aliado: dice CUANDO puede atender. La cobertura (DONDE) vive en
+-- core.aliado_cobertura. Una franja solo es valida si su zona y categoria estan
+-- declaradas por el aliado; esa validacion la aplica el servicio, no una FK.
+CREATE TABLE core.disponibilidad (
     id_disponibilidad UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_aliado UUID NOT NULL,
     id_categoria UUID NOT NULL,
@@ -674,6 +1064,7 @@ CREATE TABLE despacho.solicitud (
     id_solicitud UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_tenant UUID NOT NULL,
     id_cliente UUID NOT NULL,
+    id_sitio UUID,
     id_categoria UUID NOT NULL,
     id_zona UUID NOT NULL,
     descripcion TEXT NOT NULL,
@@ -686,23 +1077,36 @@ CREATE TABLE despacho.solicitud (
         )),
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
-    FOREIGN KEY (id_cliente) REFERENCES core.usuario(id_usuario),
+    FOREIGN KEY (id_cliente) REFERENCES core.cliente(id_cliente),
+    FOREIGN KEY (id_sitio) REFERENCES core.sitio_servicio(id_sitio),
     FOREIGN KEY (id_categoria) REFERENCES core.categoria(id_categoria),
-    FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona)
+    FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona),
+    -- Sin sitio registrado la direccion es obligatoria. Con sitio, la zona la fija el sitio.
+    CONSTRAINT ck_solicitud_ubicacion
+        CHECK (id_sitio IS NOT NULL OR direccion IS NOT NULL)
 );
 
-CREATE TABLE despacho.cotizacion (
+-- RF-15: mano de obra y materiales separados. RF-16: resultado del contraste con el tarifario.
+-- RF-17: 'AJUSTE_SOLICITADO' permite que el cliente pida cambios sin rechazar.
+CREATE TABLE servicio.cotizacion (
     id_cotizacion UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_solicitud UUID NOT NULL,
     id_aliado UUID NOT NULL,
+    id_tarifa UUID,
+    valor_mano_obra NUMERIC(14,2) NOT NULL CHECK (valor_mano_obra >= 0),
+    valor_materiales NUMERIC(14,2) NOT NULL DEFAULT 0 CHECK (valor_materiales >= 0),
     valor NUMERIC(14,2) NOT NULL CHECK (valor >= 0),
     moneda CHAR(3) NOT NULL DEFAULT 'COP',
+    fuera_de_rango BOOLEAN NOT NULL DEFAULT FALSE,
     estado VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE'
-        CHECK (estado IN ('PENDIENTE','ACEPTADA','RECHAZADA','EXPIRADA')),
+        CHECK (estado IN ('PENDIENTE','ACEPTADA','RECHAZADA','AJUSTE_SOLICITADO','EXPIRADA')),
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     fecha_expiracion TIMESTAMPTZ,
     FOREIGN KEY (id_solicitud) REFERENCES despacho.solicitud(id_solicitud),
-    FOREIGN KEY (id_aliado) REFERENCES core.aliado(id_aliado)
+    FOREIGN KEY (id_aliado) REFERENCES core.aliado(id_aliado),
+    FOREIGN KEY (id_tarifa) REFERENCES reglas.tarifario(id_tarifa),
+    CONSTRAINT ck_cotizacion_total
+        CHECK (valor = valor_mano_obra + valor_materiales)
 );
 
 CREATE TABLE despacho.asignacion (
@@ -717,7 +1121,8 @@ CREATE TABLE despacho.asignacion (
     FOREIGN KEY (id_aliado) REFERENCES core.aliado(id_aliado)
 );
 
-CREATE TABLE despacho.historial_solicitud (
+-- RF-18: bitacora cronologica de la ejecucion.
+CREATE TABLE servicio.historial_solicitud (
     id_historial UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_solicitud UUID NOT NULL,
     id_usuario UUID,
@@ -727,6 +1132,23 @@ CREATE TABLE despacho.historial_solicitud (
     fecha TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_solicitud) REFERENCES despacho.solicitud(id_solicitud),
     FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario)
+);
+
+-- RF-19: calificacion bidireccional. El UNIQUE sobre (solicitud, rol_autor) garantiza
+-- exactamente una calificacion por parte; el cierre exige que existan las dos.
+CREATE TABLE servicio.calificacion (
+    id_calificacion UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_solicitud UUID NOT NULL,
+    id_autor UUID NOT NULL,
+    rol_autor VARCHAR(10) NOT NULL
+        CHECK (rol_autor IN ('CLIENTE','ALIADO')),
+    puntaje SMALLINT NOT NULL CHECK (puntaje BETWEEN 1 AND 5),
+    comentario TEXT,
+    fecha TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_solicitud) REFERENCES despacho.solicitud(id_solicitud),
+    FOREIGN KEY (id_autor) REFERENCES core.usuario(id_usuario),
+    CONSTRAINT uq_calificacion_parte
+        UNIQUE (id_solicitud, rol_autor)
 );
 
 CREATE TABLE reglas.regla_tenant (
@@ -742,6 +1164,29 @@ CREATE TABLE reglas.regla_tenant (
     FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
 );
 
+-- RF-20 y RF-21: un hilo por solicitud, consultable despues del cierre.
+CREATE TABLE comunicaciones.conversacion (
+    id_conversacion UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    id_solicitud UUID NOT NULL UNIQUE,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ABIERTA'
+        CHECK (estado IN ('ABIERTA','CERRADA')),
+    fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    FOREIGN KEY (id_solicitud) REFERENCES despacho.solicitud(id_solicitud)
+);
+
+CREATE TABLE comunicaciones.mensaje (
+    id_mensaje UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_conversacion UUID NOT NULL,
+    id_autor UUID NOT NULL,
+    contenido TEXT NOT NULL,
+    fecha_envio TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fecha_lectura TIMESTAMPTZ,
+    FOREIGN KEY (id_conversacion) REFERENCES comunicaciones.conversacion(id_conversacion),
+    FOREIGN KEY (id_autor) REFERENCES core.usuario(id_usuario)
+);
+
 CREATE TABLE comunicaciones.notificacion (
     id_notificacion UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_usuario UUID NOT NULL,
@@ -754,6 +1199,21 @@ CREATE TABLE comunicaciones.notificacion (
         CHECK (estado IN ('PENDIENTE','ENVIADA','FALLIDA','LEIDA')),
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     fecha_envio TIMESTAMPTZ,
+    FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario)
+);
+
+-- RF-26, segundo incremento.
+CREATE TABLE comunicaciones.queja (
+    id_queja UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_solicitud UUID NOT NULL,
+    id_usuario UUID NOT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ABIERTA'
+        CHECK (estado IN ('ABIERTA','EN_GESTION','CERRADA')),
+    fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fecha_cierre TIMESTAMPTZ,
+    FOREIGN KEY (id_solicitud) REFERENCES despacho.solicitud(id_solicitud),
     FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario)
 );
 
@@ -778,8 +1238,20 @@ ON core.usuario(id_tenant);
 CREATE INDEX idx_usuario_correo
 ON core.usuario(correo);
 
+CREATE INDEX idx_aliado_cobertura_zona
+ON core.aliado_cobertura(id_zona,estado);
+
+CREATE INDEX idx_aliado_categoria_categoria
+ON core.aliado_categoria(id_categoria,estado);
+
+CREATE INDEX idx_cliente_tenant
+ON core.cliente(id_tenant);
+
+CREATE INDEX idx_sitio_cliente
+ON core.sitio_servicio(id_cliente,estado);
+
 CREATE INDEX idx_disponibilidad_busqueda
-ON disponibilidad.disponibilidad(id_categoria,id_zona,fecha,estado);
+ON core.disponibilidad(id_categoria,id_zona,fecha,estado);
 
 CREATE INDEX idx_solicitud_cliente
 ON despacho.solicitud(id_cliente);
@@ -788,23 +1260,42 @@ CREATE INDEX idx_solicitud_estado
 ON despacho.solicitud(estado);
 
 CREATE INDEX idx_cotizacion_solicitud
-ON despacho.cotizacion(id_solicitud);
+ON servicio.cotizacion(id_solicitud);
+
+CREATE INDEX idx_cotizacion_fuera_rango
+ON servicio.cotizacion(fecha_creacion,fuera_de_rango)
+WHERE fuera_de_rango;
 
 CREATE INDEX idx_asignacion_solicitud
 ON despacho.asignacion(id_solicitud);
 
 CREATE INDEX idx_historial_solicitud
-ON despacho.historial_solicitud(id_solicitud,fecha);
+ON servicio.historial_solicitud(id_solicitud,fecha);
+
+CREATE INDEX idx_calificacion_solicitud
+ON servicio.calificacion(id_solicitud);
 
 CREATE INDEX idx_reglas_tenant
 ON reglas.regla_tenant(id_tenant,tipo_regla,estado);
 
+CREATE INDEX idx_tarifario_vigente
+ON reglas.tarifario(id_tenant,id_categoria,estado,vigencia_desde);
+
+CREATE INDEX idx_mensaje_conversacion
+ON comunicaciones.mensaje(id_conversacion,fecha_envio);
+
 CREATE INDEX idx_notificacion_usuario
 ON comunicaciones.notificacion(id_usuario,estado);
+
+CREATE INDEX idx_queja_solicitud
+ON comunicaciones.queja(id_solicitud,estado);
 
 CREATE INDEX idx_pago_solicitud
 ON pagos.pago(id_solicitud);
 ```
+
+El indice parcial `idx_cotizacion_fuera_rango` existe para que el reporte de cotizaciones fuera
+de rango por periodo (RF-23) no recorra la tabla completa.
 
 ---
 
@@ -838,9 +1329,10 @@ ON pagos.pago(id_solicitud);
 |---|---|---|---|
 | id_aliado | UUID | PK | Identificador de aliado |
 | id_usuario | UUID | FK, UNIQUE | Usuario asociado |
+| tipo_aliado | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA / EMPLEADO_DIRECTO (RF-05) |
 | estado | VARCHAR(30) | CHECK | Estado operacional |
 | nivel_verificacion | VARCHAR(30) | NULL | Nivel KYC |
-| calificacion | NUMERIC(3,2) | 0..5 | Calificación |
+| calificacion | NUMERIC(3,2) | 0..5 | Promedio derivado de `servicio.calificacion` |
 | fecha_registro | TIMESTAMPTZ | NOT NULL | Alta |
 
 ## `core.documento_kyc`
@@ -875,7 +1367,49 @@ ON pagos.pago(id_solicitud);
 | descripcion | VARCHAR(255) | NULL | Descripción |
 | estado | VARCHAR(20) | CHECK | Estado |
 
-## `disponibilidad.disponibilidad`
+## `core.aliado_categoria`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_aliado | UUID | PK, FK | Aliado |
+| id_categoria | UUID | PK, FK | Categoría que declara atender (RF-11) |
+| estado | VARCHAR(20) | CHECK | Estado de la declaración |
+
+## `core.aliado_cobertura`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_aliado | UUID | PK, FK | Aliado |
+| id_zona | UUID | PK, FK | Zona en la que declara prestar servicio (RF-07) |
+| estado | VARCHAR(20) | CHECK | Estado de la declaración |
+
+## `core.cliente`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_cliente | UUID | PK | Identificador de cliente |
+| id_tenant | UUID | FK | Tenant propietario |
+| id_usuario | UUID | FK, UNIQUE | Usuario asociado |
+| tipo_cliente | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA (RF-08) |
+| razon_social | VARCHAR(180) | obligatorio si EMPRESA | Razón social |
+| documento_fiscal | VARCHAR(50) | NULL | Identificación fiscal |
+| estado | VARCHAR(20) | CHECK | Estado |
+| fecha_registro | TIMESTAMPTZ | NOT NULL | Alta |
+
+## `core.sitio_servicio`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_sitio | UUID | PK | Identificador del sitio |
+| id_cliente | UUID | FK | Cliente que lo administra |
+| id_zona | UUID | FK, NOT NULL | Zona del sitio; obligatoria (RF-09) |
+| nombre | VARCHAR(150) | UNIQUE por cliente | Nombre del sitio |
+| direccion | TEXT | NOT NULL | Dirección |
+| reglas_acceso | TEXT | NULL | Reglas visibles al aliado antes de programar (RF-09) |
+| condiciones | TEXT | NULL | Condiciones particulares del sitio |
+| estado | VARCHAR(20) | CHECK | Estado |
+
+## `core.disponibilidad`
 
 | Campo | Tipo | Restricción | Descripción |
 |---|---|---|---|
@@ -894,25 +1428,30 @@ ON pagos.pago(id_solicitud);
 |---|---|---|---|
 | id_solicitud | UUID | PK | Identificador |
 | id_tenant | UUID | FK | Tenant |
-| id_cliente | UUID | FK | Solicitante |
+| id_cliente | UUID | FK | Cliente solicitante (`core.cliente`) |
+| id_sitio | UUID | FK/NULL | Sitio de servicio cuando la solicitud proviene de uno |
 | id_categoria | UUID | FK | Categoría |
 | id_zona | UUID | FK | Zona |
 | descripcion | TEXT | NOT NULL | Necesidad |
-| direccion | TEXT | NULL | Lugar |
+| direccion | TEXT | NULL si hay sitio | Lugar cuando no hay sitio registrado |
 | fecha_servicio | TIMESTAMPTZ | NULL | Fecha objetivo |
 | estado | VARCHAR(30) | CHECK | Estado operacional |
 | fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
 
-## `despacho.cotizacion`
+## `servicio.cotizacion`
 
 | Campo | Tipo | Restricción | Descripción |
 |---|---|---|---|
 | id_cotizacion | UUID | PK | Identificador |
 | id_solicitud | UUID | FK | Solicitud |
 | id_aliado | UUID | FK | Aliado |
-| valor | NUMERIC(14,2) | >= 0 | Valor |
+| id_tarifa | UUID | FK/NULL | Tarifa de referencia contra la que se contrastó (RF-16) |
+| valor_mano_obra | NUMERIC(14,2) | >= 0 | Componente de mano de obra (RF-15) |
+| valor_materiales | NUMERIC(14,2) | >= 0 | Componente de materiales (RF-15) |
+| valor | NUMERIC(14,2) | = mano de obra + materiales | Total |
 | moneda | CHAR(3) | NOT NULL | Moneda ISO |
-| estado | VARCHAR(20) | CHECK | Estado |
+| fuera_de_rango | BOOLEAN | NOT NULL | Resultado de la validación tarifaria (RF-16, RF-23) |
+| estado | VARCHAR(20) | CHECK | PENDIENTE / ACEPTADA / RECHAZADA / AJUSTE_SOLICITADO / EXPIRADA (RF-17) |
 | fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
 | fecha_expiracion | TIMESTAMPTZ | NULL | Vencimiento |
 
@@ -927,7 +1466,7 @@ ON pagos.pago(id_solicitud);
 | fecha_asignacion | TIMESTAMPTZ | NOT NULL | Asignación |
 | fecha_respuesta | TIMESTAMPTZ | NULL | Respuesta |
 
-## `despacho.historial_solicitud`
+## `servicio.historial_solicitud`
 
 | Campo | Tipo | Restricción | Descripción |
 |---|---|---|---|
@@ -936,8 +1475,23 @@ ON pagos.pago(id_solicitud);
 | id_usuario | UUID | FK/NULL | Actor |
 | estado_anterior | VARCHAR(30) | NULL | Estado anterior |
 | estado_nuevo | VARCHAR(30) | NOT NULL | Nuevo estado |
-| observacion | TEXT | NULL | Detalle |
+| observacion | TEXT | NULL | Detalle o evento de ejecución (RF-18) |
 | fecha | TIMESTAMPTZ | NOT NULL | Momento del cambio |
+
+## `servicio.calificacion`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_calificacion | UUID | PK | Identificador |
+| id_solicitud | UUID | FK | Servicio calificado |
+| id_autor | UUID | FK | Usuario que califica |
+| rol_autor | VARCHAR(10) | CHECK | CLIENTE o ALIADO |
+| puntaje | SMALLINT | 1..5 | Valoración |
+| comentario | TEXT | NULL | Observación |
+| fecha | TIMESTAMPTZ | NOT NULL | Momento |
+
+`UNIQUE (id_solicitud, rol_autor)` impide que una parte califique dos veces. El cierre del
+servicio exige las dos filas (RF-19).
 
 ## `reglas.regla_tenant`
 
@@ -952,6 +1506,45 @@ ON pagos.pago(id_solicitud);
 | estado | VARCHAR(20) | CHECK | Estado |
 | fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
 
+## `reglas.tarifario`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_tarifa | UUID | PK | Identificador |
+| id_tenant | UUID | FK | Tenant |
+| id_categoria | UUID | FK | Categoría tarifada |
+| valor_minimo | NUMERIC(14,2) | >= 0 | Mínimo de referencia (RF-22) |
+| valor_tipico | NUMERIC(14,2) | entre mín. y máx. | Valor típico |
+| valor_maximo | NUMERIC(14,2) | >= típico | Máximo de referencia |
+| moneda | CHAR(3) | NOT NULL | Moneda ISO |
+| vigencia_desde | DATE | NOT NULL | Inicio de vigencia |
+| vigencia_hasta | DATE | NULL | Fin de vigencia |
+| estado | VARCHAR(20) | CHECK | Estado |
+
+## `comunicaciones.conversacion`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_conversacion | UUID | PK | Identificador |
+| id_tenant | UUID | FK | Tenant |
+| id_solicitud | UUID | FK, UNIQUE | Servicio al que pertenece el hilo (RF-20) |
+| estado | VARCHAR(20) | CHECK | ABIERTA / CERRADA |
+| fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
+
+## `comunicaciones.mensaje`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_mensaje | UUID | PK | Identificador |
+| id_conversacion | UUID | FK | Conversación |
+| id_autor | UUID | FK | Emisor |
+| contenido | TEXT | NOT NULL | Texto del mensaje |
+| fecha_envio | TIMESTAMPTZ | NOT NULL | Envío |
+| fecha_lectura | TIMESTAMPTZ | NULL | Lectura del destinatario |
+
+La persistencia del mensaje es la que permite consultar la conversación después del cierre
+(RF-21). Supabase Realtime transporta el evento; no es el almacén.
+
 ## `comunicaciones.notificacion`
 
 | Campo | Tipo | Restricción | Descripción |
@@ -965,6 +1558,21 @@ ON pagos.pago(id_solicitud);
 | estado | VARCHAR(20) | CHECK | Estado |
 | fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
 | fecha_envio | TIMESTAMPTZ | NULL | Envío |
+
+## `comunicaciones.queja`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_queja | UUID | PK | Identificador |
+| id_solicitud | UUID | FK | Servicio reclamado |
+| id_usuario | UUID | FK | Quien registra la queja |
+| motivo | VARCHAR(100) | NOT NULL | Motivo |
+| descripcion | TEXT | NOT NULL | Detalle |
+| estado | VARCHAR(20) | CHECK | ABIERTA / EN_GESTION / CERRADA |
+| fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
+| fecha_cierre | TIMESTAMPTZ | NULL | Cierre |
+
+Segundo incremento (RF-26).
 
 ## `pagos.pago`
 
@@ -997,7 +1605,9 @@ Preguntas que debe responder:
 - valores cotizados y pagados;
 - conversión solicitud → asignación → finalización;
 - comportamiento de disponibilidad;
-- desempeño por tenant y zona.
+- desempeño por tenant y zona;
+- cotizaciones fuera del rango de referencia por período (RF-23);
+- satisfacción por aliado, categoría y zona a partir de las calificaciones.
 
 ## 9.2 Flujo
 
@@ -1046,6 +1656,11 @@ erDiagram
 
     DIM_FECHA ||--o{ FACT_PAGO : fecha
     DIM_TENANT ||--o{ FACT_PAGO : tenant
+
+    DIM_FECHA ||--o{ FACT_CALIFICACION : fecha
+    DIM_TENANT ||--o{ FACT_CALIFICACION : tenant
+    DIM_ALIADO ||--o{ FACT_CALIFICACION : aliado
+    DIM_CATEGORIA ||--o{ FACT_CALIFICACION : categoria
 
     DIM_FECHA {
       int fecha_key PK
@@ -1112,7 +1727,22 @@ erDiagram
       bigint aliado_key FK
       bigint categoria_key FK
       decimal valor
+      decimal valor_mano_obra
+      decimal valor_materiales
+      boolean fuera_de_rango
       string estado
+      int cantidad
+    }
+
+    FACT_CALIFICACION {
+      bigint fact_calificacion_key PK
+      uuid calificacion_id DD
+      int fecha_key FK
+      bigint tenant_key FK
+      bigint aliado_key FK
+      bigint categoria_key FK
+      string rol_autor
+      smallint puntaje
       int cantidad
     }
 
@@ -1177,6 +1807,7 @@ el flujo transaccional de la aplicación.
 | `fact_solicitud` | una fila por solicitud |
 | `fact_cotizacion` | una fila por cotización emitida |
 | `fact_asignacion` | una fila por intento/registro de asignación |
+| `fact_calificacion` | una fila por calificación emitida, es decir dos por servicio cerrado |
 | `fact_pago` | una fila por transacción de pago |
 
 Definir el grano antes de las métricas evita duplicidades y sumas incorrectas.
@@ -1216,6 +1847,9 @@ is_current
 | Tasa de pago aprobado | pagos aprobados / intentos |
 | Solicitudes por zona | solicitudes agrupadas por `dim_zona` |
 | Solicitudes por categoría | solicitudes agrupadas por `dim_categoria` |
+| Cotizaciones fuera de rango | `COUNT(fact_cotizacion WHERE fuera_de_rango)` sobre total, por período (RF-23) |
+| Calificación media del aliado | `AVG(fact_calificacion.puntaje WHERE rol_autor = 'CLIENTE')` |
+| Calificación media del cliente | `AVG(fact_calificacion.puntaje WHERE rol_autor = 'ALIADO')` |
 
 ---
 
@@ -1304,7 +1938,22 @@ CREATE TABLE dw.fact_cotizacion (
     aliado_key BIGINT NOT NULL REFERENCES dw.dim_aliado(aliado_key),
     categoria_key BIGINT NOT NULL REFERENCES dw.dim_categoria(categoria_key),
     valor NUMERIC(14,2) NOT NULL,
+    valor_mano_obra NUMERIC(14,2),
+    valor_materiales NUMERIC(14,2),
+    fuera_de_rango BOOLEAN NOT NULL DEFAULT FALSE,
     estado VARCHAR(20) NOT NULL,
+    cantidad INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE dw.fact_calificacion (
+    fact_calificacion_key BIGSERIAL PRIMARY KEY,
+    calificacion_id UUID NOT NULL,
+    fecha_key INTEGER NOT NULL REFERENCES dw.dim_fecha(fecha_key),
+    tenant_key BIGINT NOT NULL REFERENCES dw.dim_tenant(tenant_key),
+    aliado_key BIGINT NOT NULL REFERENCES dw.dim_aliado(aliado_key),
+    categoria_key BIGINT NOT NULL REFERENCES dw.dim_categoria(categoria_key),
+    rol_autor VARCHAR(10) NOT NULL,
+    puntaje SMALLINT NOT NULL,
     cantidad INTEGER NOT NULL DEFAULT 1
 );
 
@@ -1345,9 +1994,14 @@ Antes de publicar información analítica:
 - validación de importes no negativos;
 - rechazo o cuarentena de registros huérfanos;
 - timestamps normalizados;
-- PII minimizada en dimensiones analíticas.
+- PII minimizada en dimensiones analíticas;
+- el contenido de `comunicaciones.mensaje` no se replica al Data Warehouse: solo se publican
+  conteos y marcas de tiempo agregados, nunca el texto;
+- `fact_calificacion` no publica el comentario libre.
 
-Umbrales iniciales:
+Umbrales iniciales de **calidad de datos**. No son umbrales de atributos de calidad del producto:
+esos viven únicamente en [`SDD.md`](./SDD.md) §7 y §8. Estos miden el pipeline analítico y los
+mantiene este documento, que es su dueño.
 
 | Control | Umbral |
 |---|---:|
@@ -1362,17 +2016,24 @@ Umbrales iniciales:
 
 # 13. Relación datos ↔ servicios
 
-| Dominio de datos | Servicio propietario |
-|---|---|
-| `reglas.*` | Rules Service — Java |
-| `despacho.*` | Dispatch Service — .NET |
-| `core.*` | Core Services — Node.js |
-| `comunicaciones.*` | Core/Notification Service — Node.js |
-| `pagos.*` | Payment Integration / Core Service |
-| `disponibilidad.*` | Core Services (dominio de disponibilidad) |
-| `dw.*` | Plataforma analítica |
+| Dominio de datos | Servicio propietario | Repositorio |
+|---|---|---|
+| `core.*` | Core Service — identidad, aliados y KYC, clientes y sitios, catálogo, cobertura y disponibilidad | `MANI-Core-Service` |
+| `servicio.*` | Core Service — cotización, ejecución y calificación | `MANI-Core-Service` |
+| `comunicaciones.*` | Core Service — conversaciones, mensajes, notificaciones y quejas | `MANI-Core-Service` |
+| `pagos.*` | Core Service — adaptador de pagos, segundo incremento | `MANI-Core-Service` |
+| `reglas.*` | Rules Service — Java | `MANI-Rules-Service` |
+| `despacho.*` | Dispatch Service — .NET | `MANI-Dispatch-Service` |
+| `dw.*` | Plataforma analítica | — |
 
 La propiedad implica **escritura exclusiva** del servicio responsable. Otros servicios acceden mediante API, evento o réplica analítica, no mediante escritura directa a tablas privadas.
+
+Dos lecturas cruzadas son explícitamente permitidas y solo de lectura:
+
+- Dispatch lee la elegibilidad por categoría y zona consultando la API del Core Service, no
+  `core.aliado_cobertura` ni `core.disponibilidad` directamente.
+- Rules lee el tarifario de su propio esquema y devuelve el veredicto; es el Core Service quien
+  escribe `fuera_de_rango` en `servicio.cotizacion`.
 
 ---
 
@@ -1384,3 +2045,52 @@ La propiedad implica **escritura exclusiva** del servicio responsable. Otros ser
 4. Incorporar CDC real cuando el volumen justifique dejar polling incremental.
 5. Implementar SCD Tipo 2 solo en dimensiones donde el histórico tenga valor analítico.
 6. No convertir el Data Warehouse en fuente de verdad transaccional.
+
+---
+
+# 14. Cobertura de requisitos funcionales
+
+Esta tabla existe para que no vuelva a quedar un requisito del SRS sin estructura donde
+persistirse. Cada RF del SRS apunta a las tablas que lo soportan.
+
+## 14.1 MVP
+
+| RF | Requisito | Estructuras que lo soportan |
+|---|---|---|
+| RF-01 | Registrar y administrar tenants | `core.tenant` |
+| RF-02 | Reglas configurables por tenant | `core.tenant.configuracion`, `reglas.regla_tenant` |
+| RF-03 | Autenticación y acceso por tenant y rol | `core.usuario`, `core.rol`, `core.usuario_rol` + Supabase Auth |
+| RF-04 | Recuperación de contraseña | Supabase Auth; sin tabla propia por diseño |
+| RF-05 | Registro de aliados por tipo con KYC | `core.aliado.tipo_aliado`, `core.documento_kyc` |
+| RF-06 | Bandeja de aprobación de aliados | `core.aliado.estado`, `core.documento_kyc.estado_validacion` |
+| RF-07 | Aliado declara zonas de cobertura | `core.aliado_cobertura` |
+| RF-08 | Clientes persona natural y empresa | `core.cliente` |
+| RF-09 | Sitios de servicio con reglas y zona | `core.sitio_servicio` |
+| RF-10 | Categorías del tenant | `core.categoria` |
+| RF-11 | Asociar aliados con categorías | `core.aliado_categoria` |
+| RF-12 | Crear solicitud y presentar aliados válidos | `despacho.solicitud` + `core.aliado_cobertura` + `core.aliado_categoria` + `core.disponibilidad` |
+| RF-13 | Ordenar el listado según regla del tenant | `reglas.regla_tenant` (tipo de regla de ranking) |
+| RF-14 | Aceptar/rechazar sin doble asignación | `despacho.asignacion` + actualización condicional atómica |
+| RF-15 | Cotización con mano de obra y materiales | `servicio.cotizacion.valor_mano_obra`, `valor_materiales` |
+| RF-16 | Alertar cotización fuera de rango | `reglas.tarifario` + `servicio.cotizacion.fuera_de_rango` |
+| RF-17 | Aceptar, rechazar o ajustar cotización | `servicio.cotizacion.estado` incluido `AJUSTE_SOLICITADO` |
+| RF-18 | Registrar eventos de la ejecución | `servicio.historial_solicitud` |
+| RF-19 | Calificación bidireccional y cierre | `servicio.calificacion` con `UNIQUE (id_solicitud, rol_autor)` |
+| RF-20 | Mensajería por servicio con notificación | `comunicaciones.conversacion`, `comunicaciones.mensaje`, `comunicaciones.notificacion` |
+| RF-21 | Consultar conversaciones de un servicio | `comunicaciones.mensaje` persistido e indexado por conversación |
+| RF-22 | Tarifario por categoría y tenant | `reglas.tarifario` con mínimo, típico y máximo |
+| RF-23 | Reporte de cotizaciones fuera de rango | `idx_cotizacion_fuera_rango` y `dw.fact_cotizacion.fuera_de_rango` |
+
+## 14.2 Segundo incremento
+
+| RF | Requisito | Estructuras que lo soportan |
+|---|---|---|
+| RF-24 | Cobro en línea con operador certificado | `pagos.pago` |
+| RF-25 | Liquidación con comisión del tenant | `pagos.pago` + comisión en `reglas.regla_tenant` |
+| RF-26 | Registrar y gestionar quejas | `comunicaciones.queja` |
+| RF-27 | Consola de comercialización del tenant | `core.tenant.configuracion`; no requiere esquema nuevo |
+| RF-28 | Métricas operativas por tenant | esquema `dw` completo |
+
+**RF-04** es el único requisito sin tabla propia, y es intencional: las credenciales y el flujo de
+recuperación los administra Supabase Auth. Replicarlos en el modelo operacional duplicaría material
+sensible sin beneficio.

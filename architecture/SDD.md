@@ -224,9 +224,11 @@ leer sin abrir las imágenes.
 > | `Core Services`, en plural | `Core Service` |
 > | `dinamico-aceptacion` cita ADR-0021 | ADR-0021 está `Superseded` por ADR-0016 |
 >
-> **Además, cuatro exportaciones están cortadas por el borde derecho**, con nodos partidos a media
-> palabra. Son justo las que miden exactamente 4096 px de ancho: `contenedores`,
-> `componentes-rules`, `componentes-dispatch` y `dinamico-aceptacion`.
+> **Además, una exportación sigue cortada por el borde derecho**, con nodos partidos a media
+> palabra: `dinamico-aceptacion`, que mide exactamente 4096 px de ancho.
+>
+> `contenedores`, `componentes-rules` y `componentes-dispatch` ya se regeneraron con el límite
+> elevado y están completas (7820, 6580 y 6580 px de ancho respectivamente).
 >
 > La causa no es el modelo: es el límite por defecto de PlantUML, que es el renderizador de estas
 > vistas. `PLANTUML_LIMIT_SIZE` vale 4096 px y **recorta en lugar de escalar**. Al regenerar hay que
@@ -236,8 +238,7 @@ leer sin abrir las imágenes.
 > export PLANTUML_LIMIT_SIZE=16384
 > ```
 >
-> Las ocho vistas que miden menos de 4096 px están completas y se leen bien; el problema de recorte
-> afecta solo a esas cuatro.
+> Las demás vistas están completas y se leen bien; el problema de recorte afecta solo a esa.
 
 ### Cómo leer las imágenes
 
@@ -250,10 +251,12 @@ ilegibles. Estas son las que casi siempre hay que abrir:
 | `dinamico-aceptacion` | 4096 × 660 | 6,2 : 1 |
 | `dinamico-cotizacion` | 3499 × 672 | 5,2 : 1 |
 | `dinamico-kyc` | 2969 × 634 | 4,7 : 1 |
-| `componentes-rules` | 4096 × 888 | 4,6 : 1 |
 | `dinamico-solicitud` | 2705 × 672 | 4,0 : 1 |
-| `componentes-dispatch` | 4096 × 1056 | 3,9 : 1 |
 | `dinamico-mensajeria` | 2578 × 677 | 3,8 : 1 |
+| `componentes-rules` | 6580 × 2108 | 3,1 : 1 |
+| `componentes-dispatch` | 6580 × 2327 | 2,8 : 1 |
+| `contenedores` | 7820 × 5302 | 1,5 : 1 |
+| `componentes-core` | 5000 × 3828 | 1,3 : 1 |
 
 Las vistas dinámicas son anchas por naturaleza: una secuencia crece hacia los lados con cada paso.
 Por eso **cada figura va acompañada del flujo en texto**, que es normativo: el documento se puede

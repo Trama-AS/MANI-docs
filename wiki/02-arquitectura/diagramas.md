@@ -13,6 +13,15 @@
 
 El modelo C4 **no se dibuja en Mermaid**: el DSL es la fuente y los documentos la referencian por nombre de vista.
 
+> ⚠️ **Las imágenes de `diagrams/LLD/png/` están desactualizadas respecto al `workspace.dsl`.**
+> Muestran `Availability Service` como contenedor propio y los nombres `MANI-Core-Node` y
+> `MANI-Rules-Java`, que el modelo ya no usa. Cuatro están además recortadas por el borde derecho
+> —`contenedores`, `componentes-rules`, `componentes-dispatch` y `dinamico-aceptacion`, las que
+> miden exactamente 4096 px— por el límite `PLANTUML_LIMIT_SIZE` del renderizador.
+>
+> Hasta que se regeneren, manda el DSL y manda el texto del
+> [`SDD.md`](../../architecture/SDD.md); el detalle está en su §4.0.
+
 Aparte de las dos familias hay un tercer artefacto: [`architecture/SECUENCIAS.md`](../../architecture/SECUENCIAS.md), con los cinco flujos críticos en **PlantUML suelto**. No sustituye a las vistas dinámicas del DSL —esas mantienen la coherencia con el modelo— sino que añade lo que el C4 no expresa: dos actores compitiendo por la misma solicitud, ramas `alt` y respuestas de error como `409 Conflict`.
 
 ## Vistas C4 definidas
@@ -42,6 +51,7 @@ El **Nivel 4 (Code)** no se modela en el DSL —Structurizr describe contenedore
 
 ```bash
 # desde diagrams/LLD/
+export PLANTUML_LIMIT_SIZE=16384                    # si no, PlantUML recorta a 4096 px
 structurizr validate -w workspace.dsl               # comprueba el modelo antes de un PR
 structurizr export -w workspace.dsl -f plantuml     # también: dot, websequencediagrams, json
 ```
@@ -57,6 +67,9 @@ java -jar plantuml.jar -tpng -Playout=smetana structurizr-*.puml
 Las vistas dinámicas llevan la propiedad `plantuml.sequenceDiagram` en el DSL y por eso se dibujan como diagramas de secuencia, que es como se lee un flujo.
 
 Las imágenes publicadas viven en [`diagrams/LLD/`](../../diagrams/LLD/) y se regeneran cuando cambia el modelo: **el DSL es la fuente, el PNG es el resultado.**
+
+**`PLANTUML_LIMIT_SIZE` no es opcional.** Su valor por defecto, 4096 px, no escala el diagrama: lo
+**corta**. Es lo que dejó cuatro de las vistas actuales con nodos partidos por el borde derecho.
 
 Sin instalación local, la misma imagen oficial en contenedor:
 
@@ -87,47 +100,47 @@ El DHL muestra acceso directo de Flutter a Supabase para disponibilidades. **Eso
 
 **Nivel 1 — Contexto**
 
-<img src="../../diagrams/LLD/png/contexto.png" alt="C4 Nivel 1 — contexto: MANI, sus actores y los sistemas externos" width="760">
+<a href="../../diagrams/LLD/png/contexto.png"><img src="../../diagrams/LLD/png/contexto.png" alt="C4 Nivel 1 — contexto: MANI, sus actores y los sistemas externos" width="760"></a>
 
 **Nivel 2 — Contenedores**
 
-<img src="../../diagrams/LLD/png/contenedores.png" alt="C4 Nivel 2 — contenedores: Flutter, Gateway, los cuatro servicios, Supabase e integraciones" width="760">
+<a href="../../diagrams/LLD/png/contenedores.png"><img src="../../diagrams/LLD/png/contenedores.png" alt="C4 Nivel 2 — contenedores: Flutter, Gateway, los cuatro servicios, Supabase e integraciones" width="760"></a>
 
 **Nivel 3 — Componentes por servicio**
 
-<img src="../../diagrams/LLD/png/componentes-rules.png" alt="C4 Nivel 3 — Rules Service en Java" width="620">
+<a href="../../diagrams/LLD/png/componentes-rules.png"><img src="../../diagrams/LLD/png/componentes-rules.png" alt="C4 Nivel 3 — Rules Service en Java" width="620"></a>
 
-<img src="../../diagrams/LLD/png/componentes-dispatch.png" alt="C4 Nivel 3 — Dispatch Service en .NET" width="620">
+<a href="../../diagrams/LLD/png/componentes-dispatch.png"><img src="../../diagrams/LLD/png/componentes-dispatch.png" alt="C4 Nivel 3 — Dispatch Service en .NET" width="620"></a>
 
-<img src="../../diagrams/LLD/png/componentes-core.png" alt="C4 Nivel 3 — Core Service en Node.js" width="620">
+<a href="../../diagrams/LLD/png/componentes-core.png"><img src="../../diagrams/LLD/png/componentes-core.png" alt="C4 Nivel 3 — Core Service en Node.js" width="620"></a>
 
 **Despliegue — producción**
 
-<img src="../../diagrams/LLD/png/despliegue-prod.png" alt="Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, CI/CD y observabilidad" width="760">
+<a href="../../diagrams/LLD/png/despliegue-prod.png"><img src="../../diagrams/LLD/png/despliegue-prod.png" alt="Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, CI/CD y observabilidad" width="760"></a>
 
 **Panorama — System Landscape**
 
-<img src="../../diagrams/LLD/png/panorama.png" alt="Panorama de sistemas: MANI como único sistema propio y las plataformas externas" width="760">
+<a href="../../diagrams/LLD/png/panorama.png"><img src="../../diagrams/LLD/png/panorama.png" alt="Panorama de sistemas: MANI como único sistema propio y las plataformas externas" width="760"></a>
 
 **Vistas dinámicas**
 
-<img src="../../diagrams/LLD/png/dinamico-solicitud.png" alt="Vista dinámica — solicitud y listado de aliados" width="760">
+<a href="../../diagrams/LLD/png/dinamico-solicitud.png"><img src="../../diagrams/LLD/png/dinamico-solicitud.png" alt="Vista dinámica — solicitud y listado de aliados" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-aceptacion.png" alt="Vista dinámica — aceptación concurrente y 409 Conflict" width="760">
+<a href="../../diagrams/LLD/png/dinamico-aceptacion.png"><img src="../../diagrams/LLD/png/dinamico-aceptacion.png" alt="Vista dinámica — aceptación concurrente y 409 Conflict" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-cotizacion.png" alt="Vista dinámica — cotización y validación contra el tarifario" width="760">
+<a href="../../diagrams/LLD/png/dinamico-cotizacion.png"><img src="../../diagrams/LLD/png/dinamico-cotizacion.png" alt="Vista dinámica — cotización y validación contra el tarifario" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-kyc.png" alt="Vista dinámica — carga y verificación de documentos KYC" width="760">
+<a href="../../diagrams/LLD/png/dinamico-kyc.png"><img src="../../diagrams/LLD/png/dinamico-kyc.png" alt="Vista dinámica — carga y verificación de documentos KYC" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-mensajeria.png" alt="Vista dinámica — mensajería con notificación de respaldo" width="760">
+<a href="../../diagrams/LLD/png/dinamico-mensajeria.png"><img src="../../diagrams/LLD/png/dinamico-mensajeria.png" alt="Vista dinámica — mensajería con notificación de respaldo" width="760"></a>
 
 ### Diagramas de alto nivel (DHL) — los referencia el [`SAD.md`](../../architecture/SAD.md)
 
-<img src="../../diagrams/HLD/DHL.png" alt="Diagrama de alto nivel de MANI" width="760">
+<a href="../../diagrams/HLD/DHL.png"><img src="../../diagrams/HLD/DHL.png" alt="Diagrama de alto nivel de MANI" width="760"></a>
 
-<img src="../../diagrams/HLD/Infra.png" alt="Vista de alto nivel de la infraestructura de MANI" width="760">
+<a href="../../diagrams/HLD/Infra.png"><img src="../../diagrams/HLD/Infra.png" alt="Vista de alto nivel de la infraestructura de MANI" width="760"></a>
 
-<img src="../../diagrams/HLD/TechRadar.png" alt="Tech Radar de MANI" width="620">
+<a href="../../diagrams/HLD/TechRadar.png"><img src="../../diagrams/HLD/TechRadar.png" alt="Tech Radar de MANI" width="620"></a>
 
 ## Política
 

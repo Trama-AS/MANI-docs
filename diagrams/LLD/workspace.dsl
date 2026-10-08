@@ -9,7 +9,7 @@
  * y los referencia el SAD.
  *
  * Vistas definidas:
- *   1. panorama      — System Landscape: el panorama de sistemas alrededor de MANI
+ *   1. panorama      — System Landscape: mapa de los sistemas del alcance, sin foco en ninguno
  *   2. contexto      — C4 Nivel 1, System Context
  *   3. contenedores  — C4 Nivel 2, Containers
  *   4. componentes   — C4 Nivel 3, un diagrama por servicio desplegable
@@ -21,12 +21,18 @@
  * queda solo en texto.
  *
  * El Nivel 4 (Code) no se modela aquí: Structurizr no describe clases. Se mantiene en SDD §4.4.
- * Tampoco se modela un nodo por ambiente: Local, DEV y QA comparten la topología de
+ * Tampoco se modela un nodo por ambiente: Local, DEV y TEST/QA comparten la topología de
  * producción y solo cambian escalado, secretos y datos (SDD §10).
  *
  * Decisiones abiertas que este modelo NO fija: proveedor y topología del clúster Kubernetes
  * (INFRA-01 e INFRA-02 de INFRAESTRUCTURA_MANI.md §25). Los nodos de despliegue se nombran
  * sin proveedor deliberadamente.
+ *
+ * Regla de la vista de despliegue: toda relación del ambiente conecta elementos hoja
+ * —instancias de contenedor o nodos de infraestructura—, nunca un nodo de despliegue que
+ * contiene otros. Structurizr posiciona solo las hojas y dibuja el padre como la caja que las
+ * encierra; una relación que apunta al padre lo obliga a tener posición propia y a encerrar a
+ * sus hijos a la vez, y el resultado son cajas superpuestas y fuera de lienzo.
  */
 
 workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de operaciones de servicio — TRAMA · Ingeniería de Software" {
@@ -40,12 +46,30 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         adminTenant = person "Administrador de tenant" "Configura reglas, categorías, tarifarios y documentos requeridos; aprueba o rechaza aliados."
         adminPlataforma = person "Administrador de plataforma" "Registra tenants y administra su estado."
 
+        // Actor del panorama, no del contexto de MANI: no usa la plataforma, la construye y la
+        // vigila. Aparece porque el panorama mapea el alcance completo, no un solo sistema.
+        equipo = person "Equipo de ingeniería — TRAMA" "Construye y opera la plataforma: backlog en Jira, código y CI/CD en GitHub, vigilancia en la plataforma de observabilidad (ADR-0002, ADR-0003, ADR-0006)."
+
         // ---------- Sistemas externos (SRS §5, SAD §5) ----------
 
-        push = softwareSystem "FCM / APNs" "Entrega notificaciones push cuando el destinatario no está conectado." "Externo"
-        pagos = softwareSystem "Operador de pagos certificado" "Procesa cobros y liquidaciones. Segundo incremento. El cumplimiento PCI DSS recae en el operador (RNF-06)." "Externo"
-        observabilidad = softwareSystem "Plataforma de observabilidad" "Prometheus, Grafana y Datadog: métricas, dashboards, logs, trazas y alertas." "Externo"
-        dwh = softwareSystem "Data Warehouse / BI" "Analítica desacoplada del OLTP. Recibe datos por CDC/ELT y no escribe en operacional." "Externo"
+        group "Plataformas de proveedor" {
+
+            push = softwareSystem "FCM / APNs" "Entrega notificaciones push cuando el destinatario no está conectado." "Externo"
+            pagos = softwareSystem "Operador de pagos certificado" "Procesa cobros y liquidaciones. Segundo incremento. El cumplimiento PCI DSS recae en el operador (RNF-06)." "Externo"
+            observabilidad = softwareSystem "Plataforma de observabilidad" "Prometheus, Grafana y Datadog: métricas, dashboards, logs, trazas y alertas." "Externo"
+            dwh = softwareSystem "Data Warehouse / BI" "Analítica desacoplada del OLTP. Recibe datos por CDC/ELT y no escribe en operacional." "Externo"
+        }
+
+        // ---------- Herramientas de ingeniería y gestión (ADR-0002, ADR-0004) ----------
+        //
+        // No participan en el runtime de MANI y por eso no están en el diagrama de contexto;
+        // sí están en el panorama, que mapea los sistemas del alcance y no uno solo.
+
+        group "Herramientas de ingeniería y gestión" {
+
+            jira = softwareSystem "Jira" "Backlog, épicas, historias, bugs y sprints. Herramienta oficial de gestión (ADR-0002). Recibe las alertas críticas (ADR-0006)." "Externo"
+            github = softwareSystem "GitHub" "Repositorios, Pull Requests, CI/CD, issues técnicos y documentación técnica versionada (ADR-0002, ADR-0004)." "Externo"
+        }
 
         // ---------- Sistema MANI ----------
 
@@ -59,7 +83,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
 
             // Java decide. El motor de reglas es lo único que vive aquí: no es un backend general.
-            group "MANI-Rules-Service — decide" {
+            group "MANI-Rules-Java — decide" {
 
                 rules = container "Rules Service" "Reglas configurables por tenant, ranking de aliados, elegibilidad, requisitos KYC y validación contra tarifario (RF-02, RF-13, RF-16, RF-22). Lee la configuración de persistencia, no del código." "Java" {
                     rulesApi = component "Rules REST Controller" "Expone la evaluación de reglas y el ranking." "Java"
@@ -74,7 +98,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
 
             // .NET asigna. Despacho y exclusión concurrente, nada más.
-            group "MANI-Dispatch-Service — asigna" {
+            group "MANI-Dispatch-DotNet — asigna" {
 
                 dispatch = container "Dispatch Service" "Coordinación operacional de solicitudes, selección de aliados válidos, aceptación/rechazo, estados de asignación, idempotencia y exclusión concurrente (RF-12, RF-14, RNF-03, RNF-05). Consume Rules antes de asignar." ".NET" {
                     dispatchApi = component "Dispatch API" "Expone creación de solicitud y aceptación/rechazo." ".NET"
@@ -89,9 +113,9 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
 
             // Node opera. Núcleo funcional de la plataforma: lo transversal y lo operativo.
-            group "MANI-Core-Service — opera" {
+            group "MANI-Core-Node — opera" {
 
-                core = container "Core Service" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación, disponibilidad y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
+                core = container "Core Services" "Núcleo funcional: usuarios y tenants, identidad y acceso, aliados y KYC, clientes y sitios, categorías, solicitudes, cotizaciones, documentos y multimedia, notificaciones, ubicación, disponibilidad y reportes. Se divide internamente por dominios sin convertir cada CRUD en un servicio desplegable (SAD §7.3)." "Node.js" {
                     coreApi = component "Core API" "Expone los casos de uso de los dominios de Core." "Node.js"
                     coreUsers = component "Users / Tenants Component" "Tenants, usuarios, roles y acceso (RF-01, RF-03, RF-04)." "Node.js"
                     coreKyc = component "KYC Orchestrator" "Registro y verificación de aliados y documentos (RF-05, RF-06)." "Node.js"
@@ -135,6 +159,23 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         mani -> pagos "Cobros y liquidaciones (2.º incremento)"
         mani -> observabilidad "Métricas, logs y trazas con correlation_id"
         mani -> dwh "Datos operacionales para análisis, por CDC/ELT"
+
+        // ---------- Relaciones que solo existen en el panorama (SAD §15, ADR-0002, ADR-0006) ----------
+        //
+        // Cierran el mapa: sin ellas el panorama es una estrella alrededor de MANI y repite el
+        // diagrama de contexto. Cada una está documentada; ninguna se infiere.
+
+        push -> cliente "Entrega la notificación en el dispositivo (RF-21)"
+        push -> aliado "Entrega la notificación en el dispositivo (RF-21)"
+        adminPlataforma -> dwh "Consulta métricas operativas por tenant (RF-28, 2.º incremento)"
+
+        equipo -> jira "Gestiona backlog, épicas, historias, bugs y sprints (ADR-0002)"
+        equipo -> github "Versiona código, Pull Requests y documentación técnica (ADR-0002)"
+        equipo -> observabilidad "Vigila disponibilidad, errores y consumo de recursos (ADR-0006)"
+
+        jira -> github "Trazabilidad entre tickets, ramas y Pull Requests" "Webhooks"
+        github -> mani "Construye, valida y despliega la plataforma" "CI/CD"
+        observabilidad -> jira "Abre incidentes desde las alertas críticas (ADR-0006)"
 
         // ---------- Relaciones de contenedores (SAD §6, SDD §4.2) ----------
 
@@ -228,7 +269,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
         // ---------- Despliegue de producción (SDD §9.1, §10 y §11) ----------
         //
-        // Se modela un solo ambiente. Local, DEV y QA comparten esta topología y cambian
+        // Se modela un solo ambiente. Local, DEV y TEST/QA comparten esta topología y cambian
         // únicamente escalado, secretos y datos (SDD §10): un nodo por ambiente repetiría la
         // misma información sin añadir ninguna decisión arquitectónica.
         //
@@ -239,18 +280,20 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         produccion = deploymentEnvironment "PROD" {
 
             internet = deploymentNode "Internet" "Acceso de usuarios web y móvil." {
-                deploymentNode "Dispositivo del usuario" "" "Navegador / app móvil" {
-                    containerInstance flutter
+                dispositivo = deploymentNode "Dispositivo del usuario" "" "Navegador / app móvil" {
+                    flutterProd = containerInstance flutter
                 }
             }
 
             borde = deploymentNode "Borde — DNS, TLS y balanceo" "Resolución de nombres, terminación TLS y reparto del tráfico externo." {
-                balanceador = infrastructureNode "Balanceador" "Reparte el tráfico HTTPS entre las réplicas del Gateway." "Balanceador de carga"
+                dns = infrastructureNode "DNS" "Resuelve el nombre público de la plataforma hacia el balanceador." "DNS"
+                balanceador = infrastructureNode "Balanceador" "Reparte el tráfico HTTPS entre las réplicas del Gateway. TLS 1.3 obligatorio (INFRA §7)." "Balanceador de carga"
 
                 nodoGateway = deploymentNode "NGINX Ingress / API Gateway" "Entrada única: enrutamiento, control de acceso, validación del token y rate limiting." "NGINX" 2 {
                     gatewayProd = containerInstance gateway
                 }
 
+                dns -> balanceador "Resuelve el nombre público"
                 balanceador -> gatewayProd "Reparte el tráfico entrante" "HTTPS"
             }
 
@@ -264,13 +307,19 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                     deploymentNode "Dispatch Service — asigna" "Despacho y exclusión concurrente. Mínimo 2 réplicas; HPA hasta 6. La garantía de no doble asignación es de la base, no del número de réplicas." "Pod — .NET" 2 {
                         dispatchProd = containerInstance dispatch
                     }
-                    deploymentNode "Core Service — opera" "Núcleo funcional de la plataforma. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
+                    deploymentNode "Core Services — opera" "Núcleo funcional de la plataforma. Mínimo 2 réplicas; HPA hasta 6." "Pod — Node.js" 2 {
                         coreProd = containerInstance core
                     }
                 }
 
-                secretos = infrastructureNode "Gestor de secretos" "Credenciales y configuración viven fuera de la imagen: no se hornean en el contenedor ni se versionan en el repositorio." "Secret manager"
-                secretos -> namespaceServicios "Inyecta credenciales y configuración en tiempo de arranque"
+                gitops = infrastructureNode "Despliegue del clúster" "Punto de entrada del despliegue: recibe la imagen promovida y actualiza los Deployments. kubectl o GitOps según INFRA-02." "kubectl / GitOps"
+                secretos = infrastructureNode "Secrets del clúster" "Credenciales y configuración viven fuera de la imagen: el pipeline los crea, no se hornean en el contenedor ni se versionan en Git (INFRA §8). service_role solo se monta en Core." "Kubernetes Secret"
+
+                // Una relación por pod: apuntar al namespace —que es un nodo con hijos— rompe
+                // el autolayout. Ver la regla al inicio del archivo.
+                secretos -> rulesProd "Inyecta credenciales en el arranque"
+                secretos -> dispatchProd "Inyecta credenciales en el arranque"
+                secretos -> coreProd "Inyecta credenciales en el arranque"
             }
 
             plataformaDatos = deploymentNode "Supabase — proyecto productivo" "Plataforma administrada. Bases no accesibles desde Internet pública salvo controles explícitos; acceso administrativo con privilegio mínimo." "Supabase" {
@@ -297,12 +346,13 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
             cicd = deploymentNode "GitHub Actions — CI/CD" "De dónde sale lo que corre en el clúster." "GitHub Actions" {
                 pipeline = infrastructureNode "Pipeline de calidad y seguridad" "Pruebas unitarias, de integración y de contrato, SonarQube (SAST), build, escaneo de dependencias e imagen, Newman y OWASP ZAP. Un artefacto que no pasa los gates no se reconstruye para producción." "GitHub Actions"
-                registro = infrastructureNode "Registro de imágenes" "Imágenes inmutables versionadas. A producción se promueve exactamente la imagen ya verificada en QA (SDD §11)." "Container registry"
+                registro = infrastructureNode "Registro de imágenes" "Imágenes inmutables versionadas. A producción se promueve exactamente la imagen ya verificada en TEST/QA (SDD §11)." "Container registry"
 
                 pipeline -> registro "Publica la imagen validada"
             }
 
-            registro -> cluster "Despliega la imagen promovida" "kubectl / GitOps"
+            registro -> gitops "Entrega la imagen promovida; el clúster la descarga con imagePullSecret" "kubectl / GitOps"
+            pipeline -> secretos "Crea los Secret del clúster desde GitHub Environments; nunca viven en Git (INFRA §8)"
 
             observabilidadProd = deploymentNode "Plataforma de observabilidad" "Supervisa disponibilidad, tiempos de respuesta, errores y consumo de recursos." "" {
                 prometheus = infrastructureNode "Prometheus" "Recolecta métricas del Gateway y de los servicios." "Prometheus"
@@ -311,8 +361,12 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 prometheus -> grafana "Alimenta dashboards y alertas"
             }
 
-            prometheus -> namespaceServicios "Recolecta métricas de los pods" "HTTP /metrics"
-            prometheus -> nodoGateway "Recolecta métricas del Gateway" "HTTP /metrics"
+            // Igual que con los secretos: el scrape se declara contra cada instancia, no contra
+            // el namespace ni contra el nodo del Gateway.
+            prometheus -> gatewayProd "Recolecta métricas" "HTTP /metrics"
+            prometheus -> rulesProd "Recolecta métricas" "HTTP /metrics"
+            prometheus -> dispatchProd "Recolecta métricas" "HTTP /metrics"
+            prometheus -> coreProd "Recolecta métricas" "HTTP /metrics"
 
             analitica = deploymentNode "Plataforma analítica" "Desacoplada del OLTP; no participa en transacciones operacionales." "" {
                 deploymentNode "Proceso CDC / ELT" "Carga incremental hacia el Data Warehouse." "" {
@@ -326,23 +380,38 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
         // ---------- Vista 1 — System Landscape: panorama ----------
         //
-        // Responde a una pregunta distinta de la de contexto: no "qué rodea a MANI", sino qué
-        // sistemas existen en el mapa y a cuáles toca cada actor. MANI es el único sistema
-        // propio; los demás son proveedores o plataformas de destino. Fuente: SAD §5, SRS §2.3.
-        systemLandscape "panorama" "Panorama de sistemas: MANI, los actores que lo usan y las plataformas externas de las que depende. Fuente: SAD §5, SRS §2.3." {
+        // Un panorama es un mapa de los sistemas del alcance elegido, sin foco en ninguno: un
+        // diagrama de contexto al que se le quita el sistema protagonista. Por eso incluye lo
+        // que el contexto de MANI no puede incluir —Jira, GitHub y el equipo de ingeniería— y
+        // las relaciones que no pasan por MANI: el push que llega al dispositivo, la alerta que
+        // abre un incidente, el pipeline que despliega. Sin ellas el panorama sería una estrella
+        // alrededor de MANI y repetiría la vista de contexto.
+        //
+        // MANI es el único sistema propio; el resto son plataformas de proveedor o herramientas
+        // de ingeniería, agrupadas como tales. Fuente: SAD §5 y §15, SRS §2.3, ADR-0002, ADR-0006.
+        systemLandscape "panorama" "Panorama de sistemas del alcance TRAMA: MANI como único sistema propio, las plataformas de proveedor, las herramientas de ingeniería y gestión, y quién toca cada una. Fuente: SAD §5 y §15, SRS §2.3, ADR-0002, ADR-0006." {
             include *
-            autolayout lr
+            autolayout lr 300 300
         }
 
         // ---------- Vista 2 — C4 Nivel 1: Contexto ----------
-        systemContext mani "contexto" "C4 Nivel 1 — MANI, sus actores y los sistemas externos. Fuente: SAD §5, SDD §4.1." {
+        //
+        // El contexto sí tiene protagonista: MANI. GitHub se excluye porque construye y despliega
+        // la plataforma pero no participa en su operación; su lugar es el panorama.
+        systemContext mani "contexto" "C4 Nivel 1 — MANI, sus actores y los sistemas externos con los que opera. Fuente: SAD §5, SDD §4.1." {
             include *
-            autolayout lr
+            exclude github
+            exclude jira
+            exclude equipo
+            autolayout lr 300 300
         }
 
         // ---------- Vista 3 — C4 Nivel 2: Contenedores ----------
         container mani "contenedores" "C4 Nivel 2 — unidades desplegables y almacenes. Toda API operacional entra por el Gateway. Fuente: SAD §6, SDD §4.2." {
             include *
+            exclude github
+            exclude jira
+            exclude equipo
             autolayout lr
         }
 
@@ -357,7 +426,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             autolayout lr
         }
 
-        component core "componentes-core" "C4 Nivel 3 — Core Service (Node.js), disponibilidad incluida. Fuente: SDD §4.3.3." {
+        component core "componentes-core" "C4 Nivel 3 — Core Services (Node.js), disponibilidad incluida. Fuente: SDD §4.3.3." {
             include *
             autolayout lr
         }
@@ -432,9 +501,9 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         }
 
         // ---------- Vista 6 — Despliegue ----------
-        deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción: borde con balanceo, clúster Kubernetes con réplicas y secretos externos, Supabase por dominio, el pipeline que promueve la imagen y la observabilidad que la vigila. Fuente: SDD §9.1, §10 y §11." {
+        deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción: borde con DNS y balanceo, clúster Kubernetes con réplicas y Secrets creados por el pipeline, Supabase por dominio, el pipeline que promueve la imagen y la observabilidad que la vigila. Fuente: SDD §9.1, §10 y §11." {
             include *
-            autolayout tb
+            autolayout tb 400 400
         }
 
         styles {

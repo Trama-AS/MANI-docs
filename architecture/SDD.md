@@ -208,6 +208,37 @@ Dos aclaraciones sobre el alcance de la tabla:
 Cada subsección de abajo repite en texto la estructura de su vista, para que el documento se pueda
 leer sin abrir las imágenes.
 
+
+> ### ⚠️ Las imágenes exportadas están desactualizadas y cuatro están recortadas
+>
+> **Las imágenes de `diagrams/LLD/png/` no corresponden al `workspace.dsl` vigente.** Son
+> exportaciones de una versión anterior del modelo. Mientras no se regeneren, **manda el DSL y manda
+> el texto de este documento**, nunca la imagen.
+>
+> Diferencias comprobadas entre lo que muestran las imágenes y lo que dice el modelo:
+>
+> | La imagen muestra | El modelo dice |
+> |---|---|
+> | `Availability Service` como contenedor propio | no existe: la disponibilidad es un dominio del Core Service |
+> | grupos `MANI-Core-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet` | `MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service` |
+> | `Core Services`, en plural | `Core Service` |
+> | `dinamico-aceptacion` cita ADR-0021 | ADR-0021 está `Superseded` por ADR-0016 |
+>
+> **Además, cuatro exportaciones están cortadas por el borde derecho**, con nodos partidos a media
+> palabra. Son justo las que miden exactamente 4096 px de ancho: `contenedores`,
+> `componentes-rules`, `componentes-dispatch` y `dinamico-aceptacion`.
+>
+> La causa no es el modelo: es el límite por defecto de PlantUML, que es el renderizador de estas
+> vistas. `PLANTUML_LIMIT_SIZE` vale 4096 px y **recorta en lugar de escalar**. Al regenerar hay que
+> subirlo:
+>
+> ```bash
+> export PLANTUML_LIMIT_SIZE=16384
+> ```
+>
+> Las ocho vistas que miden menos de 4096 px están completas y se leen bien; el problema de recorte
+> afecta solo a esas cuatro.
+
 ### Cómo leer las imágenes
 
 **Todas las figuras son clicables: abren la imagen a resolución completa.** Hace falta usarlo,

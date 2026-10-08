@@ -13,6 +13,15 @@
 
 El modelo C4 **no se dibuja en Mermaid**: el DSL es la fuente y los documentos la referencian por nombre de vista.
 
+> ⚠️ **Las imágenes de `diagrams/LLD/png/` están desactualizadas respecto al `workspace.dsl`.**
+> Muestran `Availability Service` como contenedor propio y los nombres `MANI-Core-Node` y
+> `MANI-Rules-Java`, que el modelo ya no usa. Cuatro están además recortadas por el borde derecho
+> —`contenedores`, `componentes-rules`, `componentes-dispatch` y `dinamico-aceptacion`, las que
+> miden exactamente 4096 px— por el límite `PLANTUML_LIMIT_SIZE` del renderizador.
+>
+> Hasta que se regeneren, manda el DSL y manda el texto del
+> [`SDD.md`](../../architecture/SDD.md); el detalle está en su §4.0.
+
 Aparte de las dos familias hay un tercer artefacto: [`architecture/SECUENCIAS.md`](../../architecture/SECUENCIAS.md), con los cinco flujos críticos en **PlantUML suelto**. No sustituye a las vistas dinámicas del DSL —esas mantienen la coherencia con el modelo— sino que añade lo que el C4 no expresa: dos actores compitiendo por la misma solicitud, ramas `alt` y respuestas de error como `409 Conflict`.
 
 ## Vistas C4 definidas
@@ -42,6 +51,7 @@ El **Nivel 4 (Code)** no se modela en el DSL —Structurizr describe contenedore
 
 ```bash
 # desde diagrams/LLD/
+export PLANTUML_LIMIT_SIZE=16384                    # si no, PlantUML recorta a 4096 px
 structurizr validate -w workspace.dsl               # comprueba el modelo antes de un PR
 structurizr export -w workspace.dsl -f plantuml     # también: dot, websequencediagrams, json
 ```
@@ -57,6 +67,9 @@ java -jar plantuml.jar -tpng -Playout=smetana structurizr-*.puml
 Las vistas dinámicas llevan la propiedad `plantuml.sequenceDiagram` en el DSL y por eso se dibujan como diagramas de secuencia, que es como se lee un flujo.
 
 Las imágenes publicadas viven en [`diagrams/LLD/`](../../diagrams/LLD/) y se regeneran cuando cambia el modelo: **el DSL es la fuente, el PNG es el resultado.**
+
+**`PLANTUML_LIMIT_SIZE` no es opcional.** Su valor por defecto, 4096 px, no escala el diagrama: lo
+**corta**. Es lo que dejó cuatro de las vistas actuales con nodos partidos por el borde derecho.
 
 Sin instalación local, la misma imagen oficial en contenedor:
 

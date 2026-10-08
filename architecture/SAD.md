@@ -7,7 +7,7 @@
 **Despliegue:** Docker + Kubernetes  
 **Ambientes:** DEV → QA → PROD  
 **Estrategia de repositorios:** Multi-repo  
-**Diagramas de este documento:** diagramas de alto nivel (DHL) en [`diagrams/HLD/`](../diagrams/HLD/) — [DHL.png](../diagrams/HLD/DHL.png), [Infra.png](../diagrams/HLD/Infra.png), [TechRadar.png](../diagrams/HLD/TechRadar.png)  
+**Diagramas de este documento:** los tres de alto nivel de [`diagrams/HLD/`](../diagrams/HLD/), inventariados y descritos en §4.2. Las doce vistas del modelo Structurizr las documenta [`SDD.md`](./SDD.md) §4.0  
 **Modelo C4 formal:** [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentado vista por vista en [`SDD.md`](./SDD.md) §4  
 
 ---
@@ -104,6 +104,103 @@ MANI adopta una **arquitectura SOA distribuida**, con un **API Gateway** como fr
 8. Los cambios de configuración por tenant no deben requerir nuevo despliegue.
 9. La analítica se desacopla del OLTP.
 10. Los artefactos desplegados son contenerizados, versionados e inmutables.
+
+---
+
+## 4.2 Inventario de diagramas de alto nivel
+
+Los tres diagramas de alto nivel viven en [`diagrams/HLD/`](../diagrams/HLD/). **No se generan desde
+el modelo Structurizr**: a diferencia de las doce vistas de [`SDD.md`](./SDD.md) §4.0, se dibujan a
+mano y se mantienen a mano. Si uno contradice a este documento, manda el documento.
+
+| # | Diagrama | Pregunta que responde | Archivo | Dónde se desarrolla |
+|---|---|---|---|---|
+| 1 | **DHL-ARQ** — arquitectura general | ¿Cómo está construida MANI? | [`DHL.png`](../diagrams/HLD/DHL.png) | §5, §6 y §7 |
+| 2 | **DHL-INFRA** — infraestructura, CI/CD y operación | ¿Cómo se desarrolla, despliega y opera MANI? | [`Infra.png`](../diagrams/HLD/Infra.png) | §16, §17 y §18 |
+| 3 | **TECHRADAR** — priorización tecnológica | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | [`TechRadar.png`](../diagrams/HLD/TechRadar.png) | [`TECH_RADAR.md`](./TECH_RADAR.md) |
+
+### 4.2.1 DHL-ARQ — arquitectura general
+
+Representa la arquitectura lógica de MANI: una plataforma SaaS multi-tenant que gestiona
+solicitudes, cotizaciones, asignaciones y ejecución de servicios entre clientes y aliados.
+
+La capa de presentación es **Flutter**, que da acceso web y móvil a clientes, aliados y
+administradores de tenant. Toda API operacional entra por el **API Gateway NGINX**, que enruta hacia
+el servicio correspondiente.
+
+La capa de negocio son **tres servicios**, y el diagrama muestra el reparto de responsabilidades que
+fija §7:
+
+| Servicio | Runtime | De qué responde |
+|---|---|---|
+| Rules Service | Java | reglas configurables por tenant, ranking del listado de aliados y validación de la cotización contra el tarifario |
+| Dispatch Service | .NET | solicitudes, despacho, asignación, control de estados y exclusión concurrente |
+| Core Service | Node.js | tenants e identidad, aliados y KYC, clientes y sitios, catálogo, **cobertura y disponibilidad**, cotización, ejecución, calificación, comunicaciones y reportes |
+
+La persistencia es **Supabase sobre PostgreSQL**, con separación por esquemas de dominio,
+Row-Level Security por tenant, almacenamiento privado de archivos y transporte de eventos en tiempo
+real. Se completa con integraciones externas de notificación y de pagos, y con observabilidad.
+
+Dos precisiones donde el dibujo se queda corto frente a este documento:
+
+- **La elegibilidad de aliados la resuelve el Core Service, no el Rules Service.** Es la conjunción
+  de categoría declarada, zona de cobertura y franja de agenda (§7.3 y §10); Rules aporta el
+  **orden** del listado, no quién es elegible.
+- **Las solicitudes pertenecen a Dispatch**, no al Core. El Core aporta la elegibilidad por API.
+
+### 4.2.2 DHL-INFRA — infraestructura, CI/CD y operación
+
+Representa el modelo operativo, desde la gestión del trabajo hasta la construcción, validación,
+publicación y despliegue.
+
+El proyecto usa una estrategia **multi-repo** en GitHub con los seis repositorios de §17, y **Jira**
+centraliza actividades, incidencias y seguimiento. Cada repositorio desplegable tiene integración
+continua con **GitHub Actions**: pruebas automatizadas, análisis estático con SonarQube, evaluación
+de seguridad con OWASP ZAP, construcción de imágenes Docker y publicación en **GHCR**. La promoción
+preserva la imagen validada (§18).
+
+Los ambientes son **tres: DEV → QA → PROD** (§16). Supabase aporta PostgreSQL, Auth, Storage y
+Realtime gestionados, y la operación se completa con Prometheus y Grafana para métricas, y Datadog
+para logs, APM y trazas (§19).
+
+Una precisión importante sobre este diagrama:
+
+> **El diagrama muestra Kubernetes, y Kubernetes no es el estado actual.** Es la plataforma de
+> orquestación **objetivo** exigida por PROY-08, pero su proveedor y topología siguen abiertos como
+> INFRA-01 e INFRA-02. Hoy QA y PROD corren con **Docker sobre una máquina virtual por ambiente**, y
+> DEV en las máquinas personales del equipo (§16.4). Mientras esa decisión no se cierre, el diagrama
+> se lee como objetivo y no como inventario.
+
+### 4.2.3 TECHRADAR — priorización tecnológica
+
+Documenta qué tecnologías se adoptan y cuáles se evalúan o se descartan, para estandarizar, controlar
+dependencias y evitar duplicidad de herramientas y costo operativo innecesario.
+
+Clasifica por categoría —plataformas, lenguajes y frameworks, técnicas y gestión, herramientas e
+infraestructura— en tres niveles: **Sí o sí** para la base adoptada, **Tal vez** para lo sujeto a
+evaluación y **Mejor no** para lo que no se prioriza.
+
+La base adoptada incluye Flutter y Dart, Node.js, Java, .NET, PostgreSQL, Supabase, GitHub, NGINX,
+Docker, GitHub Actions, GHCR, SonarQube, OWASP ZAP, Newman, k6, OpenAPI, Prometheus, Grafana,
+Datadog y Jira.
+
+> **Kubernetes figura en el radar como objetivo, no como adoptado.** [`TECH_RADAR.md`](./TECH_RADAR.md)
+> lo mantiene **en evaluación** por la misma razón que §16.4: la decisión de orquestación está
+> abierta. Si el diagrama lo muestra en «Sí o sí», manda el documento.
+
+### 4.2.4 Los tres diagramas describen arquitectura objetivo
+
+Conviene leerlos distinguiendo lo implementado de lo planificado. En particular: **que SonarQube,
+OWASP ZAP, Newman y los controles de calidad aparezcan en el diagrama de infraestructura no
+demuestra que esos procesos estén operativos** en los repositorios.
+
+El estado real de cada gate se registra aparte, no en el dibujo:
+
+- el estado del análisis de SonarCloud por repositorio, en
+  [`INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md) §24.1;
+- la regla para considerar un gate **vinculante** —check obligatorio en un ruleset activo y evidencia
+  de un PR bloqueado—, en
+  [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6.2.
 
 ---
 

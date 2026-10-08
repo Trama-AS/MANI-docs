@@ -1,25 +1,9 @@
-# Backlog MANI
+# Backlog MANI — versión final
 
+- **Versión:** final, Sprint 3
+- **Fecha:** 2026-10-03 (actualizado el 2026-10-06 por PO-02 y ADR-0022)
 - **Proyecto Jira:** MANI (`SCRUM`)
-- **Documento vivo:** sin número de versión; la vigente es la de `main`. Jira es la fuente del estado
-  de cada historia y del sprint en curso; este documento es el criterio de transición.
-- **Arquitectura vigente:**
-  `Flutter → NGINX API Gateway → servicio (Rules Java · Dispatch .NET · Core Service) → Supabase/PostgreSQL`,
-  con Supabase Auth emitiendo el token y el tenant viajando como claim.
-
-> **La lógica de negocio vive en los servicios, no en funciones PL/pgSQL.** Lo decidió
-> [ADR-0022](../adr/ADR-0022-logica-de-negocio-en-servicios.md): cuando un servicio atiende un caso
-> de uso, **reimplementa** la lógica en el servicio dueño de la capacidad; no invoca la función
-> almacenada. Las funciones existentes se retiran con una migración nueva una vez QA confirme el
-> reemplazo, y no se escribe lógica nueva en PL/pgSQL.
->
-> El cliente Flutter alcanza Supabase solo por Auth y Realtime
-> ([ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md)). `.from()`, `.rpc()` y
-> `.storage.from()` están retirados, sin excepción.
->
-> Las versiones anteriores de este documento daban por vigente el camino
-> `Gateway → Core → funciones PL/pgSQL`, que es la alternativa que ADR-0022 descartó. Las historias
-> `-M2` de abajo quedaron reestimadas en consecuencia.
+- **Arquitectura vigente:** `Flutter → NGINX API Gateway → Core Service (lógica de negocio en el servicio) → Supabase/PostgreSQL`, con Supabase Auth emitiendo el token y el tenant viajando como claim. La lógica que estaba en Flutter y en las funciones PL/pgSQL se migra a los servicios (ADR-0022)
 
 Este documento es la única fuente del backlog. Reemplaza las versiones anteriores y el inventario de transición.
 
@@ -156,6 +140,53 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 | `US-08.2.2` | `SCRUM-899` | Registrar campañas y ver desempeño | To Do | High | 5.0 | — |
 | `US-08.3.1` | `SCRUM-900` | Métricas operativas por tenant | To Do | High | 2.0 | — |
 | `US-08.3.2` | `SCRUM-901` | Administrar estado de tenants | To Do | High | 8.0 | — |
+
+### 2.1 Repriorización del incremento (PO-02)
+
+Clasificación ratificada en `PO-02` (`SCRUM-1077`) el 2026-10-06. En Jira, cada historia tiene la etiqueta
+correspondiente y un comentario con la razón y la referencia al SRS.
+
+**Incremento 2** — etiqueta `postergar-incremento-2`
+
+| Clave | Historia | Referencia SRS |
+|---|---|---|
+| `SCRUM-450` | EP-07 Pagos y facturación (épica) | RF-24 a RF-28, §1.2 y §4.7 |
+| `SCRUM-451` | EP-08 Operación y comercialización (épica) | RF-24 a RF-28, §1.2 y §4.7 |
+| `SCRUM-888` | Pago en línea al aceptar cotización | RF-24 |
+| `SCRUM-889` | Registro de transacciones (Audit Log inmutable) | RF-24, RNF-04 |
+| `SCRUM-893` | Liquidación al aliado (Comisión configurable) | RF-25 |
+| `SCRUM-895` | Cliente registra queja | RF-26 |
+| `SCRUM-896` | Tenant gestiona estado de quejas | RF-26 |
+| `SCRUM-900` | Métricas operativas por tenant | RF-28 |
+| `SCRUM-901` | Administrar estado de tenants | RF-27, RF-28 |
+
+Al postergarse las épicas `EP-07` y `EP-08`, sus demás historias tampoco entran en el incremento actual.
+
+**Fuera del MVP** — etiqueta `retirar-mvp`
+
+| Clave | Historia | Referencia SRS |
+|---|---|---|
+| `SCRUM-871` | Cliente rastrea ubicación del aliado en vivo | §1.2 "Fuera de alcance del MVP" y REST-01 |
+
+**Backlog secundario** — etiqueta `backlog-secundario`
+
+| Clave | Historia | Razón |
+|---|---|---|
+| `SCRUM-862` | Filtrar por tipo de aliado | Mejora opcional; no es un RF del SRS actual |
+| `SCRUM-872` | Aliado solicita adición por imprevisto | Posible evolución, no compromiso del MVP |
+| `SCRUM-873` | Registrar evidencias sin conexión (Offline) | El SRS actual no exige modo offline |
+| `SCRUM-876` | Calificación agregada visible en el listado | Puede alimentar el ranking (RF-13), no es RF independiente |
+| `SCRUM-877` | Cancelar solicitud antes de la ejecución | Posible regla futura del ciclo del servicio |
+| `SCRUM-879` | Consultar historial de servicios | Trazabilidad (RNF-04), no es RF independiente |
+| `SCRUM-880` | Aliado consulta historial de trabajos | Trazabilidad (RNF-04), no es RF independiente |
+
+**Se mantienen en el Sprint 3** por decisión del equipo (2026-10-06), aunque su clasificación es backlog
+secundario: `SCRUM-854` Editar perfil propio, como tarea de desarrollo de la PO, y `SCRUM-856` Aceptación de
+Términos y Condiciones. Ninguna desplaza a las historias de migración críticas.
+
+**Ratificación de dependencias:** ninguna historia del Sprint 3 depende de las historias que salen del
+incremento, y ninguna de ellas estaba en el sprint.
+
 ---
 
 ## 3. Historias cerradas rehechas sobre la arquitectura vigente
@@ -173,7 +204,7 @@ Ese cierre **no acredita la arquitectura vigente**. Dos consecuencias concretas:
 
 1. **La evidencia no sirve.** Las pruebas que cerraron esas historias ejercitaban un llamador que ya no existe.
 2. **El control de aislamiento cambia de sujeto.** Con Core llamando por `service-role`, `auth.uid()` deja de
-   filtrar, por lo que el aislamiento multi-tenant (KI-05) debe demostrarse de nuevo, historia por historia.
+   filtrar, por lo que el aislamiento multi-tenant (riesgo *Perdida de aislamiento multi-tenant*, SAD §23) debe demostrarse de nuevo, historia por historia.
 
 Las historias originales **no se reabren**: conservan su estado como registro histórico y quedan vinculadas
 con *Relates* a la historia de migración que las reemplaza.
@@ -182,43 +213,36 @@ con *Relates* a la historia de migración que las reemplaza.
 
 | Sufijo | Significado |
 |---|---|
-| `-M2` | Implementación de la lógica en el servicio destino. **Reimplementa**, no invoca la función PL/pgSQL (ADR-0022) |
+| `-M2` | Implementación en el servicio destino (Core Service) |
 | `-M3` | Delta del cliente Flutter: solo `data/datasources` |
 | `-M4` | Regresión en QA por el Gateway más aislamiento multi-tenant |
-| `-M6` | Parte que depende de un servicio políglota inexistente hoy (Rules Java o Dispatch .NET) |
+| `-M6` | Parte que depende de un servicio políglota inexistente hoy (Rules Service, Dispatch Service, Availability) |
 | `-R1` | Reespecificación funcional: el alcance anterior no se preserva |
-
-Toda historia `-M2` conserva como criterio de aceptación el comportamiento validado en las entregas
-1 a 3, y pasa la regresión en QA antes de que se retire la función PL/pgSQL correspondiente.
 
 ### 3.3 Mapeo
 
 | Historia cerrada | Estado | Clasificación | Componente destino | Historias nuevas | Fase |
 |---|---|---|---|---|---|
 | `SCRUM-846` · US-02.1.1 Registro aliado persona natural | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth/Storage | `US-02.1.1-M3`, `US-02.1.1-M4`, `US-02.1.1-M2` | Sprint 3 |
-| `SCRUM-847` · US-02.1.2 Registro aliado empresa | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth/Storage | `US-02.1.2-M3`, `US-02.1.2-M2` | Sprint 3 |
+| `SCRUM-847` · US-02.1.2 Registro aliado empresa | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth/Storage | `US-02.1.2-M3`, `US-02.1.2-M2`, `US-02.1.2-M4` | Sprint 3; su `-M4` en Incremento 2 |
 | `SCRUM-848` · US-02.1.3 Aprobar/rechazar registro de aliado | Done | PRESERVAR_Y_VALIDAR | Core Service | `US-02.1.3-M2` | Incremento 2 |
 | `SCRUM-849` · US-02.1.4 Declarar zona de cobertura | Done | REESPECIFICAR_Y_REUTILIZAR | Core Service | `US-02.1.4-R1`, `US-02.1.4-M2` | Incremento 2 |
-| `SCRUM-851` · US-02.2.1 Registro cliente persona natural | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth | `US-02.2.1-M2` | Sprint 3 |
-| `SCRUM-857` · US-03.1.1 Crear categoría con flujo operativo | Done | PRESERVAR_Y_VALIDAR | Core Service + Rules Java | `US-03.1.1-M2`, `US-03.1.1-M6` | Incremento 2 |
-| `SCRUM-859` · US-03.1.3 Aliado declara categorías que atiende | In Progress | Completar sobre el camino nuevo | Core Service | `US-03.1.3-M2` | Incremento 2 |
-| `SCRUM-860` · US-04.1.1 Crear solicitud | Done | PRESERVAR_Y_VALIDAR | Core Service + Dispatch .NET | `US-04.1.1-M2`, `US-04.1.1-M6` | Incremento 2 |
-| `SCRUM-863` · US-04.1.4 Aceptar/rechazar solicitud sin doble asignación | Done | PRESERVAR_Y_VALIDAR | Dispatch .NET + PostgreSQL | `US-04.1.4-M6` | Incremento 2 |
+| `SCRUM-851` · US-02.2.1 Registro cliente persona natural | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth | `US-02.2.1-M2`, `US-02.2.1-M4` | Sprint 3; su `-M4` en Incremento 2 |
+| `SCRUM-857` · US-03.1.1 Crear categoría con flujo operativo | Done | PRESERVAR_Y_VALIDAR | Core Service + Rules Service | `US-03.1.1-M2`, `US-03.1.1-M6` | Incremento 2 |
+| `SCRUM-859` · US-03.1.3 Aliado declara categorías que atiende | In Progress | Completar sobre el camino nuevo | Core Service / Availability | `US-03.1.3-M2` | Incremento 2 |
+| `SCRUM-860` · US-04.1.1 Crear solicitud | Done | PRESERVAR_Y_VALIDAR | Core Service + Dispatch Service | `US-04.1.1-M2`, `US-04.1.1-M6` | Incremento 2 |
+| `SCRUM-863` · US-04.1.4 Aceptar/rechazar solicitud sin doble asignación | Done | PRESERVAR_Y_VALIDAR | Dispatch Service + PostgreSQL | `US-04.1.4-M6` | Incremento 2 |
 
 ### 3.4 Criterio de corte Sprint 3 / Incremento 2
 
-En el Sprint 3 solo existen dos servicios nuevos: **MANI-API-Gateway** (NGINX) y
-**MANI-Core-Service** (Node). Por tanto:
+En el Sprint 3 solo existen dos servicios nuevos: **MANI-API-Gateway** (NGINX) y **MANI-Core-Service** (Node). Por tanto:
 
-- **Entra al Sprint 3** la historia cuyo componente destino se resuelve con Gateway + Core Service, y que
+- **Entra al Sprint 3** la historia cuyo componente destino se resuelve con Gateway + Core (con la lógica en el servicio, ADR-0022), y que
   además reutiliza el modelo de identidad y el cliente HTTP que construye `US-02.1.1`.
-- **Queda en Incremento 2** la que necesita Rules Java o Dispatch .NET. Donde hay una parte
+- **Queda en Incremento 2** la que necesita Rules Service, Dispatch Service o Core Service. Donde hay una parte
   que Core sí sostiene hoy, la historia se **parte** (`-M2` ahora, `-M6` después) en vez de arrastrarse completa.
-- Las disponibilidades **no** son un criterio de corte: son un módulo del Core Service, así que lo que
-  dependa de ellas entra cuando entre el Core, no cuando exista un cuarto servicio.
 - `SCRUM-863` es el único caso que migra completo al Incremento 2: su valor es la exclusión concurrente en el
-  servicio de despacho (KI-06, [ADR-0016](../adr/ADR-0016-despacho-concurrencia.md)), y no tiene porción que
-  el Core Service pueda sostener.
+  servicio de despacho (riesgo *Doble asignacion* del SAD §23, ADR-0021), y no tiene porción que Core Service pueda sostener.
 - `SCRUM-848` sale del Sprint 3 **por capacidad, no por dependencia técnica**: Gateway y Core ya la soportan,
   así que es la primera candidata a volver si se libera holgura.
 
@@ -231,14 +255,16 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-API-Gateway** (NGINX) y
 | `US-02.1.2-M3` | Migracion: reescribir el datasource de registro de empresa en Flutter contra el Gateway, retirando .rpc() y .storage.from() y conservando la interfaz del repositorio | High | 3 | `SCRUM-847` |
 | `US-02.1.1-M3` | Migracion: reescribir auth_remote_datasource.dart contra el Gateway en lugar de SupabaseClient, conservando la interfaz de domain/repositories. | Highest | 4 | `SCRUM-846` |
 | `US-02.1.1-M4` | Migracion: regresion funcional de US-02.1.1 desplegada en QA a traves del Gateway, mas las pruebas de aislamiento multi-tenant de los documentos KYC. | Highest | 4 | `SCRUM-846` |
-| `US-02.1.2-M2` | Migracion: reimplementar la logica de registro de aliado empresa en el Core Service, con el representante legal y los documentos de la empresa entrando por el Gateway. No invoca la funcion PL/pgSQL (ADR-0022) | High | 5 | `SCRUM-847` |
-| `US-02.2.1-M2` | Migracion: reimplementar el registro de cliente persona natural en el camino Gateway - Core Service, incluyendo su datasource en Flutter | High | 5 | `SCRUM-851` |
-| `US-02.1.1-M2` | Migracion: reimplementar en el Core Service la logica que hoy vive en `registrar_aliado_persona_natural`, `handle_new_user` y el upsert a `usuario`, expuesta por el contrato OpenAPI de CFG-16. La funcion PL/pgSQL se retira cuando la regresion de QA confirme el reemplazo (ADR-0022) | Highest | 8 | `SCRUM-846` |
+| `US-02.1.2-M2` | Migracion: implementar el registro de aliado empresa en Core Service con la logica del registro en el servicio (ADR-0022), con el representante legal y los documentos de la empresa entrando por el Gateway | High | 4 | `SCRUM-847` |
+| `US-02.2.1-M2` | Migracion: llevar el registro de cliente persona natural al camino Gateway - Core Service, incluyendo su datasource en Flutter | High | 4 | `SCRUM-851` |
+| `US-02.1.1-M2` | Migracion: implementar el registro de aliado persona natural en Core Service, migrando al servicio la logica de registrar_aliado_persona_natural, handle_new_user y el upsert a usuario (ADR-0022), expuesto por el contrato OpenAPI de CFG-16. | Highest | 5 | `SCRUM-846` |
 
-**Incremento 2** — 9 historias
+**Incremento 2** — 11 historias
 
 | Código | Historia | Prioridad | SP | Reemplaza |
 |---|---|---|---|---|
+| `US-02.1.2-M4` | Migracion: regresion funcional de US-02.1.2 desplegada en QA a traves del Gateway, mas el aislamiento multi-tenant de los documentos de la empresa y del representante legal | High | 4 | `SCRUM-847` |
+| `US-02.2.1-M4` | Migracion: regresion funcional de US-02.2.1 desplegada en QA a traves del Gateway, mas el aislamiento multi-tenant de los datos del cliente | High | 4 | `SCRUM-851` |
 | `US-02.1.3-M2` | Migracion: aprobacion y rechazo de registro de aliado en Core Service, con la visibilidad de documentos KYC resuelta en el nuevo modelo de identidad | High | 5 | `SCRUM-848` |
 | `US-02.1.4-R1` | Reespecificacion: sustituir la seleccion libre en mapa por el catalogo jerarquico de zonas | High | 5 | `SCRUM-849` |
 | `US-02.1.4-M2` | Migracion: declaracion de zona de cobertura en el Core Service, persistida en `core.aliado_cobertura` | High | 5 | `SCRUM-849` |
@@ -247,13 +273,33 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-API-Gateway** (NGINX) y
 | `US-03.1.3-M2` | Migracion: completar la asociacion aliado-categoria por el camino Gateway - Core Service | Medium | 3 | `SCRUM-859` |
 | `US-04.1.1-M2` | Migracion: creacion de solicitud en Core Service, separada de la orquestacion de despacho | Highest | 3 | `SCRUM-860` |
 | `US-04.1.1-M6` | Migracion: orquestacion de despacho de la solicitud en el Dispatch Service .NET | Highest | 3 | `SCRUM-860` |
-| `US-04.1.4-M6` | Migracion: aceptar o rechazar solicitud sin doble asignacion, con la exclusion concurrente en Dispatch .NET | Highest | 5 | `SCRUM-863` |
+| `US-04.1.4-M6` | Migracion: aceptar o rechazar solicitud sin doble asignacion, con la exclusion concurrente en Dispatch Service | Highest | 5 | `SCRUM-863` |
 
-### 3.6 Riesgo abierto de cobertura de regresión
+### 3.6 Cobertura de regresión
 
-La planificación dejó regresión solo para `US-02.1.1` (`US-02.1.1-M4`). **`US-02.1.2-M2/M3` y `US-02.2.1-M2`
-entran al sprint sin historia de regresión propia en QA**, por lo que su pasada de aislamiento multi-tenant
-no está planificada. Decisión pendiente del PO.
+**Cerrado el 2026-10-07 por decisión del PO.**
+
+La planificación original dejó regresión solo para `US-02.1.1` (`US-02.1.1-M4`): `US-02.1.2-M2/M3` y
+`US-02.2.1-M2` entraban al Sprint 3 sin historia de regresión propia en QA, por lo que su pasada de
+aislamiento multi-tenant no quedaba planificada.
+
+**Decisión:** cada historia migrada tiene su propia historia de regresión. Se crean `US-02.1.2-M4` y
+`US-02.2.1-M4` siguiendo la convención del §3.2, y **se programan en el Incremento 2**, no en el Sprint 3.
+El motivo es que la regresión por el Gateway no es ejecutable hasta que exista la cadena de verificación:
+`QA-01` a `QA-05` no están entregadas al corte de este sprint, el contrato OpenAPI de `CFG-16` no está
+publicado y `CFG-20` todavía no deja el Core desplegado en DEV y QA. Adelantarlas al Sprint 3 las dejaría
+bloqueadas desde el primer día.
+
+`US-02.1.1-M4` se mantiene en el Sprint 3: es la que abre camino y define los casos que las otras dos
+reutilizan.
+
+**Consecuencia que queda explícita:** al cierre del Sprint 3, `US-02.1.2` y `US-02.2.1` quedan migradas sin
+regresión propia ejecutada. Su comportamiento no puede declararse *preservado* en ese corte, solo
+*construido y verificado* en los términos del plan de pruebas de `DOC-38`. La declaración de paridad de las
+dos historias se emite en el Incremento 2, cuando corran sus `-M4`.
+
+Los números de sufijo no son continuos a propósito: `US-02.2.1` no tiene `-M3` porque su `-M2` ya incluye el
+delta del cliente Flutter. `-M4` significa regresión en cualquier historia, según el §3.2.
 ---
 
 ## 4. Tareas del Sprint 3
@@ -281,11 +327,11 @@ Actualización documental y diagramas de las vistas.
 
 | Tarea | Prioridad | PH | Épica |
 |---|---|---|---|
-| `DOC-26` — Registrar en ADR la decision de SP-05. **Cerrada:** la decidio ADR-0022, y el resultado fue el contrario al que se anticipo aqui: la logica se reimplementa en los servicios y Supabase queda como persistencia | Highest | 3 | `SCRUM-453` |
-| `DOC-28` — Actualizar el SAD y el SDD con el resultado real de la transicion y cerrar KI-01 y KI-02 | Highest | 4 | `SCRUM-453` |
+| ~~`DOC-26` — Registrar en ADR la decision de SP-05~~ **CERRADA el 2026-10-07.** La decision de la daily del 2026-10-05 (la logica de negocio vive en los servicios y se retira de Flutter y de las funciones PL/pgSQL) quedo registrada en [`adr/ADR-0022`](../adr/ADR-0022-logica-de-negocio-en-servicios.md), publicado en `main`. El ADR queda en estado **Propuesto**: pasarlo a Aceptado requiere sesion formal de la Mesa (Gobierno §2.6) | Highest | 3 | `SCRUM-453` |
+| `DOC-28` — Actualizar el SAD y el SDD con el resultado real de la transicion y cerrar los dos riesgos mal calibrados del SAD §23: *Logica de negocio en Flutter* y *Acceso directo indiscriminado a Supabase* | Highest | 4 | `SCRUM-453` |
 | `DOC-29` — Reorganizar el repositorio de diagramas a la estructura de ADR-0008 y versionar la fuente editable | High | 2 | `SCRUM-453` |
 | `DOC-30` — Rehacer las vistas C4 de contexto y de contenedores con el camino real del incremento | Highest | 3 | `SCRUM-453` |
-| `DOC-31` — Diagramar la vista C4 de componentes de MANI-API-Gateway y de MANI-Core | Highest | 3 | `SCRUM-453` |
+| `DOC-31` — Diagramar la vista C4 de componentes de MANI-API-Gateway y de MANI-Core-Service | Highest | 3 | `SCRUM-453` |
 | `DOC-32` — Diagramar la vista de despliegue de DEV y QA tal como queda despues de la transicion | High | 3 | `SCRUM-453` |
 | `DOC-33` — Diagramar la vista de datos con el nuevo modelo de identidad y actualizar ModeloDatos | Highest | 3 | `SCRUM-453` |
 | `DOC-34` — Diagramar la vista de flujos con las secuencias del camino nuevo | High | 2 | `SCRUM-453` |
@@ -314,14 +360,14 @@ Repositorios, Gateway, Core, identidad, RLS, imágenes y pipeline.
 | `CFG-26` — Alinear los proyectos Supabase de DEV, QA y PROD | High | 3 | `SCRUM-452` |
 | `CFG-28` — Actualizar el Docker Compose por ambiente para consumir GHCR | High | 3 | `SCRUM-452` |
 | `CFG-27` — Estandarizar las imagenes OCI de Gateway y Core y publicarlas en GHCR | High | 3 | `SCRUM-452` |
-| `CFG-29` — Replicar el pipeline CI/CD en MANI-API-Gateway y MANI-Core con los gates de calidad | Highest | 5 | `SCRUM-452` |
+| `CFG-29` — Replicar el pipeline CI/CD en MANI-API-Gateway y MANI-Core-Service con los gates de calidad | Highest | 5 | `SCRUM-452` |
 | `CFG-33` — Sacar database/, docker-compose.yml, scripts/ y nginx.conf del repositorio Flutter | Highest | 4 | `SCRUM-452` |
 | `CFG-34` — Construir la capa HTTP del cliente Flutter que sustituye a SupabaseClient | Highest | 6 | `SCRUM-452` |
 | `CFG-35` — Decidir y aplicar que queda de supabase_flutter en el cliente | Highest | 3 | `SCRUM-452` |
 | `CFG-36` — Retirar la SUPABASE_ANON_KEY del bundle web y rotarla | Highest | 3 | `SCRUM-452` |
 | `CFG-39` — Conectar GitHub con Jira y dejar la trazabilidad automatica en los cuatro repositorios | Highest | 4 | `SCRUM-452` |
 | `CFG-40` — Crear el proyecto SonarQube de MANI-API-Gateway y volver vinculante su Quality Gate | Highest | 3 | `SCRUM-452` |
-| `CFG-41` — Crear el proyecto SonarQube de MANI-Core y volver vinculante su Quality Gate | Highest | 3 | `SCRUM-452` |
+| `CFG-41` — Crear el proyecto SonarQube de MANI-Core-Service y volver vinculante su Quality Gate | Highest | 3 | `SCRUM-452` |
 | `CFG-42` — Rebaselinar el proyecto SonarQube de MANI-Frontend despues de sacar los artefactos que no le pertenecen | High | 2 | `SCRUM-452` |
 | `CFG-43` — Definir los contratos entre los repositorios del modelo multi-repo | Highest | 3 | `SCRUM-452` |
 
@@ -334,7 +380,7 @@ Herramientas de verificación, todas gratuitas y locales.
 | `QA-01` — Montar las pruebas de integracion de Core Service sobre Postgres real levantado con Testcontainers | Highest | 4 | `SCRUM-452` |
 | `QA-02` — Automatizar con Playwright el recorrido end-to-end del build web sobre el Gateway | High | 3 | `SCRUM-452` |
 | `QA-03` — Dejar la coleccion Postman del contrato Gateway - Core corriendo con Newman en el pipeline | Highest | 3 | `SCRUM-452` |
-| `QA-04` — Medir con k6 el camino de registro por el Gateway, con la carga y el umbral que define el escenario QAS-03 del SDD §8 | High | 3 | `SCRUM-452` |
+| `QA-04` — Medir con k6 el camino de registro por el Gateway con 150 usuarios virtuales concurrentes | High | 3 | `SCRUM-452` |
 | `QA-05` — Ejecutar el escaneo DAST con OWASP ZAP sobre el Gateway desplegado en QA | High | 3 | `SCRUM-452` |
 | `QA-06` — Dejar el esqueleto de pruebas unitarias de los servicios poliglotas listo antes de que existan | Medium | 2 | `SCRUM-452` |
 | `QA-07` — Construir el escaner propio de PCI-DSS que busca PAN y CVV en base de datos y en logs | Medium | 2 | `SCRUM-452` |
@@ -351,7 +397,7 @@ corresponde al nivel. Todas son gratuitas, open source y corren localmente o en 
 | Contrato Gateway ↔ Core | Postman + Newman | `QA-03` | Es la herramienta que el equipo ya usa; Newman la corre en terminal y en CI |
 | Carga y concurrencia | k6 | `QA-04` | Menos de 100 MB de memoria frente a los gigabytes de JMeter. La carga objetivo y el umbral de p95 los fija el SDD §7.4 y §8; este backlog no define umbrales propios |
 | Seguridad dinámica | OWASP ZAP | `QA-05` | Estándar gratuito de DAST exigido por ADR-0005 |
-| Unitarias de los servicios políglotas | JUnit 5 / xUnit | `QA-06` | Esqueleto listo antes de que Rules Java y Dispatch .NET existan |
+| Unitarias de los servicios políglotas | JUnit 5 / xUnit | `QA-06` | Esqueleto listo antes de que Rules Service y Dispatch Service existan |
 | Cumplimiento PCI-DSS | Escáner propio | `QA-07` | Busca PAN y CVV en base y logs antes de que `EP-07` entre al backlog |
 
 Los valores medidos con estas herramientas son los que `DOC-39` publica como métricas de los atributos de

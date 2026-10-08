@@ -24,7 +24,7 @@
 Dos reglas que se olvidan a menudo:
 
 - Un **hotfix** no termina al desplegarse: termina cuando su corrección volvió a la línea de desarrollo.
-- Un **spike no se convierte automáticamente en decisión arquitectónica** (Políticas §5.2). Su resultado se lleva a Mesa de Arquitectura y produce un ADR si corresponde. Ejemplo vigente: `SP-05` en [Riesgos y puntos abiertos](../02-arquitectura/riesgos-y-puntos-abiertos.md).
+- Un **spike no se convierte automáticamente en decisión arquitectónica** (Políticas §5.2). Su resultado se lleva a Mesa de Arquitectura y produce un ADR si corresponde. Ejemplo: `SP-05`, cuyo resultado se registró en [`ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md).
 
 ## Reglas de integración
 
@@ -45,4 +45,4 @@ Si el equipo quiere convertir esto en norma (por ejemplo Conventional Commits), 
 
 ## Caso especial: MANI-Frontend
 
-El producto no está en `main` sino en `develop` y `release`, y hay 13 ramas con trabajo sin fusionar. Antes de abrir cualquier rama nueva ahí: `CFG-37` (fijar la estrategia de ramas) y `CFG-38` (reconciliar lo pendiente). Ver [Multi-repo](../04-repositorios/multirepo.md) y [Orden de ejecución](../06-backlog/orden-de-ejecucion.md).
+`CFG-37` y `CFG-38` ya se cerraron: `main` y `release` están contenidos en `develop`, que es la base única, y no quedan ramas con trabajo sin fusionar. Las ramas nuevas salen de `develop` y vuelven por PR, como en el resto de repositorios. El detalle de la reconciliación está en [Multi-repo](../04-repositorios/multirepo.md); el orden de trabajo, en [Orden de ejecución](../06-backlog/orden-de-ejecucion.md).

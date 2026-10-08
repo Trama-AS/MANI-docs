@@ -6,11 +6,6 @@
 
 El proyecto es desarrollado por **TRAMA · Ingeniería de Software**.
 
-> Los documentos de este repositorio son **documentos vivos y sin número de versión**. La versión
-> vigente de cada uno es la de `main`; el historial está en el log del repositorio. La carpeta
-> [`Entregas/`](Entregas/) es un **histórico de entregables académicos** y no es fuente de verdad:
-> no se consulta para resolver una duda ni para implementar.
-
 ---
 
 ## 1. Problema que resuelve
@@ -58,12 +53,11 @@ Quedan previstos para una fase posterior:
 - administración avanzada;
 - métricas operativas por tenant.
 
-El detalle de requisitos está en [`product/SRS.md`](product/SRS.md) y la cobertura de cada uno a
-nivel de datos en [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) §14.
-
 ---
 
 ## 3. Principios del producto
+
+MANI se diseña bajo los siguientes criterios:
 
 - **Multi-tenancy:** cada empresa opera con datos, usuarios y configuración aislados.
 - **Configurabilidad:** las reglas de cada tenant cambian mediante configuración, no mediante una versión distinta del software.
@@ -77,48 +71,23 @@ nivel de datos en [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) �
 
 ## 4. Arquitectura
 
-La arquitectura de MANI es:
+La arquitectura objetivo de MANI es:
 
 > **SOA distribuida + API Gateway + enfoque políglota + multi-tenancy**
 
-### Servicios y repositorios
-
-| Repositorio | Tecnología | Responsabilidad principal |
-|---|---|---|
-| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
-| `MANI-API-Gateway` | NGINX | Punto de entrada y enrutamiento de APIs |
-| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
-| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
-| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
-| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
-
-Son **seis repositorios** y **tres servicios de negocio**. Las disponibilidades son un módulo del
-`MANI-Core-Service`, con esquema de datos propio, no un servicio desplegable aparte.
-
-`MANI-API-Gateway` guarda además el Compose por ambiente y la configuración de observabilidad: es
-la raíz de composición del despliegue.
-
-### Persistencia
+### Componentes principales
 
 | Componente | Tecnología | Responsabilidad |
 |---|---|---|
+| Cliente | Flutter / Dart | Aplicación web y móvil |
+| API Gateway | NGINX | Entrada única, routing y políticas transversales |
+| Rules Service | Java | Reglas configurables por tenant, ranking y tarifarios |
+| Dispatch Service | .NET | Despacho, asignación y control de concurrencia |
+| Core Service | Node.js | Tenants, usuarios, aliados, clientes, KYC, cotizaciones, ejecución y comunicación |
 | Persistencia | Supabase | Plataforma administrada |
 | Motor de datos | PostgreSQL | Persistencia relacional y RLS |
 
 Supabase se utiliza como **plataforma administrada** y PostgreSQL como su **motor de base de datos**. No son dos alternativas distintas.
-
-### Acceso del cliente a Supabase
-
-El cliente Flutter alcanza Supabase por **exactamente dos caminos**, y **no hay excepciones**:
-
-| Camino | Para qué |
-|---|---|
-| `Flutter → Supabase Auth` | sesión, registro y refresco del JWT |
-| `Flutter ← Supabase Realtime` | recepción de eventos de mensajería; es transporte, no acceso a datos |
-
-Todo lo demás pasa por `Flutter → API Gateway → servicio → Supabase`. Están retirados del cliente
-`.from()`, `.rpc()` y `.storage.from()`, incluida la consulta de disponibilidades, que no es una
-excepción (ADR-0022, ADR-0027; SAD §8.3).
 
 ### Seguridad multi-tenant
 
@@ -152,52 +121,31 @@ La línea base contempla exactamente tres ambientes:
 DEV → QA → PROD
 ```
 
-| Ambiente | Dónde corre | Datos |
-|---|---|---|
-| **DEV** | máquina personal de cada desarrollador, con Docker local | sintéticos |
-| **QA** | máquina virtual de QA con Docker | dataset controlado y anonimizado |
-| **PROD** | máquina virtual productiva con Docker | reales |
+No se define un cuarto ambiente STAGING independiente.
 
-El ambiente de pruebas se llama **QA** en todos los documentos, pipelines y tags. No existe
-STAGING ni un cuarto ambiente con otro nombre.
-
-La promoción mantiene el principio:
+La promoción debe mantener el principio:
 
 > **Build once, deploy many**
 
-El mismo artefacto validado se promueve de QA a PROD sin reconstruirse.
+El mismo artefacto validado debe promoverse entre ambientes sin reconstruirse.
+
+### Decisiones de infraestructura pendientes
+
+La ubicación concreta del clúster Kubernetes, la configuración definitiva de DEV y el registro oficial de imágenes se encuentran pendientes de cierre con DevOps.
+
+Hasta que esas decisiones queden ratificadas, este README no fija un proveedor de hosting ni un registro de contenedores como parte de la arquitectura oficial.
 
 ---
 
 ## 7. Contenerización y orquestación
 
 - Docker / OCI para empaquetado.
-- Un contenedor por servicio, con health check y límites de recursos.
-- Compose por ambiente, en `MANI-API-Gateway`.
+- Kubernetes como orquestador requerido por el proyecto.
 - GitHub Actions para CI/CD.
+- Despliegues segregados por ambiente.
 - Configuración y secretos externos al artefacto.
 
-### Orquestación: decisión abierta
-
-**Kubernetes es el objetivo exigido por el proyecto (PROY-08), pero no es el estado actual y no
-está decidido.** Hoy el despliegue es Docker sobre máquina virtual, una por ambiente.
-
-Siguen abiertas dos decisiones, registradas en
-[`governance/INFRAESTRUCTURA_MANI.md`](governance/INFRAESTRUCTURA_MANI.md) §25:
-
-| ID | Decisión pendiente |
-|---|---|
-| `INFRA-01` | Proveedor y dimensionamiento de la plataforma de orquestación |
-| `INFRA-02` | Topología final: nodos, namespaces o clusters por ambiente, y networking |
-
-Hasta que un ADR las cierre: no se fija proveedor, no se declara un clúster como estado actual y no
-se asume AKS ni Azure.
-
-**Ya están decididas** y no se vuelven a discutir sin ADR:
-
-- GHCR como registro de imágenes;
-- Supabase de desarrollo compartido para DEV;
-- Docker sobre VM como mecanismo de despliegue de QA y PROD.
+El dimensionamiento y proveedor de cómputo del clúster se documentan en el documento de Infraestructura cuando exista decisión ratificada.
 
 ---
 
@@ -230,14 +178,13 @@ Herramientas principales:
 - **SonarQube:** SAST y Quality Gates.
 - **OWASP ZAP:** DAST sobre QA.
 - **Postman / Newman:** pruebas funcionales, contratos y aislamiento multi-tenant.
-- **k6:** pruebas de carga y concurrencia.
-
-El detalle del pipeline vive en
-[`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §8.
+- **k6:** pruebas de carga y concurrencia cuando corresponda.
 
 ---
 
 ## 9. Observabilidad
+
+La estrategia definida utiliza:
 
 - **Prometheus** para métricas;
 - **Grafana** para visualización;
@@ -247,7 +194,36 @@ El detalle del pipeline vive en
 
 ---
 
-## 10. Gestión del proyecto
+## 10. Estrategia de repositorios
+
+MANI adopta una estrategia **multi-repo**.
+
+Estructura objetivo:
+
+| Repositorio | Tecnología | Responsabilidad principal |
+|---|---|---|
+| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
+| `MANI-API-Gateway` | NGINX | Punto de entrada, enrutamiento y raíz de composición del despliegue |
+| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
+| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
+| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
+
+Son **seis repositorios** y cinco desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+No existe `MANI-Availability` ni `MANI-Infra`.
+
+Cada unidad desplegable mantiene de forma independiente:
+
+- código fuente;
+- dependencias;
+- pruebas;
+- pipeline;
+- versionamiento;
+- artefacto contenerizado.
+
+---
+
+## 11. Gestión del proyecto
 
 El proyecto se ejecuta bajo **Scrum**.
 
@@ -262,7 +238,7 @@ Las decisiones técnicas costosas de revertir pasan por la **Mesa de Arquitectur
 
 ---
 
-## 11. Equipo
+## 12. Equipo
 
 | Integrante | Rol principal | Segundo rol |
 |---|---|---|
@@ -278,9 +254,9 @@ Todos los integrantes técnicos participan transversalmente en la **Mesa de Arqu
 
 ---
 
-## 12. Documentación
+## 13. Documentación
 
-La documentación se divide por responsabilidad para evitar duplicidad.
+La documentación del proyecto se divide por responsabilidad para evitar duplicidad.
 
 ```text
 MANI-Docs/
@@ -292,6 +268,7 @@ MANI-Docs/
 ├── architecture/
 │   ├── SAD.md
 │   ├── SDD.md
+│   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
 │   └── TECH_RADAR.md
 ├── adr/
@@ -301,13 +278,13 @@ MANI-Docs/
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md
 │   └── INFRAESTRUCTURA_MANI.md
 ├── diagrams/
-│   ├── HLD/                 landscape, infraestructura y Tech Radar
+│   ├── HLD/          DHL, infraestructura y Tech Radar
 │   ├── LLD/
-│   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas
-│   │   └── Software/        vistas exportadas que incrusta el SDD
+│   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas C4
+│   │   └── png/             vistas exportadas que incrusta el SDD
 │   └── ModeloDatos.png
-├── wiki/                    navegación por tema; no añade reglas propias
-└── Entregas/                histórico académico; no es fuente de verdad
+├── wiki/                    consulta por tema; no añade reglas propias
+└── Entregas/                entregables academicos por corte
 ```
 
 ### Fuente de verdad por tema
@@ -316,46 +293,65 @@ MANI-Docs/
 |---|---|
 | Requerimientos | [`product/SRS.md`](product/SRS.md) |
 | Backlog | [`product/BACKLOG_MANI.md`](product/BACKLOG_MANI.md) |
-| Arquitectura y drivers | [`architecture/SAD.md`](architecture/SAD.md) |
-| Diseño detallado, vistas y diagramas | [`architecture/SDD.md`](architecture/SDD.md) |
-| **Umbrales de calidad y escenarios de QA** | [`architecture/SDD.md`](architecture/SDD.md) §7 y §8 — **único lugar** |
+| Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
+| Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
+| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
 | Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](adr/) |
-| Modelo de diagramas | [`diagrams/LLD/workspace.dsl`](diagrams/LLD/workspace.dsl) |
+| Modelo C4 | [`diagrams/LLD/workspace.dsl`](diagrams/LLD/workspace.dsl) |
 | Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
-| Gobierno y reglas de trabajo | [`governance/GOBIERNO_DEL_EQUIPO.md`](governance/GOBIERNO_DEL_EQUIPO.md) |
-| DevOps, calidad y herramientas | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
-| Infraestructura y ambientes | [`governance/INFRAESTRUCTURA_MANI.md`](governance/INFRAESTRUCTURA_MANI.md) |
-
-Un dato que aparece en dos documentos tiene **un solo dueño**: el de esta tabla. Si otro documento
-lo contradice, manda el dueño y el otro se corrige.
+| Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
+| DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
+| Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |
 
 ---
 
-## 13. Modelo de datos
+## 14. Modelo de datos
 
-El documento de modelo de datos contiene glosario, modelo conceptual, lógico y físico, DER, DDL
-operacional, diccionario de datos, Data Warehouse, modelo dimensional, DDL analítico, controles de
-calidad, propiedad de datos por servicio y la **matriz de cobertura de requisitos** (§14), que
-mapea cada RF del SRS a las tablas que lo soportan.
+El documento de modelo de datos contiene:
+
+- glosario de datos;
+- modelo conceptual;
+- modelo lógico;
+- DER;
+- modelo físico;
+- DDL operacional;
+- diccionario de datos;
+- Data Warehouse;
+- modelo dimensional;
+- DDL del Data Warehouse;
+- calidad de datos;
+- relación datos ↔ servicios.
 
 La analítica permanece separada del OLTP para no degradar la operación transaccional.
 
 ---
 
-## 14. Convenciones
+## 15. Estado documental
+
+La arquitectura, requerimientos, ADR y modelo de datos ya fueron depurados hacia la línea base actual.
+
+Se mantiene pendiente el cierre con DevOps de tres decisiones de infraestructura:
+
+1. ubicación concreta de Kubernetes en QA y PROD;
+2. estrategia definitiva de DEV para Supabase/local;
+3. registro oficial de imágenes.
+
+Estas decisiones deberán actualizar el documento de Infraestructura y las políticas DevOps sin modificar los requerimientos funcionales del producto.
+
+---
+
+## 16. Convenciones
 
 - Ninguna decisión arquitectónica se considera oficial únicamente por aparecer en una conversación o propuesta.
 - Los cambios arquitectónicos relevantes se formalizan mediante ADR.
 - Los ADR históricos no se eliminan; cuando una decisión cambia se marca como `Superseded`.
 - Los requerimientos se mantienen separados de las decisiones de implementación.
 - No se duplican decisiones completas entre SRS, SAD, SDD, ADR, políticas e infraestructura.
-- Los documentos no llevan número de versión. La versión es el commit.
-- Los umbrales de calidad se definen una sola vez, en el SDD.
 
 ---
 
-## 15. Licencia y uso
+## 17. Licencia y uso
 
 Proyecto académico desarrollado por **TRAMA · Ingeniería de Software**.
 

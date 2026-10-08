@@ -4,7 +4,7 @@
 **Documento vivo:** sin número de versión; la vigente es la de `main` y el historial está en el log del repositorio.  
 **Arquitectura:** SOA distribuida + API Gateway + enfoque políglota  
 **Persistencia:** Supabase como plataforma administrada, PostgreSQL como motor  
-**Despliegue:** Docker sobre máquina virtual, una por ambiente. Orquestación por decidir (INFRA-01, INFRA-02)  
+**Despliegue:** Docker + Kubernetes  
 **Ambientes:** DEV → QA → PROD  
 **Estrategia de repositorios:** Multi-repo  
 **Diagramas de este documento:** diagramas de alto nivel (DHL) en [`diagrams/HLD/`](../diagrams/HLD/) — [DHL.png](../diagrams/HLD/DHL.png), [Infra.png](../diagrams/HLD/Infra.png), [TechRadar.png](../diagrams/HLD/TechRadar.png)  
@@ -23,14 +23,8 @@ Para evitar contaminación entre requisitos y solución, esta versión:
 - usa RF, RNF y REST del SRS como drivers;
 - no toma como drivers las notas históricas de inconsistencias arquitectónicas del SRS;
 - no redefine requisitos;
-- no duplica el modelo de datos físico ni el DDL, que viven en [`ModeloDatos.md`](./ModeloDatos.md);
-- no duplica decisiones históricas completas de ADR, solo referencia las decisiones vigentes;
-- **no define umbrales de calidad.** Los umbrales medibles viven únicamente en
-  [`SDD.md`](./SDD.md) §7 y §8. Este SAD declara qué atributo es prioritario y por qué, no con qué
-  número se verifica;
-- no detalla pipeline, herramientas ni observabilidad: eso vive en
-  [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) y
-  [`INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).
+- no duplica el modelo de datos físico ni el DDL, que viven en `ModeloDatos.md`;
+- no duplica decisiones históricas completas de ADR, solo referencia las decisiones vigentes.
 
 ---
 
@@ -68,7 +62,7 @@ Los principales drivers funcionales que condicionan el diseño son:
 |---|---|---|
 | Multi-tenancy y administración de tenants | RF-01, RF-02, RF-03 | contexto de tenant en todas las operaciones, configuración por tenant y autorización |
 | KYC aislado | RF-05, RF-06, REST-02 | almacenamiento privado, autorización y aislamiento de archivos |
-| Cobertura por zonas | RF-07, RF-09, RF-12, REST-01 | catálogo de zonas y dominio de cobertura y disponibilidad en el Core Service |
+| Cobertura por zonas | RF-07, RF-09, RF-12, REST-01 | catálogo de zonas y servicio de disponibilidad/cobertura |
 | Ranking configurable | RF-13 | motor de reglas por tenant |
 | Despacho concurrente | RF-14 | servicio transaccional con exclusión atómica |
 | Cotización y tarifario | RF-15, RF-16, RF-22, RF-23 | reglas, persistencia y reportes |
@@ -142,25 +136,16 @@ Sistemas externos
 ```text
 Usuarios
    ↓
-Flutter Web / Mobile                    presentación e interacción, sin reglas de negocio
-   │
-   ├─ HTTPS ─→ NGINX API Gateway        entrada única, routing y políticas transversales
-   │              ↓
-   │           Rules (Java) · Dispatch (.NET) · Core (Node.js)
-   │              ↓
-   │           Supabase: PostgreSQL + RLS · Storage
-   │              ↓
-   │           Integraciones: FCM/APNs · Operador de pagos (2.º incremento)
-   │
-   ├─ HTTPS ─→ Supabase Auth            sesión y JWT firmado
-   └─ WSS  ←─  Supabase Realtime        recepción de eventos de mensajería
+Flutter Web / Mobile                    presentación e interacción
+   ↓ HTTPS
+NGINX API Gateway                       entrada única, routing y políticas transversales
+   ↓
+Rules (Java) · Dispatch (.NET) · Core (Node.js)
+   ↓
+Supabase: Auth · PostgreSQL + RLS · Storage · Realtime
+   ↓
+Integraciones: FCM/APNs · Operador de pagos (2.º incremento)
 ```
-
-Tres servicios de negocio. La cobertura y la disponibilidad son uno de los dominios del Core
-Service (§7.3), no una unidad aparte.
-
-Los dos caminos directos del cliente a Supabase son los únicos que existen y están acotados en
-§8.3: todo acceso a datos de negocio pasa por el Gateway.
 
 ---
 
@@ -198,47 +183,16 @@ Responsable de:
 - RF-01: tenants;
 - RF-03 y RF-04: integración de identidad y acceso;
 - RF-05 y RF-06: aliados y KYC;
-- RF-08 y RF-09: clientes y sitios de servicio;
+- RF-08 y RF-09: clientes y sitios;
 - RF-10 y RF-11: categorías y asociaciones;
-- RF-15, RF-16 (escritura del veredicto), RF-17: cotización y respuesta del cliente;
-- RF-18: historial de ejecución;
-- RF-19: calificación bidireccional y condición de cierre;
-- RF-20 y RF-21: conversaciones, mensajes y notificaciones;
-- RF-23: reportes operativos;
-- **RF-07: cobertura declarada del aliado por zonas**;
-- **RF-12: elegibilidad por categoría + zona + agenda, y disponibilidad, horarios y solapamientos**;
-- soporte a RNF-07 en la ruta crítica de consulta de elegibilidad;
+- RF-15, RF-17, RF-18, RF-19;
+- RF-20 y RF-21;
+- RF-23;
+- RF-07: cobertura del aliado;
+- RF-12: consulta de elegibilidad por categoría y zona, disponibilidad, horarios y zonas, con soporte a RNF-07 en la ruta crítica de consulta;
 - segundo incremento RF-24..RF-28, cuando se implemente.
 
-Es dueño de los esquemas `core`, `servicio`, `comunicaciones` y `pagos` (ModeloDatos §13). Rules
-emite el veredicto tarifario, pero es Core quien escribe `servicio.cotizacion`.
-
-Internamente se organiza por dominios —identidad, aliados y KYC, clientes y sitios, catálogo,
-**cobertura y disponibilidad**, ciclo del servicio, comunicaciones y reportes— sin convertir cada
-operación CRUD en un servicio independiente (riesgo KI-03).
-
-### Sobre la cobertura y la disponibilidad
-
-**No son un servicio ni un módulo aparte: son un dominio del Core como cualquier otro.** Un único
-componente resuelve la elegibilidad como la conjunción de tres condiciones:
-
-```text
-Elegible =
-  categoría declarada por el aliado   (core.aliado_categoria)
-  AND
-  zona de cobertura declarada         (core.aliado_cobertura)   — coincidencia exacta
-  AND
-  franja de agenda disponible         (core.disponibilidad)
-```
-
-Sus tablas viven en el esquema `core`, junto a las demás del aliado, porque describen al mismo
-aliado: qué atiende, dónde y cuándo. No tiene esquema, vista de componentes, repositorio ni
-desplegable propios.
-
-Dispatch consume la elegibilidad **por la API del Core Service**, nunca leyendo sus tablas.
-
-La razón de no separarlo responde al riesgo KI-03: su único consumidor es Dispatch, y una frontera
-de servicio adicional habría añadido un salto de red, un pipeline y una imagen sin comprar nada.
+En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente. La **disponibilidad es uno de esos dominios internos**, no un servicio desplegable aparte: vive en el bloque Node junto al catálogo y la comunicación, y es lo que Despacho consulta antes de conformar el listado de candidatos.
 
 ---
 
@@ -282,20 +236,21 @@ excepción**:
 | Camino | Para qué | Por qué es legítimo |
 |---|---|---|
 | `Flutter → Supabase Auth` | iniciar sesión, registrar usuario y refrescar el JWT | la identidad la emite Supabase GoTrue y el tenant viaja como claim firmado (ADR-0018, ADR-0027) |
-| `Flutter ← Supabase Realtime` | recibir eventos de mensajería mientras el usuario está conectado | Realtime es un **transporte de eventos**: no lee tablas de negocio, no ejecuta reglas y no decide nada. El evento lo publica el Core Service después de persistir el mensaje |
+| `Flutter ← Supabase Realtime` | recibir eventos de mensajería mientras el usuario está conectado | Realtime es un **transporte de eventos**: no lee tablas de negocio, no ejecuta reglas y no decide nada. El evento lo publica el Core después de persistir el mensaje |
 
 Queda prohibido y retirado del cliente, sin excepción transitoria ni de disponibilidades:
 
 - `.from()` — acceso a tablas vía PostgREST;
 - `.rpc()` — invocación de funciones almacenadas;
 - `.storage.from()` — acceso directo a Storage. Los documentos KYC se suben por endpoint
-  intermediario o URL prefirmada que emite el Core Service.
+  intermediario o URL prefirmada que emite el Core.
 
-La consulta de disponibilidades **no** es una excepción: entra por el Gateway al Core Service como
-cualquier otra lectura de negocio. Esto cierra el riesgo KI-02 (§23) y materializa ADR-0022 y
-ADR-0027.
+La consulta de disponibilidades **no** es una excepción: entra por el Gateway al Core como
+cualquier otra lectura de negocio. Esto materializa
+[ADR-0022](../adr/ADR-0022-logica-de-negocio-en-servicios.md) y
+[ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md).
 
-El detalle de la regla, con la tabla de dependencias permitidas y prohibidas, está en
+El detalle, con la tabla de dependencias permitidas y prohibidas, está en
 [`SDD.md`](./SDD.md) §2.2 y §14.
 
 ## 8.4 Documentos KYC
@@ -317,6 +272,40 @@ Controles:
 - administrador de tenant limitado a su tenant.
 
 Esto responde a RF-05, RF-06 y REST-02.
+
+## 8.5 Vista de interfaz del registro y la verificación de aliados
+
+Las historias migradas de `EP-02` tienen mockup aprobado en Figma (`PO-06`, `SCRUM-1093`). El archivo fuente es
+[MANI — Figma Make](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link) y las exportaciones
+versionadas viven en [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/). Las dos figuras siguientes ilustran cómo la
+interfaz materializa los controles de esta sección: la carga de documentos KYC definidos por el tenant y una
+bandeja de verificación limitada a la empresa del administrador.
+
+![Figura 8.1 — Registro de aliado persona natural](../diagrams/MOCKUPS/registro-aliado-persona-natural.png)
+
+**Figura 8.1 — Registro de aliado (persona natural).** Selector de tipo de aliado, datos de identificación y
+sección de documentos requeridos, cuya lista la configura cada tenant (RF-02, RNF-10). Ilustra `US-02.1.1`
+Registro aliado persona natural (`SCRUM-846`), migrada en `US-02.1.1-M2` (`SCRUM-1065`); la variante de empresa
+corresponde a `US-02.1.2` (`SCRUM-847`). Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
+
+![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](../diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
+
+**Figura 8.2 — Bandeja de verificación del Backoffice.** El administrador ve solo los aliados pendientes de su
+tenant, consulta sus documentos y aprueba o rechaza; el rechazo exige un motivo. Ilustra `US-02.1.3`
+Aprobar/rechazar registro de aliado (`SCRUM-848`), migrada en `US-02.1.3-M2` (`SCRUM-1066`), y responde a RF-06 y
+RNF-01. Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
+
+Exportaciones disponibles en `diagrams/MOCKUPS/`:
+
+| Archivo | Pantalla | Historia |
+|---|---|---|
+| `perfil-acceso-registros.png` | Acceso a los registros desde el perfil | `US-02.1.1`, `US-02.2.1` |
+| `registro-aliado-persona-natural.png` | Registro de aliado persona natural | `US-02.1.1` (`SCRUM-846`) |
+| `registro-aliado-empresa.png` | Registro de aliado empresa | `US-02.1.2` (`SCRUM-847`) |
+| `registro-aliado-confirmacion.png` | Confirmación: registro pendiente de verificación | `US-02.1.1`, `US-02.1.2` |
+| `backoffice-verificacion-aliados.png` | Bandeja de verificación de aliados | `US-02.1.3` (`SCRUM-848`) |
+| `backoffice-aliado-aprobado.png` | Aliado aprobado en la bandeja | `US-02.1.3` (`SCRUM-848`) |
+| `registro-cliente.png` | Registro de cliente persona natural | `US-02.2.1` (`SCRUM-851`) |
 
 ---
 
@@ -361,27 +350,19 @@ El diseño respeta REST-01 y RNF-09:
 
 ```text
 Sitio
-  └── Zona                              core.sitio_servicio.id_zona, obligatoria
+  └── Zona
 
 Aliado
-  ├── Categoría atendida                core.aliado_categoria
-  ├── Zona de cobertura                 core.aliado_cobertura
-  └── Franja de agenda                  core.disponibilidad
+  ├── Categoría
+  └── CoberturaZona
 
 Elegible =
-  categoría declarada
+  misma categoría
   AND
-  zona declarada        — coincidencia exacta de identificador
+  misma zona
   AND
-  franja disponible
+  disponible
 ```
-
-La **cobertura** dice *dónde* y es una declaración estable del aliado; la **disponibilidad** dice
-*cuándo* y es agenda. Son dos cosas distintas y el modelo de datos las separa en dos tablas
-(ModeloDatos §4.1).
-
-Ambas, con las categorías atendidas, viven en el esquema `core` y las resuelve el Core Service
-(§7.3). No hay un servicio ni un esquema de disponibilidad aparte.
 
 ---
 
@@ -478,65 +459,54 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 ![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/HLD/Infra.png)
 
 > **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/HLD/Infra.png`](../diagrams/HLD/Infra.png).
-> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §9.
+> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
 
-MANI mantiene **tres ambientes, y son exactamente tres**:
+MANI mantiene tres ambientes:
 
 ```text
 DEV → QA → PROD
 ```
 
-No existe STAGING ni un cuarto ambiente con otro nombre. El ambiente de pruebas se llama **QA** en
-todos los documentos, pipelines y tags.
+No se define STAGING como cuarto ambiente.
 
 ## 16.1 DEV
 
-- desarrollo e integración temprana;
-- **máquina personal de cada desarrollador**, con Docker local;
-- Supabase de desarrollo;
+- desarrollo e integración;
+- Docker local cuando aplique;
+- Kubernetes para la validación del modelo de despliegue cuando corresponda;
 - datos sintéticos;
-- sin datos reales de usuarios ni de KYC.
+- sin datos reales de usuarios o KYC.
 
 ## 16.2 QA
 
-- **máquina virtual de QA con Docker**;
-- pruebas funcionales, integración y contract tests;
+- pruebas funcionales;
+- integración;
+- contract tests;
 - aislamiento multi-tenant;
-- Newman, OWASP ZAP y k6;
+- Newman;
+- OWASP ZAP;
 - pruebas de concurrencia;
 - Supabase separado de producción.
 
 ## 16.3 PROD
 
-- **máquina virtual productiva con Docker**;
 - usuarios y datos reales;
 - Supabase productivo;
-- artefactos inmutables, fijados por tag y digest;
+- artefactos inmutables;
 - controles de acceso productivos;
 - monitoreo y alertamiento.
 
-## 16.4 Orquestación — decisión abierta
+## 16.4 Kubernetes
 
-Kubernetes es el orquestador **exigido como objetivo** por PROY-08, pero **no es el estado actual y
-no está decidido**: su proveedor y su topología siguen abiertos como INFRA-01 e INFRA-02.
+Kubernetes es el orquestador de la solución contenerizada.
 
-Hasta que exista un ADR que los cierre:
-
-- el despliegue vigente es Docker sobre VM, una por ambiente;
-- ningún documento ni diagrama declara un clúster como estado actual;
-- no se fija proveedor, número de nodos ni dimensionamiento;
-- no se asume AKS ni Azure.
-
-Esta decisión no altera la arquitectura lógica de este SAD. Los artefactos son imágenes OCI y la
-promoción preserva la imagen validada, así que el cambio de plataforma no exige reconstruirlas ni
-rediseñar los servicios. El detalle operativo vive en
-[`INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).
+La decisión de proveedor de cómputo o dimensionamiento físico puede cambiar sin alterar la arquitectura lógica descrita en este SAD.
 
 ---
 
 # 17. Estrategia multi-repositorio
 
-La solución mantiene una estrategia **multi-repo** con **seis repositorios**:
+La solución mantiene una estrategia **multi-repo**:
 
 | Repositorio | Tecnología | Responsabilidad principal |
 |---|---|---|
@@ -547,6 +517,11 @@ La solución mantiene una estrategia **multi-repo** con **seis repositorios**:
 | `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
+Son **seis repositorios** y cinco desplegables ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+No existe `MANI-Availability` —la disponibilidad es un dominio del Core— ni `MANI-Infra`, que DevOps
+borró: la infraestructura de datos y el stack local viven en `MANI-API-Gateway` (ADR-0004, enmienda
+del 2026-10-07).
+
 Cada unidad desplegable mantiene:
 
 - dependencias;
@@ -556,47 +531,49 @@ Cada unidad desplegable mantiene:
 - pipeline;
 - artefacto contenerizado.
 
-`MANI-API-Gateway` guarda además el Compose por ambiente y la configuración de observabilidad: es la
-raíz de composición del despliegue. No existe un repositorio de infraestructura aparte.
-
-`MANI-Docs` mantiene SAD, SDD, ADR, modelo de datos y diagramas técnicos, y no se despliega.
-
-El desglose físico de carpetas está en [`SDD.md`](./SDD.md) §13.
+`MANI-Docs` mantiene SDD, ADR, modelo de datos y diagramas técnicos.
 
 ---
 
 # 18. CI/CD
 
-Lo que este SAD fija es el **principio arquitectónico**, no el pipeline:
+```text
+Pull Request
+  → Unit / Integration / Contract Tests
+  → SonarQube
+  → Docker Build
+  → Dependency / Image Scan
+  → Deploy QA
+  → Newman
+  → OWASP ZAP
+  → Promoción del mismo artefacto a PROD
+```
 
-> **Build once, deploy many.** El artefacto validado se promueve entre ambientes sin reconstruirse.
+Principio:
 
-De ese principio se derivan dos restricciones de diseño que los servicios deben cumplir:
+> **Build once, deploy many.**
 
-- la configuración y los secretos son externos al artefacto, porque la misma imagen corre en los tres ambientes;
-- el artefacto queda fijado por tag y digest, para que «el mismo artefacto» sea verificable y no una afirmación.
-
-El pipeline concreto, sus etapas, herramientas y puertas de calidad viven en
-[`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §8 y en
-[`SDD.md`](./SDD.md) §11. No se repiten aquí.
+El artefacto validado se promueve sin reconstruirse.
 
 ---
 
 # 19. Observabilidad
 
-Requisito arquitectónico: toda operación distribuida debe poder reconstruirse. De ahí dos
-obligaciones de diseño:
+Se emplean:
 
-- **`correlation_id` propagado** por el Gateway y por cada servicio en toda petición;
-- **instrumentación obligatoria** en el API Gateway, el Rules Service, el Dispatch Service, el Core
-  Service y la plataforma de contenedores.
+- Prometheus para métricas;
+- Grafana para dashboards;
+- Datadog para logs/APM/trazas;
+- correlation ID para seguimiento entre servicios;
+- alertas integradas con Jira.
 
-Un servicio sin telemetría de sus operaciones críticas no cumple el criterio de aceptación
-arquitectónica (SDD §19).
+La instrumentación cubre:
 
-El stack concreto, los dashboards y el manejo de incidentes viven en
-[`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §17 y en
-[ADR-0006](../adr/ADR-0006-observabilidad.md).
+- API Gateway;
+- Rules Service;
+- Dispatch Service;
+- Core Service;
+- infraestructura Kubernetes.
 
 ---
 
@@ -611,7 +588,7 @@ viven únicamente en [`SDD.md`](./SDD.md) §7, y los escenarios con los que QA l
 | **Seguridad** | P1 | el aislamiento multi-tenant cubre datos, archivos KYC, usuarios y configuración; una fuga cruza empresas, no usuarios | RNF-01, REST-02, REST-04 | [SDD §7.2](./SDD.md) |
 | **Fiabilidad** | P1 | el despacho debe terminar en exactamente una asignación válida y las operaciones críticas toleran reintentos | RNF-03, RNF-05 | [SDD §7.3](./SDD.md) |
 | **Eficiencia de desempeño** | P1 | la consulta de elegibilidad y el ranking están en la ruta crítica de cada solicitud | RNF-07 | [SDD §7.4](./SDD.md) |
-| **Mantenibilidad** | P1 | tres runtimes y varios dominios elevan el costo de cambio; sin límites claros aparece el monolito distribuido | KI-03, KI-08 | [SDD §7.5](./SDD.md) |
+| **Mantenibilidad** | P1 | tres runtimes y varios dominios elevan el costo de cambio; sin límites claros aparece el monolito distribuido | PROY-07 | [SDD §7.5](./SDD.md) |
 | **Flexibilidad** | P1 | cada tenant configura sus reglas sin despliegue propio, y la plataforma de orquestación aún puede cambiar | RNF-02, RNF-10, REST-05 | [SDD §7.6](./SDD.md) |
 | **Compatibilidad** | P2 | los servicios se integran entre tecnologías distintas y con terceros | PROY-07 | [SDD §7.7](./SDD.md) |
 | **Adecuación funcional** | P2 | la exactitud de reglas, asignaciones y estados es verificable por pruebas | RF-13, RF-14, RF-16 | [SDD §7.8](./SDD.md) |
@@ -625,107 +602,130 @@ La priorización no es declarativa: condiciona el diseño descrito en este docum
 | Prioridad | Decisión que obliga | Dónde está |
 |---|---|---|
 | Seguridad P1 | defensa en profundidad: JWT + autorización en servicio + RLS, y aislamiento equivalente en Storage | §8 |
+| Seguridad P1 | el cliente alcanza Supabase solo por Auth y Realtime | §8.3 |
 | Fiabilidad P1 | exclusión concurrente por actualización condicional atómica en Dispatch | §7.2, §11 |
 | Fiabilidad P1 | efectos secundarios por eventos: un fallo de push no revierte una operación confirmada | §12, §21 |
 | Desempeño P1 | índice de búsqueda de elegibilidad por categoría, zona, fecha y estado | §7.3, §10 |
 | Mantenibilidad P1 | propiedad de datos por dominio; ningún servicio escribe el esquema de otro | §14, ModeloDatos §13 |
 | Flexibilidad P1 | configuración por tenant como datos, no como código ni como rama | §9 |
-| Flexibilidad P1 | artefactos OCI inmutables y configuración externa, para que la orquestación pueda cambiar | §16.4, §18 |
+| Flexibilidad P1 | artefactos OCI inmutables y configuración externa, para que la orquestación pueda cambiar | §18 |
 
-> **Por qué cambió esta sección.** Antes repetía umbrales que contradecían al SDD: p95 ≤ 1 s aquí
-> frente a p95 ≤ 500 ms allí, y 20 usuarios concurrentes frente a 300 sesiones. Con dos fuentes para
-> el mismo número, ninguna era verificable.
+> **Por qué esta sección no trae cifras.** Antes repetía umbrales que contradecían al SDD: `p95 ≤ 1 s`
+> aquí frente a `p95 ≤ 500 ms` allí, y 20 usuarios concurrentes frente a 300 sesiones. Con dos
+> fuentes para el mismo número, ninguna era verificable. Cambiar un umbral es cambiar el SDD.
 
 ---
 
 # 21. Patrones arquitectónicos
 
-El catálogo completo de patrones —arquitectónicos y de diseño, con su justificación— vive en
-[`SDD.md`](./SDD.md) §5 y §6. Antes estaba duplicado en los dos documentos, con dos tablas
-equivalentes que había que mantener a la vez.
+## 21.1 SOA
 
-Los patrones que las versiones anteriores de este SAD numeraban §21.1 a §21.5 —SOA, API Gateway,
-Layered Architecture interna, Repository / Ports and Adapters y Event-driven para efectos
-secundarios— siguen vigentes y se describen en [`SDD.md`](./SDD.md) §5.
+Capacidades de negocio separadas en servicios con contratos explícitos.
 
-Lo que este SAD fija es **qué patrón resuelve qué driver del SRS**, porque esa es la decisión
-arquitectónica; el detalle de aplicación es diseño:
+## 21.2 API Gateway
 
-| Driver | Patrón que lo resuelve | Por qué ese |
-|---|---|---|
-| RF-02, RNF-02, RNF-10, REST-05 — reglas por tenant sin despliegue propio | **Strategy + Factory**, con la configuración como datos | permite cambiar el comportamiento de un tenant sin tocar código ni crear una rama por empresa |
-| RNF-01, REST-04 — aislamiento estricto | **Defensa en profundidad** en tres capas (§8) | ninguna capa individual es suficiente: un bug de autorización no debe exponer datos |
-| RNF-05 — exactamente una asignación válida | **Actualización condicional atómica** en la base | la exclusión se resuelve donde está el dato, no en memoria de un servicio replicable |
-| RNF-03 — reintentos sin duplicar efectos | **Idempotency Key** | el cliente móvil reintenta por red inestable; el efecto debe ser uno |
-| RNF-04 — trazabilidad reconstruible | **Observabilidad con `correlation_id`** y historial de estados | sin correlación, un flujo que cruza el Gateway y tres servicios no se reconstruye |
-| RNF-07 + tolerancia a fallos de terceros | **Event-driven para efectos secundarios**, **Circuit Breaker**, **Retry**, **Outbox** | notificación, auditoría y analítica no deben estar en la ruta sincrónica ni poder revertir una operación confirmada |
-| Flexibilidad P1 — cambio de proveedor | **Adapter** | FCM/APNs y el operador de pagos se sustituyen sin tocar el dominio |
-| Mantenibilidad P1 — límites de dominio | **Repository / Ports and Adapters** y propiedad de datos por dominio | el dominio no depende de Supabase, y ningún servicio escribe el esquema de otro |
-| PROY-07 — frontera única de API | **API Gateway** | centraliza TLS, routing, validación del token, rate limiting y correlación, sin replicarlos en cada cliente |
+NGINX concentra:
 
-Dos restricciones sobre los patrones, que sí son decisión arquitectónica:
+- entrada;
+- autenticación inicial;
+- routing;
+- rate limiting;
+- políticas transversales.
 
-1. **El Gateway no implementa reglas de dominio.** Concentra entrada, validación del token, routing,
-   rate limiting y políticas transversales; nada más.
-2. **Event-driven aplica solo a efectos secundarios.** El flujo principal del ciclo del servicio es
-   sincrónico y transaccional. Coordinar el despacho por eventos haría la exclusión concurrente
-   mucho más difícil de garantizar.
+## 21.3 Layered Architecture interna
+
+Cada servicio mantiene:
+
+```text
+API
+↓
+Application
+↓
+Domain
+↓
+Ports
+↑
+Adapters / Infrastructure
+```
+
+## 21.4 Repository / Ports and Adapters
+
+La lógica del dominio no depende directamente de Supabase/PostgreSQL.
+
+## 21.5 Event-driven para efectos secundarios
+
+Aplicable a:
+
+- notificaciones;
+- auditoría;
+- analítica;
+- eventos no críticos para la respuesta sincrónica.
 
 ---
 
 # 22. Patrones de diseño
 
-Strategy, Factory, Repository, Adapter, Facade/Application Service,
-Observer/Publish-Subscribe, Circuit Breaker, Retry con backoff, Idempotency Key y Outbox.
-
-La tabla con el uso y la justificación de cada uno vive en [`SDD.md`](./SDD.md) §6. Qué driver del
-SRS resuelve cada patrón está en §21 de este documento.
-
-Un patrón nuevo con impacto estructural pasa por Mesa de Arquitectura y produce un ADR.
+| Patrón | Uso |
+|---|---|
+| Strategy | reglas variables por tenant |
+| Factory | selección de estrategia |
+| Repository | persistencia |
+| Adapter | FCM/APNs, pagos, proveedores |
+| Facade/Application Service | coordinación de casos de uso |
+| Observer/Publish-Subscribe | notificaciones y eventos |
+| Circuit Breaker | integraciones externas |
+| Retry | fallas transitorias |
+| Idempotency Key | evitar duplicados |
+| Outbox | consistencia entre transacción y publicación de eventos |
 
 ---
 
 # 23. Riesgos arquitectónicos
 
-## KI-01 — Lógica de negocio en Flutter
+## Lógica de negocio en Flutter
 
 **Riesgo:** duplicación, exposición de reglas y clientes inconsistentes.  
 **Control:** mover lógica al backend.
 
-## KI-02 — Acceso directo indiscriminado a Supabase
+## Acceso directo indiscriminado a Supabase
 
 **Riesgo:** bypass de controles y acoplamiento.  
 **Control:** servicios como frontera principal; RLS como defensa adicional.
 
-## KI-03 — Servicios excesivamente pequeños
+## Servicios excesivamente pequeños
 
 **Riesgo:** monolito distribuido.  
 **Control:** dividir por capacidad de negocio, no por operación CRUD.
 
-## KI-04 — Dependencias síncronas largas
+## Dependencias síncronas largas
 
 **Riesgo:** fallos en cascada.  
 **Control:** eventos para efectos secundarios y circuit breaker.
 
-## KI-05 — Pérdida de aislamiento multi-tenant
+## Pérdida de aislamiento multi-tenant
 
 **Riesgo:** exposición de datos entre empresas.  
 **Control:** JWT + autorización + RLS + pruebas automatizadas.
 
-## KI-06 — Doble asignación
+## Doble asignación
 
 **Riesgo:** inconsistencia operacional.  
 **Control:** exclusión atómica en PostgreSQL.
 
-## KI-07 — Consultas analíticas sobre OLTP
+## Consultas analíticas sobre OLTP
 
 **Riesgo:** degradación del flujo operacional.  
 **Control:** Data Warehouse separado.
 
-## KI-08 — Complejidad políglota
+## Complejidad políglota
 
 **Riesgo:** mayor costo de operación y soporte.  
 **Control:** contratos estandarizados, CI/CD homogéneo y límites claros por servicio.
+
+## Custodia de pagos del segundo incremento
+
+**Riesgo:** si MANI retiene en cuentas propias el dinero de los clientes (escrow), podría incurrir en captación masiva y habitual de dineros del público sin autorización (Código Penal art. 316; Decreto 1981 de 1988).  
+**Control:** la custodia del dinero queda en un operador de pagos regulado y MANI solo gestiona el estado del pago (ADR-0023, ADR-0024; RNF-06, RNF-11).
 
 ---
 
@@ -733,38 +733,31 @@ Un patrón nuevo con impacto estructural pasa por Mesa de Arquitectura y produce
 
 ## 24.1 MVP
 
-Un solo componente responde por cada requisito. Donde antes decía «Core/Dispatch» o
-«Core/Availability» ahora hay un dueño único: la propiedad compartida era la causa de que el SAD y
-el modelo de datos se contradijeran sobre quién escribe qué.
-
-| Requisito | Componente responsable | Mecanismo | Datos |
-|---|---|---|---|
-| RF-01 | Core | tenant | `core.tenant` |
-| RF-02 | Rules | configuración dinámica evaluada por tenant | `reglas.regla_tenant` |
-| RF-03 | Gateway + Auth + servicios + RLS | JWT multi-tenant | `core.usuario`, `core.rol` |
-| RF-04 | Supabase Auth | recuperación segura | — |
-| RF-05 | Core + Storage | registro por tipo de aliado + KYC | `core.aliado`, `core.documento_kyc` |
-| RF-06 | Core | workflow de aprobación | `core.aliado.estado` |
-| RF-07 | Core | cobertura declarada por zonas | `core.aliado_cobertura` |
-| RF-08 | Core | clientes persona natural y empresa | `core.cliente` |
-| RF-09 | Core | sitio + zona obligatoria + condiciones | `core.sitio_servicio` |
-| RF-10 | Core | categorías del tenant | `core.categoria` |
-| RF-11 | Core | aliado-categoría | `core.aliado_categoria` |
-| RF-12 | Dispatch, con elegibilidad por API del Core | solicitud + aliados válidos | `despacho.solicitud` |
-| RF-13 | Rules | ranking configurable | `reglas.regla_tenant` |
-| RF-14 | Dispatch | broadcast + exclusión atómica | `despacho.asignacion` |
-| RF-15 | Core | cotización con mano de obra y materiales | `servicio.cotizacion` |
-| RF-16 | Rules evalúa, **Core escribe** | validación tarifaria | `reglas.tarifario`, `servicio.cotizacion.fuera_de_rango` |
-| RF-17 | Core | aceptar, rechazar o solicitar ajuste | `servicio.cotizacion.estado` |
-| RF-18 | Core | historial de ejecución | `servicio.historial_solicitud` |
-| RF-19 | Core | calificación bidireccional y condición de cierre | `servicio.calificacion` |
-| RF-20 | Core + Realtime + FCM/APNs | mensajería y notificación | `comunicaciones.conversacion`, `comunicaciones.mensaje` |
-| RF-21 | Core | consulta de conversaciones persistidas | `comunicaciones.mensaje` |
-| RF-22 | Rules | tarifario por tenant y categoría | `reglas.tarifario` |
-| RF-23 | Core + Data Warehouse | reporte de cotizaciones fuera de rango | `servicio.cotizacion`, `dw.fact_cotizacion` |
-
-La cobertura de cada RF a nivel de tabla y restricción está en
-[`ModeloDatos.md`](./ModeloDatos.md) §14.
+| Requisito | Componente principal | Mecanismo |
+|---|---|---|
+| RF-01 | Core | tenant |
+| RF-02 | Rules/Core | configuración dinámica |
+| RF-03 | Gateway + Auth + servicios + RLS | JWT multi-tenant |
+| RF-04 | Supabase Auth/Core | recuperación segura |
+| RF-05 | Core + Storage | registro + KYC |
+| RF-06 | Core | workflow de aprobación |
+| RF-07 | Core | cobertura por zonas |
+| RF-08 | Core | clientes y sitios |
+| RF-09 | Core | sitio + zona + condiciones |
+| RF-10 | Core | categorías |
+| RF-11 | Core | aliado-categoría |
+| RF-12 | Dispatch + Core | solicitud y aliados válidos |
+| RF-13 | Rules | ranking |
+| RF-14 | Dispatch | broadcast + exclusión atómica |
+| RF-15 | Core/Dispatch | cotización |
+| RF-16 | Rules | validación tarifaria |
+| RF-17 | Core | aceptar/rechazar/ajustar |
+| RF-18 | Core | historial de ejecución |
+| RF-19 | Core | calificación bidireccional y cierre |
+| RF-20 | Core + Realtime + FCM/APNs | mensajería/notificación |
+| RF-21 | Core + persistencia | consulta de conversaciones |
+| RF-22 | Rules/Core | tarifario por tenant |
+| RF-23 | Core + Data Warehouse/Reporting | reporte de cotizaciones |
 
 ## 24.2 Segundo incremento
 
@@ -802,30 +795,29 @@ La arquitectura contempla explícitamente:
 - reportes;
 - extensibilidad para el segundo incremento.
 
-## Línea base vigente
+## Ajustes incorporados respecto al SAD anterior
 
-1. Serverpod no es el backend: la solución es SOA políglota con Java, .NET y Node.js.
-2. El API Gateway NGINX es la frontera única de API.
-3. Supabase es la plataforma administrada y PostgreSQL su motor; no son alternativas.
-4. Multi-repo con seis repositorios (§17).
-5. Tres ambientes y solo tres: DEV, QA y PROD. No existe STAGING.
-6. DEV en máquinas personales; QA y PROD en VM con Docker.
-7. La orquestación es una decisión abierta: Kubernetes es el objetivo de PROY-08, no el estado actual (§16.4).
-8. La cobertura y la disponibilidad son un dominio del Core Service, sin esquema, vista ni desplegable propios (§7.3).
-9. El cliente alcanza Supabase solo por Auth y Realtime; no hay excepción de acceso a datos (§8.3).
-10. Cada RF tiene un componente responsable único y datos identificados (§24).
-11. El Data Warehouse está desacoplado del OLTP y sirve RF-23 y RF-28.
-12. Los umbrales de calidad viven únicamente en el SDD (§20).
+1. Se elimina Serverpod como backend principal.
+2. Se consolida Java + .NET + Node.js.
+3. Se incorpora API Gateway.
+4. Se mantiene Supabase, aclarando que PostgreSQL es su motor.
+5. Se fija multi-repo.
+6. Se fijan tres ambientes: DEV, QA y PROD.
+7. Se elimina STAGING como cuarto ambiente.
+8. Se mantiene Kubernetes como orquestador.
+9. Se incorpora explícitamente el dominio de disponibilidad (RF-07, RF-12) dentro de Core Service.
+10. Se incorpora trazabilidad completa RF/RNF → componente.
+11. Se incorpora Data Warehouse para RF-28 y analítica.
+12. Se amplía el diseño para RF-19, RF-20, RF-21, RF-22 y RF-23, que no deben quedar implícitos.
 
 ---
 
 # 26. Documentos relacionados
 
-- [`product/SRS.md`](../product/SRS.md) — fuente de verdad de requerimientos.
-- [`ModeloDatos.md`](./ModeloDatos.md) — diseño conceptual, lógico, físico y analítico, DDL y cobertura de RF.
-- [`SDD.md`](./SDD.md) — diseño detallado, vistas, umbrales de calidad y escenarios.
-- [`adr/`](../adr/) — decisiones arquitectónicas.
-- [`governance/INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md) — ambientes e infraestructura.
-- [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) — pipeline, calidad y herramientas.
-- [`workspace.dsl`](../diagrams/LLD/workspace.dsl) — modelo en Structurizr DSL. Inventario de vistas en [`SDD.md`](./SDD.md) §4.0.
-- [`diagrams/HLD/`](../diagrams/HLD/) — diagramas de alto nivel que referencia este SAD.
+- `SRS_MANI.md` — fuente de verdad de requerimientos.
+- `ModeloDatos.md` — diseño conceptual, lógico, físico y analítico.
+- `SDD.md` — descripción detallada de diseño de software.
+- `/docs/adr/` — decisiones arquitectónicas.
+- [`workspace.dsl`](../diagrams/LLD/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `panorama`, `contexto`, `contenedores`, `componentes-*`, `dinamico-*` y `despliegue-prod`.
+- [`diagrams/HLD/`](../diagrams/HLD/) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.
+- [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.4.

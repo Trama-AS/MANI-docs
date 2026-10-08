@@ -91,7 +91,7 @@ DEV → QA → PROD
 | **PROD** | VM productiva | Docker + Supabase productivo | reales |
 
 `QA` es un único ambiente y se llama **QA** en todo documento, pipeline y tag. No se usan «TEST»,
-«TEST/QA» ni «Staging»: `Staging` no constituye un cuarto ambiente oficial y no existe.
+«QA» ni «Staging»: `Staging` no constituye un cuarto ambiente oficial y no existe.
 
 ---
 
@@ -144,6 +144,8 @@ La configuración local puede incluir:
 - mocks o servicios locales cuando corresponda.
 
 Cuando una funcionalidad dependa específicamente de Auth, Storage, Realtime o RLS de Supabase, debe probarse también contra un entorno que reproduzca esas capacidades antes de considerarse validada.
+
+El Docker Compose local y el esquema versionado viven en `MANI-API-Gateway` (perfil `db` para PostgreSQL y Adminer; perfil `web` para el cliente Flutter Web, cuya imagen `mani-web:local` se construye en `MANI-Frontend`). Ver §15.
 
 ## 5.4 Datos
 
@@ -461,6 +463,20 @@ Queda prohibido modificar manualmente el esquema productivo como procedimiento o
 
 Los tres ambientes deben conservar compatibilidad estructural.
 
+## 15.1 Dónde viven las migraciones
+
+Las migraciones versionadas (`database/migrations/NNN_descripcion.sql`, idempotentes e inmutables una vez fusionadas), los scripts de `database/init/` y las verificaciones de `database/verify/` viven en el repositorio **`MANI-API-Gateway`** (ADR-0004, enmienda del 2026-10-07). Ya no están en `MANI-Frontend`.
+
+Todo cambio de esquema se propone por PR a `MANI-API-Gateway`, con su referencia Jira.
+
+## 15.2 Responsable por ambiente
+
+| Ambiente | Responsable | Cómo |
+|---|---|---|
+| DEV local | Cada desarrollador | `scripts/migrate-local.*` contra el contenedor `mani-postgres` (perfil `db` del Compose) |
+| DEV / QA (Supabase) | DevOps | Aplica `database/migrations/` en orden, después de fusionar el PR. Automatizarlo en el pipeline de `MANI-API-Gateway` queda en CFG-29 |
+| PROD | DevOps, con aprobación del PR de release | Solo migraciones ya validadas en QA. Nunca cambios manuales al esquema |
+
 ---
 
 # 16. Qué se comparte y qué se aísla
@@ -499,6 +515,14 @@ Prohibiciones:
 - credenciales en repositorio;
 - secrets dentro de imágenes;
 - reutilizar claves productivas en ambientes inferiores.
+
+## Secretos de CI
+
+Los secretos que usan los pipelines se guardan como GitHub Actions secrets del repositorio o del environment, nunca en archivos versionados.
+
+| Repositorio | Secreto | Uso | Estado al 7 oct 2026 |
+|---|---|---|---|
+| MANI-Core-Service | `SONAR_TOKEN` | análisis de SonarCloud del workflow `Quality Gate` (CFG-41) | **pendiente de crear** por DevOps |
 
 ---
 
@@ -643,6 +667,18 @@ DEV → QA → PROD
 Infraestructura no redefine los Quality Gates.
 
 La fuente de verdad para gates es `POLITICAS_DEVOPS_HERRAMIENTAS.md`.
+
+## 24.1 Estado del análisis SonarCloud por repositorio
+
+Esta tabla registra solo el estado de la configuración, no los umbrales: los umbrales viven en `POLITICAS_DEVOPS_HERRAMIENTAS.md` §14.1 y ADR-0005.
+
+Un gate se considera **vinculante** solo cuando su check es obligatorio en un ruleset activo de GitHub y existe evidencia de un PR bloqueado. Mientras eso no ocurra, el estado es *preparado* o *activo sin bloqueo* (Políticas §6.2).
+
+| Repositorio | Proyecto SonarCloud | Configuración versionada | Check obligatorio en ruleset | Estado al 7 oct 2026 |
+|---|---|---|---|---|
+| MANI-Core-Service | `Trama-AS_MANI-Core-Service` (organización `trama-as`), **por crear** | `sonar-project.properties` y script `test:coverage` (etapa 1, en revisión en [MANI-Core-Service#16](https://github.com/Trama-AS/MANI-Core-Service/pull/16), sin fusionar); workflow `quality-gate.yml` preparado sin PR (etapa 2) | no; `develop` y `main` sin ruleset ni protección | **preparado, no activo** (CFG-41, SCRUM-1116) |
+
+Para MANI-Core-Service, la activación requiere, en orden: crear el proyecto con el análisis automático desactivado, asociar el Quality Gate y fijar el *new code baseline*, crear `SONAR_TOKEN`, fusionar el workflow, obtener un primer análisis en `develop` y agregar `Sonar Quality Gate` como check obligatorio en el ruleset de `develop` y `main`.
 
 ---
 

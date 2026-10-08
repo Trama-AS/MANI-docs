@@ -5,8 +5,6 @@
 
 **MANI en una frase:** plataforma SaaS multi-tenant que formaliza operaciones de servicio conectando clientes con aliados en el ciclo `Solicitud → Cotización → Ejecución → Calificación → Cierre`, con aislamiento estricto por empresa y configuración por tenant sin despliegue propio.
 
-**Cómo está construida:** seis repositorios, tres servicios de negocio —Rules en Java, Dispatch en .NET y Core en Node.js, con las disponibilidades como módulo del Core—, un API Gateway NGINX como entrada única, y Supabase con PostgreSQL como plataforma de datos. Tres ambientes: DEV en máquinas personales, QA y PROD en una VM con Docker cada uno.
-
 Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`) es documentación: no contiene código desplegable.
 
 ---
@@ -29,19 +27,13 @@ Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`)
 Ninguna persona es dueña de un documento: la autoridad es del **rol** y del **artefacto**, según [`GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md) §2.3. Si dos fuentes se contradicen, prevalece la de menor número:
 
 1. **Requerimientos:** [`product/SRS.md`](../product/SRS.md).
-2. **Arquitectura y diseño:** [`architecture/SAD.md`](../architecture/SAD.md) y [`architecture/SDD.md`](../architecture/SDD.md).
-3. **Umbrales de calidad y escenarios de QA:** [`architecture/SDD.md`](../architecture/SDD.md) §7 y §8, **único lugar donde existen**.
-4. **Decisiones:** [`adr/`](../adr/) — una decisión vigente está `Aceptado`; una sustituida está `Superseded`.
-5. **Datos:** [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md).
-6. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).
-7. **Tecnologías vigentes:** [`architecture/TECH_RADAR.md`](../architecture/TECH_RADAR.md).
-8. **Trabajo:** Jira es la fuente del backlog y los sprints; [`product/BACKLOG_MANI.md`](../product/BACKLOG_MANI.md) es el criterio de transición.
-9. **Esta wiki.**
-
-**[`Entregas/`](../Entregas/) no está en esta jerarquía.** Es un histórico de entregables
-académicos: contiene copias de SRS, SAD, SDD, modelo de datos, backlog, infraestructura y políticas
-que ya divergieron de los documentos vivos, y una numeración de ADR que no es la vigente. No se
-consulta para resolver una duda ni para implementar.
+2. **Arquitectura y diseño:** [`architecture/SAD.md`](../architecture/SAD.md), [`architecture/SDD.md`](../architecture/SDD.md) y [`architecture/SECUENCIAS.md`](../architecture/SECUENCIAS.md).
+3. **Decisiones:** [`adr/`](../adr/) — una decisión vigente está `Aceptado`; una sustituida está `Superseded`.
+4. **Datos:** [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md).
+5. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).
+6. **Tecnologías vigentes:** [`architecture/TECH_RADAR.md`](../architecture/TECH_RADAR.md).
+7. **Trabajo:** Jira es la fuente del backlog y los sprints; [`product/BACKLOG_MANI.md`](../product/BACKLOG_MANI.md) es el criterio de transición.
+8. **Esta wiki.**
 
 Tres reglas de gobierno aplican a todo lo anterior ([`GOBIERNO_DEL_EQUIPO.md`](../governance/GOBIERNO_DEL_EQUIPO.md) §1):
 
@@ -76,8 +68,6 @@ Una contradicción no se resuelve en silencio: se reporta en el PR o en el issue
 ## 4. Convenciones de esta wiki
 
 - **Una página, un tema.** Se enlaza en lugar de duplicar.
-- **La wiki es navegación, no contenido.** Si una página puede enlazar en vez de copiar, enlaza. Copiar una tabla de otro documento crea una segunda versión que se desincroniza: ya pasó con los umbrales de calidad.
-- **Ningún umbral vive aquí.** Los umbrales están en el SDD §7 y §8, y las páginas los referencian.
 - **Cada página declara su fuente** en la primera línea tras el título. Un dato sin fuente no pertenece a esta wiki.
 - **No se inventan umbrales, rutas, credenciales ni nombres.** Si el dato no está en un documento, la página dice que está abierto y lo registra en [Riesgos y puntos abiertos](02-arquitectura/riesgos-y-puntos-abiertos.md).
 - Lo marcado como **Aceptado** en un ADR es vinculante; lo **Propuesto** es la recomendación vigente hasta que la Mesa de Arquitectura lo apruebe.

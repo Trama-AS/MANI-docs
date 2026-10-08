@@ -2,7 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** arquitectura de integración frontend y seguridad
-- **Relacionado con:** CFG-34, CFG-35, CFG-36, ADR-0012, ADR-0018, ADR-0019, ADR-0022, SAD §4.1 y §8.3, RNF-01, RNF-02, REST-02, PROY-07
+- **Relacionado con:** CFG-34, CFG-35, CFG-36, ADR-0012, ADR-0018, ADR-0019, SAD §4.1, RNF-01, RNF-02, REST-02, PROY-07
 
 ---
 
@@ -10,7 +10,7 @@
 
 En las etapas tempranas del proyecto, el cliente móvil y web `MANI-Frontend` interactuaba de forma directa con Supabase mediante el SDK `supabase_flutter`, consumiendo tablas vía PostgREST (`.from()`), invocando funciones almacenadas (`.rpc()`) y subiendo documentos directamente a Supabase Storage (`.storage.from()`).
 
-Con la adopción formal de la arquitectura orientada a servicios (SOA) distribuida y políglota (**ADR-0019**), se incorporó el **API Gateway NGINX** como punto único de entrada perimetral y se asignaron responsabilidades operativas a servicios independientes (`MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service`).
+Con la adopción formal de la arquitectura orientada a servicios (SOA) distribuida y políglota (**ADR-0019**), se incorporó el **API Gateway NGINX** como punto único de entrada perimetral y se asignaron responsabilidades operativas a microservicios independientes (`MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service`).
 
 Mantener llamadas directas desde Flutter a PostgREST/Storage vulnera la frontera del Gateway, desacopla la gobernanza de seguridad, acopla la interfaz gráfica al esquema relacional de la base de datos y expone claves (`SUPABASE_ANON_KEY`) en el bundle del cliente Web.
 
@@ -20,7 +20,7 @@ Mantener llamadas directas desde Flutter a PostgREST/Storage vulnera la frontera
 
 1. **BaaS Directo Total (Mantener `supabase_flutter` completo).**
    - *Descripción:* Flutter continúa ejecutando consultas directas a tablas con `.from()`, lógica de negocio mediante `.rpc()` y carga de archivos con `.storage.from()`.
-   - *Descarte:* Viola el principio de punto único de entrada del SAD (§4.1), elude la inspección y enrutamiento del API Gateway, acopla la UI a la estructura SQL e impide centralizar políticas transversales (rate limiting, observabilidad distribuida con `X-Correlation-ID`).
+   - *Descarte:* Viola el principio de punto único de entrada del SAD §4.1, elude la inspección y enrutamiento del API Gateway, acopla la UI a la estructura SQL e impide centralizar políticas transversales (rate limiting, observabilidad distribuida con `X-Correlation-ID`).
 
 2. **Retiro Total de `supabase_flutter` (Eliminar incluso Auth).**
    - *Descripción:* Retirar completamente la dependencia del cliente Flutter y construir endpoints propios de inicio de sesión, registro y refresco de tokens en el backend.
@@ -43,14 +43,8 @@ Se aprueba la delimitación estricta de `supabase_flutter` en el cliente `MANI-F
    - **Ningún acceso PostgREST:** Se eliminan todas las invocaciones a `.from()`.
    - **Ningún acceso RPC directo:** Se eliminan todas las invocaciones a `.rpc()`.
    - **Ningún acceso directo a Storage:** Se eliminan todas las invocaciones a `.storage.from()`.
-   - **Sin excepciones.** No existe excepción transitoria para disponibilidades ni para ninguna otra
-     consulta: la elegibilidad por categoría y zona entra por el Gateway al Core Service como
-     cualquier otra lectura de negocio.
-3. **Se conserva `supabase.realtime`** para recibir eventos de mensajería mientras el usuario está
-   conectado. Es un transporte de eventos que publica el Core Service después de persistir el
-   mensaje: no lee tablas de negocio, no ejecuta reglas y no sustituye la consulta por la API.
-4. **Canalización exclusiva vía API Gateway:**
-   - La capa de red de Flutter (`CFG-34`) reemplaza las llamadas a la base de datos por peticiones HTTP REST dirigidas al **`MANI-API-Gateway`**.
+3. **Canalización exclusiva vía API Gateway:**
+   - La capa de red de Flutter (`CFG-34`) reemplaza las llamadas a la base de datos por peticiones HTTP REST dirigidas al **`MANI-API-Gateway`** en el puerto `80`.
    - El cliente adjunta el JWT emitido por Auth en el encabezado `Authorization: Bearer <JWT>` y un identificador único en `X-Correlation-ID`.
 
 ---
@@ -82,7 +76,7 @@ Se aprueba la delimitación estricta de `supabase_flutter` en el cliente `MANI-F
 
 ### Positivas
 * Desacoplamiento definitivo entre la interfaz de usuario y el motor de base de datos relacional.
-* Centralización de validaciones de negocio en los servicios (`MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service`).
+* Centralización de validaciones de negocio en los microservicios (`MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service`).
 * Cumplimiento estricto de las directrices de seguridad multi-tenant (RNF-01).
 
 ### Negativas / Costo de Migración

@@ -8,29 +8,29 @@
 
 | ID | Requerimiento | Prioridad | Servicio dueño |
 |---|---|---|---|
-| RF-01 | Registrar y administrar tenants con aislamiento de datos | Crítica | Core Node |
-| RF-02 | Configurar reglas por tenant (documentos, orden del listado, categorías, tarifas) | Crítica | Rules Java + Core Node |
+| RF-01 | Registrar y administrar tenants con aislamiento de datos | Crítica | Core Service |
+| RF-02 | Configurar reglas por tenant (documentos, orden del listado, categorías, tarifas) | Crítica | Rules Service + Core Service |
 | RF-03 | Autenticar y restringir acceso por tenant y rol, con identificación de tenant no falsificable | Crítica | Supabase Auth + Gateway + servicios |
-| RF-04 | Recuperación segura de contraseña | Alta | Supabase Auth + Core Node |
-| RF-05 | Registrar aliados (persona natural, empresa, empleado directo) con documentos aislados por aliado y tenant | Crítica | Core Node |
-| RF-06 | Bandeja de verificación para aprobar o rechazar aliados sin exponer documentos ajenos | Alta | Core Node |
+| RF-04 | Recuperación segura de contraseña | Alta | Supabase Auth + Core Service |
+| RF-05 | Registrar aliados (persona natural, empresa, empleado directo) con documentos aislados por aliado y tenant | Crítica | Core Service |
+| RF-06 | Bandeja de verificación para aprobar o rechazar aliados sin exponer documentos ajenos | Alta | Core Service |
 | RF-07 | Declarar zonas de cobertura del aliado | Alta | Core Service |
-| RF-08 | Registrar clientes; cliente empresa con múltiples sitios | Alta | Core Node |
-| RF-09 | Reglas y condiciones por sitio, visibles al aliado antes de programar; todo sitio con zona | Media | Core Node |
-| RF-10 | Definir, activar y desactivar categorías de servicio | Alta | Core Node |
-| RF-11 | Asociar aliados con categorías que atienden | Media | Core Node |
-| RF-12 | Crear solicitudes y presentar aliados válidos por categoría y cobertura | Crítica | Dispatch, con la elegibilidad por la API del Core Service |
-| RF-13 | Ordenar aliados según la regla configurada por el tenant | Alta | Rules Java |
-| RF-14 | Aceptar o rechazar solicitud sin dobles asignaciones | Crítica | Dispatch .NET |
-| RF-15 | Cotización separando mano de obra y materiales | Alta | Core Node |
-| RF-16 | Alertar cotización fuera del rango del tarifario | Media | Rules Java |
-| RF-17 | Cliente acepta, rechaza o pide ajustes de la cotización | Alta | Core Node |
-| RF-18 | Registrar cronológicamente eventos y observaciones de ejecución | Media | Core Node |
-| RF-19 | Calificación bidireccional; sin ambas no hay cierre | Media | Core Node |
-| RF-20 | Mensajería por servicio, casi en tiempo real, con notificación si el destinatario no está conectado | Media | Core Node + Realtime + FCM/APNs |
-| RF-21 | Consultar conversaciones de un servicio | Baja | Core Node |
-| RF-22 | Tarifas de referencia por categoría y tenant (mínimo, típico, máximo) | Alta | Rules Java |
-| RF-23 | Reportes de cotizaciones fuera de rango por período | Baja | Core Node |
+| RF-08 | Registrar clientes; cliente empresa con múltiples sitios | Alta | Core Service |
+| RF-09 | Reglas y condiciones por sitio, visibles al aliado antes de programar; todo sitio con zona | Media | Core Service |
+| RF-10 | Definir, activar y desactivar categorías de servicio | Alta | Core Service |
+| RF-11 | Asociar aliados con categorías que atienden | Media | Core Service |
+| RF-12 | Crear solicitudes y presentar aliados válidos por categoría y cobertura | Crítica | Core Service + Availability + Dispatch |
+| RF-13 | Ordenar aliados según la regla configurada por el tenant | Alta | Rules Service |
+| RF-14 | Aceptar o rechazar solicitud sin dobles asignaciones | Crítica | Dispatch Service |
+| RF-15 | Cotización separando mano de obra y materiales | Alta | Core Service |
+| RF-16 | Alertar cotización fuera del rango del tarifario | Media | Rules Service |
+| RF-17 | Cliente acepta, rechaza o pide ajustes de la cotización | Alta | Core Service |
+| RF-18 | Registrar cronológicamente eventos y observaciones de ejecución | Media | Core Service |
+| RF-19 | Calificación bidireccional; sin ambas no hay cierre | Media | Core Service |
+| RF-20 | Mensajería por servicio, casi en tiempo real, con notificación si el destinatario no está conectado | Media | Core Service + Realtime + FCM/APNs |
+| RF-21 | Consultar conversaciones de un servicio | Baja | Core Service |
+| RF-22 | Tarifas de referencia por categoría y tenant (mínimo, típico, máximo) | Alta | Rules Service |
+| RF-23 | Reportes de cotizaciones fuera de rango por período | Baja | Core Service |
 
 ## Requerimientos funcionales — segundo incremento
 
@@ -62,8 +62,4 @@ Los umbrales que verifican estos RNF están en [Atributos de calidad](../02-arqu
 
 **Del proyecto (PROY):** Scrum (PROY-01) · alcance académico limitado al MVP (PROY-02) · gobierno documental del equipo (PROY-03) · siete integrantes con responsabilidad técnica distribuida (PROY-04) · decisiones costosas de revertir documentadas formalmente (PROY-05) · sólo herramientas aprobadas (PROY-06) · **Java y .NET obligatorios en algún módulo de backend** (PROY-07) · **Kubernetes como orquestador** (PROY-08).
 
-PROY-07 explica por qué la arquitectura es políglota: ver [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md).
-
-PROY-08 exige Kubernetes como orquestador **objetivo**. No está adoptado todavía: la decisión sigue abierta como `INFRA-01` e `INFRA-02`, y el despliegue vigente es Docker sobre VM. Ver [Ambientes y promoción](../03-entrega/ambientes-y-promocion.md) y [ADR-0023](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md).
-
-El componente responsable de cada RF está en [`SAD.md`](../../architecture/SAD.md) §24 y las tablas que lo soportan en [`ModeloDatos.md`](../../architecture/ModeloDatos.md) §14.
+PROY-07 y PROY-08 explican por qué la arquitectura es políglota y por qué Kubernetes no es opcional: ver [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md) y [Ambientes y promoción](../03-entrega/ambientes-y-promocion.md).

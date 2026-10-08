@@ -2,7 +2,7 @@
 
 [← 03 · Entrega](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §7–§12 · [`architecture/SDD.md`](../../architecture/SDD.md) §9–§12 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §4–§10 · [`adr/ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md) · [`adr/ADR-0023`](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md).
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §7–§12 · [`architecture/SDD.md`](../../architecture/SDD.md) §9–§12 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §4–§10 · [`adr/ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md) · [`adr/ADR-0023`](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md).
 
 ## Secuencia oficial
 
@@ -11,7 +11,7 @@ DEV → QA → PROD
 ```
 
 **Son exactamente tres ambientes.** El de pruebas se llama **QA** en todo documento, pipeline y tag.
-No existen «TEST», «TEST/QA», «Local» ni «Staging» como nombres de ambiente.
+No existen «TEST», «QA», «Local» ni «Staging» como nombres de ambiente.
 
 | Ambiente | Dónde corre | Para qué | Datos |
 |---|---|---|---|

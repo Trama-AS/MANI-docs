@@ -2,58 +2,56 @@
 
 [← 04 · Repositorios](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §4 · [`architecture/SAD.md`](../../architecture/SAD.md) §17 · [`architecture/SDD.md`](../../architecture/SDD.md) §13 · [`adr/ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md) · [`adr/ADR-0023`](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md).
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §4 · [`architecture/SAD.md`](../../architecture/SAD.md) §17 · [`architecture/SDD.md`](../../architecture/SDD.md) §13 · [`adr/ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md).
 
 MANI adopta estrategia **multi-repo**: cada unidad desplegable mantiene ciclo técnico independiente.
 
-## Los seis repositorios
+```text
+MANI-Frontend
+MANI-API-Gateway  ← también es dueño de database/, scripts/, supabase/ y el Compose
+MANI-Rules-Service
+MANI-Dispatch-Service
+MANI-Core-Service   ← incluye cobertura, disponibilidad y elegibilidad
+MANI-Docs           ← este repositorio
+```
 
-Estos nombres son los únicos válidos. No hay variantes.
+`MANI-Infra` ya no existe: DevOps lo borró el 2026-10-06 y su alcance quedó repartido según la [enmienda de ADR-0004](../../adr/ADR-0004-cicd-multirepo-ambientes.md).
 
-| Repositorio | Tecnología | Responsabilidad principal |
-|---|---|---|
-| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
-| `MANI-API-Gateway` | NGINX | Punto de entrada y enrutamiento de APIs |
-| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
-| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
-| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
-| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica ← **este repositorio** |
-
-Cinco son desplegables. `MANI-Docs` mantiene SRS, SAD, SDD, ADR, modelo de datos, políticas,
-infraestructura y diagramas: **no contiene código desplegable**.
+`MANI-Availability` tampoco: la cobertura y la disponibilidad son un dominio del `MANI-Core-Service` ([ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md)). Los nombres de la lista son los únicos válidos.
 
 Cada repositorio desplegable mantiene de forma independiente: código · dependencias · pruebas · `Dockerfile` · pipeline · configuración de build · versionamiento · artefactos · documentación técnica inmediata.
 
-### Dos repositorios que ya no existen
-
-[ADR-0023](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md) los retiró:
-
-- **`MANI-Availability`** — la cobertura y la disponibilidad son un dominio del
-  `MANI-Core-Service`: un componente entre los demás y sus tablas en el esquema `core`. No tienen
-  desplegable, esquema ni vista propios. Su único consumidor es Dispatch, que consulta la
-  elegibilidad por la Core API.
-- **`MANI-Infra`** — su contenido vive en `MANI-API-Gateway`, que es la raíz de composición del
-  despliegue: configuración de NGINX, Compose por ambiente y configuración de observabilidad.
-
-Si encuentras una referencia a `MANI-Flutter`, `MANI-Gateway`, `MANI-APIGateway`, `MANI-Node`,
-`MANI-Core-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet`, `MANI-Availability` o `MANI-Infra`,
-es un nombre muerto: corrígelo contra la tabla de arriba.
+`MANI-Docs` mantiene SRS, SAD, SDD, ADR, modelo de datos, políticas, infraestructura y diagramas: **no contiene código desplegable**.
 
 ## Consecuencias prácticas
 
 - Un cambio que cruza repositorios se parte en un PR por repositorio, cada uno con su referencia Jira.
-- Un contrato compartido (OpenAPI entre Gateway y servicios) se acuerda antes de implementar: es la tarea `CFG-16` del backlog.
+- Un contrato compartido (OpenAPI entre Gateway y servicios) se acuerda antes de implementar: es la tarea `CFG-16` del backlog de transición.
 - Crear los repositorios que faltan del modelo es `CFG-15`; replicar el pipeline en cada uno es `CFG-29`.
-- Los artefactos de infraestructura (`database/`, `docker-compose.yml`, `scripts/`, `nginx.conf`) deben salir del repositorio Flutter hacia su repositorio dueño: tarea `CFG-33`.
-- Renombrar los repositorios rompe remotos de git, workflows, URLs de imágenes en GHCR y enlaces en
-  Jira. Es trabajo mecánico, pero hay que hacerlo de una vez (ADR-0023, consecuencias).
+- Los artefactos de infraestructura salieron del repositorio Flutter (tarea `CFG-33`, SCRUM-1110): `database/`, `scripts/`, `supabase/` y el Compose pasan a `MANI-API-Gateway`; `nginx.conf` queda en `MANI-Frontend` como `docker/nginx-web.conf` porque sirve la SPA dentro de la imagen web. El responsable de las migraciones por ambiente es DevOps ([`INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §15).
 
 ## Estado real a tener en cuenta
 
-Backlog §3, verificado sobre `MANI-Frontend`:
+Verificado sobre `MANI-Frontend` el 2026-10-07 (`CFG-38`, SCRUM-1097):
 
-- `main` contiene sólo el scaffold por defecto de Flutter; **el producto vive en `develop` y `release`**;
-- hay 13 ramas `feature`/`fix` con trabajo sin fusionar, que deben reconciliarse antes de migrar (`CFG-37`, `CFG-38`);
-- la lógica de negocio está repartida entre el cliente y ~32 funciones PL/pgSQL bajo `database/`. [ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) decide migrarla a los servicios: las historias `-M2` **reimplementan**, no invocan la función.
+- **`develop` es la base única de código**: `main` y `release` están contenidos en `develop` (no tienen commits propios);
+- las 13 ramas `feature`/`fix` que señalaba el Backlog V4 §3 quedaron reconciliadas: todas están fusionadas en `develop` o fueron reemplazadas por un PR posterior (detalle abajo). No queda trabajo sin fusionar;
+- la lógica de negocio está en ~32 funciones PL/pgSQL bajo `database/` (hoy en `MANI-API-Gateway`, antes en `MANI-Frontend`), no en el cliente.
+
+### Reconciliación de ramas de MANI-Frontend (CFG-38)
+
+| Rama / PR | Commits fuera de `develop` | Dictamen |
+|---|---|---|
+| `feature/SCRUM-1060-registro-empresa-gateway` (#33) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| `feature/SCRUM-1061-auth-remote-gateway` (#34) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| `feature/SCRUM-1111-capa-http-gateway` (#33) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| `feature/SCRUM-1114-trazabilidad-jira-github` (#32) | 0 | Fusionada; borrada del remoto el 2026-10-07 |
+| #11, #12, #13 (`develop` → `main` / `Feature-RegisterAndLogin`) | 0 | Sin trabajo pendiente; descartados |
+| #15 `feature/SCRUM-927-poc-cobertura-geografica` | 0 (parches equivalentes en `develop`) | Reemplazado por #16 |
+| #2 `feature/SCRUM-923-pipeline-pruebas-automatizadas` | 7 | Reemplazado por #4 (SCRUM-955), #21 (asignación en arquitectura limpia) y los workflows actuales |
+| #10 `feature/us-03-1-3-categorias-aliado` | 1 | Reemplazado por #19 (`categorias-aliado-clean`) |
+| #17 `feature/us-03-1-3-categorias-aliado-v2` | 2 | Reemplazado por #19; `categories_local_datasource.dart` no pasó a `develop` (pendiente de confirmar con la autora) |
+
+Las ramas nuevas de MANI-Frontend salen de `develop` y vuelven a `develop` por PR (ver [Git: ramas y commits](../05-proceso/git-ramas-y-commits.md)).
 
 Quien vaya a trabajar en ese repositorio revisa primero [Orden de ejecución](../06-backlog/orden-de-ejecucion.md).

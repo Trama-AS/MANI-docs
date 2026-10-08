@@ -614,7 +614,7 @@ artefacto no se reconstruye, y esta sección define cómo se lo nombra, se lo re
 
 ## 20.1 Versión semántica por repositorio
 
-Cada repositorio desplegable —`MANI-Frontend`, `MANI-API-Gateway`, `MANI-Core`— versiona de forma independiente con
+Cada repositorio desplegable —`MANI-Frontend`, `MANI-API-Gateway`, `MANI-Core-Service`— versiona de forma independiente con
 **SemVer** `MAJOR.MINOR.PATCH`:
 
 | Incremento | Cuándo |
@@ -623,7 +623,7 @@ Cada repositorio desplegable —`MANI-Frontend`, `MANI-API-Gateway`, `MANI-Core`
 | `MINOR` | Capacidad nueva compatible hacia atrás |
 | `PATCH` | Corrección que no altera el contrato |
 
-Los repositorios no comparten numeración. `MANI-API-Gateway v1.4.0` y `MANI-Core v2.1.3` conviven sin relación entre
+Los repositorios no comparten numeración. `MANI-API-Gateway v1.4.0` y `MANI-Core-Service v2.1.3` conviven sin relación entre
 sus números, porque se despliegan por separado.
 
 `MANI-Docs` no versiona por SemVer: su unidad de versión es el commit y la entrega académica.
@@ -633,7 +633,7 @@ sus números, porque se despliegan por separado.
 Un despliegue queda identificado por cuatro datos, y ninguno es opcional:
 
 ```text
-repositorio      MANI-Core
+repositorio      MANI-Core-Service
 versión          v2.1.3
 digest           sha256:9f2c...            <- identidad inmutable real
 commit           a7b3c91                   <- trazabilidad al código
@@ -675,7 +675,7 @@ Cada ambiente mantiene un registro de qué está corriendo, versionado en el rep
 | Campo | Ejemplo |
 |---|---|
 | Ambiente | `QA` |
-| Servicio | `MANI-Core` |
+| Servicio | `MANI-Core-Service` |
 | Versión | `v2.1.3` |
 | Digest | `sha256:9f2c...` |
 | Commit | `a7b3c91` |

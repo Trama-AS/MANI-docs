@@ -13,7 +13,7 @@
 
 En las entregas 1, 2 y 3 el cliente Flutter invocaba Supabase directamente (`.rpc()`, `.from()`, `.storage.from()`), y la lógica de negocio quedó repartida entre el propio cliente Flutter y funciones PL/pgSQL en Supabase (por ejemplo `registrar_aliado_persona_natural`, `handle_new_user` y el upsert a `usuario`).
 
-La arquitectura vigente (ADR-0019) cambia el camino a **Flutter → NGINX API Gateway → servicios (Core Node, Rules Java, Dispatch .NET, Availability Node) → Supabase/PostgreSQL**, con Supabase Auth emitiendo el token y el tenant viajando como claim.
+La arquitectura vigente (ADR-0019) cambia el camino a **Flutter → NGINX API Gateway → servicios (Core Service, Rules Service, Dispatch Service, Core Service) → Supabase/PostgreSQL**, con Supabase Auth emitiendo el token y el tenant viajando como claim.
 
 Las historias cerradas con la arquitectura anterior se rehacen como subtareas de migración `-M2`. Para estimarlas había que resolver: **cuando un servicio atiende un caso de uso, ¿invoca la lógica que ya existe en la base de datos o la lógica pasa a vivir en el servicio?**
 
@@ -27,7 +27,7 @@ Las historias cerradas con la arquitectura anterior se rehacen como subtareas de
 **La lógica de negocio vive en los servicios. La lógica que hoy está en el cliente Flutter y en las funciones PL/pgSQL de Supabase se migra al servicio dueño de cada capacidad. Supabase queda como plataforma de persistencia.**
 
 Reglas que se derivan:
-- Cada servicio implementa la lógica de su dominio según la responsabilidad asignada en el SAD (§7): Core Node (tenants, identidad, aliados y KYC, clientes, categorías, cotización, ejecución, calificación, mensajería), Rules Java (reglas por tenant, ranking, tarifario), Dispatch .NET (solicitudes, aceptación, idempotencia y exclusión concurrente) y Availability Node (cobertura y elegibilidad).
+- Cada servicio implementa la lógica de su dominio según la responsabilidad asignada en el SAD (§7): Core Service (tenants, identidad, aliados y KYC, clientes, categorías, cotización, ejecución, calificación, mensajería), Rules Service (reglas por tenant, ranking, tarifario), Dispatch Service (solicitudes, aceptación, idempotencia y exclusión concurrente) y Core Service (cobertura y elegibilidad).
 - Flutter conserva solo presentación e interacción y se comunica únicamente con el Gateway; no vuelve a llamar a Supabase directamente, salvo Supabase Auth para obtener el token.
 - Supabase aporta PostgreSQL, Auth, Storage y Realtime. RLS se mantiene como defensa adicional, no como sustituto de la autorización de los servicios (ADR-0012).
 - Las funciones PL/pgSQL existentes dejan de ser invocadas a medida que su lógica se migra. No se editan: se retiran con una migración nueva una vez la regresión en QA confirme el reemplazo.

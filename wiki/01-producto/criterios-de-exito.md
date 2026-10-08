@@ -28,15 +28,15 @@ Backlog V4 §9 — definición de llegada:
 
 - Flutter consume todo a través del NGINX Gateway y **no queda ningún acceso PostgREST desde el cliente**.
 - La `SUPABASE_ANON_KEY` ya no viaja en el artefacto web.
-- Rules corre en Java, Dispatch en .NET y el Core Service en Node.js.
+- Rules corre en Java, Dispatch en .NET y Core en Node.js, con la disponibilidad como dominio interno de Core.
 - Dispatch conserva exactamente una asignación válida bajo concurrencia, con el PoC-001 revalidado.
 - RLS sigue aislando **con el modelo de identidad rediseñado** para un llamador que es un servicio, no el usuario final.
 - Auth, Storage y Realtime integrados según el SAD, y el destino de cada función PL/pgSQL decidido y registrado en ADR.
-- `database/`, Compose y scripts viven en su repositorio dueño, con responsable definido de las migraciones por ambiente.
+- `database/`, Compose y scripts viven en su repositorio dueño, con responsable definido de las migraciones por ambiente. Repositorio dueño: `MANI-API-Gateway`; responsable: DevOps (`INFRAESTRUCTURA_MANI.md` §15; CFG-33).
 - Cada repositorio publica su imagen en GHCR y las VMs pueden levantarla con Compose.
 - CI/CD y pruebas de aislamiento funcionan por repositorio.
 - Las nueve historias preservadas pasan la regresión.
-- Plataforma de orquestación, proveedor y topología cerrados por ADR (`INFRA-01`, `INFRA-02`), desplegando las mismas imágenes OCI.
+- Proveedor y topología de Kubernetes cerrados por ADR, desplegando las mismas imágenes OCI.
 
 ## Salud del sprint
 

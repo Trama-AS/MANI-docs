@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3 y §9.5 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §8.
+**Fuente:** [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3 y §9.5 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §4 y §5.
 
 ## Reparto de herramientas
 
@@ -36,12 +36,12 @@ Un issue bloqueante debe registrar: causa · impacto · responsable requerido ·
 
 ## Reglas de la transición vigente
 
-Del backlog V4 §8, aplicables a cómo se toca Jira hoy:
+Del backlog V4 §4, aplicables a cómo se toca Jira hoy:
 
 1. **No borrar issues antiguos.**
 2. **No cambiar `Done` a `To Do`** para representar la migración.
-3. La transición de plataforma va en `EP-09` como `CFG-15 … CFG-40` y el spike `SP-05`.
-4. La documentación va en `EP-10` como `DOC-25 … DOC-28`.
+3. La transición de plataforma va en `EP-09` como tareas `CFG-` y el spike `SP-05`, ya decidido. La serie no es continua: hoy son 23 tareas, `CFG-23` está partida en `CFG-23a`, `CFG-23b` y `CFG-23c`, y los números `18`, `19`, `21`, `24`, `25`, `30`, `31` y `32` no existen. La lista viva está en el backlog §4.
+4. La documentación va en `EP-10` como tareas `DOC-`; la lista viva está en el backlog §4.
 5. El trabajo funcional de migración va como **subtareas `-Mn` colgando de la historia original**, sin tocar su estado histórico.
 6. Las historias nuevas que exige el SRS (`HU-N-01 … HU-N-05`) van bajo su épica funcional, no bajo EP-09.
 7. Lo que sale de alcance se marca `Won't Do` o `Cancelled` **conservando la razón y la referencia al SRS**.

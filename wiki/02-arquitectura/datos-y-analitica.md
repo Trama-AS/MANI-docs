@@ -40,7 +40,7 @@ PostgreSQL · RLS · Auth · Storage · Realtime (SAD §14). Realtime transporta
 
 ## Analítica separada del OLTP
 
-La analítica no se ejecuta sobre la base transaccional (SAD §4.1 y §15; riesgo KI-07). El flujo es:
+La analítica no se ejecuta sobre la base transaccional (SAD §4.1 y §15; riesgo *Consultas analíticas sobre OLTP*). El flujo es:
 
 ```text
 OLTP → CDC/ELT → Data Warehouse → modelo dimensional → BI

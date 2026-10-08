@@ -119,6 +119,11 @@ mano y se mantienen a mano. Si uno contradice a este documento, manda el documen
 | 2 | **DHL-INFRA** — infraestructura, CI/CD y operación | ¿Cómo se desarrolla, despliega y opera MANI? | [`Infra.png`](../diagrams/HLD/Infra.png) | §16, §17 y §18 |
 | 3 | **TECHRADAR** — priorización tecnológica | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | [`TechRadar.png`](../diagrams/HLD/TechRadar.png) | [`TECH_RADAR.md`](./TECH_RADAR.md) |
 
+**Todas las figuras de este documento son clicables** y abren la imagen a resolución completa. Los
+tres diagramas de alto nivel son densos: conviene abrirlos en lugar de leerlos al ancho de la
+página. Cada figura va acompañada del contenido en texto, que es el que manda si la imagen y el
+documento no coinciden.
+
 ### 4.2.1 DHL-ARQ — arquitectura general
 
 Representa la arquitectura lógica de MANI: una plataforma SaaS multi-tenant que gestiona
@@ -206,7 +211,7 @@ El estado real de cada gate se registra aparte, no en el dibujo:
 
 # 5. Vista de contexto — C4 Nivel 1
 
-![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](../diagrams/HLD/DHL.png)
+[![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](../diagrams/HLD/DHL.png)](../diagrams/HLD/DHL.png)
 
 > **Figura 1 — Diagrama de alto nivel (DHL).** Archivo: [`diagrams/HLD/DHL.png`](../diagrams/HLD/DHL.png).
 > La vista C4 formal correspondiente es `contexto` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §4.1.
@@ -225,10 +230,11 @@ Sistemas externos
 
 # 6. Vista de contenedores — C4 Nivel 2
 
-![Vista de alto nivel de los componentes de MANI: cliente, gateway, servicios y Supabase](../diagrams/HLD/DHL.png)
+[![Vista de contenedores de MANI: cliente, Gateway, los tres servicios de negocio, Supabase e integraciones](../diagrams/LLD/png/contenedores.png)](../diagrams/LLD/png/contenedores.png)
 
-> **Figura 2 — Componentes de la solución en el DHL.** Archivo: [`diagrams/HLD/DHL.png`](../diagrams/HLD/DHL.png).
-> La vista C4 formal correspondiente es `contenedores` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §4.2.
+> **Figura 2 — Contenedores.** Generada desde la vista `contenedores` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/contenedores.png`](../diagrams/LLD/png/contenedores.png), documentada en SDD §4.2. **Clic para abrirla a tamaño completo.**
+>
+> Antes esta figura reutilizaba `DHL.png`, la misma imagen de la Figura 1: el documento mostraba el diagrama de contexto dos veces y no llegaba a mostrar nunca los contenedores.
 
 ```text
 Usuarios
@@ -378,14 +384,14 @@ versionadas viven en [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/). Las dos figura
 interfaz materializa los controles de esta sección: la carga de documentos KYC definidos por el tenant y una
 bandeja de verificación limitada a la empresa del administrador.
 
-![Figura 8.1 — Registro de aliado persona natural](../diagrams/MOCKUPS/registro-aliado-persona-natural.png)
+[![Figura 8.1 — Registro de aliado persona natural](../diagrams/MOCKUPS/registro-aliado-persona-natural.png)](../diagrams/MOCKUPS/registro-aliado-persona-natural.png)
 
 **Figura 8.1 — Registro de aliado (persona natural).** Selector de tipo de aliado, datos de identificación y
 sección de documentos requeridos, cuya lista la configura cada tenant (RF-02, RNF-10). Ilustra `US-02.1.1`
 Registro aliado persona natural (`SCRUM-846`), migrada en `US-02.1.1-M2` (`SCRUM-1065`); la variante de empresa
 corresponde a `US-02.1.2` (`SCRUM-847`). Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
 
-![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](../diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
+[![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](../diagrams/MOCKUPS/backoffice-verificacion-aliados.png)](../diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
 
 **Figura 8.2 — Bandeja de verificación del Backoffice.** El administrador ve solo los aliados pendientes de su
 tenant, consulta sus documentos y aprueba o rechaza; el rechazo exige un motivo. Ilustra `US-02.1.3`
@@ -553,7 +559,7 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 
 # 16. Vista de despliegue
 
-![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/HLD/Infra.png)
+[![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/HLD/Infra.png)](../diagrams/HLD/Infra.png)
 
 > **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/HLD/Infra.png`](../diagrams/HLD/Infra.png).
 > La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](../diagrams/LLD/workspace.dsl), documentada en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).

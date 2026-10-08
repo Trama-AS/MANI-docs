@@ -87,47 +87,47 @@ El DHL muestra acceso directo de Flutter a Supabase para disponibilidades. **Eso
 
 **Nivel 1 — Contexto**
 
-<img src="../../diagrams/LLD/png/contexto.png" alt="C4 Nivel 1 — contexto: MANI, sus actores y los sistemas externos" width="760">
+<a href="../../diagrams/LLD/png/contexto.png"><img src="../../diagrams/LLD/png/contexto.png" alt="C4 Nivel 1 — contexto: MANI, sus actores y los sistemas externos" width="760"></a>
 
 **Nivel 2 — Contenedores**
 
-<img src="../../diagrams/LLD/png/contenedores.png" alt="C4 Nivel 2 — contenedores: Flutter, Gateway, los cuatro servicios, Supabase e integraciones" width="760">
+<a href="../../diagrams/LLD/png/contenedores.png"><img src="../../diagrams/LLD/png/contenedores.png" alt="C4 Nivel 2 — contenedores: Flutter, Gateway, los cuatro servicios, Supabase e integraciones" width="760"></a>
 
 **Nivel 3 — Componentes por servicio**
 
-<img src="../../diagrams/LLD/png/componentes-rules.png" alt="C4 Nivel 3 — Rules Service en Java" width="620">
+<a href="../../diagrams/LLD/png/componentes-rules.png"><img src="../../diagrams/LLD/png/componentes-rules.png" alt="C4 Nivel 3 — Rules Service en Java" width="620"></a>
 
-<img src="../../diagrams/LLD/png/componentes-dispatch.png" alt="C4 Nivel 3 — Dispatch Service en .NET" width="620">
+<a href="../../diagrams/LLD/png/componentes-dispatch.png"><img src="../../diagrams/LLD/png/componentes-dispatch.png" alt="C4 Nivel 3 — Dispatch Service en .NET" width="620"></a>
 
-<img src="../../diagrams/LLD/png/componentes-core.png" alt="C4 Nivel 3 — Core Service en Node.js" width="620">
+<a href="../../diagrams/LLD/png/componentes-core.png"><img src="../../diagrams/LLD/png/componentes-core.png" alt="C4 Nivel 3 — Core Service en Node.js" width="620"></a>
 
 **Despliegue — producción**
 
-<img src="../../diagrams/LLD/png/despliegue-prod.png" alt="Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, CI/CD y observabilidad" width="760">
+<a href="../../diagrams/LLD/png/despliegue-prod.png"><img src="../../diagrams/LLD/png/despliegue-prod.png" alt="Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, CI/CD y observabilidad" width="760"></a>
 
 **Panorama — System Landscape**
 
-<img src="../../diagrams/LLD/png/panorama.png" alt="Panorama de sistemas: MANI como único sistema propio y las plataformas externas" width="760">
+<a href="../../diagrams/LLD/png/panorama.png"><img src="../../diagrams/LLD/png/panorama.png" alt="Panorama de sistemas: MANI como único sistema propio y las plataformas externas" width="760"></a>
 
 **Vistas dinámicas**
 
-<img src="../../diagrams/LLD/png/dinamico-solicitud.png" alt="Vista dinámica — solicitud y listado de aliados" width="760">
+<a href="../../diagrams/LLD/png/dinamico-solicitud.png"><img src="../../diagrams/LLD/png/dinamico-solicitud.png" alt="Vista dinámica — solicitud y listado de aliados" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-aceptacion.png" alt="Vista dinámica — aceptación concurrente y 409 Conflict" width="760">
+<a href="../../diagrams/LLD/png/dinamico-aceptacion.png"><img src="../../diagrams/LLD/png/dinamico-aceptacion.png" alt="Vista dinámica — aceptación concurrente y 409 Conflict" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-cotizacion.png" alt="Vista dinámica — cotización y validación contra el tarifario" width="760">
+<a href="../../diagrams/LLD/png/dinamico-cotizacion.png"><img src="../../diagrams/LLD/png/dinamico-cotizacion.png" alt="Vista dinámica — cotización y validación contra el tarifario" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-kyc.png" alt="Vista dinámica — carga y verificación de documentos KYC" width="760">
+<a href="../../diagrams/LLD/png/dinamico-kyc.png"><img src="../../diagrams/LLD/png/dinamico-kyc.png" alt="Vista dinámica — carga y verificación de documentos KYC" width="760"></a>
 
-<img src="../../diagrams/LLD/png/dinamico-mensajeria.png" alt="Vista dinámica — mensajería con notificación de respaldo" width="760">
+<a href="../../diagrams/LLD/png/dinamico-mensajeria.png"><img src="../../diagrams/LLD/png/dinamico-mensajeria.png" alt="Vista dinámica — mensajería con notificación de respaldo" width="760"></a>
 
 ### Diagramas de alto nivel (DHL) — los referencia el [`SAD.md`](../../architecture/SAD.md)
 
-<img src="../../diagrams/HLD/DHL.png" alt="Diagrama de alto nivel de MANI" width="760">
+<a href="../../diagrams/HLD/DHL.png"><img src="../../diagrams/HLD/DHL.png" alt="Diagrama de alto nivel de MANI" width="760"></a>
 
-<img src="../../diagrams/HLD/Infra.png" alt="Vista de alto nivel de la infraestructura de MANI" width="760">
+<a href="../../diagrams/HLD/Infra.png"><img src="../../diagrams/HLD/Infra.png" alt="Vista de alto nivel de la infraestructura de MANI" width="760"></a>
 
-<img src="../../diagrams/HLD/TechRadar.png" alt="Tech Radar de MANI" width="620">
+<a href="../../diagrams/HLD/TechRadar.png"><img src="../../diagrams/HLD/TechRadar.png" alt="Tech Radar de MANI" width="620"></a>
 
 ## Política
 

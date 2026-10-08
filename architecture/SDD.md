@@ -208,11 +208,34 @@ Dos aclaraciones sobre el alcance de la tabla:
 Cada subsección de abajo repite en texto la estructura de su vista, para que el documento se pueda
 leer sin abrir las imágenes.
 
+### Cómo leer las imágenes
+
+**Todas las figuras son clicables: abren la imagen a resolución completa.** Hace falta usarlo,
+porque varias vistas son muy anchas y al escalarlas al ancho de la página las etiquetas quedan
+ilegibles. Estas son las que casi siempre hay que abrir:
+
+| Vista | Resolución | Proporción |
+|---|---|---|
+| `dinamico-aceptacion` | 4096 × 660 | 6,2 : 1 |
+| `dinamico-cotizacion` | 3499 × 672 | 5,2 : 1 |
+| `dinamico-kyc` | 2969 × 634 | 4,7 : 1 |
+| `componentes-rules` | 4096 × 888 | 4,6 : 1 |
+| `dinamico-solicitud` | 2705 × 672 | 4,0 : 1 |
+| `componentes-dispatch` | 4096 × 1056 | 3,9 : 1 |
+| `dinamico-mensajeria` | 2578 × 677 | 3,8 : 1 |
+
+Las vistas dinámicas son anchas por naturaleza: una secuencia crece hacia los lados con cada paso.
+Por eso **cada figura va acompañada del flujo en texto**, que es normativo: el documento se puede
+leer y revisar sin abrir ninguna imagen, y en una revisión de PR el texto es lo que se compara.
+
+Si una imagen contradice al texto, manda el texto: la imagen es una exportación del modelo y puede
+estar sin regenerar.
+
 ## 4.1 Nivel 1 — System Context
 
 **Objetivo:** mostrar MANI como un sistema y sus relaciones con personas y sistemas externos.
 
-![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](../diagrams/LLD/png/contexto.png)
+[![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](../diagrams/LLD/png/contexto.png)](../diagrams/LLD/png/contexto.png)
 
 > **Figura 1 — Contexto del sistema (C4 Nivel 1).** Generada desde la vista `contexto` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/contexto.png`](../diagrams/LLD/png/contexto.png).
 
@@ -241,7 +264,7 @@ Administrador tenant → administra usuarios, aliados, tenant y KYC
 
 **Objetivo:** mostrar las unidades desplegables y almacenes principales.
 
-![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](../diagrams/LLD/png/contenedores.png)
+[![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](../diagrams/LLD/png/contenedores.png)](../diagrams/LLD/png/contenedores.png)
 
 > **Figura 2 — Contenedores (C4 Nivel 2).** Generada desde la vista `contenedores` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/contenedores.png`](../diagrams/LLD/png/contenedores.png).
 
@@ -278,7 +301,7 @@ Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el ord
 
 ### 4.3.1 Rules Service — Java
 
-![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](../diagrams/LLD/png/componentes-rules.png)
+[![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](../diagrams/LLD/png/componentes-rules.png)](../diagrams/LLD/png/componentes-rules.png)
 
 > **Figura 3 — Rules Service, Java (C4 Nivel 3).** Generada desde la vista `componentes-rules` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-rules.png`](../diagrams/LLD/png/componentes-rules.png).
 
@@ -299,7 +322,7 @@ Responsabilidades:
 
 ### 4.3.2 Dispatch Service — .NET
 
-![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](../diagrams/LLD/png/componentes-dispatch.png)
+[![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](../diagrams/LLD/png/componentes-dispatch.png)](../diagrams/LLD/png/componentes-dispatch.png)
 
 > **Figura 4 — Dispatch Service, .NET (C4 Nivel 3).** Generada desde la vista `componentes-dispatch` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-dispatch.png`](../diagrams/LLD/png/componentes-dispatch.png).
 
@@ -323,7 +346,7 @@ Responsabilidades:
 
 ### 4.3.3 Core Service — Node.js
 
-![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/LLD/png/componentes-core.png)
+[![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/LLD/png/componentes-core.png)](../diagrams/LLD/png/componentes-core.png)
 
 > **Figura 5 — Core Service, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/componentes-core.png`](../diagrams/LLD/png/componentes-core.png).
 
@@ -403,7 +426,7 @@ DB / External Adapters
 
 **Objetivo:** mostrar el mapa de sistemas alrededor de MANI. Es una pregunta distinta de la del Nivel 1: el contexto mira hacia fuera *desde* MANI, el panorama mira el conjunto y deja ver que MANI es el único sistema propio y que todo lo demás es proveedor o plataforma de destino.
 
-![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](../diagrams/LLD/png/panorama.png)
+[![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](../diagrams/LLD/png/panorama.png)](../diagrams/LLD/png/panorama.png)
 
 > **Figura 6 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/panorama.png`](../diagrams/LLD/png/panorama.png).
 
@@ -436,7 +459,7 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 ### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
 
-![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](../diagrams/LLD/png/dinamico-solicitud.png)
+[![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](../diagrams/LLD/png/dinamico-solicitud.png)](../diagrams/LLD/png/dinamico-solicitud.png)
 
 > **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/LLD/png/dinamico-solicitud.png`](../diagrams/LLD/png/dinamico-solicitud.png).
 
@@ -453,7 +476,7 @@ Quien orquesta es el despacho: pregunta elegibilidad al dominio de disponibilida
 
 ### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
 
-![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../diagrams/LLD/png/dinamico-aceptacion.png)
+[![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../diagrams/LLD/png/dinamico-aceptacion.png)](../diagrams/LLD/png/dinamico-aceptacion.png)
 
 > **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/LLD/png/dinamico-aceptacion.png`](../diagrams/LLD/png/dinamico-aceptacion.png).
 
@@ -474,7 +497,7 @@ La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y re
 
 ### 4.6.3 Cotización y tarifario — `dinamico-cotizacion`
 
-![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../diagrams/LLD/png/dinamico-cotizacion.png)
+[![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../diagrams/LLD/png/dinamico-cotizacion.png)](../diagrams/LLD/png/dinamico-cotizacion.png)
 
 > **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/LLD/png/dinamico-cotizacion.png`](../diagrams/LLD/png/dinamico-cotizacion.png).
 
@@ -491,7 +514,7 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 
 ### 4.6.4 KYC del aliado — `dinamico-kyc`
 
-![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../diagrams/LLD/png/dinamico-kyc.png)
+[![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../diagrams/LLD/png/dinamico-kyc.png)](../diagrams/LLD/png/dinamico-kyc.png)
 
 > **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/LLD/png/dinamico-kyc.png`](../diagrams/LLD/png/dinamico-kyc.png).
 
@@ -508,7 +531,7 @@ La aprobación es una decisión humana del tenant, no un efecto automático de l
 
 ### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
 
-![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../diagrams/LLD/png/dinamico-mensajeria.png)
+[![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../diagrams/LLD/png/dinamico-mensajeria.png)](../diagrams/LLD/png/dinamico-mensajeria.png)
 
 > **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/LLD/png/dinamico-mensajeria.png`](../diagrams/LLD/png/dinamico-mensajeria.png).
 
@@ -740,7 +763,7 @@ Los escenarios anteriores complementan los umbrales específicos definidos en la
 
 ## 9.1 Producción
 
-![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](../diagrams/LLD/png/despliegue-prod.png)
+[![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](../diagrams/LLD/png/despliegue-prod.png)](../diagrams/LLD/png/despliegue-prod.png)
 
 > **Figura 12 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/png/despliegue-prod.png`](../diagrams/LLD/png/despliegue-prod.png).
 

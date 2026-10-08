@@ -612,8 +612,12 @@ CREATE TABLE core.usuario_rol (
 CREATE TABLE core.aliado (
     id_aliado UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_usuario UUID NOT NULL UNIQUE,
+    tipo VARCHAR(30) NOT NULL DEFAULT 'PERSONA_NATURAL'
+        CHECK (tipo IN ('PERSONA_NATURAL', 'EMPLEADO_DIRECTO', 'PERSONA_JURIDICA')),
     estado VARCHAR(30) NOT NULL DEFAULT 'PENDIENTE'
         CHECK (estado IN ('PENDIENTE','ACTIVO','SUSPENDIDO','INACTIVO')),
+    estado_verificacion VARCHAR(30) NOT NULL DEFAULT 'PENDIENTE'
+        CHECK (estado_verificacion IN ('PENDIENTE', 'VERIFICADO', 'RECHAZADO')),
     nivel_verificacion VARCHAR(30),
     calificacion NUMERIC(3,2) CHECK (calificacion BETWEEN 0 AND 5),
     fecha_registro TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -652,6 +656,63 @@ CREATE TABLE core.zona (
         CHECK (estado IN ('ACTIVO','INACTIVO')),
     FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
     UNIQUE (id_tenant, nombre)
+);
+
+CREATE TABLE core.cliente (
+    id_cliente UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    id_usuario UUID NOT NULL,
+    tipo VARCHAR(30) NOT NULL DEFAULT 'PERSONA_NATURAL'
+        CHECK (tipo IN ('PERSONA_NATURAL', 'PERSONA_JURIDICA')),
+    razon_social VARCHAR(255),
+    nit VARCHAR(50),
+    telefono VARCHAR(50),
+    nombre_representante VARCHAR(255),
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
+        CHECK (estado IN ('ACTIVO', 'INACTIVO')),
+    fecha_registro TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
+    CONSTRAINT cliente_nit_tenant_unique UNIQUE (id_tenant, nit)
+);
+
+CREATE TABLE core.sitio (
+    id_sitio UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    id_cliente UUID NOT NULL,
+    id_zona UUID,
+    nombre VARCHAR(150) NOT NULL,
+    direccion VARCHAR(255) NOT NULL,
+    reglas JSONB,
+    fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    FOREIGN KEY (id_cliente) REFERENCES core.cliente(id_cliente),
+    FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona)
+);
+
+CREATE TABLE core.documento_legal (
+    id_documento_legal UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID,
+    tipo VARCHAR(50) NOT NULL,
+    version VARCHAR(20) NOT NULL,
+    contenido TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
+);
+
+CREATE TABLE core.consentimiento_usuario (
+    id_consentimiento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID,
+    id_usuario UUID NOT NULL,
+    id_documento_legal UUID NOT NULL,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    fecha_consentimiento TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
+    FOREIGN KEY (id_documento_legal) REFERENCES core.documento_legal(id_documento_legal),
+    UNIQUE (id_usuario, id_documento_legal)
 );
 
 CREATE TABLE disponibilidad.disponibilidad (
@@ -838,7 +899,9 @@ ON pagos.pago(id_solicitud);
 |---|---|---|---|
 | id_aliado | UUID | PK | Identificador de aliado |
 | id_usuario | UUID | FK, UNIQUE | Usuario asociado |
-| estado | VARCHAR(30) | CHECK | Estado operacional |
+| tipo | VARCHAR(30) | NOT NULL, CHECK | Tipo de aliado: 'PERSONA_NATURAL', 'EMPLEADO_DIRECTO' (empleado interno sin KYC), 'PERSONA_JURIDICA' |
+| estado | VARCHAR(30) | CHECK | Estado operacional ('PENDIENTE','ACTIVO','SUSPENDIDO','INACTIVO') |
+| estado_verificacion | VARCHAR(30) | CHECK | Estado de validación: 'PENDIENTE', 'VERIFICADO', 'RECHAZADO' |
 | nivel_verificacion | VARCHAR(30) | NULL | Nivel KYC |
 | calificacion | NUMERIC(3,2) | 0..5 | Calificación |
 | fecha_registro | TIMESTAMPTZ | NOT NULL | Alta |
@@ -874,6 +937,78 @@ ON pagos.pago(id_solicitud);
 | nombre | VARCHAR(120) | UNIQUE por tenant | Zona |
 | descripcion | VARCHAR(255) | NULL | Descripción |
 | estado | VARCHAR(20) | CHECK | Estado |
+
+## `core.cliente`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_cliente | UUID | PK | Identificador de cliente |
+| id_tenant | UUID | FK | Tenant asociado |
+| id_usuario | UUID | FK | Cuenta de usuario asociada |
+| tipo | VARCHAR(30) | NOT NULL, CHECK | Tipo de cliente ('PERSONA_NATURAL', 'PERSONA_JURIDICA') |
+| razon_social | VARCHAR(255) | NULL | Razón social corporativa (clientes jurídicos) |
+| nit | VARCHAR(50) | NULL, UNIQUE por tenant | NIT del cliente (restricción `cliente_nit_tenant_unique`) |
+| telefono | VARCHAR(50) | NULL | Teléfono de contacto |
+| nombre_representante | VARCHAR(255) | NULL | Nombre del representante legal |
+| estado | VARCHAR(20) | CHECK | Estado del cliente ('ACTIVO', 'INACTIVO') |
+| fecha_registro | TIMESTAMPTZ | NOT NULL | Fecha y hora de alta |
+
+## `core.sitio`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_sitio | UUID | PK | Identificador de sitio o sede |
+| id_tenant | UUID | FK | Tenant asociado |
+| id_cliente | UUID | FK | Cliente empresa propietario |
+| id_zona | UUID | FK, NULL | Zona geográfica asignada |
+| nombre | VARCHAR(150) | NOT NULL | Nombre descriptivo del sitio |
+| direccion | VARCHAR(255) | NOT NULL | Dirección física de atención |
+| reglas | JSONB | NULL | Reglas de acceso, horarios y requisitos de seguridad (ver esquema JSON abajo) |
+| fecha_creacion | TIMESTAMPTZ | NOT NULL | Fecha de registro |
+
+### Estructura JSON de `core.sitio.reglas`
+```json
+{
+  "horario": {
+    "dias": ["LUN", "MAR", "MIE", "JUE", "VIE"],
+    "horaInicio": "08:00",
+    "horaFin": "17:00"
+  },
+  "permisosRequeridos": [
+    "ARL_VIGENTE",
+    "TRABAJO_EN_ALTURAS"
+  ],
+  "elementosProteccion": [
+    "CASCO",
+    "BOTAS_PUNTA_ACERO",
+    "GAFAS_SEGURIDAD"
+  ]
+}
+```
+
+## `core.documento_legal`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_documento_legal | UUID | PK | Identificador del documento legal |
+| id_tenant | UUID | FK, NULL | Tenant específico (NULL para términos globales de plataforma) |
+| tipo | VARCHAR(50) | NOT NULL | Tipo ('TERMS_AND_CONDITIONS', 'PRIVACY_POLICY') |
+| version | VARCHAR(20) | NOT NULL | Versión del documento (e.g. '1.0') |
+| contenido | TEXT | NULL | Texto completo de los términos y condiciones |
+| is_active | BOOLEAN | NOT NULL | Estado activo / vigente del documento |
+| fecha_creacion | TIMESTAMPTZ | NOT NULL | Fecha de publicación |
+
+## `core.consentimiento_usuario`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_consentimiento | UUID | PK | Identificador único del registro de consentimiento |
+| id_tenant | UUID | FK, NULL | Tenant asociado |
+| id_usuario | UUID | FK | Usuario que otorga consentimiento expreso |
+| id_documento_legal | UUID | FK | Documento legal aceptado |
+| ip_address | VARCHAR(45) | NULL | Dirección IP del cliente al momento de aceptar |
+| user_agent | TEXT | NULL | User Agent del dispositivo o navegador |
+| fecha_consentimiento | TIMESTAMPTZ | NOT NULL | Timestamp legal de aceptación (Ley 1581 / Habeas Data) |
 
 ## `disponibilidad.disponibilidad`
 

@@ -33,7 +33,6 @@ Flutter Web / Mobile        ← presentación e interacción, sin reglas de nego
    ├─ HTTPS ─→ NGINX API Gateway   ← entrada única, routing y políticas transversales
    │              ↓
    │           Rules (Java) · Dispatch (.NET) · Core (Node.js)
-   │                                            └── módulo Disponibilidades
    │              ↓
    │           Supabase: PostgreSQL + RLS · Storage
    │              ↓
@@ -43,8 +42,8 @@ Flutter Web / Mobile        ← presentación e interacción, sin reglas de nego
    └─ WSS  ←─  Supabase Realtime   eventos de mensajería
 ```
 
-**Tres servicios de negocio, no cuatro.** Las disponibilidades son un módulo del Core Service, con
-esquema propio y vista de componentes propia, pero sin repositorio ni desplegable aparte
+**Tres servicios de negocio.** La cobertura y la disponibilidad son un dominio del Core Service:
+no tienen repositorio, desplegable, esquema ni vista de componentes propios
 ([ADR-0023](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md)).
 
 ## Responsabilidad por servicio
@@ -57,7 +56,7 @@ para orientarse:
 |---|---|---|
 | **Rules Service** | Java | reglas por tenant, ranking y tarifario · esquema `reglas` |
 | **Dispatch Service** | .NET | solicitudes, despacho y asignación · esquema `despacho` |
-| **Core Service** | Node.js | identidad, clientes y sitios, aliados y KYC, catálogo, ciclo del servicio, comunicaciones y disponibilidades · esquemas `core`, `servicio`, `comunicaciones`, `disponibilidad`, `pagos` |
+| **Core Service** | Node.js | identidad, clientes y sitios, aliados y KYC, catálogo, cobertura y disponibilidad, ciclo del servicio, comunicaciones y reportes · esquemas `core`, `servicio`, `comunicaciones`, `pagos` |
 
 Notas que evitan errores de implementación:
 

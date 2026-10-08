@@ -28,9 +28,10 @@ Cada repositorio desplegable mantiene de forma independiente: código · depende
 
 [ADR-0023](../../adr/ADR-0023-consolidacion-repositorios-ambientes.md) los retiró:
 
-- **`MANI-Availability`** — las disponibilidades son un módulo del `MANI-Core-Service`, con su
-  esquema `disponibilidad` y su vista de componentes, pero sin desplegable propio. Su único
-  consumidor es Dispatch, que las consulta por la API del Core.
+- **`MANI-Availability`** — la cobertura y la disponibilidad son un dominio del
+  `MANI-Core-Service`: un componente entre los demás y sus tablas en el esquema `core`. No tienen
+  desplegable, esquema ni vista propios. Su único consumidor es Dispatch, que consulta la
+  elegibilidad por la Core API.
 - **`MANI-Infra`** — su contenido vive en `MANI-API-Gateway`, que es la raíz de composición del
   despliegue: configuración de NGINX, Compose por ambiente y configuración de observabilidad.
 

@@ -68,7 +68,7 @@ Los principales drivers funcionales que condicionan el diseño son:
 |---|---|---|
 | Multi-tenancy y administración de tenants | RF-01, RF-02, RF-03 | contexto de tenant en todas las operaciones, configuración por tenant y autorización |
 | KYC aislado | RF-05, RF-06, REST-02 | almacenamiento privado, autorización y aislamiento de archivos |
-| Cobertura por zonas | RF-07, RF-09, RF-12, REST-01 | catálogo de zonas y servicio de disponibilidad/cobertura |
+| Cobertura por zonas | RF-07, RF-09, RF-12, REST-01 | catálogo de zonas y dominio de cobertura y disponibilidad en el Core Service |
 | Ranking configurable | RF-13 | motor de reglas por tenant |
 | Despacho concurrente | RF-14 | servicio transaccional con exclusión atómica |
 | Cotización y tarifario | RF-15, RF-16, RF-22, RF-23 | reglas, persistencia y reportes |
@@ -147,7 +147,6 @@ Flutter Web / Mobile                    presentación e interacción, sin reglas
    ├─ HTTPS ─→ NGINX API Gateway        entrada única, routing y políticas transversales
    │              ↓
    │           Rules (Java) · Dispatch (.NET) · Core (Node.js)
-   │                                                 └── módulo Disponibilidades
    │              ↓
    │           Supabase: PostgreSQL + RLS · Storage
    │              ↓
@@ -157,7 +156,8 @@ Flutter Web / Mobile                    presentación e interacción, sin reglas
    └─ WSS  ←─  Supabase Realtime        recepción de eventos de mensajería
 ```
 
-Tres servicios de negocio, no cuatro: disponibilidades es un módulo del Core Service (§7.4).
+Tres servicios de negocio. La cobertura y la disponibilidad son uno de los dominios del Core
+Service (§7.3), no una unidad aparte.
 
 Los dos caminos directos del cliente a Supabase son los únicos que existen y están acotados en
 §8.3: todo acceso a datos de negocio pasa por el Gateway.
@@ -205,29 +205,40 @@ Responsable de:
 - RF-19: calificación bidireccional y condición de cierre;
 - RF-20 y RF-21: conversaciones, mensajes y notificaciones;
 - RF-23: reportes operativos;
-- segundo incremento RF-24..RF-28, cuando se implemente;
-- **módulo de disponibilidades** (§7.4).
+- **RF-07: cobertura declarada del aliado por zonas**;
+- **RF-12: elegibilidad por categoría + zona + agenda, y disponibilidad, horarios y solapamientos**;
+- soporte a RNF-07 en la ruta crítica de consulta de elegibilidad;
+- segundo incremento RF-24..RF-28, cuando se implemente.
 
-Es dueño de los esquemas `core`, `servicio`, `comunicaciones`, `disponibilidad` y `pagos`
-(ModeloDatos §13). Rules emite el veredicto tarifario, pero es Core quien escribe
-`servicio.cotizacion`.
+Es dueño de los esquemas `core`, `servicio`, `comunicaciones` y `pagos` (ModeloDatos §13). Rules
+emite el veredicto tarifario, pero es Core quien escribe `servicio.cotizacion`.
 
-En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente (riesgo KI-03).
+Internamente se organiza por dominios —identidad, aliados y KYC, clientes y sitios, catálogo,
+**cobertura y disponibilidad**, ciclo del servicio, comunicaciones y reportes— sin convertir cada
+operación CRUD en un servicio independiente (riesgo KI-03).
 
-## 7.4 Módulo de Disponibilidades — Node.js
+### Sobre la cobertura y la disponibilidad
 
-Módulo del Core Service, **no un desplegable independiente**. Responsable de:
+**No son un servicio ni un módulo aparte: son un dominio del Core como cualquier otro.** Un único
+componente resuelve la elegibilidad como la conjunción de tres condiciones:
 
-- RF-07: cobertura declarada del aliado;
-- RF-12: consulta de elegibilidad por categoría + zona + agenda;
-- disponibilidad, horarios y solapamientos;
-- soporte a RNF-07 en la ruta crítica de consulta.
+```text
+Elegible =
+  categoría declarada por el aliado   (core.aliado_categoria)
+  AND
+  zona de cobertura declarada         (core.aliado_cobertura)   — coincidencia exacta
+  AND
+  franja de agenda disponible         (core.disponibilidad)
+```
 
-Mantiene frontera de capacidad propia: su esquema `disponibilidad`, su vista de componentes
-(SDD §4.4.4) y su propia API dentro del Core Service. Dispatch lo consume por API.
+Sus tablas viven en el esquema `core`, junto a las demás del aliado, porque describen al mismo
+aliado: qué atiende, dónde y cuándo. No tiene esquema, vista de componentes, repositorio ni
+desplegable propios.
 
-La decisión de no separarlo en un desplegable adicional responde al riesgo KI-03: su único consumidor
-es Dispatch, y un servicio más habría añadido un salto de red y un pipeline sin beneficio.
+Dispatch consume la elegibilidad **por la API del Core Service**, nunca leyendo sus tablas.
+
+La razón de no separarlo responde al riesgo KI-03: su único consumidor es Dispatch, y una frontera
+de servicio adicional habría añadido un salto de red, un pipeline y una imagen sin comprar nada.
 
 ---
 
@@ -350,19 +361,27 @@ El diseño respeta REST-01 y RNF-09:
 
 ```text
 Sitio
-  └── Zona
+  └── Zona                              core.sitio_servicio.id_zona, obligatoria
 
 Aliado
-  ├── Categoría
-  └── CoberturaZona
+  ├── Categoría atendida                core.aliado_categoria
+  ├── Zona de cobertura                 core.aliado_cobertura
+  └── Franja de agenda                  core.disponibilidad
 
 Elegible =
-  misma categoría
+  categoría declarada
   AND
-  misma zona
+  zona declarada        — coincidencia exacta de identificador
   AND
-  disponible
+  franja disponible
 ```
+
+La **cobertura** dice *dónde* y es una declaración estable del aliado; la **disponibilidad** dice
+*cuándo* y es agenda. Son dos cosas distintas y el modelo de datos las separa en dos tablas
+(ModeloDatos §4.1).
+
+Ambas, con las categorías atendidas, viven en el esquema `core` y las resuelve el Core Service
+(§7.3). No hay un servicio ni un esquema de disponibilidad aparte.
 
 ---
 
@@ -570,7 +589,7 @@ obligaciones de diseño:
 
 - **`correlation_id` propagado** por el Gateway y por cada servicio en toda petición;
 - **instrumentación obligatoria** en el API Gateway, el Rules Service, el Dispatch Service, el Core
-  Service —incluido su módulo de disponibilidades— y la plataforma de contenedores.
+  Service y la plataforma de contenedores.
 
 Un servicio sin telemetría de sus operaciones críticas no cumple el criterio de aceptación
 arquitectónica (SDD §19).
@@ -608,7 +627,7 @@ La priorización no es declarativa: condiciona el diseño descrito en este docum
 | Seguridad P1 | defensa en profundidad: JWT + autorización en servicio + RLS, y aislamiento equivalente en Storage | §8 |
 | Fiabilidad P1 | exclusión concurrente por actualización condicional atómica en Dispatch | §7.2, §11 |
 | Fiabilidad P1 | efectos secundarios por eventos: un fallo de push no revierte una operación confirmada | §12, §21 |
-| Desempeño P1 | módulo de disponibilidades con esquema propio e índice de búsqueda por categoría, zona y fecha | §7.4, §10 |
+| Desempeño P1 | índice de búsqueda de elegibilidad por categoría, zona, fecha y estado | §7.3, §10 |
 | Mantenibilidad P1 | propiedad de datos por dominio; ningún servicio escribe el esquema de otro | §14, ModeloDatos §13 |
 | Flexibilidad P1 | configuración por tenant como datos, no como código ni como rama | §9 |
 | Flexibilidad P1 | artefactos OCI inmutables y configuración externa, para que la orquestación pueda cambiar | §16.4, §18 |
@@ -726,7 +745,7 @@ el modelo de datos se contradijeran sobre quién escribe qué.
 | RF-04 | Supabase Auth | recuperación segura | — |
 | RF-05 | Core + Storage | registro por tipo de aliado + KYC | `core.aliado`, `core.documento_kyc` |
 | RF-06 | Core | workflow de aprobación | `core.aliado.estado` |
-| RF-07 | Core — disponibilidades | cobertura declarada por zonas | `core.aliado_cobertura` |
+| RF-07 | Core | cobertura declarada por zonas | `core.aliado_cobertura` |
 | RF-08 | Core | clientes persona natural y empresa | `core.cliente` |
 | RF-09 | Core | sitio + zona obligatoria + condiciones | `core.sitio_servicio` |
 | RF-10 | Core | categorías del tenant | `core.categoria` |
@@ -792,7 +811,7 @@ La arquitectura contempla explícitamente:
 5. Tres ambientes y solo tres: DEV, QA y PROD. No existe STAGING.
 6. DEV en máquinas personales; QA y PROD en VM con Docker.
 7. La orquestación es una decisión abierta: Kubernetes es el objetivo de PROY-08, no el estado actual (§16.4).
-8. Disponibilidades es un módulo del Core Service, no un desplegable aparte (§7.4).
+8. La cobertura y la disponibilidad son un dominio del Core Service, sin esquema, vista ni desplegable propios (§7.3).
 9. El cliente alcanza Supabase solo por Auth y Realtime; no hay excepción de acceso a datos (§8.3).
 10. Cada RF tiene un componente responsable único y datos identificados (§24).
 11. El Data Warehouse está desacoplado del OLTP y sirve RF-23 y RF-28.

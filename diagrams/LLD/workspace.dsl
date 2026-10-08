@@ -18,18 +18,18 @@
  *   3. contenedores           C4 Nivel 2, Containers
  *   4. componentes-rules      C4 Nivel 3, Rules Service
  *   5. componentes-dispatch   C4 Nivel 3, Dispatch Service
- *   6. componentes-core       C4 Nivel 3, Core Service — dominios de negocio
- *   7. componentes-availability  C4 Nivel 3, Core Service — módulo de disponibilidades
- *   8. secuencia-despacho     dinámica, RF-14 y RNF-05
- *   9. secuencia-cotizacion   dinámica, RF-15 a RF-17
- *  10. secuencia-mensajeria   dinámica, RF-20 y RF-21
- *  11. despliegue-qa          despliegue de QA
- *  12. despliegue-prod        despliegue de producción
+ *   6. componentes-core       C4 Nivel 3, Core Service
+ *   7. secuencia-despacho     dinámica, RF-14 y RNF-05
+ *   8. secuencia-cotizacion   dinámica, RF-15 a RF-17
+ *   9. secuencia-mensajeria   dinámica, RF-20 y RF-21
+ *  10. despliegue-qa          despliegue de QA
+ *  11. despliegue-prod        despliegue de producción
  *
  * El Nivel 4 (Code) no se modela aquí: Structurizr no describe clases. Se mantiene en SDD §4.5.
  *
- * Tres servicios de negocio, no cuatro: las disponibilidades son un módulo del Core Service
- * (SAD §7.4, SDD §3.1), construido y desplegado desde MANI-Core-Service.
+ * Tres servicios de negocio. Las disponibilidades no son una unidad aparte: son uno de los
+ * dominios del Core Service, con su componente entre los demás y sus tablas en el esquema core
+ * (SAD §7.3, SDD §3.1).
  *
  * Decisión abierta que este modelo NO fija: la plataforma de orquestación. Kubernetes es el
  * objetivo exigido por PROY-08, pero no es el estado actual (INFRA-01 e INFRA-02 de
@@ -85,21 +85,17 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 dispatchAdapter = component "PostgreSQL Adapter" "Implementa el puerto contra PostgreSQL." ".NET"
             }
 
-            core = container "Core Service" "Tenants, identidad, clientes y sitios, aliados y KYC, catálogo, cotización, ejecución, calificación, comunicaciones, reportes y el módulo de disponibilidades. Dueño de los esquemas core, servicio, comunicaciones, disponibilidad y pagos." "Node.js" {
+            core = container "Core Service" "Tenants, identidad, clientes y sitios, aliados y KYC, catálogo, cobertura y disponibilidad, cotización, ejecución, calificación, comunicaciones y reportes. Dueño de los esquemas core, servicio, comunicaciones y pagos." "Node.js" {
                 coreApi = component "Core API" "Expone los casos de uso de todos los dominios del Core, incluido el de disponibilidades." "Node.js"
                 coreUsers = component "Users / Tenants Component" "Tenants, usuarios, roles y acceso (RF-01, RF-03, RF-04)." "Node.js"
                 coreKyc = component "KYC Orchestrator" "Registro y verificación de aliados y documentos (RF-05, RF-06)." "Node.js"
                 coreCatalog = component "Catalog Component" "Categorías, clientes, sitios de servicio y asociaciones aliado-categoría (RF-08..RF-11)." "Node.js"
+                coreEligibility = component "Eligibility & Schedule Component" "Cobertura declarada del aliado, agenda, horarios, solapamientos y elegibilidad por categoría y coincidencia exacta de zona (RF-07, RF-12, REST-01, RNF-07)." "Node.js"
                 coreService = component "Service Cycle Component" "Cotización, ejecución y calificación bidireccional (RF-15, RF-17, RF-18, RF-19). Escribe el veredicto tarifario que emite Rules." "Node.js"
                 coreNotif = component "Notification Component" "Conversaciones, mensajes y notificaciones del servicio (RF-20, RF-21)." "Node.js"
                 coreReport = component "Operational Reporting" "Reportes operativos y de tarifario (RF-23)." "Node.js"
                 coreAdapters = component "External Adapters" "Encapsula proveedores externos: push, Storage, Realtime y pagos." "Node.js"
-                corePort = component "Repositories" "Contratos de persistencia de los dominios del Core." "Node.js — interfaces"
-
-                availApp = component "Availability Application Service" "Casos de uso del módulo de disponibilidades (RF-07, RF-12, RNF-07)." "Node.js"
-                availSchedule = component "Schedule Rules" "Horarios y solapamientos. La lógica pertenece al módulo, no al cliente." "Node.js"
-                availQuery = component "Availability Query" "Elegibilidad: categoría declarada + zona de cobertura con coincidencia exacta + agenda disponible (REST-01)." "Node.js"
-                availPort = component "Availability Repository" "Contrato de persistencia del esquema disponibilidad." "Node.js — interfaz"
+                corePort = component "Repositories" "Contratos de persistencia de todos los dominios del Core, incluida la cobertura y la disponibilidad." "Node.js — interfaces"
             }
 
             auth = container "Supabase Auth" "Autenticación de usuarios y emisión del JWT firmado del que se obtiene el tenant_id (ADR-0018)." "Supabase"
@@ -143,7 +139,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         core -> auth "Integra identidad y acceso"
         rules -> db "Lee reglas y tarifarios del tenant" "SQL"
         dispatch -> db "Persiste solicitudes, asignaciones y auditoría" "SQL"
-        core -> db "Persiste tenants, clientes, aliados, catálogo, disponibilidad, ciclo del servicio y comunicaciones" "SQL"
+        core -> db "Persiste tenants, clientes, aliados, catálogo, cobertura y disponibilidad, ciclo del servicio y comunicaciones" "SQL"
 
         core -> storage "Almacena y sirve documentos KYC aislados por tenant y aliado"
         core -> realtime "Publica eventos de mensajería, después de persistir el mensaje"
@@ -186,16 +182,17 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         coreApi -> coreUsers "Invoca"
         coreApi -> coreKyc "Invoca"
         coreApi -> coreCatalog "Invoca"
+        coreApi -> coreEligibility "Invoca"
         coreApi -> coreService "Invoca"
         coreApi -> coreNotif "Invoca"
         coreApi -> coreReport "Invoca"
-        coreApi -> availApp "Invoca los casos de uso de disponibilidad"
         coreKyc -> coreAdapters "Usa para Storage"
         coreNotif -> coreAdapters "Usa para push y Realtime"
         coreService -> rulesApi "Pide el veredicto tarifario" "HTTPS / JSON"
         coreUsers -> corePort "Persiste"
         coreKyc -> corePort "Persiste"
         coreCatalog -> corePort "Persiste"
+        coreEligibility -> corePort "Consulta cobertura y agenda"
         coreService -> corePort "Persiste"
         coreNotif -> corePort "Persiste"
         coreReport -> corePort "Consulta"
@@ -204,11 +201,6 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         coreAdapters -> realtime "Publica eventos"
         coreAdapters -> push "Envía notificaciones"
         coreUsers -> auth "Integra identidad"
-
-        availApp -> availSchedule "Evalúa horarios y solapamientos"
-        availApp -> availQuery "Resuelve elegibilidad"
-        availApp -> availPort "Persiste y consulta"
-        availPort -> db "Lee y escribe el esquema disponibilidad" "SQL"
 
         // ---------- Despliegue — QA (SDD §9.1) ----------
 
@@ -229,7 +221,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 deploymentNode "Contenedor Dispatch" "Health check y límites de CPU y memoria declarados." "Docker" {
                     containerInstance dispatch
                 }
-                deploymentNode "Contenedor Core" "Incluye el módulo de disponibilidades." "Docker" {
+                deploymentNode "Contenedor Core" "" "Docker" {
                     containerInstance core
                 }
             }
@@ -273,7 +265,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                     deploymentNode "Contenedor Dispatch" "restart unless-stopped, health check y límites de recursos." "Docker" {
                         containerInstance dispatch
                     }
-                    deploymentNode "Contenedor Core" "Incluye el módulo de disponibilidades." "Docker" {
+                    deploymentNode "Contenedor Core" "" "Docker" {
                         containerInstance core
                     }
                 }
@@ -317,7 +309,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         }
 
         // ---------- Vista 3 — C4 Nivel 2: Contenedores ----------
-        container mani "contenedores" "C4 Nivel 2 — unidades desplegables y almacenes. Tres servicios de negocio; disponibilidades es un módulo del Core. Fuente: SAD §6, SDD §4.3." {
+        container mani "contenedores" "C4 Nivel 2 — unidades desplegables y almacenes. Tres servicios de negocio. La cobertura y la disponibilidad son un dominio del Core Service. Fuente: SAD §6, SDD §4.3." {
             include *
             autolayout lr
         }
@@ -333,13 +325,8 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             autolayout lr
         }
 
-        component core "componentes-core" "C4 Nivel 3 — Core Service (Node.js), dominios de negocio. El módulo de disponibilidades tiene su propia vista. Fuente: SDD §4.4.3." {
-            include gateway coreApi coreUsers coreKyc coreCatalog coreService coreNotif coreReport coreAdapters corePort db storage realtime push auth rulesApi
-            autolayout lr
-        }
-
-        component core "componentes-availability" "C4 Nivel 3 — Core Service (Node.js), módulo de disponibilidades. Fuente: SDD §4.4.4." {
-            include coreApi availApp availSchedule availQuery availPort db dispatchSelector
+        component core "componentes-core" "C4 Nivel 3 — Core Service (Node.js). Incluye el componente de cobertura y disponibilidad: no tiene vista aparte. Fuente: SDD §4.4.3." {
+            include *
             autolayout lr
         }
 

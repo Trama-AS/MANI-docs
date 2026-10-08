@@ -54,7 +54,6 @@ NGINX API Gateway
    ├── Rules Service ........ Java     · MANI-Rules-Service
    ├── Dispatch Service ..... .NET     · MANI-Dispatch-Service
    └── Core Service ......... Node.js  · MANI-Core-Service
-         └── módulo de disponibilidades
              │
              ▼
         Supabase
@@ -64,8 +63,9 @@ NGINX API Gateway
         └── Realtime
 ```
 
-Tres servicios de negocio, no cuatro: las disponibilidades son un módulo del Core Service. Los dos
-únicos caminos del cliente a Supabase son Auth y Realtime (SAD §8.3).
+Tres servicios de negocio. La cobertura y la disponibilidad son un dominio del Core Service, con sus
+tablas en el esquema `core`. Los dos únicos caminos del cliente a Supabase son Auth y Realtime
+(SAD §8.3).
 
 Servicios externos:
 
@@ -370,8 +370,8 @@ Responsabilidades:
 
 `MANI-Docs` es el sexto repositorio del proyecto y no se despliega.
 
-Las disponibilidades no tienen contenedor propio: son un módulo del `MANI-Core-Service`, con su
-esquema `disponibilidad` (SAD §7.4).
+Las disponibilidades no tienen contenedor, repositorio ni esquema propios: son un dominio del
+`MANI-Core-Service`, con sus tablas en el esquema `core` (SAD §7.3).
 
 No se utiliza Serverpod como backend principal.
 

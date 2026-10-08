@@ -64,13 +64,24 @@ cuando no hay forma de medirlo.
 Cinco son desplegables; `MANI-Docs` no se despliega. No existe otro nombre válido para estos
 repositorios en ningún documento, diagrama, pipeline o tarea.
 
-### 2. Las disponibilidades son un módulo del Core Service
+### 2. Las disponibilidades se absorben en el Core Service
 
-Se retira `MANI-Availability` como repositorio y el Availability Service como desplegable
-independiente. Las disponibilidades conservan **frontera de capacidad**: su módulo, su esquema
-`disponibilidad`, su propia vista de componentes y su API dentro del Core Service.
+Se retira `MANI-Availability` como repositorio y el Availability Service como desplegable. **La
+cobertura y la disponibilidad no quedan como una unidad aparte de ningún tipo:**
 
-Dispatch las consume por la API del Core Service, nunca leyendo su esquema.
+| No tienen | Tienen |
+|---|---|
+| repositorio propio | un componente entre los demás del Core: *Eligibility & Schedule* |
+| desplegable ni imagen propios | sus tablas en el esquema `core`, junto a las del aliado |
+| esquema `disponibilidad` propio | los mismos `Repositories` que el resto del Core |
+| vista de componentes propia | su lugar dentro de `componentes-core` |
+| API propia | la Core API, como cualquier otro dominio |
+
+`core.aliado_cobertura`, `core.aliado_categoria` y `core.disponibilidad` viven juntas porque
+describen al mismo aliado: qué atiende, dónde y cuándo. Un esquema aparte sugería una frontera de
+servicio que no existe.
+
+Dispatch consume la elegibilidad por la **Core API**, nunca leyendo esas tablas.
 
 ### 3. No existe repositorio de infraestructura
 
@@ -106,8 +117,13 @@ imágenes OCI con configuración externa, de modo que cambiar de plataforma no e
 **Sobre el número de servicios.** La frontera de un servicio desplegable se paga en pipeline,
 imagen, secretos, observabilidad y un salto de red en la ruta crítica. Disponibilidades tiene un
 solo consumidor y ninguna razón de escalado independiente: separarla cobraba ese precio sin
-comprarlo. Mantener su esquema y su módulo preserva lo que sí aporta —el límite de dominio— sin el
-costo operativo.
+comprarlo.
+
+Tampoco se conserva como módulo con esquema y vista propios, que fue la primera propuesta de esta
+decisión. Esa opción dejaba una frontera a medias: en el papel parecía un servicio —su esquema, su
+diagrama, su API— pero en el despliegue no lo era, y eso es exactamente la ambigüedad que esta
+consolidación venía a cerrar. La elegibilidad es una consulta sobre tres tablas del aliado; su sitio
+natural es junto a ellas.
 
 **Sobre la orquestación.** Documentar como actual una plataforma no decidida produjo umbrales
 inverificables: el SDD exigía «escalamiento de 2 a 6 réplicas» en una VM que no puede darlo. Declarar
@@ -135,10 +151,12 @@ estar hablando del mismo repositorio sin estarlo.
 
 - **Renombrar repositorios rompe referencias**: remotos de git, workflows, URLs de imágenes en GHCR
   y enlaces en tareas de Jira. Es trabajo mecánico pero hay que hacerlo de una vez.
-- **El Core Service crece.** Concentra identidad, clientes, aliados, catálogo, ciclo del servicio,
-  comunicaciones y disponibilidades. Mitigación: módulos internos con esquema propio por dominio y
-  la regla de que ningún módulo escribe las tablas de otro. El riesgo a vigilar es que el Core se
-  vuelva un monolito con tres runtimes alrededor.
+- **El Core Service crece.** Concentra identidad, clientes y sitios, aliados y KYC, catálogo,
+  cobertura y disponibilidad, ciclo del servicio, comunicaciones y reportes. Mitigación:
+  organización interna por dominios, un componente por dominio y la regla de que la persistencia
+  pasa por los `Repositories` del Core. El riesgo a vigilar es que el Core se vuelva un monolito con
+  tres runtimes alrededor; el indicador es que el equipo deje de poder razonar sobre sus límites
+  internos.
 - **Sin autoescalado ni réplicas gestionadas** mientras la orquestación esté abierta. El techo de
   capacidad es la VM. Es una limitación real del estado actual, no un supuesto de diseño.
 - **La caída de la VM tumba el ambiente.** No hay recuperación a nivel de host. Debe estar en el
@@ -151,8 +169,8 @@ estar hablando del mismo repositorio sin estarlo.
 Revisar si:
 
 - se cierra INFRA-01 o INFRA-02, lo que obliga a actualizar §5 de esta decisión;
-- el módulo de disponibilidades adquiere un consumidor distinto de Dispatch o una necesidad de
-  escalado propia, que es lo que justificaría separarlo en un desplegable;
+- la elegibilidad adquiere un consumidor distinto de Dispatch o una necesidad de escalado propia,
+  que es lo que justificaría volver a extraerla como servicio;
 - el Core Service alcanza un tamaño en el que el equipo no pueda razonar sobre sus límites internos,
   caso en el que la división se decide por capacidad de negocio y no por operación CRUD (KI-03);
 - el equipo migra formalmente a monorepo, lo que revisa también ADR-0004.

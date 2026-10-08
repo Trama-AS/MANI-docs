@@ -93,10 +93,9 @@ El modelo conceptual describe las entidades del negocio sin depender de PostgreS
 
 Dominios:
 
-- **Identidad:** Tenant, Usuario, Rol, Aliado, Documento KYC, categorías atendidas y cobertura declarada.
+- **Identidad:** Tenant, Usuario, Rol, Aliado, Documento KYC, categorías atendidas, cobertura declarada y agenda de disponibilidad.
 - **Clientes:** Cliente y Sitio de servicio.
 - **Catálogo:** Categoría y Zona.
-- **Disponibilidad:** agenda operacional de los aliados.
 - **Despacho:** Solicitud y Asignación.
 - **Ciclo del servicio:** Cotización, Historial de ejecución y Calificación.
 - **Reglas:** reglas configurables por tenant y tarifario de referencia.
@@ -257,6 +256,23 @@ PK/FK id_zona
 estado
 ```
 
+### Disponibilidad
+
+Agenda del aliado: dice *cuándo* puede atender. La cobertura —*dónde*— es `AliadoCobertura`.
+Ambas pertenecen al mismo dominio de identidad del aliado y viven en el esquema `core`.
+
+```text
+Disponibilidad
+PK id_disponibilidad
+FK id_aliado
+FK id_categoria
+FK id_zona
+fecha
+hora_inicio
+hora_fin
+estado
+```
+
 ## 4.2 Clientes y sitios de servicio
 
 ### Cliente
@@ -309,21 +325,7 @@ descripcion
 estado
 ```
 
-## 4.4 Disponibilidad
-
-```text
-Disponibilidad
-PK id_disponibilidad
-FK id_aliado
-FK id_categoria
-FK id_zona
-fecha
-hora_inicio
-hora_fin
-estado
-```
-
-## 4.5 Despacho
+## 4.4 Despacho
 
 ```text
 Solicitud
@@ -350,7 +352,7 @@ fecha_asignacion
 fecha_respuesta
 ```
 
-## 4.6 Ciclo del servicio
+## 4.5 Ciclo del servicio
 
 ```text
 Cotizacion
@@ -392,7 +394,7 @@ fecha
 
 Una solicitud admite **una sola** calificación por `rol_autor`. El cierre requiere las dos.
 
-## 4.7 Reglas y tarifario
+## 4.6 Reglas y tarifario
 
 ```text
 ReglaTenant
@@ -420,7 +422,7 @@ vigencia_hasta
 estado
 ```
 
-## 4.8 Comunicaciones
+## 4.7 Comunicaciones
 
 ```text
 Conversacion
@@ -469,7 +471,7 @@ fecha_cierre
 `Queja` pertenece al segundo incremento (RF-26) y se modela aquí para no reabrir el esquema
 cuando entre al alcance.
 
-## 4.9 Pagos
+## 4.8 Pagos
 
 ```text
 Pago
@@ -802,6 +804,7 @@ core
 ├── aliado
 ├── aliado_categoria
 ├── aliado_cobertura
+├── disponibilidad
 ├── documento_kyc
 ├── cliente
 ├── sitio_servicio
@@ -811,9 +814,6 @@ core
 reglas
 ├── regla_tenant
 └── tarifario
-
-disponibilidad
-└── disponibilidad
 
 despacho
 ├── solicitud
@@ -836,19 +836,27 @@ pagos
 
 La separación por esquema organiza el modelo por dominio. En una evolución hacia bases totalmente independientes, los IDs remotos pueden mantenerse como referencias lógicas sin FK física entre bases.
 
+Hay **seis esquemas**, y cada uno tiene un único servicio dueño (§13).
+
 El esquema `servicio` existe para que el dueño de los datos coincida con el dueño de la
 capacidad: el despacho (solicitud y asignación) pertenece a Dispatch, mientras cotización,
 ejecución y calificación pertenecen al Core Service, que es quien implementa esos casos de uso
 (SAD §7). Sin esta separación, `cotizacion` quedaba en un esquema de Dispatch mientras el SAD
 asignaba el caso de uso a Core.
 
+**La disponibilidad no tiene esquema propio.** `core.disponibilidad` está junto a
+`core.aliado_cobertura` y `core.aliado_categoria` porque las tres describen al mismo aliado: qué
+atiende, dónde y cuándo. Separarlas en un esquema aparte sugería una frontera de servicio que no
+existe.
+
 ## 6.2 Aislamiento por tenant en el modelo físico
 
 `id_tenant` se denormaliza en toda tabla que sea frontera de consulta directa —`tenant`, `usuario`,
 `categoria`, `zona`, `cliente`, `solicitud`, `regla_tenant`, `tarifario`, `conversacion`— para que la
 política RLS filtre sin recorrer joins. Las tablas que solo se alcanzan a través de una de ellas
-(`documento_kyc`, `mensaje`, `calificacion`, `cotizacion`, `asignacion`, `historial_solicitud`)
-heredan el aislamiento por su clave foránea y lo verifican en la política correspondiente.
+(`documento_kyc`, `disponibilidad`, `aliado_cobertura`, `aliado_categoria`, `mensaje`,
+`calificacion`, `cotizacion`, `asignacion`, `historial_solicitud`) heredan el aislamiento por su
+clave foránea y lo verifican en la política correspondiente.
 
 La regla operativa: ninguna política RLS depende de `auth.uid()` cuando el llamador es un servicio.
 El tenant se toma del claim del JWT que el servicio propaga, y RLS actúa como defensa adicional,
@@ -863,7 +871,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE SCHEMA IF NOT EXISTS reglas;
-CREATE SCHEMA IF NOT EXISTS disponibilidad;
 CREATE SCHEMA IF NOT EXISTS despacho;
 CREATE SCHEMA IF NOT EXISTS servicio;
 CREATE SCHEMA IF NOT EXISTS comunicaciones;
@@ -1037,7 +1044,7 @@ CREATE TABLE reglas.tarifario (
 -- Agenda del aliado: dice CUANDO puede atender. La cobertura (DONDE) vive en
 -- core.aliado_cobertura. Una franja solo es valida si su zona y categoria estan
 -- declaradas por el aliado; esa validacion la aplica el servicio, no una FK.
-CREATE TABLE disponibilidad.disponibilidad (
+CREATE TABLE core.disponibilidad (
     id_disponibilidad UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_aliado UUID NOT NULL,
     id_categoria UUID NOT NULL,
@@ -1244,7 +1251,7 @@ CREATE INDEX idx_sitio_cliente
 ON core.sitio_servicio(id_cliente,estado);
 
 CREATE INDEX idx_disponibilidad_busqueda
-ON disponibilidad.disponibilidad(id_categoria,id_zona,fecha,estado);
+ON core.disponibilidad(id_categoria,id_zona,fecha,estado);
 
 CREATE INDEX idx_solicitud_cliente
 ON despacho.solicitud(id_cliente);
@@ -1402,7 +1409,7 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | condiciones | TEXT | NULL | Condiciones particulares del sitio |
 | estado | VARCHAR(20) | CHECK | Estado |
 
-## `disponibilidad.disponibilidad`
+## `core.disponibilidad`
 
 | Campo | Tipo | Restricción | Descripción |
 |---|---|---|---|
@@ -2011,10 +2018,9 @@ mantiene este documento, que es su dueño.
 
 | Dominio de datos | Servicio propietario | Repositorio |
 |---|---|---|
-| `core.*` | Core Service — Node.js | `MANI-Core-Service` |
-| `disponibilidad.*` | Core Service — módulo de disponibilidades | `MANI-Core-Service` |
+| `core.*` | Core Service — identidad, aliados y KYC, clientes y sitios, catálogo, cobertura y disponibilidad | `MANI-Core-Service` |
 | `servicio.*` | Core Service — cotización, ejecución y calificación | `MANI-Core-Service` |
-| `comunicaciones.*` | Core Service — módulo de comunicaciones | `MANI-Core-Service` |
+| `comunicaciones.*` | Core Service — conversaciones, mensajes, notificaciones y quejas | `MANI-Core-Service` |
 | `pagos.*` | Core Service — adaptador de pagos, segundo incremento | `MANI-Core-Service` |
 | `reglas.*` | Rules Service — Java | `MANI-Rules-Service` |
 | `despacho.*` | Dispatch Service — .NET | `MANI-Dispatch-Service` |
@@ -2025,7 +2031,7 @@ La propiedad implica **escritura exclusiva** del servicio responsable. Otros ser
 Dos lecturas cruzadas son explícitamente permitidas y solo de lectura:
 
 - Dispatch lee la elegibilidad por categoría y zona consultando la API del Core Service, no
-  `core.aliado_cobertura` ni `disponibilidad.disponibilidad` directamente.
+  `core.aliado_cobertura` ni `core.disponibilidad` directamente.
 - Rules lee el tarifario de su propio esquema y devuelve el veredicto; es el Core Service quien
   escribe `fuera_de_rango` en `servicio.cotizacion`.
 
@@ -2062,7 +2068,7 @@ persistirse. Cada RF del SRS apunta a las tablas que lo soportan.
 | RF-09 | Sitios de servicio con reglas y zona | `core.sitio_servicio` |
 | RF-10 | Categorías del tenant | `core.categoria` |
 | RF-11 | Asociar aliados con categorías | `core.aliado_categoria` |
-| RF-12 | Crear solicitud y presentar aliados válidos | `despacho.solicitud` + `core.aliado_cobertura` + `core.aliado_categoria` + `disponibilidad.disponibilidad` |
+| RF-12 | Crear solicitud y presentar aliados válidos | `despacho.solicitud` + `core.aliado_cobertura` + `core.aliado_categoria` + `core.disponibilidad` |
 | RF-13 | Ordenar el listado según regla del tenant | `reglas.regla_tenant` (tipo de regla de ranking) |
 | RF-14 | Aceptar/rechazar sin doble asignación | `despacho.asignacion` + actualización condicional atómica |
 | RF-15 | Cotización con mano de obra y materiales | `servicio.cotizacion.valor_mano_obra`, `valor_materiales` |

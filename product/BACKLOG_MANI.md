@@ -198,10 +198,10 @@ Toda historia `-M2` conserva como criterio de aceptación el comportamiento vali
 | `SCRUM-846` · US-02.1.1 Registro aliado persona natural | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth/Storage | `US-02.1.1-M3`, `US-02.1.1-M4`, `US-02.1.1-M2` | Sprint 3 |
 | `SCRUM-847` · US-02.1.2 Registro aliado empresa | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth/Storage | `US-02.1.2-M3`, `US-02.1.2-M2` | Sprint 3 |
 | `SCRUM-848` · US-02.1.3 Aprobar/rechazar registro de aliado | Done | PRESERVAR_Y_VALIDAR | Core Service | `US-02.1.3-M2` | Incremento 2 |
-| `SCRUM-849` · US-02.1.4 Declarar zona de cobertura | Done | REESPECIFICAR_Y_REUTILIZAR | modulo de disponibilidades del Core Service | `US-02.1.4-R1`, `US-02.1.4-M2` | Incremento 2 |
+| `SCRUM-849` · US-02.1.4 Declarar zona de cobertura | Done | REESPECIFICAR_Y_REUTILIZAR | Core Service | `US-02.1.4-R1`, `US-02.1.4-M2` | Incremento 2 |
 | `SCRUM-851` · US-02.2.1 Registro cliente persona natural | Done | PRESERVAR_Y_VALIDAR | Core Service + Auth | `US-02.2.1-M2` | Sprint 3 |
 | `SCRUM-857` · US-03.1.1 Crear categoría con flujo operativo | Done | PRESERVAR_Y_VALIDAR | Core Service + Rules Java | `US-03.1.1-M2`, `US-03.1.1-M6` | Incremento 2 |
-| `SCRUM-859` · US-03.1.3 Aliado declara categorías que atiende | In Progress | Completar sobre el camino nuevo | Core Service, modulo de disponibilidades | `US-03.1.3-M2` | Incremento 2 |
+| `SCRUM-859` · US-03.1.3 Aliado declara categorías que atiende | In Progress | Completar sobre el camino nuevo | Core Service | `US-03.1.3-M2` | Incremento 2 |
 | `SCRUM-860` · US-04.1.1 Crear solicitud | Done | PRESERVAR_Y_VALIDAR | Core Service + Dispatch .NET | `US-04.1.1-M2`, `US-04.1.1-M6` | Incremento 2 |
 | `SCRUM-863` · US-04.1.4 Aceptar/rechazar solicitud sin doble asignación | Done | PRESERVAR_Y_VALIDAR | Dispatch .NET + PostgreSQL | `US-04.1.4-M6` | Incremento 2 |
 
@@ -241,7 +241,7 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-API-Gateway** (NGINX) y
 |---|---|---|---|---|
 | `US-02.1.3-M2` | Migracion: aprobacion y rechazo de registro de aliado en Core Service, con la visibilidad de documentos KYC resuelta en el nuevo modelo de identidad | High | 5 | `SCRUM-848` |
 | `US-02.1.4-R1` | Reespecificacion: sustituir la seleccion libre en mapa por el catalogo jerarquico de zonas | High | 5 | `SCRUM-849` |
-| `US-02.1.4-M2` | Migracion: declaracion de zona de cobertura sobre el modulo de disponibilidades del Core Service, persistida en `core.aliado_cobertura` | High | 5 | `SCRUM-849` |
+| `US-02.1.4-M2` | Migracion: declaracion de zona de cobertura en el Core Service, persistida en `core.aliado_cobertura` | High | 5 | `SCRUM-849` |
 | `US-03.1.1-M2` | Migracion: gestion de categoria en Core Service, dejando la evaluacion de reglas como frontera declarada hacia Rules | Highest | 5 | `SCRUM-857` |
 | `US-03.1.1-M6` | Migracion: llevar las reglas evaluables de la categoria al Rules Service en Java | High | 5 | `SCRUM-857` |
 | `US-03.1.3-M2` | Migracion: completar la asociacion aliado-categoria por el camino Gateway - Core Service | Medium | 3 | `SCRUM-859` |

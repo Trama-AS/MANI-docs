@@ -34,8 +34,7 @@ Declaradas en [`workspace.dsl`](../../diagrams/LLD/workspace.dsl):
 | `contenedores` | C4 Nivel 2 | Flutter, Gateway, los **tres** servicios, Supabase, CDC/ELT e integraciones |
 | `componentes-rules` | C4 Nivel 3 | Rules Service (Java) |
 | `componentes-dispatch` | C4 Nivel 3 | Dispatch Service (.NET), con el **Concurrency Guard** |
-| `componentes-core` | C4 Nivel 3 | Core Service (Node.js), dominios de negocio |
-| `componentes-availability` | C4 Nivel 3 | Core Service, módulo de disponibilidades |
+| `componentes-core` | C4 Nivel 3 | Core Service (Node.js), todos sus dominios |
 | `secuencia-despacho` | Dinámica | aceptación concurrente y el `409` |
 | `secuencia-cotizacion` | Dinámica | cotización y validación tarifaria |
 | `secuencia-mensajeria` | Dinámica | mensajería por Realtime y push |

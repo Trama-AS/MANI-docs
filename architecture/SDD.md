@@ -99,13 +99,13 @@ Capacidades principales:
 |---|---|
 | Reglas por Tenant | ranking, validación tarifaria, políticas KYC y configuración por tenant |
 | Despacho y Asignación | solicitudes, candidatos, aceptación/rechazo, exclusiones, concurrencia y auditoría |
-| Core de Negocio | usuarios, tenants, clientes y sitios, aliados y KYC, catálogos, cotización, ejecución, calificación, comunicaciones y reportes operativos |
-| Disponibilidades | cobertura, zonas, horarios y elegibilidad; **módulo del Core Service**, no un desplegable aparte |
+| Core de Negocio | usuarios, tenants, clientes y sitios, aliados y KYC, catálogos, **cobertura y disponibilidad**, cotización, ejecución, calificación, comunicaciones y reportes operativos |
 | Integraciones | FCM/APNs, pasarela de pagos, observabilidad y servicios externos |
 
-Disponibilidades mantiene frontera de capacidad propia —su módulo, su esquema `disponibilidad` y su
-vista de componentes— pero se construye y despliega dentro del `MANI-Core-Service`. Separarla en un
-desplegable adicional no aportaba beneficio frente al costo operativo (riesgo KI-03, SAD §23).
+**La cobertura y la disponibilidad no son una capacidad aparte.** Son uno de los dominios del Core
+Service, con un componente entre los demás (§4.4.3) y sus tablas en el esquema `core`. No tienen
+servicio, esquema, vista de componentes, repositorio ni desplegable propios. Separarlas no aportaba
+beneficio frente al costo operativo de una frontera más (riesgo KI-03, SAD §23).
 
 La orientación a servicios permite que la lógica del dominio no quede acoplada a Flutter ni a la base de datos.
 
@@ -162,20 +162,22 @@ Todo diagrama del proyecto está en esta tabla. Si una vista no aparece aquí, n
 | 4 | Rules Service | C4 Nivel 3 | `componentes-rules` | [`LLD/Software/componentes-rules.png`](../diagrams/LLD/Software/componentes-rules.png) | §4.4.1 |
 | 5 | Dispatch Service (.NET) | C4 Nivel 3 | `componentes-dispatch` | [`LLD/Software/componentes-dispatch.png`](../diagrams/LLD/Software/componentes-dispatch.png) | §4.4.2 |
 | 6 | Core Service | C4 Nivel 3 | `componentes-core` | [`LLD/Software/componentes-core.png`](../diagrams/LLD/Software/componentes-core.png) | §4.4.3 |
-| 7 | Módulo de disponibilidades | C4 Nivel 3 | `componentes-availability` | [`LLD/Software/componentes-availability.png`](../diagrams/LLD/Software/componentes-availability.png) | §4.4.4 |
-| 8 | Código — dependencias internas | C4 Nivel 4 | no se modela en DSL | — | §4.5 |
-| 9 | Secuencia: despacho y aceptación concurrente | Dinámica | `secuencia-despacho` | [`LLD/Software/secuencia-despacho.png`](../diagrams/LLD/Software/secuencia-despacho.png) | §4.6.1 |
-| 10 | Secuencia: cotización y validación tarifaria | Dinámica | `secuencia-cotizacion` | [`LLD/Software/secuencia-cotizacion.png`](../diagrams/LLD/Software/secuencia-cotizacion.png) | §4.6.2 |
-| 11 | Secuencia: mensajería por Realtime | Dinámica | `secuencia-mensajeria` | [`LLD/Software/secuencia-mensajeria.png`](../diagrams/LLD/Software/secuencia-mensajeria.png) | §4.6.3 |
-| 12 | Despliegue QA | Despliegue | `despliegue-qa` | [`LLD/Software/despliegue-qa.png`](../diagrams/LLD/Software/despliegue-qa.png) | §9.1 |
-| 13 | Despliegue PROD | Despliegue | `despliegue-prod` | [`LLD/Software/despliegue-prod.png`](../diagrams/LLD/Software/despliegue-prod.png) | §9.2 |
-| 14 | Infraestructura de alto nivel | HLD | no se modela en DSL | [`HLD/Infra.png`](../diagrams/HLD/Infra.png) | §9.3 |
-| 15 | Tech Radar | HLD | no se modela en DSL | [`HLD/TechRadar.png`](../diagrams/HLD/TechRadar.png) | [`TECH_RADAR.md`](./TECH_RADAR.md) |
+| 7 | Código — dependencias internas | C4 Nivel 4 | no se modela en DSL | — | §4.5 |
+| 8 | Secuencia: despacho y aceptación concurrente | Dinámica | `secuencia-despacho` | [`LLD/Software/secuencia-despacho.png`](../diagrams/LLD/Software/secuencia-despacho.png) | §4.6.1 |
+| 9 | Secuencia: cotización y validación tarifaria | Dinámica | `secuencia-cotizacion` | [`LLD/Software/secuencia-cotizacion.png`](../diagrams/LLD/Software/secuencia-cotizacion.png) | §4.6.2 |
+| 10 | Secuencia: mensajería por Realtime | Dinámica | `secuencia-mensajeria` | [`LLD/Software/secuencia-mensajeria.png`](../diagrams/LLD/Software/secuencia-mensajeria.png) | §4.6.3 |
+| 11 | Despliegue QA | Despliegue | `despliegue-qa` | [`LLD/Software/despliegue-qa.png`](../diagrams/LLD/Software/despliegue-qa.png) | §9.1 |
+| 12 | Despliegue PROD | Despliegue | `despliegue-prod` | [`LLD/Software/despliegue-prod.png`](../diagrams/LLD/Software/despliegue-prod.png) | §9.2 |
+| 13 | Infraestructura de alto nivel | HLD | no se modela en DSL | [`HLD/Infra.png`](../diagrams/HLD/Infra.png) | §9.3 |
+| 14 | Tech Radar | HLD | no se modela en DSL | [`HLD/TechRadar.png`](../diagrams/HLD/TechRadar.png) | [`TECH_RADAR.md`](./TECH_RADAR.md) |
+
+**No existe una vista de disponibilidades.** Su componente aparece dentro de `componentes-core`,
+como cualquier otro dominio del Core.
 
 Convención de carpetas: `diagrams/HLD/` para las vistas de alto nivel y `diagrams/LLD/` para el
 modelo y sus exportaciones, con los diagramas de software bajo `diagrams/LLD/Software/`.
 
-Las vistas 9 a 12 están definidas en el DSL y **pendientes de exportar**. El texto de cada
+Las vistas 8 a 11 están definidas en el DSL y **pendientes de exportar**. El texto de cada
 sección describe el flujo, de modo que el documento se sostiene sin la imagen.
 
 ## 4.1 Landscape del sistema
@@ -248,12 +250,9 @@ Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
                 │              ┌──────────────┬─────┴──────────┬──────────────────────┐
                 │         Rules Service   Dispatch Service   Core Service
                 │           (Java)            (.NET)          (Node.js)
-                │                                              ├── dominios de negocio
-                │                                              └── módulo Disponibilidades
                 │              ↓                 ↓                ↓
                 │     Supabase / PostgreSQL por esquema de dominio:
-                │       reglas · despacho · core · servicio · disponibilidad ·
-                │       comunicaciones · pagos
+                │       core · reglas · despacho · servicio · comunicaciones · pagos
                 │                                               ↓
                 │     Core → FCM/APNs · Operador de pagos · Storage · Realtime
                 │
@@ -264,7 +263,9 @@ Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
    PostgreSQL → carga incremental → CDC/ELT → Data Warehouse → BI
 ```
 
-Tres desplegables de negocio, no cuatro: disponibilidades es un módulo del Core Service (§3.1).
+Tres desplegables de negocio y seis esquemas. La cobertura y la disponibilidad son un dominio del
+Core Service, con sus tablas en el esquema `core` (§3.1).
+
 Los dos únicos trazos que van del cliente a Supabase son Auth y Realtime, y están justificados en
 §2.2.
 
@@ -327,48 +328,58 @@ Responsabilidades:
 
 ### 4.4.3 Core Service — Node.js
 
-![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](../diagrams/LLD/Software/componentes-core.png)
+![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, elegibilidad y agenda, ciclo del servicio, notificación, reportes y adaptadores externos](../diagrams/LLD/Software/componentes-core.png)
 
 > **Figura 6 — Core Service, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/Software/componentes-core.png`](../diagrams/LLD/Software/componentes-core.png).
 
 ```text
 Core API
-  → Users/Tenants Component ─┐
-  → KYC Orchestrator ────────┤
-  → Catalog Component ───────┼→ Repositories → Core DB
-  → Notification Component ──┤
-  → Operational Reporting ───┘
+  → Users/Tenants Component ──────────┐
+  → KYC Orchestrator ─────────────────┤
+  → Catalog Component ────────────────┤
+  → Eligibility & Schedule Component ─┼→ Repositories → PostgreSQL
+  → Service Cycle Component ──────────┤
+  → Notification Component ───────────┤
+  → Operational Reporting ────────────┘
 
+Service Cycle Component → Rules REST Controller          veredicto tarifario
 KYC Orchestrator y Notification Component → External Adapters → Storage · Realtime · FCM/APNs
 ```
 
-### 4.4.4 Módulo de Disponibilidades — Node.js
+Todos los dominios del Core entran por la Core API y persisten por los mismos `Repositories`.
+Ninguno tiene repositorio ni esquema propio.
 
-![C4 Nivel 3 — Módulo de disponibilidades: reglas de horario, consulta de elegibilidad y repositorio](../diagrams/LLD/Software/componentes-availability.png)
+#### Eligibility & Schedule Component
 
-> **Figura 7 — Módulo de Disponibilidades, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-availability` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl); imagen en [`diagrams/LLD/Software/componentes-availability.png`](../diagrams/LLD/Software/componentes-availability.png).
+Resuelve la elegibilidad de un aliado como la conjunción de tres condiciones, y es el componente
+que atiende RF-07, RF-12 y la ruta crítica de RNF-07:
 
 ```text
-Core API
-  → Availability Application Service
-       → Schedule Rules          horarios y solapamientos
-       → Availability Query      elegibilidad: categoría declarada + zona de cobertura + agenda
-       → Availability Repository → esquema disponibilidad
+Elegible =
+  categoría declarada por el aliado   (core.aliado_categoria)
+  AND
+  zona de cobertura declarada         (core.aliado_cobertura)   — coincidencia exacta
+  AND
+  franja de agenda disponible         (core.disponibilidad)
 ```
 
 Responsabilidades:
 
-- resolver la elegibilidad de un aliado como la conjunción de tres condiciones: categoría declarada
-  (`core.aliado_categoria`), zona de cobertura declarada (`core.aliado_cobertura`) y franja de
-  agenda disponible (`disponibilidad.disponibilidad`);
+- resolver la elegibilidad por categoría, zona y agenda;
 - aplicar coincidencia **exacta** de zona, sin radio ni distancia (REST-01, RNF-09, ADR-0011);
 - evaluar horarios y solapamientos.
 
-La lógica de horarios, solapamientos, zonas y elegibilidad pertenece al módulo, **no al cliente
-Flutter**: el cliente la consulta por el Gateway como cualquier otra lectura de negocio (§2.2).
+La **cobertura** dice *dónde* y es una declaración estable del aliado; la **disponibilidad** dice
+*cuándo* y es agenda. El modelo de datos las separa en dos tablas, ambas en el esquema `core`
+(ModeloDatos §4.1).
 
-Es un módulo con esquema propio dentro del `MANI-Core-Service`, y expone sus casos de uso a través
-de la Core API. Dispatch lo consume por API, nunca leyendo su esquema (ModeloDatos §13).
+Dos consecuencias de que esto sea un componente y no un servicio:
+
+- la lógica de horarios, solapamientos, zonas y elegibilidad pertenece al Core, **no al cliente
+  Flutter**: el cliente la consulta por el Gateway como cualquier otra lectura de negocio (§2.2);
+- **Dispatch la consume por la Core API**, nunca leyendo las tablas (ModeloDatos §13). Esa llamada
+  es la única dependencia entre servicios en la ruta de RF-12, y es la que aparece en la secuencia
+  de §4.6.1.
 
 ---
 
@@ -438,7 +449,7 @@ Flujo crítico de RF-14 y RNF-05. Es la secuencia que demuestra que no hay doble
 
 ![Secuencia de despacho: creación de solicitud, candidatos, broadcast y aceptación concurrente con 409](../diagrams/LLD/Software/secuencia-despacho.png)
 
-> **Figura 9 — pendiente de exportar.** Vista `secuencia-despacho` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl). El flujo en texto de abajo es normativo mientras la imagen no exista.
+> **Figura 7 — pendiente de exportar.** Vista `secuencia-despacho` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl). El flujo en texto de abajo es normativo mientras la imagen no exista.
 
 ```text
 Cliente → Gateway → Dispatch      crear solicitud (RF-12)
@@ -465,7 +476,7 @@ Flujo de RF-15, RF-16 y RF-17.
 
 ![Secuencia de cotización: desglose, contraste contra tarifario y respuesta del cliente](../diagrams/LLD/Software/secuencia-cotizacion.png)
 
-> **Figura 10 — pendiente de exportar.** Vista `secuencia-cotizacion` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
+> **Figura 8 — pendiente de exportar.** Vista `secuencia-cotizacion` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
 
 ```text
 Aliado → Gateway → Core           enviar cotización con mano de obra y materiales (RF-15)
@@ -488,7 +499,7 @@ Flujo de RF-20 y RF-21, y el único punto donde el cliente toca Supabase además
 
 ![Secuencia de mensajería: envío por el Gateway, entrega por Realtime y push cuando no hay conexión](../diagrams/LLD/Software/secuencia-mensajeria.png)
 
-> **Figura 11 — pendiente de exportar.** Vista `secuencia-mensajeria` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
+> **Figura 9 — pendiente de exportar.** Vista `secuencia-mensajeria` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
 
 ```text
 Cliente → Gateway → Core          enviar mensaje del servicio
@@ -702,7 +713,7 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 |---|---|---|:---:|---|---|---|---|---|---|---|
 | **QAS-01** | **Seguridad** | **Confidencialidad** | P1 | Usuario autenticado de un tenant | Intenta consultar o modificar información perteneciente a otro tenant | QA o PROD en operación normal | API Gateway, servicio de dominio y PostgreSQL/RLS | El sistema rechaza la operación, no expone información del tenant destino y registra el evento cuando corresponda | **100% de accesos cross-tenant rechazados** | QA ejecuta pruebas automatizadas con tokens y recursos de tenants distintos sobre operaciones de lectura y escritura; verifica rechazo de acceso, ausencia de datos ajenos y evidencia de auditoría |
 | **QAS-02** | **Fiabilidad** | **Tolerancia a fallos** | P1 | Proveedor externo de notificaciones | FCM/APNs deja de responder después de confirmarse una operación de negocio | QA con dependencia externa degradada o indisponible | Core Service, Notification Component y adaptador externo | La operación principal permanece confirmada y la notificación queda disponible para reintento controlado | **0 operaciones confirmadas revertidas únicamente por fallo de notificación** | QA simula timeout, error y caída del proveedor; verifica estado final de la operación, persistencia del evento, logs y ejecución del mecanismo de retry |
-| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | QA bajo carga nominal | Core Service — módulo de disponibilidades, persistencia y componentes de la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta pruebas de carga, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral |
+| **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | QA bajo carga nominal | Core Service — componente de elegibilidad y agenda, persistencia y componentes de la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta pruebas de carga, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral |
 | **QAS-04** | **Mantenibilidad** | **Capacidad para ser modificado** | P1 | Equipo de desarrollo | Modifica una regla de ranking o comportamiento configurable de un tenant manteniendo el contrato externo | DEV y QA | Rules Service, configuración y contratos de integración | El cambio se implementa sin exigir modificaciones en consumidores externos compatibles | **0 cambios obligatorios en Flutter, Gateway o Dispatch para un cambio interno compatible** | QA ejecuta pruebas de regresión, integración y contract tests; verifica que los consumidores existentes continúen operando sin modificaciones derivadas del cambio |
 | **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad de la instancia en ejecución | VM de QA con Docker bajo carga controlada | Contenedor del servicio crítico, Compose del ambiente y observabilidad | Se añade capacidad al servicio sin modificar código ni reconstruir la imagen, y el servicio sigue atendiendo durante el cambio | **La misma imagen admite capacidad adicional solo por configuración del ambiente; 0 cambios de código y 0 reconstrucciones** | QA genera carga progresiva con k6, añade capacidad al servicio por configuración y verifica con la plataforma de observabilidad que la latencia baja, que no aparecen errores nuevos y que el digest de la imagen no cambió |
 | **QAS-06** | **Compatibilidad** | **Interoperabilidad** | P2 | Servicio interno o consumidor autorizado | Consume una API publicada por un servicio implementado en otra tecnología | QA de integración | APIs REST, API Gateway y contratos OpenAPI | Productor y consumidor intercambian información respetando el contrato publicado | **100% de APIs documentadas con OpenAPI y contract tests críticos aprobados antes de promoción** | QA ejecuta contract tests y pruebas de integración/Newman; valida códigos HTTP, payloads, tipos de datos, campos obligatorios y compatibilidad del contrato |
@@ -728,7 +739,7 @@ promueve de QA a PROD, por lo que migrar a Kubernetes no exige reconstruirlas.
 
 ![Vista de despliegue — QA: VM única con Docker, servicios contenerizados y Supabase de QA](../diagrams/LLD/Software/despliegue-qa.png)
 
-> **Figura 12 — pendiente de exportar.** Vista `despliegue-qa` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
+> **Figura 10 — pendiente de exportar.** Vista `despliegue-qa` de [`workspace.dsl`](../diagrams/LLD/workspace.dsl).
 
 ```text
 Equipo de QA y pruebas automatizadas
@@ -736,7 +747,7 @@ Equipo de QA y pruebas automatizadas
 VM de QA
   NGINX API Gateway (contenedor)
         ↓ red interna de Docker
-  Rules (Java) · Dispatch (.NET) · Core + Disponibilidades (Node.js)
+  Rules (Java) · Dispatch (.NET) · Core (Node.js)
         ↓
   Supabase — proyecto de QA, separado de producción
         ↓
@@ -750,10 +761,10 @@ VM de QA
 ```text
 Web / Mobile Users → DNS + TLS → NGINX API Gateway (contenedor)
                                           ↓ red interna de Docker
-  Rules (Java) · Dispatch (.NET) · Core + Disponibilidades (Node.js)
+  Rules (Java) · Dispatch (.NET) · Core (Node.js)
                                           ↓
 Supabase — proyecto productivo
-  PostgreSQL con esquemas por dominio: core · disponibilidad · reglas · despacho · servicio ·
+  PostgreSQL con esquemas por dominio: core · reglas · despacho · servicio ·
   comunicaciones · pagos
                                           ↓
 Core → FCM/APNs + Operador de pagos (2.º incremento)
@@ -780,7 +791,7 @@ y se levanta cuando INFRA-01 se cierre.
 
 ![Vista de alto nivel de la infraestructura de MANI por ambiente](../diagrams/HLD/Infra.png)
 
-> **Figura 8 — Infraestructura de alto nivel.** Archivo: [`diagrams/HLD/Infra.png`](../diagrams/HLD/Infra.png).
+> **Figura 11 — Infraestructura de alto nivel.** Archivo: [`diagrams/HLD/Infra.png`](../diagrams/HLD/Infra.png).
 > El detalle operativo por ambiente vive en [`INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md).
 
 ---
@@ -926,9 +937,9 @@ GitHub / Organización MANI
 │   └── solicitudes, despacho, asignación y exclusión concurrente
 ├── MANI-Core-Service
 │   ├── tenants, identidad, clientes y sitios, aliados y KYC, catálogo
+│   ├── cobertura, disponibilidad y elegibilidad
 │   ├── cotización, ejecución y calificación
-│   ├── comunicaciones
-│   └── disponibilidades   módulo con esquema propio
+│   └── comunicaciones
 └── MANI-Docs
     ├── product/        SRS y backlog
     ├── architecture/   SAD.md, SDD.md, ModeloDatos.md, TECH_RADAR.md
@@ -949,8 +960,8 @@ GitHub / Organización MANI
 - la promoción entre ambientes preserva el mismo artefacto validado;
 - la estrategia multi-repo es una decisión explícita del proyecto y queda reflejada en ADR-0004.
 
-**Disponibilidades no tiene repositorio propio.** Mantiene frontera de capacidad —módulo, esquema
-`disponibilidad` y vista de componentes— dentro de `MANI-Core-Service` (§3.1).
+**La cobertura y la disponibilidad no tienen nada propio**: ni repositorio, ni esquema, ni vista de
+componentes. Son un dominio del `MANI-Core-Service` como la identidad o el catálogo (§3.1, §4.4.3).
 
 ---
 
@@ -995,7 +1006,7 @@ la fuente de la decisión. Esta sección solo dice qué decisión sostiene qué 
 | [ADR-0022](../adr/ADR-0022-logica-de-negocio-en-servicios.md) | La lógica de negocio vive en los servicios | §2 principios, §2.2, §4.6 secuencias |
 | [ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md) | Alcance de `supabase_flutter`: solo Auth y Realtime | §2.2, §14 dependencias |
 | [ADR-0016](../adr/ADR-0016-despacho-concurrencia.md) | Despacho broadcast y exclusión concurrente | §4.4.2 Dispatch, §4.6.1 secuencia de despacho |
-| [ADR-0011](../adr/ADR-0011-cobertura-geografica.md) | Cobertura por zonas, sin radio ni geolocalización | §4.4.4 disponibilidades, §4.6.1 |
+| [ADR-0011](../adr/ADR-0011-cobertura-geografica.md) | Cobertura por zonas, sin radio ni geolocalización | §4.4.3 disponibilidades, §4.6.1 |
 | [ADR-0013](../adr/ADR-0013-storage-kyc.md) | Almacenamiento aislado de documentos KYC | §4.4.3 Core, §7.2 confidencialidad |
 | [ADR-0017](../adr/ADR-0017-realtime-notificaciones.md) | Mensajería en tiempo real y notificaciones push | §4.6.3 secuencia de mensajería |
 | [ADR-0004](../adr/ADR-0004-cicd-multirepo-ambientes.md) | CI/CD multi-repo y promoción de ambientes | §10 ambientes, §11 CI/CD, §13 repositorios |
@@ -1023,7 +1034,7 @@ Lo que aporta este SDD es **dónde se materializa el control de cada riesgo en e
 |---|---|
 | KI-01 — lógica de negocio en Flutter | §2 principio 1, §2.2 acceso del cliente, §4.6 secuencias |
 | KI-02 — acceso directo a Supabase | §2.2 (dos caminos, sin excepciones), §14 dependencias prohibidas |
-| KI-03 — servicios excesivamente pequeños | §3.1 y §13: disponibilidades es módulo, no desplegable |
+| KI-03 — servicios excesivamente pequeños | §3.1, §4.4.3 y §13: cobertura y disponibilidad son un dominio del Core, no un servicio |
 | KI-04 — dependencias síncronas largas | §5 event-driven para efectos secundarios, §6 Circuit Breaker y Retry |
 | KI-05 — pérdida de aislamiento multi-tenant | §7.2 umbrales de seguridad, §8 QAS-01 |
 | KI-06 — doble asignación | §4.4.2 Concurrency Guard, §4.6.1 secuencia de despacho |

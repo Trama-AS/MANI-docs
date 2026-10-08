@@ -1,0 +1,54 @@
+NOTACION USADA EN diagrams/flujos/*.txt
+=======================================
+
+Cada archivo describe un proceso de negocio de MANI en texto plano, listo para
+transcribir a BPMN (Camunda / bpmn.io / draw.io / Mermaid).
+
+Carriles (lanes)
+----------------
+`Actor:` al inicio de linea abre o cambia de carril. Las tareas siguientes
+pertenecen a ese carril hasta el siguiente `Actor:`.
+Carriles MANI: Cliente, Aliado, Administrador de tenant,
+Administrador de plataforma, Sistema MANI, Operador de pagos.
+
+Tipos de tarea
+--------------
+user    tarea humana en la plataforma (formulario, aprobacion, seleccion)
+script  tarea automatica del sistema (sin intervencion humana)
+manual  tarea humana fuera del sistema (trabajo fisico, espera real)
+(sin prefijo) tarea generica / subproceso
+
+Compuertas
+----------
+`¿Pregunta?` abre una compuerta exclusiva (XOR).
+Las ramas se nombran con la respuesta: `Si` / `No` / `<valor>`.
+`¿Pregunta? (paralelo)` indica compuerta paralela (AND).
+
+Eventos
+-------
+`(texto)`               evento de mensaje (enviar / recibir)
+`(timer ...)`           evento temporizador (limite, espera, SLA)
+`(error ...)`           evento de error
+`(inicio: ...)`         evento de inicio
+`(fin: ...)`            evento de fin
+
+Separadores
+-----------
+`...`   punto de continuacion o de reunion (merge) de ramas; se repite la
+        tarea previa para indicar donde vuelve a engancharse el flujo.
+
+Trazabilidad
+------------
+Cada proceso lista al final los RF/RNF del SRS que cubre.
+
+Indice de procesos
+------------------
+01_alta_tenant.txt                 Alta y configuracion de un tenant
+02_registro_verificacion_aliado.txt Registro de aliado + KYC + aprobacion
+03_registro_cliente_sitios.txt     Registro de cliente y sitios de servicio
+04_ciclo_servicio.txt              Proceso principal: solicitud a cierre
+05_despacho_asignacion.txt         Despacho y resolucion de concurrencia
+06_cotizacion_tarifario.txt        Cotizacion vs tarifario de referencia
+07_mensajeria_notificaciones.txt   Mensajeria por servicio y notificaciones
+08_pagos_liquidacion.txt           Cobro al cliente y liquidacion al aliado
+09_gestion_quejas.txt              Queja asociada a un servicio

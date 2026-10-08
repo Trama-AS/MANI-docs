@@ -1,0 +1,60 @@
+PROCESO 07 — MENSAJERIA POR SERVICIO Y NOTIFICACIONES
+=====================================================
+Subproceso invocado desde 04_ciclo_servicio.txt
+
+Cliente: (inicio: servicio con aliado asignado)
+user Abrir conversacion del servicio
+user Escribir mensaje
+(enviar mensaje)
+
+Sistema MANI: script Validar pertenencia del usuario al servicio y al tenant
+
+¿Usuario autorizado en el servicio?
+No
+script Rechazar el mensaje
+(notificar acceso no permitido)
+(fin: mensaje rechazado)
+
+¿Usuario autorizado en el servicio?
+Si
+script Persistir mensaje en la conversacion del servicio
+script Verificar presencia del destinatario
+
+¿Destinatario conectado?
+Si
+script Entregar mensaje casi en tiempo real
+Aliado: (recibir mensaje en la conversacion)
+user Leer y responder mensaje
+...
+
+¿Destinatario conectado?
+No
+script Encolar notificacion push
+(enviar notificacion al proveedor push)
+Aliado: (recibir notificacion push)
+user Abrir conversacion del servicio
+user Leer y responder mensaje
+...
+
+Aliado: user Leer y responder mensaje
+(enviar mensaje)
+script Persistir mensaje en la conversacion del servicio
+(fin: conversacion actualizada)
+
+...
+
+Sistema MANI: script Encolar notificacion push
+(error proveedor push no disponible)
+script Reintentar entrega con backoff
+(timer reintentos agotados en 15 min)
+script Marcar notificacion como no entregada y registrar traza
+(fin: notificacion no entregada - mensaje queda disponible en la conversacion)
+
+...
+
+Administrador de tenant: (inicio: atencion o queja sobre un servicio)
+user Consultar conversaciones asociadas al servicio
+script Entregar historial de la conversacion del tenant
+(fin: historial consultado)
+
+TRAZABILIDAD: RF-20, RF-21, RNF-01, RNF-03, RNF-04, RNF-07, RNF-08

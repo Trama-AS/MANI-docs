@@ -1,0 +1,104 @@
+PROCESO 04 — CICLO DEL SERVICIO (PROCESO PRINCIPAL)
+===================================================
+Solicitud -> Cotizacion -> Ejecucion -> Calificacion -> Cierre
+
+Cliente: (inicio: cliente necesita un servicio)
+user Crear solicitud de servicio
+user Seleccionar categoria y sitio de servicio
+script Validar cobertura por zona y categoria
+
+¿Existen aliados validos en la zona y categoria?
+No
+script Informar sin cobertura disponible
+(notificar sin aliados disponibles)
+Cliente: user Ajustar categoria o sitio de servicio
+...
+
+¿Existen aliados validos en la zona y categoria?
+Si
+script Ordenar listado de aliados segun la regla del tenant
+Cliente: user Revisar listado de aliados
+user Enviar solicitud a los aliados seleccionados
+(publicar solicitud a aliados)
+
+Aliado:
+(recibir solicitud)
+user Revisar solicitud y reglas del sitio
+
+¿Aliado acepta la solicitud?
+No
+user Rechazar solicitud
+script Registrar rechazo y continuar con los demas aliados
+...
+
+¿Aliado acepta la solicitud?
+Si
+user Aceptar solicitud
+script Resolver aceptaciones concurrentes y asignar un unico aliado
+(ver proceso 05_despacho_asignacion.txt)
+(notificar asignacion al cliente y al aliado)
+
+Aliado: user Elaborar cotizacion de mano de obra y materiales
+script Comparar cotizacion contra tarifario de referencia
+(ver proceso 06_cotizacion_tarifario.txt)
+Aliado: user Enviar cotizacion
+(enviar cotizacion al cliente)
+
+Cliente:
+(recibir cotizacion)
+user Revisar cotizacion
+
+¿Decision del cliente?
+Solicitar ajuste
+user Solicitar ajuste con observaciones
+(enviar solicitud de ajuste)
+Aliado: user Ajustar cotizacion
+user Enviar cotizacion
+...
+
+¿Decision del cliente?
+Rechazar
+user Rechazar cotizacion
+script Cerrar servicio sin ejecucion
+(notificar servicio cancelado)
+(fin: servicio cerrado sin ejecucion)
+
+¿Decision del cliente?
+Aceptar
+user Aceptar cotizacion
+script Registrar aceptacion y abrir bitacora de ejecucion
+(notificar inicio de ejecucion)
+
+Aliado: manual Ejecutar el servicio en el sitio
+user Registrar eventos y observaciones en la bitacora
+(timer sin avance registrado en 48 h)
+Cliente: user Consultar bitacora del servicio
+(abrir mensajeria del servicio - ver proceso 07)
+...
+
+Aliado: manual Ejecutar el servicio en el sitio
+user Marcar servicio como finalizado
+(notificar finalizacion al cliente)
+
+Cliente: (recibir notificacion de finalizacion)
+user Calificar al aliado
+Aliado: user Calificar al cliente
+script Verificar calificacion bidireccional
+
+¿Ambas partes calificaron?
+No
+(timer calificacion pendiente en 72 h)
+script Mantener servicio abierto
+(recordar calificacion pendiente)
+script Verificar calificacion bidireccional
+...
+
+¿Ambas partes calificaron?
+Si
+script Consolidar calificaciones y actualizar reputacion
+script Cerrar servicio
+(notificar cierre del servicio)
+(fin: servicio cerrado)
+
+TRAZABILIDAD: RF-12, RF-13, RF-14, RF-15, RF-16, RF-17, RF-18, RF-19, RF-20,
+RNF-03, RNF-04, RNF-05, RNF-07, RNF-08, RNF-09, REST-01, REST-04

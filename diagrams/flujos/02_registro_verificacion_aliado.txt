@@ -1,0 +1,63 @@
+PROCESO 02 — REGISTRO Y VERIFICACION DE ALIADO (KYC)
+====================================================
+
+Aliado: (inicio: aliado quiere prestar servicios en un tenant)
+user Seleccionar tipo de aliado
+
+¿Tipo de aliado?
+Persona natural
+user Diligenciar datos de persona natural
+...
+
+¿Tipo de aliado?
+Empresa
+user Diligenciar datos de empresa y representante legal
+...
+
+¿Tipo de aliado?
+Empleado directo
+user Diligenciar datos de empleado directo
+...
+
+Aliado: user Diligenciar datos de registro
+script Consultar documentos requeridos segun configuracion del tenant
+Aliado: user Cargar documentos KYC
+script Almacenar documentos aislados por aliado y tenant
+Aliado: user Declarar categorias atendidas
+user Declarar zonas de cobertura
+(enviar solicitud de verificacion)
+
+Administrador de tenant:
+(recibir solicitud de verificacion)
+user Revisar bandeja de verificacion de aliados
+user Revisar documentos del aliado
+
+¿Documentacion completa y valida?
+Si
+user Aprobar registro del aliado
+script Activar aliado en el directorio del tenant
+(notificar aprobacion al aliado)
+Aliado: (recibir notificacion de aprobacion)
+(fin: aliado habilitado para recibir solicitudes)
+
+...
+
+¿Documentacion completa y valida?
+No
+user Rechazar registro indicando causal
+(notificar rechazo y documentos faltantes)
+Aliado: (recibir notificacion de rechazo)
+user Corregir o cargar nuevamente los documentos
+(enviar solicitud de verificacion)
+...
+
+...
+
+Administrador de tenant: user Revisar bandeja de verificacion de aliados
+(timer solicitud sin revisar en 3 dias)
+script Escalar solicitud pendiente en la bandeja
+(notificar pendiente al administrador de tenant)
+user Revisar bandeja de verificacion de aliados
+...
+
+TRAZABILIDAD: RF-02, RF-05, RF-06, RF-07, RF-11, RNF-01, RNF-10, REST-01, REST-02

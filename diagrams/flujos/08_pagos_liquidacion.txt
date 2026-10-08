@@ -1,0 +1,63 @@
+PROCESO 08 — COBRO AL CLIENTE Y LIQUIDACION AL ALIADO
+=====================================================
+Segundo incremento. Modelo centralizado con operador certificado.
+
+Cliente: (inicio: cotizacion aceptada o servicio finalizado)
+user Iniciar pago del servicio
+script Calcular monto a cobrar desde la cotizacion aceptada
+script Crear intencion de pago idempotente
+(enviar solicitud de cobro al operador)
+
+Operador de pagos:
+(recibir solicitud de cobro)
+manual Procesar el cobro con los medios del cliente
+(enviar resultado de la transaccion)
+
+Sistema MANI:
+(recibir resultado de la transaccion)
+script Registrar la transaccion y su comprobante
+
+¿Pago aprobado?
+No
+script Marcar pago rechazado sin duplicar la transaccion
+(notificar pago rechazado al cliente)
+Cliente: user Reintentar el pago con otro medio
+...
+
+¿Pago aprobado?
+Si
+script Marcar servicio como pagado
+(notificar pago confirmado al cliente y al aliado)
+script Calcular comision configurada del tenant
+script Calcular valor neto a liquidar al aliado
+script Programar liquidacion del aliado
+
+(timer fecha de liquidacion del periodo)
+script Consolidar servicios pagados del periodo por aliado
+(enviar orden de liquidacion al operador)
+
+Operador de pagos:
+(recibir orden de liquidacion)
+manual Dispersar el pago al aliado
+(enviar confirmacion de liquidacion)
+
+Sistema MANI:
+(recibir confirmacion de liquidacion)
+script Registrar liquidacion y comprobante
+(notificar liquidacion al aliado)
+Aliado: (recibir notificacion de liquidacion)
+user Consultar comprobante de liquidacion
+(fin: servicio pagado y liquidado)
+
+...
+
+Sistema MANI: script Crear intencion de pago idempotente
+(timer sin respuesta del operador en 10 min)
+script Consultar estado de la transaccion en el operador
+script Registrar la transaccion y su comprobante
+...
+
+NOTA: el cumplimiento PCI DSS recae en el operador certificado; MANI no
+almacena datos de medios de pago (RNF-06, RNF-11, REST-03).
+
+TRAZABILIDAD: RF-17, RF-24, RF-25, RNF-03, RNF-04, RNF-06, RNF-11, REST-03

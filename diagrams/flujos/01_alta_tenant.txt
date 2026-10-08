@@ -1,0 +1,36 @@
+PROCESO 01 — ALTA Y CONFIGURACION DE UN TENANT
+==============================================
+
+Administrador de plataforma: (inicio: empresa solicita suscripcion)
+user Registrar empresa (tenant)
+script Crear tenant aislado y credenciales de administrador
+script Generar identificador de tenant verificable por el servidor
+(enviar invitacion al administrador de tenant)
+
+Administrador de tenant:
+(recibir invitacion)
+user Activar cuenta y definir contrasena
+user Definir categorias de servicio del tenant
+user Definir zonas de cobertura del catalogo jerarquico
+user Definir documentos KYC requeridos por tipo de aliado
+user Definir regla de ordenamiento del listado de aliados
+user Definir tarifario de referencia por categoria
+
+¿Configuracion minima completa?
+Si
+script Marcar tenant como operativo
+(notificar tenant operativo)
+Administrador de plataforma: user Supervisar estado del tenant
+(fin: tenant operativo)
+
+...
+
+¿Configuracion minima completa?
+No
+script Mantener tenant en estado pendiente
+(timer configuracion incompleta en 7 dias)
+Administrador de plataforma: user Contactar al administrador de tenant
+Administrador de tenant: user Completar configuracion faltante
+...
+
+TRAZABILIDAD: RF-01, RF-02, RF-03, RF-10, RF-22, RF-28, RNF-01, RNF-02, RNF-10, REST-04, REST-05

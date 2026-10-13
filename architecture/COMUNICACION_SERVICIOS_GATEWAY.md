@@ -80,9 +80,71 @@ El archivo `nginx.conf` en **`MANI-API-Gateway`** gobierna la redirección del t
 ## 4. Estándares Transversales de Comunicación
 
 ### 4.1 Identificación de Tenant y Autenticación (CFG-22 / ADR-0018)
+
+#### 4.1.1 Arquitectura de Identidad: Supabase Auth (IdP) y el Rol de JWT
+Una duda conceptual recurrente en el diseño arquitectónico es: *«¿Cuál es el propósito de JWT si ya utilizamos el servicio de Auth de Supabase?»*.
+
+La respuesta radica en la separación formal de responsabilidades en una **arquitectura orientada a servicios (SOA) desacoplada (ADR-0019)**:
+* **Supabase Auth (GoTrue) es el Proveedor de Identidad (Identity Provider / IdP):** Es el componente responsable del ciclo de vida de credenciales (registro de usuarios, hashing de contraseñas, validación de login y emisión de credenciales).
+* **JWT (JSON Web Token) es el Formato del Token Portador (Bearer Token):** Supabase Auth no es una alternativa a JWT; **Supabase Auth emite JWTs** como su artefacto estándar de autenticación.
+* **Propósito en la Arquitectura SOA Políglota:**
+  1. **Autenticación sin estado (Stateless):** En un ecosistema con múltiples servicios independientes escritos en diferentes tecnologías (**Node.js, Java Spring Boot, C# .NET 8**), mantener sesiones con estado en memoria o forzar a cada servicio a consultar una base de datos centralizada de sesiones en cada petición HTTP introduciría cuellos de botella severos y alto acoplamiento. El JWT viaja autocontenido y firmado digitalmente.
+  2. **Garantía Anti-Spoofing del Tenant (RNF-01 / ADR-0018):** El `tenant_id` no se confía de un encabezado manipulable por el usuario; se incrusta dentro de la firma criptográfica del JWT (`app_metadata.tenant_id`) mediante el hook de Supabase. Cualquier alteración invalida la firma de inmediato.
+  3. **Inspección Perimetral en el API Gateway:** Al retirar el acceso directo de Flutter a la base de datos (ADR-0027), el Gateway NGINX puede inspeccionar y validar el JWT perimetralmente antes de consumir recursos en los servicios de cómputo internos.
+
+```
+┌──────────────┐                  ┌────────────────────────┐
+│ MANI-Flutter │                  │ Supabase Auth (GoTrue) │
+└──────┬───────┘                  └───────────┬────────────┘
+       │ 1. signInWithPassword(email, pass)   │
+       ├─────────────────────────────────────►│
+       │ 2. Emite JWT firmado con claims      │
+       │    (sub, tenant_id, user_role, exp)  │
+       │◄─────────────────────────────────────┤
+       │
+       │ 3. HTTP Request + Authorization: Bearer <JWT>
+       ▼
+┌────────────────────────┐        ┌────────────────────────┐
+│    MANI-APIGateway     ├───────►│    MANI-Node (Core)    │
+│     (Proxy NGINX)      │◄───────┤ (/_auth_validate)      │
+└──────┬─────────────────┘ 4. Subrequest valida firma      │
+       │                      y claim tenant_id obligatorio│
+       │ 5. Inyecta headers confiables:
+       │    X-Tenant-Id, X-User-Role, X-User-Id + Token Relay
+       ├─────────────────────────┬─────────────────────────┐
+       ▼                         ▼                         ▼
+┌──────────────┐          ┌──────────────┐          ┌──────────────┐
+│  MANI-Node   │          │  MANI-Java   │          │  MANI-.NET   │
+│ (Core :3000) │          │(Rules :8080) │          │(Disp. :5000) │
+└──────────────┘          └──────────────┘          └──────────────┘
+```
+
+#### 4.1.2 Estructura Canónica de Claims del JWT
+El token portador emitido por Supabase Auth y validado en el ecosistema MANI contiene:
+
+```json
+{
+  "sub": "b2c86b36-7e37-4d76-90b9-123456789abc",
+  "aud": "authenticated",
+  "role": "authenticated",
+  "email": "aliado@demo.com",
+  "app_metadata": {
+    "provider": "email",
+    "tenant_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "user_role": "aliado"
+  },
+  "user_metadata": {
+    "nombre_completo": "Manicurista Profesional"
+  },
+  "exp": 1760000000,
+  "iat": 1759996400
+}
+```
+
+#### 4.1.3 Validación Perimetral y Reglas de Propagación
 * **Validación en el API Gateway:** Todas las rutas protegidas (`/api/v1/core/*`, `/api/v1/rules/*`, `/api/v1/dispatch/*`) ejecutan una subpetición interna de validación (`auth_request /_auth_validate`) contra el servicio Core antes de permitir el paso del tráfico.
 * **Rechazo Inmediato:** Peticiones sin encabezado `Authorization: Bearer <JWT>`, con token expirado/inválido o **sin claim obligatorio `tenant_id`** son rechazadas directamente en el Gateway con HTTP **`401 Unauthorized`**, sin alcanzar jamás a los microservicios backend.
-* **Propagación Confiable de Claims:** Tras validar el token criptográficamente y verificar que contiene `app_metadata.tenant_id` y `user_role`, el Gateway inyecta los encabezados autenticados limpios:
+* **Propagación Confiable de Claims (Token Relay):** Tras validar el token criptográficamente y verificar que contiene `app_metadata.tenant_id` y `user_role`, el Gateway inyecta los encabezados autenticados limpios hacia los microservicios aguas abajo:
   - `X-Tenant-Id: <tenant_id>`
   - `X-User-Role: <user_role>`
   - `X-User-Id: <user_id>`

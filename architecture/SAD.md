@@ -309,7 +309,11 @@ Para operaciones autenticadas:
 Authorization: Bearer <JWT>
 ```
 
-El `tenant_id` se obtiene de un JWT firmado.
+El `tenant_id` se obtiene de un JWT firmado emitido por **Supabase Auth (GoTrue)**, el cual actúa como el **Proveedor de Identidad (IdP)** oficial de la plataforma:
+- Supabase Auth gestiona el registro, login y emisión del token portador (JWT).
+- El JWT desacopla la autenticación entre los microservicios políglotas (Node.js, Java, .NET) y el API Gateway mediante un modelo *stateless* (sin estado ni consultas repetitivas a la base de datos).
+- La firma digital del JWT encapsula el claim `app_metadata.tenant_id`, impidiendo la suplantación de tenant (*anti-spoofing*).
+- El API Gateway valida perimetralmente el JWT y propaga los claims confiables vía *Token Relay* y encabezados inyectados (`X-Tenant-Id`, `X-User-Role`, `X-User-Id`).
 
 El cliente no puede decidir el tenant de autorización mediante un header libre.
 

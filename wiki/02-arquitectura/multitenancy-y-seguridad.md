@@ -14,7 +14,16 @@ Para operaciones autenticadas:
 Authorization: Bearer <JWT>
 ```
 
-- El `tenant_id` se obtiene de un **JWT firmado**: es la fuente canónica.
+### Relación entre Supabase Auth (IdP) y JWT
+**Supabase Auth y JWT no son conceptos opuestos ni excluyentes:**
+* **Supabase Auth (GoTrue):** Cumple el rol de **Proveedor de Identidad (IdP)**. Valida credenciales, hashes de contraseñas y gestiona el ciclo de vida de usuarios y sesiones.
+* **JWT (JSON Web Token):** Es el **formato estándar del token portador (*bearer token*)** emitido por Supabase Auth.
+* **Propósito en la arquitectura:**
+  1. **Autenticación sin estado (Stateless):** Permite que microservicios políglotas independientes (**Node.js, Java Spring Boot, .NET 8**) y el API Gateway NGINX verifiquen la identidad de forma criptográfica sin tener que consultar una base de datos centralizada de sesiones en cada petición.
+  2. **Fuente canónica no falsificable (Anti-Spoofing):** El `tenant_id` viaja dentro de la firma criptográfica (`app_metadata.tenant_id`) inyectado por el hook de Supabase. El cliente no puede imponer ni alterar su tenant mediante un header arbitrario.
+  3. **Inspección en el Gateway ([ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md)):** Al retirar el acceso directo de Flutter a la base de datos, el Gateway intercepta el JWT y filtra perimetralmente solicitudes anónimas, expiradas o sin claim de tenant.
+
+- El `tenant_id` se obtiene de un **JWT firmado**: es la única fuente canónica de verdad.
 - El cliente **no** puede decidir el tenant de autorización mediante un header libre.
 - `X-Tenant-Slug` puede usarse **antes** de autenticación, sólo como contexto de resolución. No autoriza acceso a datos.
 

@@ -24,9 +24,13 @@ MANI-Docs/
 │   ├── GOBIERNO_DEL_EQUIPO.md            roles, autoridad, ceremonias, DoR/DoD, métricas
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md  ramas, PR, CI/CD, pruebas, seguridad, secretos
 │   └── INFRAESTRUCTURA_MANI.md           ambientes, Supabase, red, backups, decisiones abiertas
-├── diagrams/
-│   ├── HLD/                DHL.png · Infra.png · TechRadar.png — los referencia el SAD
-│   └── LLD/                   workspace.dsl y sus vistas exportadas a PNG
+├── diagrams/                      estructura de ADR-0008
+│   ├── c4/                         workspace.dsl + contexto/ contenedores/ componentes/ codigo/
+│   ├── datos/                      ModeloDatos.png
+│   ├── despliegue/                 despliegue-prod.png · infraestructura.png
+│   ├── flujos/                     flujos de negocio y dinamicos/
+│   ├── MOCKUPS/                    mockups de interfaz — fuera de ADR-0008
+│   └── TechRadar.png               lo referencia el TECH_RADAR — fuera de ADR-0008
 ├── Entregas/                      entregables por corte académico (PDF y Markdown)
 └── wiki/                          esta wiki: navegación y reglas derivadas
 ```
@@ -37,7 +41,7 @@ MANI-Docs/
 |---|---|
 | Un requisito nuevo o cambiado | `product/SRS.md` |
 | Una decisión técnica costosa de revertir | un ADR nuevo en `adr/` |
-| Una vista C4 o un cambio de componentes | `diagrams/LLD/workspace.dsl` y la sección correspondiente del SDD |
+| Una vista C4 o un cambio de componentes | `diagrams/c4/workspace.dsl` y la sección correspondiente del SDD |
 | Un cambio de arquitectura de alto nivel | `architecture/SAD.md` (+ actualizar el DHL si cambia el dibujo) |
 | Tablas, DDL, diccionario o modelo dimensional | `architecture/ModeloDatos.md` |
 | Una regla de proceso del equipo | `governance/GOBIERNO_DEL_EQUIPO.md` |

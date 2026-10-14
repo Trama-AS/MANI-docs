@@ -1,8 +1,8 @@
 # Tech Radar — MANI
 
-[![Tech Radar de MANI: tecnologías adoptadas, en evaluación y descartadas](../diagrams/HLD/TechRadar.png)](../diagrams/HLD/TechRadar.png)
+[![Tech Radar de MANI: tecnologías adoptadas, en evaluación y descartadas](../diagrams/TechRadar.png)](../diagrams/TechRadar.png)
 
-> **Figura 1 — Tech Radar.** Archivo: [`diagrams/HLD/TechRadar.png`](../diagrams/HLD/TechRadar.png). Si la imagen y las listas de abajo discrepan, manda este documento.
+> **Figura 1 — Tech Radar.** Archivo: [`diagrams/TechRadar.png`](../diagrams/TechRadar.png). Si la imagen y las listas de abajo discrepan, manda este documento.
 
 ## Sí o sí
 
@@ -36,7 +36,7 @@
 ### Documentación técnica
 - Markdown
 - Mermaid, para diagramas embebidos en los documentos
-- Structurizr DSL, fuente del modelo de vistas en [`diagrams/LLD/workspace.dsl`](../diagrams/LLD/workspace.dsl)
+- Structurizr DSL, fuente del modelo de vistas en [`diagrams/c4/workspace.dsl`](../diagrams/c4/workspace.dsl)
 - Draw.io
 
 ## En evaluación

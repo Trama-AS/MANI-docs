@@ -277,12 +277,18 @@ MANI-Docs/
 │   ├── GOBIERNO_DEL_EQUIPO.md
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md
 │   └── INFRAESTRUCTURA_MANI.md
-├── diagrams/
-│   ├── HLD/          DHL, infraestructura y Tech Radar
-│   ├── LLD/
+├── diagrams/                 estructura de ADR-0008
+│   ├── c4/
 │   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas C4
-│   │   └── png/             vistas exportadas que incrusta el SDD
-│   └── ModeloDatos.png
+│   │   ├── contexto/        N1 + panorama + DHL de arquitectura
+│   │   ├── contenedores/    N2
+│   │   ├── componentes/     N3
+│   │   └── codigo/          N4, sin diagramas por ahora
+│   ├── datos/            ModeloDatos.png
+│   ├── despliegue/       despliegue-prod e infraestructura
+│   ├── flujos/           flujos de negocio y dinamicos/ (vistas dinamicas y secuencias)
+│   ├── MOCKUPS/          mockups de interfaz, fuera del alcance de ADR-0008
+│   └── TechRadar.png     priorizacion tecnologica, fuera del alcance de ADR-0008
 ├── wiki/                    consulta por tema; no añade reglas propias
 └── Entregas/                entregables academicos por corte
 ```
@@ -298,7 +304,7 @@ MANI-Docs/
 | Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
 | Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](adr/) |
-| Modelo C4 | [`diagrams/LLD/workspace.dsl`](diagrams/LLD/workspace.dsl) |
+| Modelo C4 | [`diagrams/c4/workspace.dsl`](diagrams/c4/workspace.dsl) |
 | Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |

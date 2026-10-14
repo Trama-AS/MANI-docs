@@ -52,6 +52,10 @@ La estructura previa era `HLD/` y `LLD/` — nombres heredados de `ALTO_NIVEL/` 
 | `LLD/png/dinamico-*.png` | `flujos/dinamicos/` | vistas dinámicas = flujos |
 | `LLD/4.Dinamicos/*.jpeg` | `flujos/dinamicos/secuencia-*.jpeg` | secuencias = flujos; se renombraron a kebab-case sin espacios ni acentos porque los espacios rompen los enlaces Markdown |
 
+Al verificar el contenido de las cinco secuencias apareció un archivo mal nombrado: `Aceptación de orden concurrente (Exclusión mutua).jpeg` no contenía ningún diagrama de exclusión mutua, sino una copia en 1600×1197 del mismo diagrama de cotización y despacho que ya estaba en 1190×896. Se conservó la versión de mayor resolución bajo el nombre correcto (`secuencia-cotizacion-y-despacho.jpeg`) y se eliminó la de menor resolución.
+
+**Falta el diagrama de secuencia de exclusión mutua.** Existió como `Diagramas/diagrama_secuencia_exclusion_mutua.png` y se eliminó en la reestructuración V4 (`cc28e0c`). Se restauró únicamente como activo congelado de la Entrega 4 (`Entregas/Entrega4/img/`), no en esta estructura, porque documenta el mecanismo CAS descrito en SAD §8.2 de esa entrega. Si el flujo sigue vigente, hay que rehacerlo como vista del `workspace.dsl`.
+
 ### Retirados
 
 Ocho archivos sin trackear eran copias byte-idénticas de archivos ya versionados (verificado con `cmp`), así que se eliminaron en lugar de duplicarlos en la estructura nueva: `HLD/DHL-ARQ.png`, `HLD/DHL-INFRA.png`, `LLD/2.panorama.png`, `LLD/1.Software/1.contexto.png`, `LLD/1.Software/2.contenedores.png` y los tres `LLD/1.Software/3.Componentes/componentes-*.png`. Cada uno tiene su equivalente en la tabla de arriba.

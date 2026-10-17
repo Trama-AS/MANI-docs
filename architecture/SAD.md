@@ -306,19 +306,19 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 | Servicio | Es dueño de |
 |---|---|
 | Rules — Java | Reglas configurables por tenant, regla de ranking y tarifario de referencia (RF-02 en lo que es regla, RF-13, RF-22). |
-| Dispatch — .NET | Solicitudes de servicio, broadcast, aceptaciones/rechazos, estados de asignación y auditoría transaccional del despacho (RF-12 creación, RF-14). |
+| Dispatch — .NET | Orquestación del despacho, broadcast, aceptaciones/rechazos, estados de asignación y auditoría transaccional del despacho (RF-14). La creación de la solicitud queda abierta en P0. |
 | Core — Node.js | Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cobertura y disponibilidad, cotizaciones, eventos de ejecución, calificaciones, mensajería y reportes (RF-01, RF-03..RF-11, RF-12 consulta de elegibilidad, RF-15, RF-17..RF-21, RF-23). |
 
 ### Lo que cada servicio no hace
 
 - **Rules** no persiste solicitudes ni asignaciones, no envía notificaciones y no tiene reglas por tenant fijas en código: evalúa y responde.
 - **Dispatch** no decide la elegibilidad por categoría, zona o disponibilidad (la consulta a Core) ni calcula el orden del listado (lo consulta a Rules). No gestiona cotización, ejecución ni calificación.
-- **Core** no crea solicitudes ni confirma asignaciones, y no evalúa reglas ni valida contra el tarifario (lo consulta a Rules).
+- **Core** no orquesta el despacho ni confirma asignaciones, y no evalúa reglas ni valida contra el tarifario (lo consulta a Rules).
 
 ### Flujo de RF-12 a RF-16
 
 ```text
-Cliente → Gateway → Dispatch: crea la solicitud
+Cliente → Gateway → [Core o Dispatch, ver P0]: crea la solicitud
 Dispatch → Core: aliados elegibles (categoría + zona + disponibilidad)
 Dispatch → Rules: orden del listado según la regla del tenant
 Dispatch: broadcast y aceptación atómica (409 a las posteriores)
@@ -329,10 +329,11 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 
 | ID | Qué falta definir | Responsable | Fecha límite | Impacto mientras siga abierto |
 |---|---|---|---|---|
-| P1 | Quién es dueño del estado de la solicitud después de la asignación (cotización → ejecución → cierre): Dispatch o Core. | Juan Sebastián con los equipos de Dispatch y Core | 16 oct 2026 | Bloquea el modelo de persistencia de la solicitud (SCRUM-1233). |
-| P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 16 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
+| P0 | Quién crea la solicitud (RF-12). §7.2 la asigna a Dispatch, pero el backlog la ubica en Core Node, separada de la orquestación del despacho (SCRUM-1072 y SCRUM-1073). | Sara con Juan Sebastián (SCRUM-1234) | 20 oct 2026 | Bloquea SCRUM-1072, SCRUM-1073 y los contratos de SCRUM-1234. Si se decide Core, se corrige §7.2. |
+| P1 | Quién es dueño del estado de la solicitud después de la asignación (cotización → ejecución → cierre): Dispatch o Core. | Juan Sebastián con los equipos de Dispatch y Core | 20 oct 2026 | Bloquea el modelo de persistencia de la solicitud (SCRUM-1233). |
+| P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
-| P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 16 oct 2026 | Afecta la integración con FCM/APNs (§12). |
+| P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |
 
 ---
 

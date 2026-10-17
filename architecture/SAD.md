@@ -306,8 +306,8 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 | Servicio | Es dueño de |
 |---|---|
 | Rules — Java | Reglas configurables por tenant, regla de ranking y tarifario de referencia (RF-02 en lo que es regla, RF-13, RF-22). |
-| Dispatch — .NET | Orquestación del despacho, broadcast, aceptaciones/rechazos, estados de asignación y auditoría transaccional del despacho (RF-14). La creación de la solicitud queda abierta en P0. |
-| Core — Node.js | Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cobertura y disponibilidad, cotizaciones, eventos de ejecución, calificaciones, mensajería y reportes (RF-01, RF-03..RF-11, RF-12 consulta de elegibilidad, RF-15, RF-17..RF-21, RF-23). |
+| Dispatch — .NET | Orquestación del despacho, broadcast, aceptaciones/rechazos, estados de asignación y auditoría transaccional del despacho (RF-14). No crea la solicitud. |
+| Core — Node.js | Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cobertura y disponibilidad, creación de la solicitud (RF-12), cotizaciones, eventos de ejecución, calificaciones, mensajería y reportes (RF-01, RF-03..RF-11, RF-12 consulta de elegibilidad, RF-15, RF-17..RF-21, RF-23). |
 
 ### Lo que cada servicio no hace
 
@@ -318,18 +318,21 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 ### Flujo de RF-12 a RF-16
 
 ```text
-Cliente → Gateway → [Core o Dispatch, ver P0]: crea la solicitud
+Cliente → Gateway → Core: crea la solicitud
 Dispatch → Core: aliados elegibles (categoría + zona + disponibilidad)
 Dispatch → Rules: orden del listado según la regla del tenant
 Dispatch: broadcast y aceptación atómica (409 a las posteriores)
 Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-16)
 ```
 
+### Decidido
+
+**Quién crea la solicitud (RF-12): Core.** Decisión del 17 de octubre de 2026, acordada entre la Product Owner y la Scrum Master, y registrada en SCRUM-1232 y SCRUM-1234. Core crea y persiste la solicitud; Dispatch orquesta el reparto a partir de ella. El backlog ya era consistente con esto (SCRUM-1072 ubica la creación en Core Node separada de la orquestación, y SCRUM-1073 deja la orquestación en Dispatch .NET); lo desactualizado era §7.2, cuya corrección se ejecuta en DOC4-03 (SCRUM-1246).
+
 ### Pendientes
 
 | ID | Qué falta definir | Responsable | Fecha límite | Impacto mientras siga abierto |
 |---|---|---|---|---|
-| P0 | Quién crea la solicitud (RF-12). §7.2 la asigna a Dispatch, pero el backlog la ubica en Core Node, separada de la orquestación del despacho (SCRUM-1072 y SCRUM-1073). | Sara con Juan Sebastián (SCRUM-1234) | 20 oct 2026 | Bloquea SCRUM-1072, SCRUM-1073 y los contratos de SCRUM-1234. Si se decide Core, se corrige §7.2. |
 | P1 | Quién es dueño del estado de la solicitud después de la asignación (cotización → ejecución → cierre): Dispatch o Core. | Juan Sebastián con los equipos de Dispatch y Core | 20 oct 2026 | Bloquea el modelo de persistencia de la solicitud (SCRUM-1233). |
 | P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |

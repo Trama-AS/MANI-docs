@@ -297,6 +297,43 @@ Responsable de:
 
 En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente. La **disponibilidad es uno de esos dominios internos**, no un servicio desplegable aparte: vive en el bloque Node junto al catálogo y la comunicación, y es lo que Despacho consulta antes de conformar el listado de candidatos.
 
+## 7.4 Límites entre servicios
+
+Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM-1233), contratos HTTP (SCRUM-1234) y mensajería (SCRUM-1235) partan de la misma base. No reasigna requisitos: hace explícito qué datos es dueño cada servicio y qué no hace. Aplica el principio 7 de §4.1: ningún servicio escribe en datos privados de otro dominio.
+
+### Dueño de los datos
+
+| Servicio | Es dueño de |
+|---|---|
+| Rules — Java | Reglas configurables por tenant, regla de ranking y tarifario de referencia (RF-02 en lo que es regla, RF-13, RF-22). |
+| Dispatch — .NET | Solicitudes de servicio, broadcast, aceptaciones/rechazos, estados de asignación y auditoría transaccional del despacho (RF-12 creación, RF-14). |
+| Core — Node.js | Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cobertura y disponibilidad, cotizaciones, eventos de ejecución, calificaciones, mensajería y reportes (RF-01, RF-03..RF-11, RF-12 consulta de elegibilidad, RF-15, RF-17..RF-21, RF-23). |
+
+### Lo que cada servicio no hace
+
+- **Rules** no persiste solicitudes ni asignaciones, no envía notificaciones y no tiene reglas por tenant fijas en código: evalúa y responde.
+- **Dispatch** no decide la elegibilidad por categoría, zona o disponibilidad (la consulta a Core) ni calcula el orden del listado (lo consulta a Rules). No gestiona cotización, ejecución ni calificación.
+- **Core** no crea solicitudes ni confirma asignaciones, y no evalúa reglas ni valida contra el tarifario (lo consulta a Rules).
+
+### Flujo de RF-12 a RF-16
+
+```text
+Cliente → Gateway → Dispatch: crea la solicitud
+Dispatch → Core: aliados elegibles (categoría + zona + disponibilidad)
+Dispatch → Rules: orden del listado según la regla del tenant
+Dispatch: broadcast y aceptación atómica (409 a las posteriores)
+Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-16)
+```
+
+### Pendientes
+
+| ID | Qué falta definir | Responsable | Fecha límite | Impacto mientras siga abierto |
+|---|---|---|---|---|
+| P1 | Quién es dueño del estado de la solicitud después de la asignación (cotización → ejecución → cierre): Dispatch o Core. | Juan Sebastián con los equipos de Dispatch y Core | 16 oct 2026 | Bloquea el modelo de persistencia de la solicitud (SCRUM-1233). |
+| P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 16 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
+| P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
+| P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 16 oct 2026 | Afecta la integración con FCM/APNs (§12). |
+
 ---
 
 # 8. Multi-tenancy y seguridad

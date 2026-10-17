@@ -36,7 +36,7 @@ El presente documento constituye la especificación vinculante de las herramient
 
 Para garantizar la entrega continua, la trazabilidad sin fisuras y la seguridad por diseño (*Security by Design*), el proyecto MANI implementa un ecosistema de herramientas interconectadas que abarcan desde la concepción de requerimientos hasta la operación y monitoreo en tiempo real.
 
-![Diagrama de Tecnologías de Alto Nivel V2](../../Diagramas/Tecnologías/DiagramaTecnologiasAltoNivel_V2.jpg)
+![Diagrama de Tecnologías de Alto Nivel V2](img/DiagramaTecnologiasAltoNivel_V2.jpg)
 > 🆕 V3: 🔴 la imagen `Diagramas/Tecnologías/DiagramaTecnologiasAltoNivel_V2.jpg` no está en el repositorio (la carpeta `Tecnologías/` no existe). Debe subirse o regenerarse sin Azure. La vista equivalente actualizada es el diagrama de despliegue del Documento de Infraestructura V1 §3.
 
 *Figura 1.1: Diagrama de Tecnologías de Alto Nivel V2 — Flujo de integración, compilación y almacenamiento en registros Docker, promoción de ambientes, DevSecOps y observabilidad con bucle cerrado hacia Jira.*
@@ -88,7 +88,7 @@ Conforme a **ADR-0006** y reflejado en el Diagrama V2, la telemetría se extrae 
 
 El **Tech Radar V2** consolida y oficializa el portafolio tecnológico de MANI. Conforme a lo establecido en **ADR-0010**, se adopta esta estructura para brindar una visión global del stack, orientar el diseño arquitectónico y prevenir decisiones aisladas o informales.
 
-![Tech Radar V2 del Proyecto MANI](../../Diagramas/TECH_RADARv2.png)
+![Tech Radar V2 del Proyecto MANI](img/TECH_RADARv2.png)
 
 > 🆕 V3: ruta corregida — el archivo vive en `Diagramas/TECH_RADARv2.png`. Los cambios de anillo de V3 están en §2.3; falta regenerar la imagen como `TECH_RADARv3.png`.
 *Figura 2.1: Tech Radar V2 — Clasificación de tecnologías, plataformas, técnicas y herramientas del proyecto MANI.*

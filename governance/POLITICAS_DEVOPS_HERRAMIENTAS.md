@@ -579,7 +579,8 @@ Reglas:
 3. no se introducen datos reales sensibles;
 4. no se introduce información confidencial en herramientas externas no autorizadas;
 5. una respuesta de IA no constituye una decisión arquitectónica;
-6. una decisión relevante debe pasar por el proceso de gobierno correspondiente.
+6. una decisión relevante debe pasar por el proceso de gobierno correspondiente;
+7. **la autoría del entregable es de la persona que lo firma.** No se añaden líneas de coautoría, firmas, pies ni emojis que atribuyan el trabajo a una herramienta de IA, ni en commits, Pull Requests, documentos, código o comentarios. La regla 1 ya exige revisión humana: quien firma responde por el contenido, y la trazabilidad del cambio la da Jira y el historial de Git, no una etiqueta de herramienta.
 
 ---
 

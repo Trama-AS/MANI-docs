@@ -984,7 +984,7 @@ CREATE TABLE core.aliado_cobertura (
     FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona)
 );
 
--- RF-08: cliente persona natural o empresa.
+-- RF-08: cliente persona natural o empresa (con múltiples sitios y datos corporativos).
 CREATE TABLE core.cliente (
     id_cliente UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_tenant UUID NOT NULL,
@@ -992,23 +992,29 @@ CREATE TABLE core.cliente (
     tipo_cliente VARCHAR(20) NOT NULL
         CHECK (tipo_cliente IN ('PERSONA_NATURAL','EMPRESA')),
     razon_social VARCHAR(180),
+    nit VARCHAR(20),
     documento_fiscal VARCHAR(50),
+    telefono VARCHAR(30),
+    nombre_representante VARCHAR(150),
     estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
         CHECK (estado IN ('ACTIVO','INACTIVO')),
     fecha_registro TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
     FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
     CONSTRAINT ck_cliente_empresa_razon_social
-        CHECK (tipo_cliente <> 'EMPRESA' OR razon_social IS NOT NULL)
+        CHECK (tipo_cliente <> 'EMPRESA' OR razon_social IS NOT NULL),
+    CONSTRAINT cliente_nit_tenant_unique
+        UNIQUE (id_tenant, nit)
 );
 
--- RF-09: sitios de servicio del cliente empresa. Todo sitio tiene zona.
+-- RF-09: sitios de servicio del cliente empresa. Todo sitio tiene zona y reglas contextuales.
 CREATE TABLE core.sitio_servicio (
     id_sitio UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_cliente UUID NOT NULL,
     id_zona UUID NOT NULL,
     nombre VARCHAR(150) NOT NULL,
     direccion TEXT NOT NULL,
+    reglas JSONB, -- Estructura: {"horario": {"dias": ["LUN","MAR"], "horaInicio": "08:00", "horaFin": "18:00"}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"]}
     reglas_acceso TEXT,
     condiciones TEXT,
     estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
@@ -1016,6 +1022,34 @@ CREATE TABLE core.sitio_servicio (
     FOREIGN KEY (id_cliente) REFERENCES core.cliente(id_cliente),
     FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona),
     UNIQUE (id_cliente, nombre)
+);
+
+-- US-02.3.2 / Ley 1581 (Habeas Data): Términos y Condiciones y Políticas de Privacidad
+CREATE TABLE core.documento_legal (
+    id_documento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID, -- NULL si es documento global de plataforma
+    tipo VARCHAR(50) NOT NULL
+        CHECK (tipo IN ('TERMS_AND_CONDITIONS','PRIVACY_POLICY','CUSTOM')),
+    version VARCHAR(20) NOT NULL,
+    contenido TEXT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
+);
+
+-- Registro inmutable de consentimiento legal expreso
+CREATE TABLE core.consentimiento_usuario (
+    id_consentimiento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_usuario UUID NOT NULL,
+    id_documento UUID NOT NULL,
+    id_tenant UUID NOT NULL,
+    version_aceptada VARCHAR(20) NOT NULL,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    aceptado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
+    FOREIGN KEY (id_documento) REFERENCES core.documento_legal(id_documento),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
 );
 
 -- RF-22: tarifario de referencia por tenant y categoria.
@@ -1391,8 +1425,11 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | id_tenant | UUID | FK | Tenant propietario |
 | id_usuario | UUID | FK, UNIQUE | Usuario asociado |
 | tipo_cliente | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA (RF-08) |
-| razon_social | VARCHAR(180) | obligatorio si EMPRESA | Razón social |
-| documento_fiscal | VARCHAR(50) | NULL | Identificación fiscal |
+| razon_social | VARCHAR(180) | obligatorio si EMPRESA | Razón social de la empresa |
+| nit | VARCHAR(20) | UNIQUE por tenant (`cliente_nit_tenant_unique`) | NIT de la empresa cliente |
+| documento_fiscal | VARCHAR(50) | NULL | Identificación fiscal alternativa |
+| telefono | VARCHAR(30) | NULL | Teléfono de contacto de la sede/empresa |
+| nombre_representante | VARCHAR(150) | NULL | Nombre del representante legal |
 | estado | VARCHAR(20) | CHECK | Estado |
 | fecha_registro | TIMESTAMPTZ | NOT NULL | Alta |
 
@@ -1404,10 +1441,36 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | id_cliente | UUID | FK | Cliente que lo administra |
 | id_zona | UUID | FK, NOT NULL | Zona del sitio; obligatoria (RF-09) |
 | nombre | VARCHAR(150) | UNIQUE por cliente | Nombre del sitio |
-| direccion | TEXT | NOT NULL | Dirección |
-| reglas_acceso | TEXT | NULL | Reglas visibles al aliado antes de programar (RF-09) |
+| direccion | TEXT | NOT NULL | Dirección física |
+| reglas | JSONB | NULL | Estructura JSON: `{"horario": {"dias": ["LUN","MAR"], "horaInicio": "08:00", "horaFin": "18:00"}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"]}` (RF-09) |
+| reglas_acceso | TEXT | NULL | Reglas en texto libre visibles al aliado antes de programar |
 | condiciones | TEXT | NULL | Condiciones particulares del sitio |
 | estado | VARCHAR(20) | CHECK | Estado |
+
+## `core.documento_legal`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_documento | UUID | PK | Identificador único del documento legal |
+| id_tenant | UUID | FK, NULL | Tenant propietario (NULL si aplica a toda la plataforma) |
+| tipo | VARCHAR(50) | CHECK | TERMS_AND_CONDITIONS / PRIVACY_POLICY / CUSTOM (US-02.3.2) |
+| version | VARCHAR(20) | NOT NULL | Versión del documento legal (ej. "1.0", "2026-V1") |
+| contenido | TEXT | NOT NULL | Texto íntegro del documento o términos |
+| is_active | BOOLEAN | DEFAULT TRUE | Indica si es la versión activa para consentimiento |
+| creado_en | TIMESTAMPTZ | NOT NULL | Fecha y hora de creación y publicación |
+
+## `core.consentimiento_usuario`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_consentimiento | UUID | PK | Identificador del registro de consentimiento |
+| id_usuario | UUID | FK | Usuario que otorga el consentimiento expreso |
+| id_documento | UUID | FK | Documento legal aceptado |
+| id_tenant | UUID | FK | Tenant bajo el cual se registra la aceptación |
+| version_aceptada | VARCHAR(20) | NOT NULL | Versión exacta aceptada conforme a Ley 1581 |
+| ip_address | VARCHAR(45) | NULL | Dirección IP del cliente al momento de la aceptación |
+| user_agent | TEXT | NULL | Dispositivo / User Agent del firmante |
+| aceptado_en | TIMESTAMPTZ | NOT NULL | Marca temporal verificable del consentimiento |
 
 ## `core.disponibilidad`
 

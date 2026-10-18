@@ -817,12 +817,14 @@ reglas
 
 despacho
 ├── solicitud
-└── asignacion
+├── asignacion
+└── outbox
 
 servicio
 ├── cotizacion
 ├── historial_solicitud
-└── calificacion
+├── calificacion
+└── outbox
 
 comunicaciones
 ├── conversacion
@@ -844,6 +846,19 @@ ejecución y calificación pertenecen al Core Service, que es quien implementa e
 (SAD §7). Sin esta separación, `cotizacion` quedaba en un esquema de Dispatch mientras el SAD
 asignaba el caso de uso a Core.
 
+**El outbox vive en el esquema de quien produce el evento.** `servicio.outbox` y
+`despacho.outbox` son dos tablas con la misma forma y no una tabla compartida. El evento se escribe
+en la misma transacción que cambia el estado del negocio, y un outbox común exigiría escritura
+cruzada entre esquemas, que §13 prohíbe. Core produce `SolicitudCreada` y `CotizacionAceptada`;
+Dispatch produce `AliadoAsignado` ([ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md)).
+
+> **Punto abierto de DOC4-04.** `solicitud` está listada bajo `despacho`, pero SAD §7.4 —cerrado en
+> SCRUM-1232— asigna a Core la creación de la solicitud (RF-12) y dice que Dispatch no la crea. Si
+> Core escribe esa fila, la escritura exclusiva de §13 no se sostiene con la tabla en `despacho`.
+> Este documento **no reubica la tabla**: la decisión afecta DDL aplicado y corresponde al dueño de
+> la serie de migraciones (ADR-0030 §1). Mientras se resuelva, `SolicitudCreada` se escribe en
+> `servicio.outbox`, que es esquema de Core.
+
 **La disponibilidad no tiene esquema propio.** `core.disponibilidad` está junto a
 `core.aliado_cobertura` y `core.aliado_categoria` porque las tres describen al mismo aliado: qué
 atiende, dónde y cuándo. Separarlas en un esquema aparte sugería una frontera de servicio que no
@@ -861,6 +876,71 @@ clave foránea y lo verifican en la política correspondiente.
 La regla operativa: ninguna política RLS depende de `auth.uid()` cuando el llamador es un servicio.
 El tenant se toma del claim del JWT que el servicio propaga, y RLS actúa como defensa adicional,
 no como única barrera (ADR-0012, ADR-0018).
+
+
+## 6.3 Permisos por esquema
+
+ADR-0030 prohíbe cruzar la frontera de datos por SQL y la obliga a pasar por HTTP. Esta sección
+hace esa frontera **exigible por el motor** y no solo por acuerdo: un rol por servicio, sin
+superusuario y sin `BYPASSRLS`. Ningún rol de servicio recibe `SELECT` sobre un esquema ajeno.
+
+| Rol | Escritura | Lectura |
+|---|---|---|
+| `mani_core` | `core`, `servicio`, `comunicaciones`, `pagos` | sus propios esquemas |
+| `mani_rules` | `reglas` | `reglas` |
+| `mani_dispatch` | `despacho` | `despacho` |
+| `mani_relay` | `fecha_publicacion` e `intentos` del outbox | `servicio.outbox`, `despacho.outbox` |
+| `mani_migrator` | DDL en los seis esquemas | — |
+| `mani_dw_reader` | — | tablas que alimentan el ELT (§9.2) |
+
+Las FK entre esquemas **no requieren `SELECT`**: se sostienen con `REFERENCES` sobre la tabla
+referenciada. `despacho.solicitud` apunta a `core.tenant`, `core.cliente`, `core.sitio_servicio`,
+`core.categoria` y `core.zona`, y `mani_dispatch` recibe `REFERENCES` sobre esas cinco tablas y nada
+más. Integridad referencial sin abrir lectura de datos ajenos.
+
+```sql
+CREATE ROLE mani_core      LOGIN NOINHERIT;
+CREATE ROLE mani_rules     LOGIN NOINHERIT;
+CREATE ROLE mani_dispatch  LOGIN NOINHERIT;
+CREATE ROLE mani_relay     LOGIN NOINHERIT;
+CREATE ROLE mani_migrator  LOGIN NOINHERIT;
+CREATE ROLE mani_dw_reader LOGIN NOINHERIT;
+
+-- Escritura exclusiva del dueño (§13)
+GRANT USAGE ON SCHEMA core, servicio, comunicaciones, pagos TO mani_core;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA core, servicio, comunicaciones, pagos
+    TO mani_core;
+
+GRANT USAGE ON SCHEMA reglas TO mani_rules;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA reglas TO mani_rules;
+
+GRANT USAGE ON SCHEMA despacho TO mani_dispatch;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA despacho TO mani_dispatch;
+
+-- Integridad referencial sin lectura cruzada
+GRANT USAGE ON SCHEMA core TO mani_dispatch, mani_rules;
+GRANT REFERENCES ON core.tenant, core.cliente, core.sitio_servicio, core.categoria, core.zona
+    TO mani_dispatch;
+GRANT REFERENCES ON core.tenant, core.categoria TO mani_rules;
+
+-- Relay del outbox: ni una tabla de negocio
+GRANT USAGE ON SCHEMA servicio, despacho TO mani_relay;
+GRANT SELECT ON servicio.outbox, despacho.outbox TO mani_relay;
+GRANT UPDATE (fecha_publicacion, intentos) ON servicio.outbox, despacho.outbox TO mani_relay;
+
+-- Una tabla nueva no nace con permisos que nadie revisó
+ALTER DEFAULT PRIVILEGES IN SCHEMA core, servicio, comunicaciones, pagos
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_core;
+ALTER DEFAULT PRIVILEGES IN SCHEMA reglas
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_rules;
+ALTER DEFAULT PRIVILEGES IN SCHEMA despacho
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_dispatch;
+```
+
+Los seis roles se crean como migración versionada en la serie de Core, no a mano por ambiente
+([ADR-0030](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §1). RLS permanece activa en
+toda tabla con tenant y sigue siendo defensa en profundidad, no la única barrera (ADR-0012,
+ADR-0018).
 
 ---
 
@@ -1292,6 +1372,48 @@ ON comunicaciones.queja(id_solicitud,estado);
 
 CREATE INDEX idx_pago_solicitud
 ON pagos.pago(id_solicitud);
+
+-- Outbox transaccional (ADR-0029). Misma forma en los dos esquemas productores.
+CREATE TABLE servicio.outbox (
+    id_evento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    tipo_evento VARCHAR(60) NOT NULL
+        CHECK (tipo_evento IN ('SolicitudCreada','CotizacionAceptada')),
+    version_evento SMALLINT NOT NULL DEFAULT 1,
+    id_agregado UUID NOT NULL,
+    clave_particion UUID NOT NULL,
+    correlation_id UUID NOT NULL,
+    payload JSONB NOT NULL,
+    fecha_ocurrencia TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fecha_publicacion TIMESTAMPTZ,
+    intentos SMALLINT NOT NULL DEFAULT 0,
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
+);
+
+CREATE TABLE despacho.outbox (
+    id_evento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID NOT NULL,
+    tipo_evento VARCHAR(60) NOT NULL
+        CHECK (tipo_evento IN ('AliadoAsignado')),
+    version_evento SMALLINT NOT NULL DEFAULT 1,
+    id_agregado UUID NOT NULL,
+    clave_particion UUID NOT NULL,
+    correlation_id UUID NOT NULL,
+    payload JSONB NOT NULL,
+    fecha_ocurrencia TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fecha_publicacion TIMESTAMPTZ,
+    intentos SMALLINT NOT NULL DEFAULT 0,
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
+);
+
+-- El relay solo recorre lo no publicado: indice parcial, no la tabla completa.
+CREATE INDEX idx_outbox_servicio_pendiente
+ON servicio.outbox(fecha_ocurrencia)
+WHERE fecha_publicacion IS NULL;
+
+CREATE INDEX idx_outbox_despacho_pendiente
+ON despacho.outbox(fecha_ocurrencia)
+WHERE fecha_publicacion IS NULL;
 ```
 
 El indice parcial `idx_cotizacion_fuera_rango` existe para que el reporte de cotizaciones fuera
@@ -1588,6 +1710,33 @@ Segundo incremento (RF-26).
 | estado | VARCHAR(20) | CHECK | Estado |
 | fecha_creacion | TIMESTAMPTZ | NOT NULL | Alta |
 
+
+## `servicio.outbox` · `despacho.outbox`
+
+Misma estructura en los dos esquemas productores (ADR-0029). `servicio.outbox` admite
+`SolicitudCreada` y `CotizacionAceptada`, que produce Core; `despacho.outbox` admite
+`AliadoAsignado`, que produce Dispatch.
+
+| Campo | Tipo | Restricción | Sobre del evento | Descripción |
+|---|---|---|---|---|
+| id_evento | UUID | PK | `event_id` | Clave de deduplicación del consumidor idempotente (ARQ-08) |
+| id_tenant | UUID | FK | `tenant_id` | Obligatorio: el aislamiento por tenant también aplica a los eventos (RNF-01) |
+| tipo_evento | VARCHAR(60) | CHECK | `event_type` | Nombre del evento de negocio |
+| version_evento | SMALLINT | NOT NULL | `event_version` | Se incrementa solo ante cambios incompatibles |
+| id_agregado | UUID | NOT NULL | dentro de `data` | Agregado que cambió de estado |
+| clave_particion | UUID | NOT NULL | — | `id_solicitud`; da orden por solicitud, no orden global |
+| correlation_id | UUID | NOT NULL | `correlation_id` | Continúa el `X-Correlation-ID` del Gateway (RNF-07) |
+| payload | JSONB | NOT NULL | `data` | Estado propio del agregado; nunca datos privados de otro dominio |
+| fecha_ocurrencia | TIMESTAMPTZ | NOT NULL | `occurred_at` | Escritura, en la misma transacción del cambio de estado |
+| fecha_publicacion | TIMESTAMPTZ | NULL | — | `NULL` mientras no se publica; lo escribe el relay |
+| intentos | SMALLINT | NOT NULL | — | Reintentos del relay |
+
+La tabla existe desde la primera implementación del publicador y no se agrega después: ADR-0029 §3
+descarta la doble escritura porque una caída entre el `COMMIT` y la publicación deja una asignación
+sin evento o lo publica dos veces, que es lo que RNF-05 prohíbe.
+
+Las filas publicadas se purgan como control de calidad de datos (§12). El outbox **no** es el
+historial de negocio: ese vive en `servicio.historial_solicitud`.
 ---
 
 # 9. Data Warehouse
@@ -2027,6 +2176,11 @@ mantiene este documento, que es su dueño.
 | `dw.*` | Plataforma analítica | — |
 
 La propiedad implica **escritura exclusiva** del servicio responsable. Otros servicios acceden mediante API, evento o réplica analítica, no mediante escritura directa a tablas privadas.
+
+El outbox sigue la misma regla y por eso hay dos: `servicio.outbox` lo escribe Core y
+`despacho.outbox` lo escribe Dispatch, cada uno dentro de la transacción que cambia su propio
+agregado. El relay no es un servicio dueño: lee ambos outbox y actualiza `fecha_publicacion` e
+`intentos`, sin ningún permiso sobre tablas de negocio (§6.3).
 
 Dos lecturas cruzadas son explícitamente permitidas y solo de lectura:
 

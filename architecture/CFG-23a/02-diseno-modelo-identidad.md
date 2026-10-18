@@ -46,8 +46,8 @@ Definición de referencia ejecutable: [`01-modelo.sql` de la PoC](../../Entregas
 
 | Componente | Definición | Notas |
 |---|---|---|
-| `mani_core_svc` | `LOGIN NOBYPASSRLS`, no dueño, no miembro de `authenticated` | contraseña por ambiente fuera de git (ADR-0031 §5) |
-| `mani_dispatch_svc` | ídem | Rules no tiene rol |
+| `mani_core_svc` | `NOLOGIN NOBYPASSRLS` en migración (`LOGIN` asignado por operaciones fuera de git, ADR-0031 §5), no dueño, no miembro de `authenticated` | contraseña por ambiente en `/opt/mani/.env.{dev,qa,prod}` |
+| `mani_dispatch_svc` | ídem | Rules no tiene rol en el incremento actual: sus *overrides* por tenant viven en la configuración del servicio (`MANI-Java`); `mani_rules_svc` (`ModeloDatos.md` §6.3) solo se crearía si el tarifario pasa a persistirse desde Rules |
 | `GRANT USAGE ON SCHEMA auth` + `EXECUTE` sobre `auth.uid()`/`auth.jwt()` | a ambos roles | sin esto toda consulta falla con `permission denied for schema auth` (hallazgo de la PoC) |
 | Esquema `app` | `REVOKE ALL FROM PUBLIC`; `USAGE` a `authenticated` y roles de servicio | no se expone en PostgREST |
 | `app.tenant_id()`, `app.user_id()`, `app.user_role()` | `STABLE`, `search_path = ''`, leen `auth.jwt()`/`auth.uid()` | devuelven `NULL` ante claim ausente o malformado, sin error |
@@ -82,7 +82,7 @@ Propiedad por dominio según ADR-0022/0030. «Patrón T» = `USING (tenant_id = 
 | `solicitud` | Core crea; Dispatch acepta | SELECT, INSERT, UPDATE | SELECT, UPDATE | lectura Patrón T; alta con rol `cliente`; **aceptar con rol `aliado`** (corrige H-02/KI-13); demás transiciones de Core por rol en CFG-23b. Reemplaza `tenant_isolation_solicitud` |
 | `solicitud_rechazo` | Dispatch | — | SELECT, INSERT | Patrón T **y** aliado propio |
 | `solicitud_foto` | Core | SELECT, INSERT | — | Patrón T |
-| `tarifa_referencia` | **por decidir (M2)** | — | — | Rules es dueño del tarifario pero no tiene base (ADR-0022) |
+| `tarifa_referencia` | **por decidir (M2)** | CRUD (propuesto) | — | Rules evalúa en memoria/configuración sin base (ADR-0022); Core persiste y consulta a Rules por HTTP (ADR-0030 §2). Si se persiste en `reglas`, aplica `mani_rules_svc` (`ModeloDatos.md` §6.3) |
 
 Storage (`storage.objects`) se mantiene con `kyc_isolation`, que ya toma el tenant del claim. Las políticas del bucket `solicitudes`, que hoy solo comparan `auth.uid()`, pasan a exigir también la carpeta del tenant. Core escribe en Storage con `service_role` (ADR-0032 §6): la ruta `{tenant_id}/{user_id}/…` se arma desde el contexto, nunca desde la petición.
 
@@ -148,7 +148,7 @@ Los de Políticas DevOps §13.4 y QAS-01. Datos: tenants T1 y T2 del seed QA (`s
 | 3 | **Escritura en otro tenant.** Token de T1 crea con `tenantId` de T2 en el cuerpo, o edita un id de T2 | `403 TENANT_MISMATCH` o `404`; nada persistido en T2 | `INSERT` con `tenant_id` T2 → `42501` (*row-level security*); `UPDATE` que muda una fila a T2 → `42501`; `UPDATE` de fila de T2 → 0 filas | C3 |
 | 4 | **Borrado ajeno.** Token de T1 desactiva o borra un id de T2 | `404`; el recurso de T2 intacto | `DELETE … WHERE id = <T2>` → 0 filas; un `DELETE` sin `WHERE` solo alcanza T1 | C4 |
 | 5 | **Token expirado o alterado.** Firma inválida, `exp` vencido o sin `tenant_id` | `401` en el Gateway (ADR-0031); el servicio no recibe la petición | sin `set_context` o con claim corrupto → 0 filas y escritura rechazada; `set_context` sin tenant → `MANI-RLS-400` | C5 |
-| 6 | **Documentos KYC de otro aliado o tenant.** Aliado A de T1 pide el KYC del aliado B de T1 y uno de T2; admin de T1 pide los de T2; objeto de Storage bajo `{T2}/…` | `403`/`404` para A sobre B y T2; el admin de T1 ve solo los de T1; Storage deniega la ruta de T2 | A ve solo su `documento_kyc`; no puede dar de alta a nombre de B; el admin de T1 ve los de T1 y ninguno de T2 | C6 |
+| 6 | **Documentos KYC de otro aliado o tenant.** Aliado A de T1 pide el KYC del aliado B de T1 y uno de T2; admin de T1 pide los de T2; acceso directo o por servicio a objeto de Storage bajo ruta de otro tenant `{T2}/{user_id}/…` | `403`/`404` para A sobre B y T2; el admin de T1 ve solo los de T1; Storage deniega cualquier lectura o escritura sobre la ruta `{T2}/…` cuando el contexto es T1 | A ve solo su `documento_kyc`; no puede dar de alta a nombre de B; el admin de T1 ve los de T1 y ninguno de T2; `kyc_isolation` y el servicio rechazan rutas con prefijo `{T2}/…` | C6 |
 
 Propiedades adicionales que CFG-23c debe incluir, porque protegen el mecanismo y no un endpoint:
 
@@ -171,11 +171,11 @@ Cada paso se puede desplegar sin romper el anterior, porque las políticas no ca
 
 | Paso | Qué | Dónde | Efecto visible |
 |---|---|---|---|
-| 1 | Cerrar exposiciones (ADR-0032 §8): revocar `anon` de `registrar_aliado_persona_natural`, eliminar las `true` de `documento_kyc`, RLS en las 11 tablas | migración `MANI-Node/db/migrations/00NN_cerrar_exposiciones_rls.sql` | ninguno para servicios ni para Flutter (solo usa 3 RPC `SECURITY DEFINER`) |
+| 1 | Cerrar exposiciones (ADR-0032 §8): revocar `anon` de `registrar_aliado_persona_natural` y `registrar_aliado_empresa`, eliminar las `true` de `documento_kyc`, RLS en las 11 tablas | `MANI-Node/db/migrations/0005_cerrar_exposiciones_rls.sql` + `db/verify/0005_verificar_exposiciones.sql` (**entregado en `MANI-Node` PR #28, SCRUM-1334**) | ninguno para servicios ni para Flutter (solo usa 3 RPC `SECURITY DEFINER`) |
 | 2 | Esquema `app`, helpers, `set_context`, roles `NOLOGIN` y `GRANT` sobre `auth` | migración `00NN_contexto_identidad.sql` | ninguno |
 | 3 | `FORCE RLS`, políticas de §5 y `GRANT` por rol | migración `00NN_politicas_por_tenant.sql` | ninguno con `BYPASSRLS` |
 | 4 | `withTenantContext` en todos los repositorios de Core y transacción + `set_context` en Dispatch | `MANI-Node`, `MANI-.NET` | ninguno: con `postgres`, `set_context` es inocuo |
-| 5 | Operaciones da `LOGIN PASSWORD` a los roles en QA y cambia `DATABASE_URL` de cada servicio a su rol | secretos de QA | **aquí RLS empieza a operar**; correr CFG-23c |
+| 5 | Operaciones (DevOps, Daniel Ávila) asigna `LOGIN PASSWORD` a `mani_core_svc` y `mani_dispatch_svc` fuera de git (`/opt/mani/.env.{dev,qa,prod}`, ADR-0031 §5) y cambia `DATABASE_URL` de cada servicio a su rol en QA | secretos de QA | **aquí RLS empieza a operar**; correr CFG-23c |
 | 6 | Igual en PROD tras aprobar CFG-23c | secretos de PROD | — |
 
 **Reversa:** volver `DATABASE_URL` a la credencial anterior en el paso 5 restaura el comportamiento previo sin tocar datos. Las migraciones 1–3 no se revierten porque no afectan a quien tiene `BYPASSRLS`.

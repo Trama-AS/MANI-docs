@@ -48,39 +48,41 @@ PoC en PostgreSQL 16 con roles y funciones equivalentes a Supabase, 2026-10-17:
 
 Límite: no es Supabase real. CFG-23c repite los casos en QA.
 
-## 5. Preguntas que la Mesa debe resolver (8 min)
+## 5. Preguntas que la Mesa debe resolver y observaciones de la revisión previa (8 min)
 
-| # | Pregunta | Propuesta del autor |
+En la revisión de arquitectura de PR #39 (`MANI-docs`), Sara Albarracín Niño asumió el rol de revisora (ADR-0003), aprobó el diseño y dejó tres observaciones puntuales ya incorporadas en ADR-0032 y en el documento de diseño:
+
+| # | Pregunta / Observación | Propuesta / Estado |
 |---|---|---|
-| M1 | ¿Se aprueba la alternativa 5 como mecanismo único, con la 2 solo como paso transitorio de Core? | Sí |
-| M2 | `tarifa_referencia`: Rules es dueño del tarifario (ADR-0022) pero no tiene base. ¿Quién la persiste y con qué rol? | Core la persiste y Rules la consume por HTTP, igual que las categorías en US-03.1.1-M6 |
-| M3 | ¿Se acepta el riesgo residual de Storage con `service_role`, con rutas construidas desde el contexto? | Sí, acotado por el caso 6 de CFG-23c |
+| M1 | ¿Se aprueba la alternativa 5 como mecanismo único, con la 2 solo como paso transitorio de Core? | Sí (avalado en revisión de arquitectura PR #39) |
+| M2 | `tarifa_referencia` y *overrides* por tenant de `rules.yaml`: ¿Rules persiste en la base compartida o en el propio servicio? | En el incremento actual (`US-03.1.1-M6`, `MANI-Java`), los *overrides* por tenant (`mani.rules.category.tenants.<tenantId>.*`) viven en la configuración del servicio y Rules no accede a PostgreSQL (ADR-0022); Core persiste `tarifa_referencia` y consulta a Rules por HTTP (ADR-0030 §2). Si en el futuro el tarifario u *overrides* se persisten desde Rules en el esquema `reglas`, se habilitará el rol `mani_rules_svc` (`ModeloDatos.md` §6.3) bajo las mismas reglas (`NOBYPASSRLS` + `app.set_context`). Mientras tanto, `mani_rules_svc` queda documentado y **no se crea** |
+| M3 | ¿Se acepta el riesgo residual de Storage con `service_role`, con rutas construidas desde el contexto? | Sí, precisando que el **caso 6 de CFG-23c** debe probar explícitamente el acceso a una ruta de Storage de **otro tenant** (`{T2}/…`), no solo de otro aliado del mismo tenant |
 | M4 | ¿Se acepta que `tenant` siga legible sin contexto (`slug`, `nombre`, `estado`) para resolver `X-Tenant-Slug`? | Sí: el slug ya es público por ADR-0018 |
-| M5 | Nombres de rol de contexto fuera de sesión: `anonimo` (lectura pre-auth) y `servicio` (asíncrono) | Aprobar o renombrar |
-| M6 | ¿Las tres exposiciones de ADR-0032 §8 se corrigen este sprint, antes de CFG-23b, con defectos propios? | Sí, son independientes del modelo |
-| M7 | Revisor del ADR (ADR-0003 exige autor y revisor distintos) | Sara Albarracín (autora de SCRUM-1334 y ADR-0030) |
+| M5 | Nombres de rol de contexto fuera de sesión: `anonimo` (lectura pre-auth) y `servicio` (asíncrono) | Aprobar o renombrar en sesión |
+| M6 | ¿Las tres exposiciones de ADR-0032 §8 se corrigen este sprint, antes de CFG-23b? | **Ejecutado:** migración `0005_cerrar_exposiciones_rls.sql` y verificación `0005_verificar_exposiciones.sql` abiertas en `MANI-Node` PR #28 bajo SCRUM-1334 |
+| M7 | Revisor del ADR (ADR-0003 exige autor y revisor distintos) | **Resuelto:** Sara Albarracín Niño (aprobado en `MANI-docs` PR #39) |
+| M8 | Dependencia operativa de CFG-23b (paso 5) | Los roles `mani_core_svc` y `mani_dispatch_svc` nacen `NOLOGIN` en la migración; operaciones (DevOps, Daniel Ávila) asigna `LOGIN PASSWORD` y actualiza `DATABASE_URL` fuera de git (`/opt/mani/.env.{dev,qa,prod}`, ADR-0031 §5) antes de activar RLS en QA |
 
 ## 6. Después de la sesión (2 min)
 
 1. Completar el acta (§7) y copiar decisión y disenso en ADR-0032 (*Estado* y *Disenso registrado*).
 2. Si se aprueba:
    - pasar ADR-0032 a **Aceptado**;
-   - mover CFG-23b y CFG-23c fuera de *blocked*;
-   - actualizar SCRUM-1334 con la conciliación del inventario (§6);
-   - abrir los defectos de M6.
+   - mover CFG-23b y CFG-23c fuera de *blocked* (los pasos 1 a 4 de CFG-23b pueden avanzar sin esperar el paso 5 operativo);
+   - fusionar `MANI-Node` PR #28 (migración `0005` de SCRUM-1334).
 3. Si se rechaza o modifica: registrar el motivo y la alternativa elegida, y reabrir CFG-23a.2.
 
 ## 7. Acta
 
-> Se completa en la sesión. Hasta entonces la decisión **no existe**: ADR-0032 sigue en *Propuesto*.
+> Se completa en la sesión de Mesa de Arquitectura (no se inventan fechas ni acuerdos sin sesión celebrada, conforme a SM4-01). Hasta entonces ADR-0032 permanece en *Propuesto* con revisión de pares aprobada en PR #39.
 
 | Campo | Valor |
 |---|---|
-| Fecha y hora | |
-| Asistentes | |
+| Fecha y hora | *Pendiente de sesión de Mesa de Arquitectura* |
+| Asistentes | *Pendiente de sesión* |
 | Decisión sobre ADR-0032 | ☐ Aprobado ☐ Aprobado con cambios ☐ Rechazado |
-| Cambios acordados | |
-| Respuestas M1–M7 | |
-| Disenso registrado (quién y por qué) | |
-| Revisor asignado | |
-| Responsables y fechas de lo acordado | |
+| Cambios acordados | Incorporadas previamente las 3 observaciones de la revisión de arquitectura (PR #39): alcance de `mani_rules_svc` (M2), prueba cross-tenant de Storage `{T2}/…` en caso 6 (M3) y dependencia operativa `NOLOGIN` → `LOGIN PASSWORD` con DevOps (M8) |
+| Respuestas M1–M8 | M6 (`MANI-Node` PR #28) y M7 (Revisora: Sara Albarracín Niño) cerradas; M1–M5 y M8 listas para ratificación en sesión |
+| Disenso registrado (quién y por qué) | Ninguno en revisión previa |
+| Revisor asignado | Sara Albarracín Niño (`MANI-docs` PR #39) |
+| Responsables y fechas de lo acordado | Juan Sebastián Álvarez (CFG-23b pasos 1–4, migraciones y `withTenantContext`), Daniel Ávila (CFG-23b paso 5, `LOGIN PASSWORD` y `DATABASE_URL` en QA/PROD), Santiago Hernández (CFG-23c, ejecución de los 6 casos en QA) |

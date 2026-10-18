@@ -886,42 +886,56 @@ superusuario y sin `BYPASSRLS`. Ningún rol de servicio recibe `SELECT` sobre un
 
 | Rol | Escritura | Lectura |
 |---|---|---|
-| `mani_core` | `core`, `servicio`, `comunicaciones`, `pagos` | sus propios esquemas |
-| `mani_rules` | `reglas` | `reglas` |
-| `mani_dispatch` | `despacho` | `despacho` |
+| `mani_core_svc` | `core`, `servicio`, `comunicaciones`, `pagos` | sus propios esquemas |
+| `mani_rules_svc` | `reglas` | `reglas` |
+| `mani_dispatch_svc` | `despacho` | `despacho` |
 | `mani_relay` | `fecha_publicacion` e `intentos` del outbox | `servicio.outbox`, `despacho.outbox` |
 | `mani_migrator` | DDL en los seis esquemas | — |
 | `mani_dw_reader` | — | tablas que alimentan el ELT (§9.2) |
 
+> **Conciliado con [ADR-0032](../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md).** Ese ADR
+> es la decisión operativa —tiene PoC ejecutable con controles negativos— y fija los nombres
+> `mani_core_svc` y `mani_dispatch_svc`, además de exigir `NOBYPASSRLS`, no ser dueños de las tablas
+> y no pertenecer a `authenticated`. Esta sección adopta esos nombres y añade los roles que el ADR
+> no cubre porque son de esta vista de datos: `mani_relay` (publicador del outbox), `mani_migrator`
+> (DDL, único rol con el que corre la serie de migraciones de ADR-0030 §1) y `mani_dw_reader` (ELT).
+>
+> **Punto abierto:** ADR-0032 no asigna rol a Rules «porque no accede a la base», mientras esta
+> tabla sí define `mani_rules_svc` sobre el esquema `reglas`. La diferencia es real y depende de
+> dónde se persistan los *overrides* de reglas por tenant que ofrece `rules.yaml`. Si viven en el
+> servicio, `mani_rules_svc` no debe crearse; si viven en la base compartida, ADR-0032 necesita
+> enmienda. Lo resuelve la Mesa junto con CFG-23a.4; hasta entonces el rol queda documentado y **no
+> se crea**.
+
 Las FK entre esquemas **no requieren `SELECT`**: se sostienen con `REFERENCES` sobre la tabla
 referenciada. `despacho.solicitud` apunta a `core.tenant`, `core.cliente`, `core.sitio_servicio`,
-`core.categoria` y `core.zona`, y `mani_dispatch` recibe `REFERENCES` sobre esas cinco tablas y nada
+`core.categoria` y `core.zona`, y `mani_dispatch_svc` recibe `REFERENCES` sobre esas cinco tablas y nada
 más. Integridad referencial sin abrir lectura de datos ajenos.
 
 ```sql
-CREATE ROLE mani_core      LOGIN NOINHERIT;
-CREATE ROLE mani_rules     LOGIN NOINHERIT;
-CREATE ROLE mani_dispatch  LOGIN NOINHERIT;
-CREATE ROLE mani_relay     LOGIN NOINHERIT;
-CREATE ROLE mani_migrator  LOGIN NOINHERIT;
-CREATE ROLE mani_dw_reader LOGIN NOINHERIT;
+CREATE ROLE mani_core_svc     LOGIN NOINHERIT;
+CREATE ROLE mani_rules_svc    LOGIN NOINHERIT;
+CREATE ROLE mani_dispatch_svc LOGIN NOINHERIT;
+CREATE ROLE mani_relay        LOGIN NOINHERIT;
+CREATE ROLE mani_migrator     LOGIN NOINHERIT;
+CREATE ROLE mani_dw_reader    LOGIN NOINHERIT;
 
 -- Escritura exclusiva del dueño (§13)
-GRANT USAGE ON SCHEMA core, servicio, comunicaciones, pagos TO mani_core;
+GRANT USAGE ON SCHEMA core, servicio, comunicaciones, pagos TO mani_core_svc;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA core, servicio, comunicaciones, pagos
-    TO mani_core;
+    TO mani_core_svc;
 
-GRANT USAGE ON SCHEMA reglas TO mani_rules;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA reglas TO mani_rules;
+GRANT USAGE ON SCHEMA reglas TO mani_rules_svc;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA reglas TO mani_rules_svc;
 
-GRANT USAGE ON SCHEMA despacho TO mani_dispatch;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA despacho TO mani_dispatch;
+GRANT USAGE ON SCHEMA despacho TO mani_dispatch_svc;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA despacho TO mani_dispatch_svc;
 
 -- Integridad referencial sin lectura cruzada
-GRANT USAGE ON SCHEMA core TO mani_dispatch, mani_rules;
+GRANT USAGE ON SCHEMA core TO mani_dispatch_svc, mani_rules_svc;
 GRANT REFERENCES ON core.tenant, core.cliente, core.sitio_servicio, core.categoria, core.zona
-    TO mani_dispatch;
-GRANT REFERENCES ON core.tenant, core.categoria TO mani_rules;
+    TO mani_dispatch_svc;
+GRANT REFERENCES ON core.tenant, core.categoria TO mani_rules_svc;
 
 -- Relay del outbox: ni una tabla de negocio
 GRANT USAGE ON SCHEMA servicio, despacho TO mani_relay;
@@ -930,11 +944,11 @@ GRANT UPDATE (fecha_publicacion, intentos) ON servicio.outbox, despacho.outbox T
 
 -- Una tabla nueva no nace con permisos que nadie revisó
 ALTER DEFAULT PRIVILEGES IN SCHEMA core, servicio, comunicaciones, pagos
-    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_core;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_core_svc;
 ALTER DEFAULT PRIVILEGES IN SCHEMA reglas
-    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_rules;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_rules_svc;
 ALTER DEFAULT PRIVILEGES IN SCHEMA despacho
-    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_dispatch;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mani_dispatch_svc;
 ```
 
 Los seis roles se crean como migración versionada en la serie de Core, no a mano por ambiente

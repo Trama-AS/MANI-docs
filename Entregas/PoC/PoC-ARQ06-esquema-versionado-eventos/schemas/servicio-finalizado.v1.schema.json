@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mani.trama.co/schemas/events/servicio-finalizado.v1.schema.json",
+  "title": "ServicioFinalizadoDataV1",
+  "description": "Esquema de carga util data para ServicioFinalizado v1 (productor: Core Service, outbox: servicio.outbox)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id_solicitud",
+    "id_cliente",
+    "id_aliado",
+    "id_categoria",
+    "id_zona",
+    "id_cotizacion",
+    "valor_acordado",
+    "moneda",
+    "estado_anterior",
+    "estado_nuevo",
+    "habilita_calificacion",
+    "fecha_finalizacion"
+  ],
+  "properties": {
+    "id_solicitud": { "type": "string", "format": "uuid" },
+    "id_cliente": { "type": "string", "format": "uuid" },
+    "id_aliado": { "type": "string", "format": "uuid" },
+    "id_categoria": { "type": "string", "format": "uuid" },
+    "id_zona": { "type": "string", "format": "uuid" },
+    "id_cotizacion": { "type": ["string", "null"], "format": "uuid" },
+    "valor_acordado": { "type": ["number", "null"], "minimum": 0 },
+    "moneda": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z]{3}$"
+    },
+    "estado_anterior": {
+      "type": "string",
+      "enum": ["EN_EJECUCION"]
+    },
+    "estado_nuevo": {
+      "type": "string",
+      "enum": ["FINALIZADA"]
+    },
+    "habilita_calificacion": {
+      "type": "boolean",
+      "const": true
+    },
+    "fecha_finalizacion": { "type": "string", "format": "date-time" }
+  }
+}

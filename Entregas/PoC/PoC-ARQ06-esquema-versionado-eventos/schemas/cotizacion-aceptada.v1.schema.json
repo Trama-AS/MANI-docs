@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mani.trama.co/schemas/events/cotizacion-aceptada.v1.schema.json",
+  "title": "CotizacionAceptadaDataV1",
+  "description": "Esquema de carga util data para CotizacionAceptada v1 (productor: Core Service, outbox: servicio.outbox)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id_cotizacion",
+    "id_solicitud",
+    "id_aliado",
+    "id_categoria",
+    "id_tarifa",
+    "valor_mano_obra",
+    "valor_materiales",
+    "valor_total",
+    "moneda",
+    "fuera_de_rango",
+    "estado",
+    "fecha_aceptacion"
+  ],
+  "properties": {
+    "id_cotizacion": { "type": "string", "format": "uuid" },
+    "id_solicitud": { "type": "string", "format": "uuid" },
+    "id_aliado": { "type": "string", "format": "uuid" },
+    "id_categoria": { "type": "string", "format": "uuid" },
+    "id_tarifa": { "type": ["string", "null"], "format": "uuid" },
+    "valor_mano_obra": { "type": "number", "minimum": 0 },
+    "valor_materiales": { "type": "number", "minimum": 0 },
+    "valor_total": { "type": "number", "minimum": 0 },
+    "moneda": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "fuera_de_rango": { "type": "boolean" },
+    "estado": {
+      "type": "string",
+      "enum": ["ACEPTADA"]
+    },
+    "fecha_aceptacion": { "type": "string", "format": "date-time" }
+  }
+}

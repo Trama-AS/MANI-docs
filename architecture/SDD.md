@@ -59,7 +59,7 @@ Para evitar ambigüedades entre ADR, diagramas y despliegue, se fijan las siguie
 | CI/CD | **GitHub Actions** |
 | Integración entre servicios, Sprint 4 | **HTTP sincrónico por red interna, falla cerrado (`503`)** |
 | Integración entre servicios, Sprint 5 | **Bus de eventos con Apache Kafka** |
-| Eventos de negocio | **Tres:** `SolicitudCreada` y `CotizacionAceptada` (Core), `AliadoAsignado` (Dispatch) |
+| Eventos de negocio | **Cuatro:** `SolicitudCreada`, `CotizacionAceptada` y `ServicioFinalizado` (Core), `AliadoAsignado` (Dispatch) — esquemas `v1` y versionado en [`CONTRATOS_EVENTOS.md`](./CONTRATOS_EVENTOS.md) |
 | Publicación de eventos | **Transactional outbox**, obligatorio desde la primera implementación |
 | Consumo de eventos | **Idempotente por `event_id`** |
 | DDL ejecutable | **Serie única de migraciones propiedad de Core Service** |

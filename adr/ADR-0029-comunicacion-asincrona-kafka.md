@@ -42,6 +42,7 @@ Lo que queda fijado desde ahora, aunque no se implemente:
 | `SolicitudCreada` | Core Service | una solicitud queda persistida y lista para repartirse |
 | `AliadoAsignado` | Dispatch Service | la actualización condicional de ADR-0016 confirma la asignación |
 | `CotizacionAceptada` | Core Service | el cliente acepta una cotización validada contra el tarifario |
+| `ServicioFinalizado` | Core Service | la ejecución del servicio concluye y la solicitud pasa a `FINALIZADA` (RF-18, RF-19) |
 
 Cada evento tiene un único productor: el servicio dueño de la capacidad según ADR-0022. Ningún servicio emite un evento de un dominio ajeno.
 
@@ -57,13 +58,15 @@ Todo evento viaja con un sobre obligatorio:
   "occurred_at": "2026-10-17T10:00:00Z",
   "tenant_id": "uuid",
   "correlation_id": "...",
+  "partition_key": "uuid",
   "data": { }
 }
 ```
 
 - `tenant_id` es obligatorio: el aislamiento multi-tenant (RNF-01) también aplica a los eventos, y un consumidor no puede inferir el tenant del contenido.
 - `correlation_id` continúa el `X-Correlation-ID` que el Gateway ya propaga, para que una transacción se pueda seguir de extremo a extremo atravesando el bus (RNF-07).
-- `event_version` se incrementa solo ante cambios incompatibles; un cambio compatible agrega campos opcionales. El versionado del esquema es trabajo de ARQ-06 sobre este contrato.
+- `partition_key` fija `id_solicitud` como clave de partición común de los cuatro eventos para garantizar orden causal por solicitud.
+- `event_version` se incrementa solo ante cambios incompatibles; un cambio compatible agrega campos opcionales. El esquema formal `v1` de cada evento y la política de versionado se especifican en [`architecture/CONTRATOS_EVENTOS.md`](../architecture/CONTRATOS_EVENTOS.md) (ARQ-06 / SCRUM-1237).
 
 ### 3. La publicación usa transactional outbox, obligatorio desde la primera implementación
 

@@ -559,7 +559,7 @@ implementación **diferida al Sprint 5**. Durante el Sprint 4 la integración en
 exclusivamente HTTP sincrónico por la red interna, con falla cerrado —`503` hacia el llamador, sin
 degradar a lógica local— según el patrón que fija ADR-0030 §2.
 
-Tres eventos de negocio, cada uno con un único productor, que es el servicio dueño de la capacidad
+Cuatro eventos de negocio, cada uno con un único productor, que es el servicio dueño de la capacidad
 (ADR-0022, SAD §7.4):
 
 | Evento | Productor | Se emite cuando |
@@ -567,12 +567,15 @@ Tres eventos de negocio, cada uno con un único productor, que es el servicio du
 | `SolicitudCreada` | Core Service | la solicitud queda persistida y lista para repartirse (RF-12) |
 | `AliadoAsignado` | Dispatch Service | la actualización condicional de ADR-0016 confirma la asignación |
 | `CotizacionAceptada` | Core Service | el cliente acepta una cotización validada contra el tarifario |
+| `ServicioFinalizado` | Core Service | la ejecución del servicio concluye y la solicitud pasa a `FINALIZADA` (RF-18, RF-19) |
 
 Ningún servicio emite un evento de un dominio ajeno. Todo evento viaja con el sobre obligatorio de
 ADR-0029 §2 —`event_id`, `event_type`, `event_version`, `occurred_at`, `tenant_id`,
-`correlation_id`, `data`—. `tenant_id` es obligatorio porque el aislamiento multi-tenant (RNF-01)
-también aplica a los eventos, y `correlation_id` continúa el `X-Correlation-ID` del Gateway para
-seguir una transacción de extremo a extremo atravesando el bus (RNF-07).
+`correlation_id`, `partition_key`, `data`— y su esquema formal `v1` junto con las reglas de
+versionado se especifican en [`CONTRATOS_EVENTOS.md`](./CONTRATOS_EVENTOS.md) (ARQ-06). `tenant_id`
+es obligatorio porque el aislamiento multi-tenant (RNF-01) también aplica a los eventos, y
+`correlation_id` continúa el `X-Correlation-ID` del Gateway para seguir una transacción de extremo a
+extremo atravesando el bus (RNF-07).
 
 La publicación usa **transactional outbox** desde la primera implementación, nunca doble escritura:
 el servicio escribe el evento en `servicio.outbox` o `despacho.outbox` dentro de la misma

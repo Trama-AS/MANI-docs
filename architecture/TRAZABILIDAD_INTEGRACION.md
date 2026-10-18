@@ -8,6 +8,7 @@ seguirla sin abrir siete documentos. Donde algo no existe todavía, lo dice en l
 
 Fuentes: [`ADR-0029`](../adr/ADR-0029-comunicacion-asincrona-kafka.md),
 [`ADR-0030`](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md),
+[`CONTRATOS_EVENTOS`](CONTRATOS_EVENTOS.md),
 [`SAD`](SAD.md) §7.4 y §12, [`SDD`](SDD.md) §2.1,
 [`ModeloDatos`](ModeloDatos.md) §6.3 y §7,
 [`COMUNICACION_SERVICIOS_GATEWAY`](COMUNICACION_SERVICIOS_GATEWAY.md),
@@ -34,16 +35,17 @@ Fuentes: [`ADR-0029`](../adr/ADR-0029-comunicacion-asincrona-kafka.md),
 
 | Evento | Productor | Outbox | Consumidores previstos | Estado | Tarea |
 |---|---|---|---|---|---|
-| `SolicitudCreada` | Core Service | `servicio.outbox` | Dispatch (broadcast), DW | contrato definido, sin publicar | ARQ-06 (SCRUM-1237) |
-| `AliadoAsignado` | Dispatch Service | `despacho.outbox` | Core (notificación), DW | contrato definido, sin publicar | ARQ-06 (SCRUM-1237) |
-| `CotizacionAceptada` | Core Service | `servicio.outbox` | Dispatch, DW | contrato definido, sin publicar | ARQ-06 (SCRUM-1237) |
+| `SolicitudCreada` | Core Service | `servicio.outbox` | Dispatch (broadcast), DW | esquema `v1` y versionado definidos ([`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md)), sin publicar | ARQ-06 (SCRUM-1237) |
+| `AliadoAsignado` | Dispatch Service | `despacho.outbox` | Core (notificación), DW | esquema `v1` y versionado definidos ([`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md)), sin publicar | ARQ-06 (SCRUM-1237) |
+| `CotizacionAceptada` | Core Service | `servicio.outbox` | Dispatch, DW | esquema `v1` y versionado definidos ([`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md)), sin publicar | ARQ-06 (SCRUM-1237) |
+| `ServicioFinalizado` | Core Service | `servicio.outbox` | Core (calificación RF-19 / cierre), DW | esquema `v1` y versionado definidos ([`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md)), sin publicar | ARQ-06 (SCRUM-1237) |
 
 Cada evento tiene **un solo productor**, que es el servicio dueño de la capacidad según SAD §7.4 y
 ADR-0022. Ningún servicio emite un evento de un dominio ajeno.
 
 ### 2.2 Sobre común
 
-Definido en ADR-0029 §2, persistido en las columnas que documenta `ModeloDatos` §8:
+Definido en ADR-0029 §2 y especificado formalmente en [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) §3, persistido en las columnas que documenta `ModeloDatos` §8:
 
 | Campo del sobre | Columna del outbox | Por qué es obligatorio |
 |---|---|---|
@@ -53,6 +55,7 @@ Definido en ADR-0029 §2, persistido en las columnas que documenta `ModeloDatos`
 | `occurred_at` | `fecha_ocurrencia` | momento del hecho, no de la publicación |
 | `tenant_id` | `id_tenant` | RNF-01 también aplica a los eventos; no se infiere del contenido |
 | `correlation_id` | `correlation_id` | continúa el `X-Correlation-ID` del Gateway (RNF-07) |
+| `partition_key` | `clave_particion` | `id_solicitud`; garantiza orden causal por solicitud |
 | `data` | `payload` | estado propio del agregado, nunca datos de otro dominio |
 
 ### 2.3 Cadena de tareas y qué falta
@@ -60,7 +63,7 @@ Definido en ADR-0029 §2, persistido en las columnas que documenta `ModeloDatos`
 | Tarea | Alcance | Estado | Bloqueo |
 |---|---|---|---|
 | ARQ-04 (SCRUM-1235) | ADR-0029 | **cerrada**, PR #36 fusionado | — |
-| ARQ-06 (SCRUM-1237) | esquema y versionado de eventos | ejecutable | ninguno: es contrato, no infraestructura |
+| ARQ-06 (SCRUM-1237) | esquema y versionado de eventos | **entregada** en [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) + JSON Schemas verificables | — |
 | ARQ-07 (SCRUM-1238) | publicación confiable | ejecutable con alcance «escribe al outbox» | ninguno |
 | ARQ-05 (SCRUM-1236) | Kafka en DEV y QA | **diferida al Sprint 5** | condicionada al cierre de CFG4-02 |
 | ARQ-08 (SCRUM-1239) | consumidores idempotentes | **diferida al Sprint 5** | depende de ARQ-05 |

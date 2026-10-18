@@ -57,8 +57,27 @@ Para evitar ambigüedades entre ADR, diagramas y despliegue, se fijan las siguie
 | Orquestación | **Kubernetes** |
 | Contenedores | **Docker/OCI** |
 | CI/CD | **GitHub Actions** |
+| Integración entre servicios, Sprint 4 | **HTTP sincrónico por red interna, falla cerrado (`503`)** |
+| Integración entre servicios, Sprint 5 | **Bus de eventos con Apache Kafka** |
+| Eventos de negocio | **Tres:** `SolicitudCreada` y `CotizacionAceptada` (Core), `AliadoAsignado` (Dispatch) |
+| Publicación de eventos | **Transactional outbox**, obligatorio desde la primera implementación |
+| Consumo de eventos | **Idempotente por `event_id`** |
+| DDL ejecutable | **Serie única de migraciones propiedad de Core Service** |
 
 **Supabase y PostgreSQL no son dos alternativas de persistencia.** Supabase es la plataforma administrada utilizada por MANI y PostgreSQL es su motor relacional subyacente.
+
+**Kafka y Realtime no son dos alternativas de mensajería.** Realtime notifica al usuario conectado
+(ADR-0017); Kafka transporta eventos de negocio entre servicios
+([ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md)). Son dos planos distintos, detallados
+en SAD §12.1 y §12.2. Mientras el bus no exista, la integración entre servicios es HTTP sincrónico
+con falla cerrado: si la dependencia no responde, el llamador devuelve `503` y **no** sustituye la
+respuesta por lógica local ni por un valor por omisión (ADR-0030 §2).
+
+**`ModeloDatos.md` no es el DDL ejecutable.** Es la especificación normativa del modelo; lo que se
+aplica a la base es la serie única de migraciones propiedad de Core Service, con numeración
+incremental e inmutable. Rules y Dispatch no versionan DDL: abren PR de migración contra esa serie
+([ADR-0030](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §1). La propiedad por
+servicio que enuncia §4.2 es **estado objetivo**, no descripción del presente.
 
 ## 2.2 Acceso del cliente a Supabase
 

@@ -1,9 +1,9 @@
 # ADR-0032 — Identidad en base de datos cuando el llamador es un servicio
 
-- **Estado:** Propuesto (pendiente de Mesa de Arquitectura, CFG-23a.4)
+- **Estado:** Propuesto (revisión de arquitectura aprobada en PR #39; pendiente de acta de Mesa de Arquitectura, CFG-23a.4)
 - **Decisión de:** persistencia y seguridad multi-tenant
 - **Autor:** Juan Sebastián Álvarez Rodríguez
-- **Revisor:** pendiente de asignar en Mesa (ADR-0003 exige autor y revisor distintos)
+- **Revisor:** Sara Albarracín Niño (revisión aprobada en `MANI-docs` PR #39, conforme a ADR-0003)
 - **Fecha:** 2026-10-17
 - **Jira:** CFG-23a (SCRUM-1103), subtarea SCRUM-1196
 - **Relacionado con:** ADR-0012, ADR-0015, ADR-0016, ADR-0018, ADR-0022 (KI-05), ADR-0029, ADR-0030, ADR-0031
@@ -69,9 +69,10 @@ No existe un contexto de plataforma o multi-tenant en tiempo de ejecución. Una 
 ### 3. Un rol de base de datos por servicio
 
 - `mani_core_svc` y `mani_dispatch_svc`: `LOGIN`, `NOBYPASSRLS`, no superusuario, **no dueños** de las tablas y **no miembros de `authenticated`**, para no heredar el `GRANT ALL` de los *default privileges* de Supabase.
-- Cada rol recibe `GRANT` solo sobre las tablas de su dominio según ADR-0022/0030. Así la frontera de datos queda impuesta también por el motor: Dispatch recibe `permission denied` en `notificacion`. Rules no tiene rol porque no accede a la base.
-- Ambos reciben `USAGE` sobre el esquema `auth` y `EXECUTE` sobre `auth.uid()`/`auth.jwt()`, que las políticas evalúan con el rol del llamador.
-- Las contraseñas son secretos por ambiente (ADR-0031 §5) y nunca se versionan. La migración crea los roles `NOLOGIN` y operaciones les asigna `LOGIN PASSWORD` fuera de git.
+- Cada rol recibe `GRANT` solo sobre las tablas de su dominio según ADR-0022/0030 (conciliado con [`ModeloDatos.md` §6.3](../architecture/ModeloDatos.md), que documenta además los roles operativos `mani_relay`, `mani_migrator` y `mani_dw_reader`). Así la frontera de datos queda impuesta también por el motor: Dispatch recibe `permission denied` en `notificacion`.
+- **Alcance de Rules Service (`mani_rules_svc`):** En el incremento actual (US-03.1.1-M6, `MANI-Java`), las reglas evaluables y los *overrides* por tenant (`mani.rules.category.tenants.<tenantId>.*`) residen en la configuración del servicio (`application.yml` / variables de entorno) y Rules **no se conecta a PostgreSQL** (ADR-0022); Core persiste `tarifa_referencia` y consume a Rules por HTTP (ADR-0030 §2). Por tanto, `mani_rules_svc` no se crea en CFG-23b. Si en un incremento futuro se decide persistir los *overrides* o el tarifario directamente desde Rules en el esquema `reglas` (`ModeloDatos.md` §6.3), deberá enmendarse este ADR para habilitar `mani_rules_svc` con las mismas restricciones (`NOBYPASSRLS`, `app.set_context` obligatorio y `GRANT` exclusivo sobre `reglas`).
+- Ambos roles activos reciben `USAGE` sobre el esquema `auth` y `EXECUTE` sobre `auth.uid()`/`auth.jwt()`, que las políticas evalúan con el rol del llamador.
+- **Dependencia operativa con DevOps:** Las contraseñas son secretos por ambiente (`/opt/mani/.env.{dev,qa,prod}`, ADR-0031 §5) y nunca se versionan. La migración de CFG-23b crea los roles con `NOLOGIN`, y operaciones (DevOps) les asigna `LOGIN PASSWORD` y actualiza el `DATABASE_URL` de cada servicio fuera de git antes de activar el paso 5 en QA/PROD.
 
 ### 4. El contexto se establece por transacción y solo con `app.set_context`
 
@@ -98,7 +99,7 @@ No existe un contexto de plataforma o multi-tenant en tiempo de ejecución. Una 
 | `postgres` | migraciones de `MANI-Node/db/migrations` y operación auditada | tráfico de aplicación |
 | `service_role` (`SUPABASE_SERVICE_ROLE_KEY`) | API de administración de Supabase Auth (crear usuario) y Storage | `.from()` / `.rpc()` sobre tablas |
 
-En Storage, Core sigue usando `service_role` porque Storage no ofrece otra vía de servidor. Toda ruta de objeto debe empezar por el tenant del contexto (`{tenant_id}/{user_id}/…`), y este es el riesgo residual que se acepta y que CFG-23c debe probar (caso 6).
+En Storage, Core sigue usando `service_role` porque Storage no ofrece otra vía de servidor. Toda ruta de objeto debe empezar por el tenant del contexto (`{tenant_id}/{user_id}/…`), y este es el riesgo residual que se acepta y que CFG-23c debe probar explícitamente en el caso 6 intentando acceder a una ruta de Storage de **otro tenant** (`{T2}/…`), no solo de otro aliado del mismo tenant.
 
 ### 7. Camino PostgREST mientras exista
 
@@ -106,11 +107,11 @@ Flutter legado, y Core si usa el adaptador transitorio de la alternativa 2, entr
 
 ### 8. Exposiciones que no esperan a CFG-23b
 
-Por ser independientes del modelo, se corrigen en una migración previa:
+Por ser independientes del modelo, se corrigen en una migración previa (`MANI-Node/db/migrations/0005_cerrar_exposiciones_rls.sql` y `db/verify/0005_verificar_exposiciones.sql`, entregada en `MANI-Node` PR #28 bajo SCRUM-1334):
 
-1. revocar `EXECUTE` de `registrar_aliado_persona_natural` a `anon`;
+1. revocar `EXECUTE` de `registrar_aliado_persona_natural` y `registrar_aliado_empresa` a `PUBLIC`, `anon` y `authenticated`;
 2. eliminar las políticas `USING (true)` / `WITH CHECK (true)` de `documento_kyc`;
-3. habilitar RLS en las once tablas que no la tienen. Sin políticas, deniegan a `anon`/`authenticated` y no rompen nada en uso:
+3. habilitar RLS en las once tablas que no la tienen (conservando lectura pública únicamente en el catálogo geográfico global `zona`). Sin políticas, deniegan a `anon`/`authenticated` y no rompen nada en uso:
    - los servicios siguen con `BYPASSRLS` hasta CFG-23b;
    - Flutter (`develop` al 2026-10-17) no hace `.from()` ni Realtime sobre tablas: solo invoca `listar_aliados_verificacion`, `listar_categorias_admin` y `listar_solicitudes_aliado`, que son `SECURITY DEFINER`.
 
@@ -139,12 +140,12 @@ La PoC lo verificó en PostgreSQL 16 con roles y funciones equivalentes a Supaba
 
 ## Verificación
 
-- CFG-23c ejecuta en QA los seis casos de Políticas DevOps §13.4 a través del Gateway **y** una verificación en el motor: con el rol de servicio y un tenant equivocado, la consulta devuelve 0 filas, no solo un rechazo previo del servicio (criterio de cierre de SCRUM-1334).
+- CFG-23c ejecuta en QA los seis casos de Políticas DevOps §13.4 a través del Gateway (incluyendo en el caso 6 el intento de acceso a una ruta de Storage `{T2}/…` de otro tenant) **y** una verificación en el motor: con el rol de servicio y un tenant equivocado, la consulta devuelve 0 filas, no solo un rechazo previo del servicio (criterio de cierre de SCRUM-1334).
 - La consulta del anexo A del inventario, corrida en QA, no devuelve tablas con `tenant_id` sin RLS, ni políticas `TO public` de aislamiento, ni funciones `SECURITY DEFINER` ejecutables por `anon`.
 
 ## Disenso registrado
 
-Pendiente de la sesión de Mesa de Arquitectura (CFG-23a.4).
+Sin disenso en la revisión de arquitectura previa (PR #39 aprobado por Sara Albarracín Niño con tres observaciones incorporadas en §3, §6 y §8); pendiente de ratificación en el acta de Mesa de Arquitectura (CFG-23a.4).
 
 ## Condición de revisión
 

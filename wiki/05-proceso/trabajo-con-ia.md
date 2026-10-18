@@ -13,7 +13,8 @@ Se permite IA para apoyo de código, pruebas, documentación, diagramas y explor
 3. no se introducen datos reales sensibles;
 4. no se introduce información confidencial en herramientas externas no autorizadas;
 5. **una respuesta de IA no constituye una decisión arquitectónica;**
-6. una decisión relevante debe pasar por el proceso de gobierno correspondiente.
+6. una decisión relevante debe pasar por el proceso de gobierno correspondiente;
+7. **la autoría del entregable es de la persona que lo firma:** no se añaden atribuciones a herramientas de IA.
 
 La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o QA** ([Ambientes y promoción](../03-entrega/ambientes-y-promocion.md)). Tampoco se pegan en una herramienta de IA.
 
@@ -36,7 +37,19 @@ Derivado de las reglas anteriores y de la jerarquía de fuentes, no de preferenc
 - no inventa umbrales, rutas, credenciales, nombres de tabla, endpoints ni versiones: si el dato no está documentado, pregunta;
 - no introduce dependencias prohibidas ([Reglas arquitectónicas](../02-arquitectura/reglas-arquitectonicas.md));
 - no marca algo como terminado sin el [DoD](dor-y-dod.md) completo;
-- no sustituye la revisión humana: el punto 1 de la política es explícito.
+- no sustituye la revisión humana: el punto 1 de la política es explícito;
+- **no se atribuye el trabajo.** No agrega `Co-Authored-By` de una herramienta, ni pies del tipo «generado con», ni emojis de robot, en ningún commit, PR, documento, archivo de código o comentario. Tampoco firma documentos como autor: el campo **Autor** de un ADR o de un documento lleva el nombre de la persona responsable. Si encuentra una atribución de ese tipo en un archivo que ya está editando, la quita.
+
+## Autoría y atribución
+
+La política §18.7 no es una preferencia de estilo, y conviene entender por qué, porque un asistente que no lo entienda la deshace en el siguiente commit:
+
+- **Quien firma, responde.** La regla 1 exige que una persona revise todo resultado. Esa revisión es la que convierte el resultado en trabajo del equipo; una etiqueta de herramienta no añade garantía y sí diluye quién responde por el contenido.
+- **La trazabilidad ya existe y es mejor.** El cambio se rastrea por el identificador de Jira, la rama, el PR y el historial de Git. Eso dice qué se cambió, por qué y quién lo aprobó, que es lo que un revisor necesita; «generado con X» no dice nada de eso.
+- **Un ADR lo firma una persona.** El campo **Autor** de un ADR identifica a quien sostiene la decisión ante la Mesa de Arquitectura, porque la regla 5 dice que una respuesta de IA no es una decisión arquitectónica. Poner ahí una herramienta sería contradecir la propia política.
+- **Vale para cualquier herramienta**, presente o futura: la regla habla de «herramientas de IA», no de un producto concreto.
+
+Lo que sí se registra, cuando aporta: el método. Si un resultado se obtuvo con una verificación concreta, se escribe la verificación (el comando ejecutado, el archivo comparado, la consulta hecha), no la herramienta que ayudó a escribirla.
 
 ## Ante ambigüedad
 

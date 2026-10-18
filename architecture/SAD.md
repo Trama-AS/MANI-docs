@@ -534,6 +534,12 @@ El cierre solo ocurre cuando ambas calificaciones requeridas por RF-19 existen.
 
 # 12. Mensajería y notificaciones
 
+MANI tiene **dos planos de mensajería distintos** y no se mezclan: la notificación hacia el usuario
+final y el evento de negocio entre servicios. El primero lo gobierna ADR-0017; el segundo,
+[ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md).
+
+## 12.1 Notificación hacia el usuario final
+
 Para RF-20 y RF-21:
 
 - Supabase Realtime entrega eventos mientras los participantes están conectados;
@@ -543,6 +549,38 @@ Para RF-20 y RF-21:
 - Realtime transporta eventos, pero no ejecuta reglas de negocio.
 
 Esto evita que una reconexión implique pérdida del estado del servicio.
+
+## 12.2 Evento de negocio entre servicios
+
+Realtime es un transporte hacia un usuario conectado: no garantiza entrega a un consumidor
+desconectado, no reintenta y no ordena por agregado. **No es el bus de integración entre
+servicios.** Esa integración se decide en ADR-0029: bus de eventos con **Apache Kafka**, con la
+implementación **diferida al Sprint 5**. Durante el Sprint 4 la integración entre servicios es
+exclusivamente HTTP sincrónico por la red interna, con falla cerrado —`503` hacia el llamador, sin
+degradar a lógica local— según el patrón que fija ADR-0030 §2.
+
+Tres eventos de negocio, cada uno con un único productor, que es el servicio dueño de la capacidad
+(ADR-0022, SAD §7.4):
+
+| Evento | Productor | Se emite cuando |
+|---|---|---|
+| `SolicitudCreada` | Core Service | la solicitud queda persistida y lista para repartirse (RF-12) |
+| `AliadoAsignado` | Dispatch Service | la actualización condicional de ADR-0016 confirma la asignación |
+| `CotizacionAceptada` | Core Service | el cliente acepta una cotización validada contra el tarifario |
+
+Ningún servicio emite un evento de un dominio ajeno. Todo evento viaja con el sobre obligatorio de
+ADR-0029 §2 —`event_id`, `event_type`, `event_version`, `occurred_at`, `tenant_id`,
+`correlation_id`, `data`—. `tenant_id` es obligatorio porque el aislamiento multi-tenant (RNF-01)
+también aplica a los eventos, y `correlation_id` continúa el `X-Correlation-ID` del Gateway para
+seguir una transacción de extremo a extremo atravesando el bus (RNF-07).
+
+La publicación usa **transactional outbox** desde la primera implementación, nunca doble escritura:
+el servicio escribe el evento en `servicio.outbox` o `despacho.outbox` dentro de la misma
+transacción que cambia el estado, y un relay aparte lo publica y lo marca enviado
+(`ModeloDatos.md` §6.3, §7 y §8). El consumidor es idempotente por `event_id`. La razón es
+concreta: con doble escritura, una caída entre el `COMMIT` y la publicación deja una solicitud
+asignada sin evento, o publica dos veces y produce una segunda asignación aparente, que es lo que
+RNF-05 prohíbe.
 
 ---
 
@@ -582,7 +620,15 @@ Capacidades utilizadas:
 - Storage;
 - Realtime.
 
-El detalle conceptual, lógico, físico, DDL y diccionario vive en `ModeloDatos.md`.
+El detalle conceptual, lógico, físico, DDL y diccionario vive en `ModeloDatos.md`, que es la
+**especificación normativa** del modelo. El **DDL ejecutable** es una sola serie de migraciones
+propiedad de Core Service, con numeración incremental e inmutable y registro en
+`schema_migrations`; Rules y Dispatch no versionan DDL y abren PR de migración contra esa serie.
+`MANI-API-Gateway/database/` y `MANI-Frontend/database/` quedan congelados como histórico y no son
+la fuente ([ADR-0030](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §1).
+
+Los permisos por esquema que hacen exigible esa frontera —un rol por servicio, sin `SELECT` sobre
+esquemas ajenos y FK sostenidas con `REFERENCES`— están en `ModeloDatos.md` §6.3.
 
 ---
 

@@ -158,7 +158,7 @@ Dos precisiones donde el dibujo se queda corto frente a este documento:
 Representa el modelo operativo, desde la gestión del trabajo hasta la construcción, validación,
 publicación y despliegue.
 
-El proyecto usa una estrategia **multi-repo** en GitHub con los seis repositorios de §17, y **Jira**
+El proyecto usa una estrategia **multi-repo** en GitHub con los siete repositorios de §17, y **Jira**
 centraliza actividades, incidencias y seguimiento. Cada repositorio desplegable tiene integración
 continua con **GitHub Actions**: pruebas automatizadas, análisis estático con SonarQube, evaluación
 de seguridad con OWASP ZAP, construcción de imágenes Docker y publicación en **GHCR**. La promoción

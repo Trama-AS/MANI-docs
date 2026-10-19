@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mani.trama.co/schemas/events/solicitud-creada.v1.schema.json",
+  "title": "SolicitudCreadaDataV1",
+  "description": "Esquema de carga util data para SolicitudCreada v1 (productor: Core Service, outbox: servicio.outbox)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id_solicitud",
+    "id_cliente",
+    "id_sitio",
+    "id_categoria",
+    "id_zona",
+    "flujo_operativo",
+    "requiere_cotizacion_previa",
+    "fecha_servicio",
+    "estado",
+    "fecha_creacion"
+  ],
+  "properties": {
+    "id_solicitud": { "type": "string", "format": "uuid" },
+    "id_cliente": { "type": "string", "format": "uuid" },
+    "id_sitio": { "type": ["string", "null"], "format": "uuid" },
+    "id_categoria": { "type": "string", "format": "uuid" },
+    "id_zona": { "type": "string", "format": "uuid" },
+    "flujo_operativo": {
+      "type": "string",
+      "enum": ["COTIZACION_ABLE", "TARIFA_ESTANDAR"]
+    },
+    "requiere_cotizacion_previa": { "type": "boolean" },
+    "fecha_servicio": { "type": ["string", "null"], "format": "date-time" },
+    "estado": {
+      "type": "string",
+      "enum": ["CREADA"]
+    },
+    "fecha_creacion": { "type": "string", "format": "date-time" }
+  }
+}

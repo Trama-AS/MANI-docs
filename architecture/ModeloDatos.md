@@ -849,8 +849,8 @@ asignaba el caso de uso a Core.
 **El outbox vive en el esquema de quien produce el evento.** `servicio.outbox` y
 `despacho.outbox` son dos tablas con la misma forma y no una tabla compartida. El evento se escribe
 en la misma transacción que cambia el estado del negocio, y un outbox común exigiría escritura
-cruzada entre esquemas, que §13 prohíbe. Core produce `SolicitudCreada` y `CotizacionAceptada`;
-Dispatch produce `AliadoAsignado` ([ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md)).
+cruzada entre esquemas, que §13 prohíbe. Core produce `SolicitudCreada`, `CotizacionAceptada` y
+`ServicioFinalizado`; Dispatch produce `AliadoAsignado` ([ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md), [`CONTRATOS_EVENTOS.md`](./CONTRATOS_EVENTOS.md)).
 
 > **Punto abierto de DOC4-04.** `solicitud` está listada bajo `despacho`, pero SAD §7.4 —cerrado en
 > SCRUM-1232— asigna a Core la creación de la solicitud (RF-12) y dice que Dispatch no la crea. Si
@@ -1392,7 +1392,7 @@ CREATE TABLE servicio.outbox (
     id_evento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_tenant UUID NOT NULL,
     tipo_evento VARCHAR(60) NOT NULL
-        CHECK (tipo_evento IN ('SolicitudCreada','CotizacionAceptada')),
+        CHECK (tipo_evento IN ('SolicitudCreada','CotizacionAceptada','ServicioFinalizado')),
     version_evento SMALLINT NOT NULL DEFAULT 1,
     id_agregado UUID NOT NULL,
     clave_particion UUID NOT NULL,
@@ -1727,8 +1727,8 @@ Segundo incremento (RF-26).
 
 ## `servicio.outbox` · `despacho.outbox`
 
-Misma estructura en los dos esquemas productores (ADR-0029). `servicio.outbox` admite
-`SolicitudCreada` y `CotizacionAceptada`, que produce Core; `despacho.outbox` admite
+Misma estructura en los dos esquemas productores (ADR-0029, [`CONTRATOS_EVENTOS.md`](./CONTRATOS_EVENTOS.md)). `servicio.outbox` admite
+`SolicitudCreada`, `CotizacionAceptada` y `ServicioFinalizado`, que produce Core; `despacho.outbox` admite
 `AliadoAsignado`, que produce Dispatch.
 
 | Campo | Tipo | Restricción | Sobre del evento | Descripción |
@@ -1738,7 +1738,7 @@ Misma estructura en los dos esquemas productores (ADR-0029). `servicio.outbox` a
 | tipo_evento | VARCHAR(60) | CHECK | `event_type` | Nombre del evento de negocio |
 | version_evento | SMALLINT | NOT NULL | `event_version` | Se incrementa solo ante cambios incompatibles |
 | id_agregado | UUID | NOT NULL | dentro de `data` | Agregado que cambió de estado |
-| clave_particion | UUID | NOT NULL | — | `id_solicitud`; da orden por solicitud, no orden global |
+| clave_particion | UUID | NOT NULL | `partition_key` | `id_solicitud`; da orden por solicitud, no orden global |
 | correlation_id | UUID | NOT NULL | `correlation_id` | Continúa el `X-Correlation-ID` del Gateway (RNF-07) |
 | payload | JSONB | NOT NULL | `data` | Estado propio del agregado; nunca datos privados de otro dominio |
 | fecha_ocurrencia | TIMESTAMPTZ | NOT NULL | `occurred_at` | Escritura, en la misma transacción del cambio de estado |

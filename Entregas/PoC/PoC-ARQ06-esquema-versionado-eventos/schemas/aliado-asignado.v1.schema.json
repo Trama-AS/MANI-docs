@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mani.trama.co/schemas/events/aliado-asignado.v1.schema.json",
+  "title": "AliadoAsignadoDataV1",
+  "description": "Esquema de carga util data para AliadoAsignado v1 (productor: Dispatch Service, outbox: despacho.outbox)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id_asignacion",
+    "id_solicitud",
+    "id_aliado",
+    "id_categoria",
+    "id_zona",
+    "estado_asignacion",
+    "estado_solicitud",
+    "fecha_asignacion",
+    "fecha_respuesta",
+    "segundos_respuesta"
+  ],
+  "properties": {
+    "id_asignacion": { "type": "string", "format": "uuid" },
+    "id_solicitud": { "type": "string", "format": "uuid" },
+    "id_aliado": { "type": "string", "format": "uuid" },
+    "id_categoria": { "type": "string", "format": "uuid" },
+    "id_zona": { "type": "string", "format": "uuid" },
+    "estado_asignacion": {
+      "type": "string",
+      "enum": ["ACEPTADA"]
+    },
+    "estado_solicitud": {
+      "type": "string",
+      "enum": ["ASIGNADA", "ACEPTADA"]
+    },
+    "fecha_asignacion": { "type": "string", "format": "date-time" },
+    "fecha_respuesta": { "type": "string", "format": "date-time" },
+    "segundos_respuesta": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

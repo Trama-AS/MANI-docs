@@ -89,7 +89,7 @@ Cada máquina de aplicación ejecuta una instancia de Docker Engine con Docker C
 | `mani-rules-service` | Java 17 (Spring Boot 3) | `8080` | Solo red interna | Motor de reglas, tarifación y ranking de cobertura. |
 | `mani-dispatch-service`| .NET 8 (ASP.NET Core) | `5000` | Solo red interna | Orquestación de solicitudes, despacho y asignación atómica. |
 | `mani-flutter-web` | Flutter Web 3.x (Nginx) | `80` | `0.0.0.0:8080->80` | Aplicación Web SPA para clientes y aliados. |
-| `mani-landing-web` | React / HTML5 (Nginx) | `80` | `0.0.0.0:3001->80` | Portal público institucional y captación de clientes. |
+| `mani-landing-web` | React 19 + Vite 8, build estático servido por NGINX Alpine | `80` | `0.0.0.0:3001->80` | Página comercial pública: catálogo con tarifas base, estimador de referencia y redirección al login de `mani-flutter-web`. No consume la API ni Supabase. Imagen `ghcr.io/trama-as/mani-landing`; registro en [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md). |
 
 ---
 

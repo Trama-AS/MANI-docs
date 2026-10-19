@@ -27,6 +27,12 @@
  * Decisiones abiertas que este modelo NO fija: proveedor y topología del clúster Kubernetes
  * (INFRA-01 e INFRA-02 de INFRAESTRUCTURA_MANI.md §25). Los nodos de despliegue se nombran
  * sin proveedor deliberadamente.
+ *
+ * Regla de la vista de despliegue: toda relación del ambiente conecta elementos hoja
+ * —instancias de contenedor o nodos de infraestructura—, nunca un nodo de despliegue que
+ * contiene otros. Structurizr posiciona solo las hojas y dibuja el padre como la caja que las
+ * encierra; una relación que apunta al padre lo obliga a tener posición propia y a encerrar a
+ * sus hijos a la vez, y el resultado son cajas superpuestas y fuera de lienzo.
  */
 
 workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de operaciones de servicio — TRAMA · Ingeniería de Software" {
@@ -104,18 +110,34 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 }
             }
 
-            // Persistencia separada por contexto funcional: cada servicio es dueño de sus datos
-            // (ADR-0012, SAD ADR-004). Ningún servicio lee las tablas privadas de otro.
+            // Persistencia por contexto funcional: cada servicio es dueño de sus datos y ningún
+            // servicio lee las tablas de otro (ADR-0012, ADR-0030 §2).
+            //
+            // ESTADO OBJETIVO, NO PRESENTE. Hoy hay UNA base PostgreSQL por ambiente y los tres
+            // almacenes de abajo son contextos lógicos dentro de ella, no instancias separadas.
+            // La propiedad se ejerce por la serie única de migraciones, propiedad de Core Service
+            // (ADR-0030 §1): Rules y Dispatch no versionan DDL, abren PR contra esa serie. La
+            // frontera la impone además el motor, con un rol por servicio sin BYPASSRLS y GRANT
+            // solo sobre su dominio (ADR-0032, ModeloDatos §6.3). Separar físicamente las bases
+            // exige un ADR nuevo que revise ADR-0012.
             group "Supabase — datos y servicios administrados" {
 
                 auth = container "Supabase Auth" "Autenticación de usuarios y emisión del JWT firmado del que se obtiene el tenant_id (ADR-0018)." "Supabase"
 
                 dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de elegibilidad y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. Incluye despacho.outbox: el evento AliadoAsignado se escribe en la misma transacción que confirma la asignación (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Incluye servicio.outbox para SolicitudCreada y CotizacionAceptada (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
 
                 storage = container "Supabase Storage" "Documentos KYC y multimedia en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
                 realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
+            }
+
+            // ADR-0029: el bus se adopta como decisión y su implementación se difiere al Sprint 5.
+            // Se modela para que la vista no sugiera que la integración asíncrona ya existe: hoy
+            // NO hay broker desplegado y ninguna capacidad depende de consumo asíncrono.
+            group "Mensajería entre servicios — diferida al Sprint 5" {
+
+                bus = container "Bus de eventos" "Apache Kafka. Transporta los eventos de negocio entre servicios: SolicitudCreada y CotizacionAceptada (produce Core), AliadoAsignado (produce Dispatch). Un solo productor por evento, sobre común con tenant_id y correlation_id, publicación con transactional outbox y consumo idempotente por event_id (ADR-0029). NO DESPLEGADO: alcance Sprint 5, ARQ-05." "Apache Kafka" "Diferido"
             }
 
             group "Analítica" {
@@ -151,6 +173,19 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         gateway -> core "Enruta tras validar el token" "HTTPS / JSON"
 
         core -> auth "Integra identidad y acceso"
+
+        // Frontera entre servicios: HTTP por la red interna y NUNCA SQL contra tablas ajenas
+        // (ADR-0030 §2, SDD §4.2). Patrón obligatorio: puerto en el dominio, cliente en
+        // infraestructura, timeout, reintento solo si la operación es idempotente y falla
+        // cerrado — 503 al llamador, sin degradar a lógica local ni a un valor por omisión.
+        core -> rules "Evalúa las reglas de la categoría del tenant. Implementado en RulesServiceHttpClient: timeout 3 s, un reintento, 503 si Rules no responde" "HTTPS / JSON"
+        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). PENDIENTE: hoy Dispatch la resuelve con SQL contra tablas de Core, desviación registrada en ADR-0030" "HTTPS / JSON"
+        dispatch -> rules "Consulta el orden del listado de candidatos (ranking)" "HTTPS / JSON"
+
+        // Producción de eventos hacia el bus diferido: el servicio escribe en su outbox dentro de
+        // la transacción de negocio y un relay publica desde ahí (ADR-0029 §3).
+        core -> bus "Publica SolicitudCreada y CotizacionAceptada vía outbox (Sprint 5)" "Kafka"
+        dispatch -> bus "Publica AliadoAsignado vía outbox (Sprint 5)" "Kafka"
         rules -> dbRules "Lee reglas, tarifarios y criterios de elegibilidad del tenant" "SQL"
         dispatch -> dbDispatch "Persiste solicitudes, asignaciones, exclusiones y auditoría" "SQL"
         core -> dbCore "Persiste tenants, aliados, clientes, catálogo, cotización, cobertura y comunicación" "SQL"
@@ -239,18 +274,20 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         produccion = deploymentEnvironment "PROD" {
 
             internet = deploymentNode "Internet" "Acceso de usuarios web y móvil." {
-                deploymentNode "Dispositivo del usuario" "" "Navegador / app móvil" {
-                    containerInstance flutter
+                dispositivo = deploymentNode "Dispositivo del usuario" "" "Navegador / app móvil" {
+                    flutterProd = containerInstance flutter
                 }
             }
 
             borde = deploymentNode "Borde — DNS, TLS y balanceo" "Resolución de nombres, terminación TLS y reparto del tráfico externo." {
-                balanceador = infrastructureNode "Balanceador" "Reparte el tráfico HTTPS entre las réplicas del Gateway." "Balanceador de carga"
+                dns = infrastructureNode "DNS" "Resuelve el nombre público de la plataforma hacia el balanceador." "DNS"
+                balanceador = infrastructureNode "Balanceador" "Reparte el tráfico HTTPS entre las réplicas del Gateway. TLS 1.3 obligatorio (INFRA §7)." "Balanceador de carga"
 
                 nodoGateway = deploymentNode "NGINX Ingress / API Gateway" "Entrada única: enrutamiento, control de acceso, validación del token y rate limiting." "NGINX" 2 {
                     gatewayProd = containerInstance gateway
                 }
 
+                dns -> balanceador "Resuelve el nombre público"
                 balanceador -> gatewayProd "Reparte el tráfico entrante" "HTTPS"
             }
 
@@ -269,8 +306,14 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                     }
                 }
 
-                secretos = infrastructureNode "Gestor de secretos" "Credenciales y configuración viven fuera de la imagen: no se hornean en el contenedor ni se versionan en el repositorio." "Secret manager"
-                secretos -> namespaceServicios "Inyecta credenciales y configuración en tiempo de arranque"
+                gitops = infrastructureNode "Despliegue del clúster" "Punto de entrada del despliegue: recibe la imagen promovida y actualiza los Deployments. kubectl o GitOps según INFRA-02." "kubectl / GitOps"
+                secretos = infrastructureNode "Secrets del clúster" "Credenciales y configuración viven fuera de la imagen: el pipeline los crea, no se hornean en el contenedor ni se versionan en Git (INFRA §8). service_role solo se monta en Core." "Kubernetes Secret"
+
+                // Una relación por pod: apuntar al namespace —que es un nodo con hijos— rompe
+                // el autolayout. Ver la regla al inicio del archivo.
+                secretos -> rulesProd "Inyecta credenciales en el arranque"
+                secretos -> dispatchProd "Inyecta credenciales en el arranque"
+                secretos -> coreProd "Inyecta credenciales en el arranque"
             }
 
             plataformaDatos = deploymentNode "Supabase — proyecto productivo" "Plataforma administrada. Bases no accesibles desde Internet pública salvo controles explícitos; acceso administrativo con privilegio mínimo." "Supabase" {
@@ -302,7 +345,8 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 pipeline -> registro "Publica la imagen validada"
             }
 
-            registro -> cluster "Despliega la imagen promovida" "kubectl / GitOps"
+            registro -> gitops "Entrega la imagen promovida; el clúster la descarga con imagePullSecret" "kubectl / GitOps"
+            pipeline -> secretos "Crea los Secret del clúster desde GitHub Environments; nunca viven en Git (INFRA §8)"
 
             observabilidadProd = deploymentNode "Plataforma de observabilidad" "Supervisa disponibilidad, tiempos de respuesta, errores y consumo de recursos." "" {
                 prometheus = infrastructureNode "Prometheus" "Recolecta métricas del Gateway y de los servicios." "Prometheus"
@@ -311,8 +355,12 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 prometheus -> grafana "Alimenta dashboards y alertas"
             }
 
-            prometheus -> namespaceServicios "Recolecta métricas de los pods" "HTTP /metrics"
-            prometheus -> nodoGateway "Recolecta métricas del Gateway" "HTTP /metrics"
+            // Igual que con los secretos: el scrape se declara contra cada instancia, no contra
+            // el namespace ni contra el nodo del Gateway.
+            prometheus -> gatewayProd "Recolecta métricas" "HTTP /metrics"
+            prometheus -> rulesProd "Recolecta métricas" "HTTP /metrics"
+            prometheus -> dispatchProd "Recolecta métricas" "HTTP /metrics"
+            prometheus -> coreProd "Recolecta métricas" "HTTP /metrics"
 
             analitica = deploymentNode "Plataforma analítica" "Desacoplada del OLTP; no participa en transacciones operacionales." "" {
                 deploymentNode "Proceso CDC / ELT" "Carga incremental hacia el Data Warehouse." "" {
@@ -432,9 +480,9 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         }
 
         // ---------- Vista 6 — Despliegue ----------
-        deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción: borde con balanceo, clúster Kubernetes con réplicas y secretos externos, Supabase por dominio, el pipeline que promueve la imagen y la observabilidad que la vigila. Fuente: SDD §9.1, §10 y §11." {
+        deployment mani "PROD" "despliegue-prod" "Vista de despliegue de producción: borde con DNS y balanceo, clúster Kubernetes con réplicas y Secrets creados por el pipeline, Supabase por dominio, el pipeline que promueve la imagen y la observabilidad que la vigila. Fuente: SDD §9.1, §10 y §11." {
             include *
-            autolayout tb
+            autolayout tb 400 400
         }
 
         styles {
@@ -457,6 +505,12 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             }
             element "Database" {
                 shape cylinder
+            }
+            element "Diferido" {
+                background #ffffff
+                color #6c757d
+                stroke #6c757d
+                border dashed
             }
             element "Component" {
                 background #6fa8dc

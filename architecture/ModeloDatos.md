@@ -1015,6 +1015,8 @@ CREATE TABLE core.sitio_servicio (
     nombre VARCHAR(150) NOT NULL,
     direccion TEXT NOT NULL,
     reglas JSONB, -- Estructura (objeto de valor SiteRules, MANI-Node#12): {"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}. Días válidos: LUN..DOM; horas HH:mm (24 h); el horario se evalúa en America/Bogota.
+    contacto_nombre VARCHAR(150), -- contacto de la sede (MANI-Node migración 0013)
+    contacto_telefono VARCHAR(30),
     reglas_acceso TEXT,
     condiciones TEXT,
     estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
@@ -1458,6 +1460,8 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | nombre | VARCHAR(150) | UNIQUE por cliente | Nombre del sitio |
 | direccion | TEXT | NOT NULL | Dirección física |
 | reglas | JSONB | NULL | Objeto `SiteRules` (MANI-Node#12): `{"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}`. `horario` es opcional (sin él no hay restricción horaria); días `LUN`..`DOM`; horas `HH:mm` en 24 h con `inicio < fin`, evaluadas en America/Bogota (RF-09) |
+| contacto_nombre | VARCHAR(150) | NULL | Persona de contacto de la sede (migración 0013 de MANI-Node) |
+| contacto_telefono | VARCHAR(30) | NULL | Teléfono de contacto de la sede |
 | reglas_acceso | TEXT | NULL | Reglas en texto libre visibles al aliado antes de programar |
 | condiciones | TEXT | NULL | Condiciones particulares del sitio |
 | estado | VARCHAR(20) | CHECK | Estado |

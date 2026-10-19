@@ -1064,9 +1064,10 @@ CREATE TABLE core.consentimiento_usuario (
 --       WITH CHECK (id_tenant IS NULL OR id_tenant = app.tenant_id())
 --   consentimiento_usuario
 --     consentimiento_usuario_propio  FOR SELECT TO authenticated, mani_core_svc
---       USING (id_usuario = app.user_id() AND id_tenant = app.tenant_id())
+--       USING (id_usuario = app.user_id() AND (id_tenant IS NULL OR id_tenant = app.tenant_id()))
 --     consentimiento_usuario_alta    FOR INSERT TO authenticated, mani_core_svc
---       WITH CHECK (id_usuario = app.user_id() AND id_tenant = app.tenant_id())
+--       WITH CHECK (id_usuario = app.user_id() AND (id_tenant IS NULL OR id_tenant = app.tenant_id()))
+--   Con id_tenant NOT NULL (migración 0010) la rama IS NULL no se cumple nunca: la condición efectiva es id_tenant = app.tenant_id().
 --   Privilegios: mani_core_svc tiene SELECT, INSERT en las dos tablas; mani_dispatch_svc ninguno.
 
 -- RF-22: tarifario de referencia por tenant y categoria.
@@ -1459,10 +1460,10 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | id_zona | UUID | FK, NOT NULL | Zona del sitio; obligatoria (RF-09) |
 | nombre | VARCHAR(150) | UNIQUE por cliente | Nombre del sitio |
 | direccion | TEXT | NOT NULL | Dirección física |
-| reglas | JSONB | NULL | Objeto `SiteRules` (MANI-Node#12): `{"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}`. `horario` es opcional (sin él no hay restricción horaria); días `LUN`..`DOM`; horas `HH:mm` en 24 h con `inicio < fin`, evaluadas en America/Bogota (RF-09) |
+| reglas | JSONB | NULL | Objeto `SiteRules` (MANI-Node#12): `{"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}`. `horario` es opcional (sin él no hay restricción horaria); días `LUN`..`DOM`; horas `HH:mm` en 24 h con `inicio < fin`, evaluadas en America/Bogota (RF-09). Las leen el cliente dueño del sitio y el admin del tenant; otro cliente o un aliado reciben 403. El aliado asignado a una solicitud del sitio se habilita cuando la asignación esté en Core (MANI-Node#12) |
 | contacto_nombre | VARCHAR(150) | NULL | Persona de contacto de la sede (migración 0013 de MANI-Node) |
 | contacto_telefono | VARCHAR(30) | NULL | Teléfono de contacto de la sede |
-| reglas_acceso | TEXT | NULL | Reglas en texto libre visibles al aliado antes de programar |
+| reglas_acceso | TEXT | NULL | Reglas en texto libre del sitio; mismo acceso que `reglas` |
 | condiciones | TEXT | NULL | Condiciones particulares del sitio |
 | estado | VARCHAR(20) | CHECK | Estado |
 
@@ -1497,8 +1498,10 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 |---|---|---|---|
 | `documento_legal` | `documento_legal_lectura` | SELECT · anon, authenticated, mani_core_svc | activo y (`id_tenant` NULL o igual a `app.tenant_id()`) |
 | `documento_legal` | `documento_legal_alta` | INSERT · mani_core_svc | `id_tenant` NULL o igual a `app.tenant_id()` |
-| `consentimiento_usuario` | `consentimiento_usuario_propio` | SELECT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y `id_tenant = app.tenant_id()` |
-| `consentimiento_usuario` | `consentimiento_usuario_alta` | INSERT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y `id_tenant = app.tenant_id()` |
+| `consentimiento_usuario` | `consentimiento_usuario_propio` | SELECT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y (`id_tenant` NULL o igual a `app.tenant_id()`) |
+| `consentimiento_usuario` | `consentimiento_usuario_alta` | INSERT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y (`id_tenant` NULL o igual a `app.tenant_id()`) |
+
+En `consentimiento_usuario` la rama `id_tenant` NULL de las políticas viene de la 0004 y ya no se cumple: con `id_tenant NOT NULL` (migración 0010 de MANI-Node, PR #14) la condición efectiva es `id_tenant = app.tenant_id()`.
 
 `mani_core_svc` solo tiene `SELECT` e `INSERT` sobre las dos tablas (el consentimiento no se edita ni se borra desde el servicio); `mani_dispatch_svc` no tiene permisos.
 

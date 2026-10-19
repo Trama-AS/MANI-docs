@@ -51,6 +51,19 @@ Se contempla posteriormente:
 - geolocalización en tiempo real del aliado;
 - cálculo de proximidad o distancia entre aliado y sitio.
 
+### Entrada comercial pública
+
+MANI tiene una página pública para quien todavía no tiene sesión: presenta las categorías de
+servicio con tarifas base de referencia, ofrece un estimador de rango y lleva al visitante al
+inicio de sesión o registro de la plataforma.
+
+**No genera requisitos funcionales en este SRS.** Es contenido comercial general: no pertenece a
+un tenant, no crea ni consulta datos de la plataforma y no forma parte del ciclo del servicio. El
+estimador da una referencia que se declara como no-cotización y no se persiste. La cotización
+formal sigue siendo la de RF-15, validada contra el tarifario del tenant (RF-16, RF-22). Si la
+página llegara a mostrar datos de un tenant o a registrar algo en la plataforma, ese cambio sí
+requeriría un requisito nuevo.
+
 ## 1.3 Definiciones
 
 - **Tenant:** empresa suscrita a la plataforma.
@@ -63,6 +76,7 @@ Se contempla posteriormente:
 - **REST:** restricción del producto.
 - **PROY:** restricción de ejecución del proyecto.
 - **Solicitud → Cotización → Ejecución → Calificación → Cierre:** ciclo de vida principal del servicio.
+- **Visitante:** persona sin sesión que consulta la entrada comercial pública antes de registrarse.
 
 ---
 
@@ -154,6 +168,19 @@ Responsabilidades:
 - consultar su historial de servicios;
 - participar en mensajería;
 - calificar al aliado.
+
+### Visitante
+
+Persona sin sesión ni cuenta en la plataforma. No pertenece a ningún tenant.
+
+Puede:
+
+- consultar las categorías de servicio y sus tarifas base de referencia;
+- obtener un rango estimado que no es una cotización;
+- ir al inicio de sesión o al registro, donde se convierte en cliente o aliado.
+
+No tiene acceso a datos de la plataforma ni a funciones de los demás actores (ver §1.2, Entrada
+comercial pública).
 
 ## 2.4 Entorno operativo
 

@@ -990,6 +990,8 @@ GitHub / Organización MANI
 │   ├── cobertura, disponibilidad y elegibilidad
 │   ├── cotización, ejecución y calificación
 │   └── comunicaciones
+├── MANI-Landing
+│   └── página comercial pública (React + Vite); solo redirige al login del cliente
 └── MANI-Docs
     ├── product/        SRS y backlog
     ├── architecture/   SAD.md, SDD.md, ModeloDatos.md, workspace.dsl, TECH_RADAR.md
@@ -1008,6 +1010,7 @@ GitHub / Organización MANI
   orquestación y la configuración de observabilidad queda abierto con INFRA-01 e INFRA-02;
 - **no existe `MANI-Availability`**: la cobertura y la disponibilidad son un dominio del
   `MANI-Core-Service` ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md));
+- `MANI-Landing` tiene pipeline e imagen propios, no accede a datos ni al Gateway y su única relación con el resto es la redirección al login de `MANI-Frontend` ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md));
 - `MANI-Docs` contiene la documentación técnica oficial y no se despliega;
 - GitHub Actions puede reutilizar workflows compartidos, pero cada artefacto se construye y versiona de manera independiente;
 - la promoción entre ambientes preserva el mismo artefacto validado;

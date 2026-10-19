@@ -207,9 +207,10 @@ Estructura objetivo:
 | `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
 | `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
 | `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Son **seis repositorios** y cinco desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+Son **siete repositorios** y seis desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 No existe `MANI-Availability` ni `MANI-Infra`.
 
 Cada unidad desplegable mantiene de forma independiente:

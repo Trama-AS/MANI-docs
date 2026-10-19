@@ -65,3 +65,15 @@ Revisar si el costo operativo del multi-repo supera sus beneficios o si el equip
 - **`MANI-Flutter` deja de contener infraestructura.** Conserva solo lo que empaqueta el cliente web: el `Dockerfile` y `docker/nginx-web.conf`, que sirve la SPA dentro de su imagen y no es configuración del Gateway.
 - **Responsable de las migraciones por ambiente:** DevOps. El detalle está en `governance/INFRAESTRUCTURA_MANI.md` §15.
 - **Pendiente:** el SDD §13 asigna a `MANI-Infra` los manifests de Kubernetes, la configuración transversal y la observabilidad. Dónde vivirán queda por resolver junto con INFRA-01 e INFRA-02 (`INFRAESTRUCTURA_MANI.md` §25). `SAD`, `SDD`, `README` y `POLITICAS_DEVOPS_HERRAMIENTAS` siguen nombrando `MANI-Infra` y se actualizan aparte.
+
+## Enmienda 2026-10-19 — pipeline independiente de `MANI-Landing` (SCRUM-1343)
+
+La decisión multi-repo no cambia: `MANI-Landing` es un repositorio más de la lista que fija [ADR-0028](./ADR-0028-nombres-repositorios-y-ambientes.md), con su propio ciclo de entrega.
+
+- **Pipeline propio.** El repositorio contiene `Dockerfile` multi-stage (build con Node 20, servido por NGINX Alpine), `nginx.conf` con fallback de SPA y `.github/workflows/docker-publish.yml`. El workflow corre con cada push a `develop`, `release` y `main` y publica `ghcr.io/trama-as/mani-landing`. No reutiliza pasos ni artefactos de `MANI-Frontend` ni de los servicios, y ningún otro pipeline depende de él.
+- **Independencia operativa.** La landing corre en su propio contenedor (`mani-landing-web`) y su única relación con el resto es la redirección del navegador al login del cliente web. Ningún componente la llama, así que desplegarla o que se caiga no afecta a `MANI-Frontend`, al Gateway ni a los servicios. La única pérdida es la entrada comercial: quien ya conoce la URL del cliente web sigue entrando. Esto es lo que acredita CA-5 de SCRUM-1335.
+- **Diferencias con la decisión de fondo, registradas como hallazgos y no resueltas aquí:**
+  - el workflow construye la imagen en cada rama en vez de promover a `release` y `main` la ya validada en `develop` (*build once, deploy many*);
+  - no ejecuta lint ni pruebas antes de publicar la imagen.
+
+  Se deciden aparte, según la restricción de SCRUM-1343.

@@ -203,9 +203,9 @@ tabla, no es oficial.
 
 | # | Vista en el DSL | Tipo | Qué muestra | Imagen | Sección |
 |---|---|---|---|---|---|
-| 1 | `panorama` | System Landscape | El mapa completo: MANI como único sistema propio, sus cuatro actores y las plataformas externas con las que convive. Es la vista para explicar el proyecto a quien no lo conoce | [`panorama.png`](../diagrams/c4/contexto/panorama.png) | §4.5 |
+| 1 | `panorama` | System Landscape | El mapa completo: MANI como único sistema propio, sus actores —incluido el visitante sin sesión de la landing— y las plataformas externas con las que convive. Es la vista para explicar el proyecto a quien no lo conoce | [`panorama.png`](../diagrams/c4/contexto/panorama.png) | §4.5 |
 | 2 | `contexto` | C4 Nivel 1 | MANI como una sola caja, sus actores y los sistemas externos. A diferencia del panorama, pone el foco en un único sistema | [`contexto.png`](../diagrams/c4/contexto/contexto.png) | §4.1 |
-| 3 | `contenedores` | C4 Nivel 2 | Las unidades desplegables —cliente, Gateway y los tres servicios—, los almacenes de Supabase, las integraciones y la analítica | [`contenedores.png`](../diagrams/c4/contenedores/contenedores.png) | §4.2 |
+| 3 | `contenedores` | C4 Nivel 2 | Las unidades desplegables —landing comercial, cliente, Gateway y los tres servicios—, los almacenes de Supabase, las integraciones y la analítica | [`contenedores.png`](../diagrams/c4/contenedores/contenedores.png) | §4.2 |
 | 4 | `componentes-rules` | C4 Nivel 3 | Dentro del Rules Service: controlador, servicio de aplicación, las estrategias por tipo de regla, el puerto y su adaptador | [`componentes-rules.png`](../diagrams/c4/componentes/componentes-rules.png) | §4.3.1 |
 | 5 | `componentes-dispatch` | C4 Nivel 3 | Dentro del Dispatch Service: selector de candidatos, coordinador de asignación, **concurrency guard** y auditoría | [`componentes-dispatch.png`](../diagrams/c4/componentes/componentes-dispatch.png) | §4.3.2 |
 | 6 | `componentes-core` | C4 Nivel 3 | Dentro del Core Service: identidad y tenants, KYC, catálogo, cobertura y disponibilidad, ciclo del servicio, comunicaciones, reportes y adaptadores externos | [`componentes-core.png`](../diagrams/c4/componentes/componentes-core.png) | §4.3.3 |
@@ -296,6 +296,7 @@ estar sin regenerar.
 Cliente              → crea solicitudes y aprueba cotizaciones
 Aliado               → cotiza, acepta y ejecuta servicios; gestiona KYC        → [ MANI ]
 Administrador tenant → administra usuarios, aliados, tenant y KYC
+Visitante (sin sesión) → conoce los servicios y estima un precio en la landing
 
 [ MANI ] → FCM / APNs                    notificaciones
          → Operador de pagos             API de pagos
@@ -322,6 +323,8 @@ Administrador tenant → administra usuarios, aliados, tenant y KYC
 > **Figura 2 — Contenedores (C4 Nivel 2).** Generada desde la vista `contenedores` de [`workspace.dsl`](../diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/contenedores/contenedores.png`](../diagrams/c4/contenedores/contenedores.png).
 
 ```text
+Visitante → Landing comercial (React + Vite) ──redirección del navegador a /login──┐
+                                                                                    ↓
 Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
                       enrutamiento · control de acceso · token · rate limiting
                                                    ↓
@@ -342,6 +345,7 @@ Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el ord
 ### Reglas de dependencia
 
 - Flutter consume contratos expuestos por el Gateway.
+- La landing comercial no consume ningún contrato: no llama al Gateway, a los servicios ni a Supabase. Solo redirige el navegador al login de Flutter Web (SAD §7.4, [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 - Cada servicio es dueño de su almacén: Rules de `Supabase Rules`, Dispatch de `Supabase Dispatch` y Core de `Supabase Core`, que incluye el dominio de disponibilidad.
 - Los servicios no acceden directamente a tablas propiedad de otro dominio.
 - Las integraciones externas se encapsulan mediante adaptadores.

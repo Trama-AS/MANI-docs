@@ -344,6 +344,43 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
 | P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |
 
+
+## 7.5 Inventario funcional por servicio
+
+Estado real de cada capacidad en la arquitectura vigente al 19 de octubre de 2026 (SCRUM-1260). Una historia cerrada con la arquitectura anterior no acredita la arquitectura vigente: el estado lo da su historia de migración (BACKLOG_MANI §3.1). **Ninguna capacidad está verificada todavía por QA en la arquitectura vigente:** la matriz de pruebas del Sprint 4 (SCRUM-1264) está diseñada, pero sus casos no se han ejecutado.
+
+Estados: **Migrado** (implementado en el servicio, sin regresión de QA) · **Migración en curso** (existe en la arquitectura anterior; su migración está en curso o bloqueada) · **En desarrollo** · **No iniciado** · **Sin historia** · **Incremento 2**.
+
+| Servicio | Capacidad | RF | Estado | Historias |
+|---|---|---|---|---|
+| Core — Node.js | Gestión de tenants | RF-01 | Sin historia | — |
+| Core — Node.js | Autenticación | RF-03 | Migrado | SCRUM-1061 |
+| Core — Node.js | Recuperación de contraseña | RF-04 | Sin historia | — |
+| Core — Node.js | Registro de aliado persona natural | RF-05 | Migrado | SCRUM-1065 |
+| Core — Node.js | Registro de aliado empresa | RF-05 | Migrado en Core; la pantalla de la app está bloqueada | SCRUM-1063, SCRUM-1060 |
+| Core — Node.js | Registro de empleado directo | RF-05 | En desarrollo | SCRUM-850 |
+| Core — Node.js | Aprobar o rechazar aliados | RF-06 | Migración en curso | SCRUM-1066 |
+| Core — Node.js | Zonas de cobertura | RF-07 | Migración en curso | SCRUM-1068, SCRUM-1067 |
+| Core — Node.js | Registro de cliente persona natural | RF-08 | Migrado | SCRUM-1064 |
+| Core — Node.js | Cliente empresa con sitios y reglas del sitio | RF-08, RF-09 | En desarrollo | SCRUM-852, SCRUM-853 |
+| Core — Node.js | Crear categorías y asociar aliados | RF-10, RF-11 | Migrado | SCRUM-1069, SCRUM-1071 |
+| Core — Node.js | Desactivar categoría | RF-10 | No iniciado (bloqueada) | SCRUM-858 |
+| Core — Node.js | Crear solicitud | RF-12 | Migración en curso | SCRUM-1072 |
+| Core — Node.js | Disponibilidad del aliado, perfil y términos | RF-29, RF-30, RF-31 | En desarrollo | SCRUM-855, SCRUM-854, SCRUM-856 |
+| Core — Node.js | Cotización, ejecución, evidencias y calificación | RF-15, RF-17..RF-19, RF-34, RF-35 | No iniciado | SCRUM-865, 867 a 870, 872 a 875 |
+| Core — Node.js | Mensajería, notificaciones y reportes | RF-20, RF-21, RF-23 | No iniciado | SCRUM-881 a 884, SCRUM-887 |
+| Core — Node.js | Cancelación e historial | RF-32, RF-33, RF-36 | No iniciado | SCRUM-877 a 880 |
+| Rules — Java | Reglas de categoría por tenant | RF-02 | Migrado | SCRUM-1070 |
+| Rules — Java | Ranking de aliados | RF-13 | No iniciado | SCRUM-864, SCRUM-876 |
+| Rules — Java | Validación contra tarifario y tarifario | RF-16, RF-22 | No iniciado | SCRUM-866, SCRUM-885, SCRUM-886 |
+| Dispatch — .NET | Orquestación del despacho | RF-12 | Migración en curso | SCRUM-1073 |
+| Dispatch — .NET | Ver y filtrar aliados válidos | RF-12 | En desarrollo | SCRUM-861, SCRUM-862 |
+| Dispatch — .NET | Aceptar sin doble asignación | RF-14 | Migración en curso | SCRUM-1074 |
+| Todos | Pagos, quejas, comercialización y métricas | RF-24..RF-28 | Incremento 2 | SCRUM-888 a 901 |
+| Todos | Rastreo del aliado en vivo | — | Incremento 2 (fuera del MVP) | SCRUM-871 |
+
+Los historiales y el estado por historia se consultan en Jira; el SRS §7.2 resume el mismo inventario por capacidad de negocio.
+
 ---
 
 # 8. Multi-tenancy y seguridad

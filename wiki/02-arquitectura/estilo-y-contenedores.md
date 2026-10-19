@@ -24,6 +24,10 @@ Fijadas en SDD §2.2 para que ADR, diagramas y despliegue no se contradigan:
 ## Contenedores
 
 ```text
+Visitante sin sesión
+   ↓
+Landing comercial           ← MANI-Landing: catálogo y estimador de referencia; solo redirige
+   ↓ (navegación del navegador al login, no es una llamada de API)
 Usuarios
    ↓
 Flutter Web / Mobile        ← presentación e interacción, sin reglas de negocio
@@ -50,6 +54,7 @@ Notas que evitan errores de implementación:
 - Rules **no** guarda reglas fijas por tenant en código: las lee de persistencia (SAD §7.1).
 - Core puede dividirse internamente por dominios, pero **no** se convierte cada CRUD en un servicio independiente (SAD §7.3, riesgo *Servicios excesivamente pequeños*). La disponibilidad es uno de esos dominios internos, no un servicio desplegable.
 - La primera aceptación válida se confirma con actualización condicional atómica; las siguientes reciben `409 Conflict` (SAD §7.2).
+- La landing comercial **no** es un servicio: no consulta datos, no llama al Gateway y queda fuera de ADR-0027 y ADR-0030 (SAD §7.4, [ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 
 ## Patrones
 

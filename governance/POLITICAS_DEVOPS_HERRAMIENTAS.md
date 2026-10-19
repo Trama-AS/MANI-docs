@@ -79,7 +79,7 @@ No forman parte de la línea base actual:
 
 # 4. Estrategia multi-repositorio
 
-Seis repositorios, con estos nombres exactos:
+Siete repositorios, con estos nombres exactos:
 
 | Repositorio | Tecnología | Responsabilidad principal |
 |---|---|---|
@@ -88,9 +88,10 @@ Seis repositorios, con estos nombres exactos:
 | `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
 | `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
 | `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Cinco repositorios desplegables; `MANI-Docs` no se despliega.
+Seis repositorios desplegables; `MANI-Docs` no se despliega. El registro de `MANI-Landing` está en [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md).
 
 `MANI-API-Gateway` guarda además el Compose por ambiente y la configuración de observabilidad. No
 existe un repositorio de infraestructura aparte.

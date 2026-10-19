@@ -32,7 +32,9 @@ ADR-0008 exige conservar una fuente versionable además de la exportación usada
 
 El DSL manda: un diagrama C4 no se edita en la imagen, se cambia en el modelo y se vuelve a exportar.
 
-> ⚠️ Las exportaciones PNG de las vistas C4 están desactualizadas respecto al `workspace.dsl` vigente. Mientras no se regeneren, manda el DSL y manda el texto del SDD. Ver SDD §4.0.
+> ⚠️ Las exportaciones PNG de las vistas C4 están desactualizadas respecto al `workspace.dsl` vigente, salvo `panorama`, `contexto` y `contenedores`, regeneradas desde el DSL el 2026-10-19 al agregar la landing (SCRUM-1348). Mientras no se regeneren las demás, manda el DSL y manda el texto del SDD. Ver SDD §4.0.
+>
+> Cómo se regeneraron, para repetirlo: `docker run -p 8080:8080 -v diagrams/c4:/usr/local/structurizr structurizr/structurizr local` (Structurizr Lite ya no se mantiene), y para cada vista `structurizr.scripting.exportCurrentDiagramToPNG({ includeMetadata: true, crop: false })` desde el navegador, en modo claro.
 
 ## Reubicaciones aplicadas (DOC-29 / SCRUM-1084)
 

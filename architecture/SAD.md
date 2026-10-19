@@ -158,7 +158,7 @@ Dos precisiones donde el dibujo se queda corto frente a este documento:
 Representa el modelo operativo, desde la gestión del trabajo hasta la construcción, validación,
 publicación y despliegue.
 
-El proyecto usa una estrategia **multi-repo** en GitHub con los seis repositorios de §17, y **Jira**
+El proyecto usa una estrategia **multi-repo** en GitHub con los siete repositorios de §17, y **Jira**
 centraliza actividades, incidencias y seguimiento. Cada repositorio desplegable tiene integración
 continua con **GitHub Actions**: pruebas automatizadas, análisis estático con SonarQube, evaluación
 de seguridad con OWASP ZAP, construcción de imágenes Docker y publicación en **GHCR**. La promoción
@@ -219,6 +219,7 @@ El estado real de cada gate se registra aparte, no en el dibujo:
 ```text
 Actores
   Cliente · Aliado · Administrador de tenant · Administrador de plataforma
+  Visitante sin sesión (solo la landing comercial)
         ↓
                           [ MANI ]
         ↓
@@ -237,6 +238,10 @@ Sistemas externos
 > Antes esta figura reutilizaba `DHL.png`, la misma imagen de la Figura 1: el documento mostraba el diagrama de contexto dos veces y no llegaba a mostrar nunca los contenedores.
 
 ```text
+Visitante sin sesión
+   ↓
+Landing comercial (MANI-Landing)        catálogo, tarifas base y estimador de referencia
+   ↓ redirección del navegador al login (no es una llamada de API)
 Usuarios
    ↓
 Flutter Web / Mobile                    presentación e interacción
@@ -314,6 +319,7 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 - **Rules** no persiste solicitudes ni asignaciones, no envía notificaciones y no tiene reglas por tenant fijas en código: evalúa y responde.
 - **Dispatch** no decide la elegibilidad por categoría, zona o disponibilidad (la consulta a Core) ni calcula el orden del listado (lo consulta a Rules). No gestiona cotización, ejecución ni calificación.
 - **Core** no orquesta el despacho ni confirma asignaciones, y no evalúa reglas ni valida contra el tarifario (lo consulta a Rules).
+- **Landing** (`MANI-Landing`, no es un servicio) no consulta datos ni Supabase, no llama al Gateway ni a ningún servicio y no participa del flujo transaccional. Su catálogo y sus tarifas base son contenido estático, y el rango del estimador es una referencia que no es una cotización ni se persiste. Su única relación con el resto es la redirección del navegador a `/login` del cliente web, con la categoría o el aliado elegidos como parámetros de consulta. Registro: [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md); detalle: `MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`.
 
 ### Flujo de RF-12 a RF-16
 
@@ -712,9 +718,10 @@ La solución mantiene una estrategia **multi-repo**:
 | `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
 | `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
 | `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Son **seis repositorios** y cinco desplegables ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+Son **siete repositorios** y seis desplegables ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 No existe `MANI-Availability` —la disponibilidad es un dominio del Core— ni `MANI-Infra`, que DevOps
 borró: la infraestructura de datos y el stack local viven en `MANI-API-Gateway` (ADR-0004, enmienda
 del 2026-10-07).

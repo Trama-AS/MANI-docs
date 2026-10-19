@@ -53,7 +53,7 @@ cuatro filas.
 
 ## Decisión
 
-### 1. Seis repositorios, con estos nombres exactos
+### 1. Siete repositorios, con estos nombres exactos
 
 | Repositorio | Tecnología | Responsabilidad principal |
 |---|---|---|
@@ -62,9 +62,10 @@ cuatro filas.
 | `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
 | `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
 | `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Cinco son desplegables; `MANI-Docs` no se despliega. **No existe otro nombre válido** para estos
+Seis son desplegables; `MANI-Docs` no se despliega. **No existe otro nombre válido** para estos
 repositorios en ningún documento, diagrama, pipeline o tarea.
 
 Tres reglas de nomenclatura, para que la lista no vuelva a divergir:
@@ -77,8 +78,27 @@ Tres reglas de nomenclatura, para que la lista no vuelva a divergir:
    se documenta en la tabla, no en el nombre del repositorio.
 3. **Las palabras se separan con guion:** `MANI-API-Gateway`, no `MANI-APIGateway`.
 
-`MANI-Frontend` y `MANI-Docs` no llevan `-Service` porque no son servicios: uno es el cliente y el
-otro documentación.
+`MANI-Frontend`, `MANI-Landing` y `MANI-Docs` no llevan `-Service` porque no son servicios: el
+primero es el cliente, el segundo la página comercial y el tercero documentación.
+
+#### `MANI-Landing` (incorporado el 2026-10-19, SCRUM-1343)
+
+Este ADR es la fuente única del registro del repositorio; los demás documentos lo referencian.
+
+- **Propósito.** Página pública para quien todavía no tiene sesión: catálogo de categorías con
+  tarifas base de referencia, estimador de rango que se declara como no-cotización y redirección
+  al login de `MANI-Frontend` Web (SCRUM-1335). No accede a datos, no llama al Gateway ni a los
+  servicios y no comparte código con otro repositorio, así que queda fuera del alcance de
+  ADR-0027 y ADR-0030.
+- **Artefacto.** Imagen `ghcr.io/trama-as/mani-landing`, construida por el workflow propio del
+  repositorio (`.github/workflows/docker-publish.yml`) desde su `Dockerfile` y su `nginx.conf`.
+- **Ambientes.** Los tres de la sección 3, con los tags que publica ese workflow: `:develop`
+  (rama `develop`) en DEV, `:staging` (rama `release`) en QA y `:latest` (rama `main`) en PROD.
+  `staging` es solo el nombre del tag de imagen, no un ambiente. En cada host corre como el
+  contenedor `mani-landing-web`, publicado en el puerto 3001
+  ([`DOCUMENTO_INFRAESTRUCTURA_V3.md`](../product/DOCUMENTO_INFRAESTRUCTURA_V3.md) §3).
+- **Detalle técnico.** Vive en el propio repositorio: `MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`.
+- **Nombre.** Cumple las tres reglas: dice la capacidad, no el runtime, y no es un servicio.
 
 ### 2. Se retiran `MANI-Availability` y `MANI-Infra` del inventario
 
@@ -149,5 +169,6 @@ Revisar si:
 
 - el equipo decide no renombrar los repositorios reales, caso en el que manda el nombre real y esta
   decisión se revierte en lugar de dejar la documentación divergente otra vez;
-- una capacidad se extrae del Core como desplegable propio, lo que añade un repositorio a la lista;
+- una capacidad se extrae del Core como desplegable propio, lo que añade un repositorio a la lista
+  (como ocurrió, por otra vía, con `MANI-Landing`: no salió del Core, se agregó como pieza nueva);
 - se cierra INFRA-01 o INFRA-02 y aparece un repositorio para los manifests de orquestación.

@@ -21,6 +21,11 @@
  * queda solo en texto.
  *
  * El Nivel 4 (Code) no se modela aquí: Structurizr no describe clases. Se mantiene en SDD §4.4.
+ * La landing comercial (MANI-Landing) está en el modelo y en las vistas panorama, contexto y
+ * contenedores, pero no en la de despliegue: esa vista describe la topología objetivo de
+ * Kubernetes y la landing hoy corre como contenedor Docker en cada host (DOCUMENTO_INFRAESTRUCTURA_V3
+ * §3). Agregarla ahí sería documentar un despliegue que no existe.
+ *
  * Tampoco se modela un nodo por ambiente: Local, DEV y TEST/QA comparten la topología de
  * producción y solo cambian escalado, secretos y datos (SDD §10).
  *
@@ -45,6 +50,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         aliado = person "Aliado" "Presta el servicio: carga KYC, declara categorías y cobertura, acepta, cotiza, ejecuta y califica."
         adminTenant = person "Administrador de tenant" "Configura reglas, categorías, tarifarios y documentos requeridos; aprueba o rechaza aliados."
         adminPlataforma = person "Administrador de plataforma" "Registra tenants y administra su estado."
+        visitante = person "Visitante" "Persona sin sesión que conoce los servicios y estima un precio de referencia antes de registrarse (SCRUM-1335)."
 
         // ---------- Sistemas externos (SRS §5, SAD §5) ----------
 
@@ -58,6 +64,8 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         mani = softwareSystem "MANI" "Formaliza el ciclo Solicitud → Cotización → Ejecución → Calificación → Cierre con aislamiento estricto por tenant." {
 
             group "Cliente y entrada" {
+
+                landing = container "Landing comercial" "Página pública: catálogo de categorías con tarifas base de referencia, estimador de rango que no es una cotización y redirección al login de la aplicación cliente. No accede a datos, no llama al Gateway ni a los servicios (ADR-0028, SAD §7.4)." "React 19 + Vite 8, servida por NGINX"
 
                 flutter = container "Aplicación cliente" "Presentación y lógica de interacción. Una sola base de código para web y móvil. No contiene reglas de negocio centrales (SAD §4.1)." "Flutter / Dart — Web y móvil"
 
@@ -164,6 +172,11 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         aliado -> flutter "Usa"
         adminTenant -> flutter "Usa"
         adminPlataforma -> flutter "Usa"
+
+        // La landing no consume API: su única relación es la navegación del navegador hacia el
+        // login del cliente web, con la categoría o el aliado elegidos como consulta.
+        visitante -> landing "Conoce los servicios y estima un precio de referencia"
+        landing -> flutter "Redirige el navegador a /login con el contexto elegido" "HTTPS — navegación del navegador"
 
         flutter -> gateway "Consume la API operacional" "HTTPS / JSON"
         flutter -> auth "Autentica y obtiene el JWT" "HTTPS"

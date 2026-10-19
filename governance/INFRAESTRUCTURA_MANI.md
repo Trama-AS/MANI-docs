@@ -256,10 +256,13 @@ ghcr.io/trama-as/mani-api-gateway
 ghcr.io/trama-as/mani-rules-service
 ghcr.io/trama-as/mani-dispatch-service
 ghcr.io/trama-as/mani-core-service
+ghcr.io/trama-as/mani-landing
 ```
 
-Cinco imágenes: `MANI-Docs` no se despliega y las disponibilidades van dentro de
-`mani-core-service`.
+Seis imágenes: `MANI-Docs` no se despliega y las disponibilidades van dentro de
+`mani-core-service`. `mani-landing` la publica el workflow propio de `MANI-Landing` con los tags
+`:develop`, `:staging` y `:latest` ([ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+No depende de ninguna otra imagen ni otra depende de ella.
 
 La infraestructura obtiene las imágenes desde GHCR.
 
@@ -369,8 +372,9 @@ Responsabilidades:
 | `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
 | `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
 | `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 
-`MANI-Docs` es el sexto repositorio del proyecto y no se despliega.
+`MANI-Docs` es el séptimo repositorio del proyecto y no se despliega.
 
 Las disponibilidades no tienen contenedor, repositorio ni esquema propios: son un dominio del
 `MANI-Core-Service`, con sus tablas en el esquema `core` (SAD §7.3).

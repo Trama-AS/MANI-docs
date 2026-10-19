@@ -141,6 +141,23 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 | `US-08.3.1` | `SCRUM-900` | Métricas operativas por tenant | To Do | High | 2.0 | — |
 | `US-08.3.2` | `SCRUM-901` | Administrar estado de tenants | To Do | High | 8.0 | — |
 
+### Landing comercial pública
+
+| Código | Clave | Historia | Estado | Prioridad | SP | Migración |
+|---|---|---|---|---|---|---|
+| `US-09.1.1` | `SCRUM-1335` | Landing page comercial como entrada pública a la plataforma | To Do | Medium | — | — |
+| `US-09.1.2` | `SCRUM-1343` | Documentar la landing page y actualizar la arquitectura afectada | To Do | Medium | — | — |
+
+- **Épica.** El código `US-09` las ubica en `EP-09` (`SCRUM-452`), pero en Jira no tienen épica
+  asignada; la tabla de §1 no se cambia hasta que se vinculen. Tampoco tienen puntos estimados.
+- **`SCRUM-1335` es una formalización retroactiva.** El desarrollo de `MANI-Landing` existía antes
+  de la historia y esta lo verifica y acredita contra sus criterios, sin volver a desarrollarlo
+  (etiqueta `formalizacion-retroactiva` en Jira). Al verificarlo aparecieron tres criterios sin
+  cumplir (tarifas base, rango del estimador y redirección a rutas que existen en el cliente), y
+  se corrigen en `MANI-Landing#2`.
+- **`SCRUM-1343`** depende de `SCRUM-1335`: documenta solo lo que esa historia acredita, en un
+  único PR de `MANI-Docs`.
+
 ### 2.1 Repriorización del incremento (PO-02)
 
 Clasificación ratificada en `PO-02` (`SCRUM-1077`) el 2026-10-06. En Jira, cada historia tiene la etiqueta

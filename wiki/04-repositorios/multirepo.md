@@ -12,8 +12,14 @@ MANI-API-Gateway  ← también es dueño de database/, scripts/, supabase/ y el 
 MANI-Rules-Service
 MANI-Dispatch-Service
 MANI-Core-Service   ← incluye cobertura, disponibilidad y elegibilidad
+MANI-Landing        ← página comercial pública; no accede a datos ni al Gateway
 MANI-Docs           ← este repositorio
 ```
+
+`MANI-Landing` es la entrada pública para quien aún no tiene sesión: redirige al login de
+`MANI-Frontend` Web y tiene su propio pipeline. Su registro (propósito, imagen y ambientes) está
+en [ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md) y su detalle técnico en
+`MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`; esta página no lo repite.
 
 `MANI-Infra` ya no existe: DevOps lo borró el 2026-10-06 y su alcance quedó repartido según la [enmienda de ADR-0004](../../adr/ADR-0004-cicd-multirepo-ambientes.md).
 

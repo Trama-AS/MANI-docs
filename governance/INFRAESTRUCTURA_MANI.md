@@ -668,17 +668,32 @@ Infraestructura no redefine los Quality Gates.
 
 La fuente de verdad para gates es `POLITICAS_DEVOPS_HERRAMIENTAS.md`.
 
-## 24.1 Estado del análisis SonarCloud por repositorio
+## 24.1 Estado del análisis SonarQube por repositorio
 
 Esta tabla registra solo el estado de la configuración, no los umbrales: los umbrales viven en `POLITICAS_DEVOPS_HERRAMIENTAS.md` §14.1 y ADR-0005.
 
 Un gate se considera **vinculante** solo cuando su check es obligatorio en un ruleset activo de GitHub y existe evidencia de un PR bloqueado. Mientras eso no ocurra, el estado es *preparado* o *activo sin bloqueo* (Políticas §6.2).
 
-| Repositorio | Proyecto SonarCloud | Configuración versionada | Check obligatorio en ruleset | Estado al 7 oct 2026 |
-|---|---|---|---|---|
-| MANI-Core-Service | `Trama-AS_MANI-Core-Service` (organización `trama-as`), **por crear** | `sonar-project.properties` y script `test:coverage` (etapa 1, en revisión en [MANI-Core-Service#16](https://github.com/Trama-AS/MANI-Core-Service/pull/16), sin fusionar); workflow `quality-gate.yml` preparado sin PR (etapa 2) | no; `develop` y `main` sin ruleset ni protección | **preparado, no activo** (CFG-41, SCRUM-1116) |
+**Servidor.** SonarQube Community Build 26.10 (modo MQR) en el Host de Calidad (`10.43.98.196:9000`), no SonarCloud. Los runners hospedados por GitHub no alcanzan la red privada, así que cada repositorio corre su workflow `quality-gate.yml` en dos jobs:
 
-Para MANI-Core-Service, la activación requiere, en orden: crear el proyecto con el análisis automático desactivado, asociar el Quality Gate y fijar el *new code baseline*, crear `SONAR_TOKEN`, fusionar el workflow, obtener un primer análisis en `develop` y agregar `Sonar Quality Gate` como check obligatorio en el ruleset de `develop` y `main`.
+1. **Pruebas y cobertura** en `ubuntu-latest`: ejecuta el código del repositorio y publica el reporte de cobertura (y, en Java, el bytecode) como artefacto.
+2. **Sonar Quality Gate** en el runner self-hosted `nbig02-calidad` (grupo de organización `calidad`, label `calidad`): descarga el artefacto y ejecuta el scanner con espera del gate. No instala dependencias ni ejecuta código del repositorio. En PRs desde forks el job corre en `ubuntu-latest` y falla, porque un job omitido cuenta como aprobado.
+
+SonarQube Community no analiza ramas ni PRs. Por eso cada repositorio tiene dos proyectos: `<clave>` (push a `develop`, código nuevo = versión anterior) y `<clave>-pr` (pull requests, código nuevo = último día). Ambos usan el gate `MANI ADR-0005`: 0 issues nuevos, 100 % de hotspots revisados, cobertura ≥ 80 % y duplicación ≤ 3 % sobre código nuevo.
+
+El secreto `SONAR_TOKEN` (token de análisis global) y la variable `SONAR_HOST_URL` están definidos a nivel de la organización `Trama-AS`.
+
+| Repositorio | Proyectos SonarQube | Configuración versionada | Check obligatorio en ruleset | Estado al 19 oct 2026 |
+|---|---|---|---|---|
+| MANI-Node | `mani-node`, `mani-node-pr` | `sonar-project.properties`, `.github/workflows/quality-gate.yml` ([MANI-Node#40](https://github.com/Trama-AS/MANI-Node/pull/40), [#45](https://github.com/Trama-AS/MANI-Node/pull/45)) | sí: ruleset `Quality Gate SonarQube` en `develop`, `release` y `main` ("Pruebas y cobertura" y "Sonar Quality Gate"), sin bypass | **vinculante**. PR aprobado: [#41](https://github.com/Trama-AS/MANI-Node/pull/41); PR bloqueado por cobertura: [#42](https://github.com/Trama-AS/MANI-Node/pull/42) (SCRUM-1265) |
+| MANI-Java | `mani-java`, `mani-java-pr` | `sonar-project.properties`, `.github/workflows/quality-gate.yml` ([MANI-Java#4](https://github.com/Trama-AS/MANI-Java/pull/4)); se retiró la configuración de SonarCloud del `pom.xml` | sí: mismo ruleset en `develop`, `release` y `main` | **activo con bloqueo**; línea base en `develop`: cobertura 92,3 %, 0 issues, gate aprobado (SCRUM-1265) |
+| MANI-.NET | por crear (`mani-dotnet`, `mani-dotnet-pr`) | `ci.yml` genera cobertura OpenCover; falta el workflow con el scanner de .NET, que compila en el Host de Calidad | no | **pendiente** (Sprint 5) |
+| MANI-APIGateway | por crear (`mani-apigateway`, `mani-apigateway-pr`) | sin configuración; sin código con cobertura (nginx, SQL, Docker). El análisis cubre Docker, YAML y detección de secretos | no | **pendiente** (Sprint 5) |
+| MANI-Landing | por crear (`mani-landing`, `mani-landing-pr`) | pruebas `node --test` sobre la lógica; la capa visual (JSX) y los datos estáticos se excluirán de la cobertura | no | **pendiente** (Sprint 5) |
+| MANI-Flutter | no aplica | SonarQube Community no analiza Dart (verificado en `/api/languages/list`). El `sonar-project.properties` existente apunta a SonarCloud y no se usa | ruleset `main` exige "Flutter Lint, Test & Build Check" | **fuera de SonarQube**; gate de cobertura en su propia CI, pendiente de acordar con SCRUM-1117 |
+| MANI-docs | no aplica | solo documentación | no | fuera de alcance |
+
+Para activar un repositorio pendiente, en orden: crear `<clave>` y `<clave>-pr` con el gate `MANI ADR-0005` y su período de código nuevo; agregar el repositorio al grupo de runners `calidad`; fusionar `sonar-project.properties` y `quality-gate.yml` (mismos nombres de job); verificar el primer análisis en `develop`; y crear el ruleset `Quality Gate SonarQube` en `develop`, `release` y `main` con los dos checks.
 
 ---
 

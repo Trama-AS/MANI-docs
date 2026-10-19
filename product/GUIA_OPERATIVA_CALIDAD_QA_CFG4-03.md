@@ -107,6 +107,38 @@ QA_GATEWAY_URL=http://10.43.100.141
   **Respuesta:** `{"valid":true}`
 - Se creó el proyecto base `mani-qa-platform` listo para que Santiago configure los Quality Gates en `SCRUM-1116`.
 
+### 2.3 Runner self-hosted para el Quality Gate en CI (QA4-02, SCRUM-1265)
+
+El análisis de los PRs lo ejecuta el runner self-hosted de GitHub Actions instalado en este host. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../governance/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
+
+- **Registro:** `nbig02-calidad`, a nivel de la organización `Trama-AS`, grupo de runners `calidad` (repositorios seleccionados, con acceso para repositorios públicos), label `calidad`.
+- **Instalación:** `/home/estudiante/actions-runner`, servicio systemd `actions.runner.Trama-AS.nbig02-calidad`, ejecutado como `estudiante`.
+- **Secretos:** `SONAR_TOKEN` (token de análisis global) es un secreto de la organización y `SONAR_HOST_URL` una variable de la organización. No se guardan en los repositorios ni en este documento.
+
+Operación:
+
+```bash
+# Estado y reinicio del servicio
+cd ~/actions-runner && sudo ./svc.sh status
+sudo ./svc.sh stop && sudo ./svc.sh start
+
+# Verificar que no haya un proceso del runner fuera del servicio
+# (dos procesos con el mismo registro fallan con "A session for this runner already exists")
+pgrep -af Runner.Listener
+```
+
+Registro desde cero (por ejemplo, al reinstalar el host). El token de registro se obtiene en *Trama-AS > Settings > Actions > Runners > New runner* y vence en una hora:
+
+```bash
+cd ~/actions-runner
+./config.sh remove --local          # borra una configuración previa (.runner*, .credentials*)
+./config.sh --url https://github.com/Trama-AS --token <token de registro> \
+  --name nbig02-calidad --labels calidad --runnergroup calidad --unattended
+sudo ./svc.sh install estudiante && sudo ./svc.sh start
+```
+
+Si un check "Sonar Quality Gate" queda en cola más de 10 minutos, revisar primero el estado del servicio. Un run creado antes de cambiar un secreto o una variable los recibe vacíos: hay que relanzarlo.
+
 ---
 
 ## 3. QA-INF-02: Runners de Newman y Playwright contra QA

@@ -201,9 +201,11 @@ Ambas bases de datos registran en `public.schema_migrations` exactamente las **8
 
 En concordancia con [`CFG4-03`](./GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), el **Host de Calidad (`10.43.98.196`)** concentra las tres herramientas de certificación operativa:
 
-### 7.1 SonarQube Community 10.7
-- **Acceso:** `http://10.43.98.196:9000` (Administración de Quality Gates, Cobertura y Deuda Técnica).
-- **Quality Gates Vinculantes:** Cobertura de código ≥ 80%, 0 Vulnerabilidades críticas, Bloqueo de PRs en rojo.
+### 7.1 SonarQube Community Build 26.10
+- **Acceso:** `http://10.43.98.196:9000` (Administración de Quality Gates, Cobertura y Deuda Técnica). Versión `26.10.0.133078`, modo MQR.
+- **Quality Gate `MANI ADR-0005`:** sobre código nuevo, 0 issues, 100 % de hotspots revisados, cobertura ≥ 80 % y duplicación ≤ 3 %. Bloquea el merge mediante el ruleset `Quality Gate SonarQube` (`develop`, `release` y `main`).
+- **Runner self-hosted:** `nbig02-calidad`, registrado a nivel de la organización en el grupo `calidad`, como servicio `actions.runner.Trama-AS.nbig02-calidad`. Solo ejecuta el scanner sobre artefactos generados en `ubuntu-latest`.
+- **Estado por repositorio:** ver [`INFRAESTRUCTURA_MANI.md` §24.1](../governance/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
 
 ### 7.2 Newman Runner (API Contract & Multi-Tenant Tests)
 - **Ubicación:** `/opt/quality/runners/newman/`

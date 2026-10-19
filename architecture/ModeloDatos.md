@@ -1014,7 +1014,7 @@ CREATE TABLE core.sitio_servicio (
     id_zona UUID NOT NULL,
     nombre VARCHAR(150) NOT NULL,
     direccion TEXT NOT NULL,
-    reglas JSONB, -- Estructura: {"horario": {"dias": ["LUN","MAR"], "horaInicio": "08:00", "horaFin": "18:00"}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"]}
+    reglas JSONB, -- Estructura (objeto de valor SiteRules, MANI-Node#12): {"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}. Días válidos: LUN..DOM; horas HH:mm (24 h); el horario se evalúa en America/Bogota.
     reglas_acceso TEXT,
     condiciones TEXT,
     estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
@@ -1037,7 +1037,7 @@ CREATE TABLE core.documento_legal (
     FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
 );
 
--- Registro inmutable de consentimiento legal expreso
+-- Registro de consentimiento legal expreso. El servicio solo puede insertarlo y leerlo (sin UPDATE ni DELETE).
 CREATE TABLE core.consentimiento_usuario (
     id_consentimiento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_usuario UUID NOT NULL,
@@ -1049,8 +1049,23 @@ CREATE TABLE core.consentimiento_usuario (
     aceptado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
     FOREIGN KEY (id_documento) REFERENCES core.documento_legal(id_documento),
-    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    UNIQUE (id_usuario, id_documento) -- un usuario acepta una vez cada versión de documento
 );
+
+-- RLS (ADR-0012, ADR-0030 §1, ADR-0032). Ambas tablas: ENABLE + FORCE ROW LEVEL SECURITY.
+-- Las políticas leen el contexto solo de app.tenant_id() / app.user_id() (migración 0007 de MANI-Node).
+--   documento_legal
+--     documento_legal_lectura  FOR SELECT TO anon, authenticated, mani_core_svc
+--       USING (is_active AND (id_tenant IS NULL OR id_tenant = app.tenant_id()))
+--     documento_legal_alta     FOR INSERT TO mani_core_svc
+--       WITH CHECK (id_tenant IS NULL OR id_tenant = app.tenant_id())
+--   consentimiento_usuario
+--     consentimiento_usuario_propio  FOR SELECT TO authenticated, mani_core_svc
+--       USING (id_usuario = app.user_id() AND id_tenant = app.tenant_id())
+--     consentimiento_usuario_alta    FOR INSERT TO authenticated, mani_core_svc
+--       WITH CHECK (id_usuario = app.user_id() AND id_tenant = app.tenant_id())
+--   Privilegios: mani_core_svc tiene SELECT, INSERT en las dos tablas; mani_dispatch_svc ninguno.
 
 -- RF-22: tarifario de referencia por tenant y categoria.
 CREATE TABLE reglas.tarifario (
@@ -1363,7 +1378,7 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 |---|---|---|---|
 | id_aliado | UUID | PK | Identificador de aliado |
 | id_usuario | UUID | FK, UNIQUE | Usuario asociado |
-| tipo_aliado | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA / EMPLEADO_DIRECTO (RF-05) |
+| tipo_aliado | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA / EMPLEADO_DIRECTO (RF-05). En el esquema implementado la columna es `aliado.tipo` con los valores `PERSONA_NATURAL`, `PERSONA_JURIDICA` (equivale a EMPRESA) y `EMPLEADO_DIRECTO` (empleado directo del tenant, SCRUM-850); la alineación completa de nombres es DOC4-04 (SCRUM-1247) |
 | estado | VARCHAR(30) | CHECK | Estado operacional |
 | nivel_verificacion | VARCHAR(30) | NULL | Nivel KYC |
 | calificacion | NUMERIC(3,2) | 0..5 | Promedio derivado de `servicio.calificacion` |
@@ -1442,7 +1457,7 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | id_zona | UUID | FK, NOT NULL | Zona del sitio; obligatoria (RF-09) |
 | nombre | VARCHAR(150) | UNIQUE por cliente | Nombre del sitio |
 | direccion | TEXT | NOT NULL | Dirección física |
-| reglas | JSONB | NULL | Estructura JSON: `{"horario": {"dias": ["LUN","MAR"], "horaInicio": "08:00", "horaFin": "18:00"}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"]}` (RF-09) |
+| reglas | JSONB | NULL | Objeto `SiteRules` (MANI-Node#12): `{"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}`. `horario` es opcional (sin él no hay restricción horaria); días `LUN`..`DOM`; horas `HH:mm` en 24 h con `inicio < fin`, evaluadas en America/Bogota (RF-09) |
 | reglas_acceso | TEXT | NULL | Reglas en texto libre visibles al aliado antes de programar |
 | condiciones | TEXT | NULL | Condiciones particulares del sitio |
 | estado | VARCHAR(20) | CHECK | Estado |
@@ -1465,12 +1480,23 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 |---|---|---|---|
 | id_consentimiento | UUID | PK | Identificador del registro de consentimiento |
 | id_usuario | UUID | FK | Usuario que otorga el consentimiento expreso |
-| id_documento | UUID | FK | Documento legal aceptado |
-| id_tenant | UUID | FK | Tenant bajo el cual se registra la aceptación |
+| id_documento | UUID | FK, UNIQUE con `id_usuario` | Documento legal aceptado; un usuario lo acepta una sola vez |
+| id_tenant | UUID | FK, NOT NULL | Tenant bajo el cual se registra la aceptación. Siempre presente: un consentimiento ocurre dentro de un tenant (migración 0010 de MANI-Node) |
 | version_aceptada | VARCHAR(20) | NOT NULL | Versión exacta aceptada conforme a Ley 1581 |
 | ip_address | VARCHAR(45) | NULL | Dirección IP del cliente al momento de la aceptación |
 | user_agent | TEXT | NULL | Dispositivo / User Agent del firmante |
 | aceptado_en | TIMESTAMPTZ | NOT NULL | Marca temporal verificable del consentimiento |
+
+**RLS de `core.documento_legal` y `core.consentimiento_usuario`** (ADR-0012, ADR-0030 §1, ADR-0032): ambas tablas tienen `ENABLE` y `FORCE ROW LEVEL SECURITY`, y sus políticas leen el contexto solo de `app.tenant_id()` y `app.user_id()`.
+
+| Tabla | Política | Operación y roles | Condición |
+|---|---|---|---|
+| `documento_legal` | `documento_legal_lectura` | SELECT · anon, authenticated, mani_core_svc | activo y (`id_tenant` NULL o igual a `app.tenant_id()`) |
+| `documento_legal` | `documento_legal_alta` | INSERT · mani_core_svc | `id_tenant` NULL o igual a `app.tenant_id()` |
+| `consentimiento_usuario` | `consentimiento_usuario_propio` | SELECT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y `id_tenant = app.tenant_id()` |
+| `consentimiento_usuario` | `consentimiento_usuario_alta` | INSERT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y `id_tenant = app.tenant_id()` |
+
+`mani_core_svc` solo tiene `SELECT` e `INSERT` sobre las dos tablas (el consentimiento no se edita ni se borra desde el servicio); `mani_dispatch_svc` no tiene permisos.
 
 ## `core.disponibilidad`
 

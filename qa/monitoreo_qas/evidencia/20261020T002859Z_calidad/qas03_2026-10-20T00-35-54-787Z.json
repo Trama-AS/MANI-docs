@@ -1,0 +1,36 @@
+{
+  "escenario": "QAS-03",
+  "ticket": "SCRUM-1275",
+  "fecha_utc": "2026-10-20T00:35:54.787Z",
+  "ambiente": "qa",
+  "base_url": "http://10.43.100.141",
+  "ruta": "/api/v1/dispatch/match",
+  "metodo": "POST",
+  "fuente_token": "dev_token",
+  "carga": {
+    "vus": 300,
+    "rps_objetivo": 50,
+    "periodo_por_sesion_s": 6,
+    "rampa": "60s",
+    "duracion_sostenida": "5m"
+  },
+  "umbral": {
+    "metrica": "p95 http_req_duration, fase sostenida",
+    "limite_ms": 500,
+    "fuente": "SDD seccion 8, QAS-03"
+  },
+  "medido": {
+    "p95_ms": 12.44983225,
+    "p90_ms": 11.0961335,
+    "p99_ms": 15.676319190000005,
+    "promedio_ms": 8.057910291038818,
+    "max_ms": 91.860982,
+    "peticiones_sostenidas": 14998,
+    "tasa_sostenida_rps": 49.99333333333333,
+    "tasa_error_http": 0,
+    "tasa_status_200": 1,
+    "vus_max": 300
+  },
+  "resultado_umbral": "dentro_del_umbral",
+  "nota": "La validez exige tasa_status_200 = 1 y tasa_sostenida_rps cercana a rps_objetivo; si no, la corrida se reporta como invalida, no como cumplimiento."
+}

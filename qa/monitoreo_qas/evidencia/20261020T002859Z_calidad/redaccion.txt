@@ -1,0 +1,13 @@
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/k6_qas03_humo.txt: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/k6_qas03_nominal.txt: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/k6_qas07_arnes.txt: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/k6_version.txt: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/newman_qas01_perimetro.json: 6 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/newman_qas01_perimetro.txt: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/qa_mon_01_calidad.txt: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/qas03_2026-10-20T00-29-48-286Z_humo.json: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/qas03_2026-10-20T00-35-54-787Z.json: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/qas07_arnes_2026-10-20T00-35-55-238Z.json: 0 reemplazos
+/home/estudiante/scrum_1266/monitoreo_qas/evidencia/20261020T002859Z/token_metadatos.txt: 0 reemplazos
+total_reemplazos=6
+redaccion_adicional_local: newman_qas01_perimetro.json 1 reemplazo (token del cuerpo de la prueba 10, guardado como Buffer; redactor corregido)

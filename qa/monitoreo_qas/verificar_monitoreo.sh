@@ -46,14 +46,16 @@ modo_calidad() {
   seccion "contexto"
   echo "host=$(hostname) fecha_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) base_url=$BASE_URL"
 
-  seccion "healthchecks por el Gateway (ruta codigo tiempo correlation_devuelto)"
+  seccion "healthchecks por el Gateway (ruta codigo tiempo propagacion de X-Correlation-ID)"
   for ruta in /health /api/v1/core/health /api/v1/rules/health /api/v1/dispatch/health; do
     corr="$PREFIJO_CORR-mon-$(date +%s%N)"
     cabeceras=$(mktemp)
     codigo=$(curl -s -m 5 -o /dev/null -D "$cabeceras" -w '%{http_code} %{time_total}s' -H "X-Correlation-ID: $corr" "$BASE_URL$ruta")
-    devuelto=$(grep -i '^x-correlation-id:' "$cabeceras" | tr -d '\r' | awk '{print $2}')
-    [ "$devuelto" = "$corr" ] && propaga=si || propaga=no
-    echo "$ruta $codigo correlation_propagado=$propaga"
+    cantidad=$(grep -c -i '^x-correlation-id:' "$cabeceras")
+    iguales=$(grep -i '^x-correlation-id:' "$cabeceras" | tr -d '\r' | awk -v c="$corr" '$2 == c' | wc -l | tr -d ' ')
+    [ "$iguales" -ge 1 ] && propaga=si || propaga=no
+    [ "$cantidad" -gt 1 ] && duplicado=si || duplicado=no
+    echo "$ruta $codigo correlation_propagado=$propaga cabeceras_x_correlation_id=$cantidad duplicado=$duplicado"
     rm -f "$cabeceras"
   done
 

@@ -1,0 +1,6 @@
+QAS-03 2026-10-20T00:29:48.286Z ambiente=qa fuente_token=dev_token
+ruta=POST http://10.43.100.141/api/v1/dispatch/match
+carga: vus=10 rps_objetivo=2 rampa=5s sostenida=30s
+p95=11.4 ms (umbral <= 500 ms) -> dentro_del_umbral
+peticiones_sostenidas=60 tasa=2.00 req/s
+tasa_error_http=0 tasa_status_200=1

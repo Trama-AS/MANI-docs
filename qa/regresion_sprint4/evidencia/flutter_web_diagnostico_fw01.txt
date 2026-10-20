@@ -1,0 +1,37 @@
+Diagnostico de FW-01 en la VM de QA (SCRUM-1267, 20 de octubre de 2026, 21:21 UTC).
+Parte 1: trace de la corrida anterior de Playwright, con el encabezado X-Correlation-ID en todas las peticiones del navegador (la prueba fallaba por errores CORS).
+Parte 2: carga en vivo de http://localhost:8080 sin ese encabezado: Flutter Web arranca en 3133 ms y llega a /login (captura flutter_login_qa.png).
+
+== 1. Trace de la corrida final (FW-01)
+corrida: playwright_20261020T204231Z | prueba: flutter_web-Flutter-Web-en-af2c7-arranca-el-motor-de-Flutter
+peticiones correctas: 6 | fallidas: 3
+  fallida (-1, 'https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.js', 'net::ERR_FAILED')
+  fallida (-1, 'https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.wasm', 'net::ERR_FAILED')
+  fallida (-1, 'https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2', 'net::ERR_FAILED')
+consola: 10 | errores de pagina: 3
+   warning: [GroupMarkerNotSet(crbug.com/242999)!:A0301C00B4090000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower 
+   debug: Injecting <script> tag. Using callback.
+   error: Access to script at 'https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.js' from origin 'http://localhost:8080' has been blocked 
+   error: Failed to load resource: net::ERR_FAILED
+   error: Access to fetch at 'https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.wasm' from origin 'http://localhost:8080' has been blocked
+   error: Failed to load resource: net::ERR_FAILED
+   error: Access to fetch at 'https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2' from origin 'http://localhost:8080' has been blocked by CORS policy: Request header fie
+   error: Failed to load resource: net::ERR_FAILED
+  pageerror 
+  pageerror 
+  pageerror 
+== 2. Diagnostico en vivo (60 s para arrancar, con eventos y cronologia)
+RESUMEN {"cargaMs":567,"listoMs":3133,"info":{"url":"http://localhost:8080/login","titulo":"MANI Services","flutter":true,"webgl":true,"ua":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/130
+541 | resp 200 | http://localhost:8080/flutter_bootstrap.js
+563 | console.warning | [GroupMarkerNotSet(crbug.com/242999)!:A0301C002C2A0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower 
+582 | console.debug | Injecting <script> tag. Using callback.
+871 | resp 200 | http://localhost:8080/main.dart.js
+1360 | resp 200 | https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.wasm
+1360 | resp 200 | https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.js
+1645 | console.warning | [GroupMarkerNotSet(crbug.com/242999)!:A0601C002C2A0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower 
+1648 | console.warning | [GroupMarkerNotSet(crbug.com/242999)!:A0901C002C2A0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower 
+1729 | resp 200 | http://localhost:8080/assets/.env
+3058 | console.warning | [GroupMarkerNotSet(crbug.com/242999)!:A080A3002C2A0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower 
+6165 | console.warning | [GroupMarkerNotSet(crbug.com/242999)!:A0601C002C2A0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower 
+== 3. Captura
+DIRECTORIO=/home/estudiante/scrum_1267/fw01_diagnostico_20261020T212139Z

@@ -1,0 +1,550 @@
+[
+ {
+  "caso": "[PER-01] PERIMETRO - Salud del Gateway",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"status\":\"UP\",\"gateway\":\"MANI-APIGateway\",\"timestamp\":\"2026-10-20T21:24:56+00:00\"}"
+ },
+ {
+  "caso": "[PER-02] PERIMETRO - Salud de Core con base conectada",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"status\":\"UP\",\"service\":\"MANI-Core-Node\",\"environment\":\"QA\",\"uptimeSeconds\":4565,\"timestamp\":\"2026-10-20T21:24:57.158Z\",\"database\":{\"configured\":true,\"connected\":true,\"latencyMs\":"
+ },
+ {
+  "caso": "[PER-03] PERIMETRO - Salud de Rules",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"status\":\"UP\",\"service\":\"MANI-Rules-Java\",\"timestamp\":\"2026-10-20T21:24:57.212891325Z\",\"correlationId\":\"qa1267-PER-03-31496477\"}"
+ },
+ {
+  "caso": "[PER-04] PERIMETRO - Salud de Dispatch",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"status\":\"UP\",\"service\":\"MANI-Dispatch-DotNet\",\"timestamp\":\"2026-10-20T21:24:57.2571853Z\",\"correlationId\":\"qa1267-PER-04-31496477\"}"
+ },
+ {
+  "caso": "[PER-05] PERIMETRO - dev-token no existe fuera de desarrollo",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Ruta no encontrada en MANI-Core-Node\",\"correlationId\":\"qa1267-PER-05-31496477\"}"
+ },
+ {
+  "caso": "[PER-06] PERIMETRO - Ruta protegida sin token responde 401",
+  "http": 401,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id\",\"correlationId\":\"qa1267-PER-06-31496477\"}"
+ },
+ {
+  "caso": "[PER-07] PERIMETRO - X-Correlation-ID presente en la respuesta",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"status\":\"UP\",\"service\":\"MANI-Core-Node\",\"environment\":\"QA\",\"uptimeSeconds\":4565,\"timestamp\":\"2026-10-20T21:24:57.480Z\",\"database\":{\"configured\":true,\"connected\":true,\"latencyMs\":"
+ },
+ {
+  "caso": "[B1-01] CROSS_TENANT - B1 lectura: admin t1 no lee sitios de un cliente de t2",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Cliente con ID \\\"40000000-0000-4000-8000-000000000021\\\" no encontrado en tenant \\\"10000000-0000-4000-8000-000000000011\\\".\",\"code\":\"CLIENT_NOT_FOUND\",\"correlationId\":\"qa12"
+ },
+ {
+  "caso": "[B2-01] CROSS_TENANT - B2 listado: categorías de admin t1 sin ids de t2",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"categories\":[{\"id\":\"60000000-0000-4000-8000-000000000011\",\"name\":\"Plomeria\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOperativo\":null"
+ },
+ {
+  "caso": "[B3-01] CROSS_TENANT - B3 escritura: admin t1 no configura reglas del sitio de t2",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Sitio con ID \\\"70000000-0000-4000-8000-000000000021\\\" no encontrado en tenant \\\"10000000-0000-4000-8000-000000000011\\\".\",\"code\":\"SITE_NOT_FOUND\",\"correlationId\":\"qa1267-B"
+ },
+ {
+  "caso": "[B4-01] CROSS_TENANT - B4 control: borrar una ausencia inexistente responde 404 (no prueba aislamiento; el borrado ajeno real es 855-04)",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-AUS-404: ausencia no encontrada\",\"code\":\"MANI-AUS-404\",\"correlationId\":\"qa1267-B4-01-31496477\"}"
+ },
+ {
+  "caso": "[B5-01] CROSS_TENANT - B5 token expirado responde 401",
+  "http": 401,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id\",\"correlationId\":\"qa1267-B5-01-31496477\"}"
+ },
+ {
+  "caso": "[B5-02] CROSS_TENANT - B5 token con firma alterada responde 401",
+  "http": 401,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id\",\"correlationId\":\"qa1267-B5-02-31496477\"}"
+ },
+ {
+  "caso": "[B5-03] CROSS_TENANT - B5 token sin tenant_id responde 401",
+  "http": 401,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id\",\"correlationId\":\"qa1267-B5-03-31496477\"}"
+ },
+ {
+  "caso": "[B5-04] CROSS_TENANT - B5 X-Tenant-Id del cliente no gana sobre el claim",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"categories\":[{\"id\":\"60000000-0000-4000-8000-000000000011\",\"name\":\"Plomeria\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOperativo\":null"
+ },
+ {
+  "caso": "[B6-01] CROSS_TENANT - B6 KYC: admin t1 no ve la verificación de un aliado de t2",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-VER-404: aliado no encontrado\",\"code\":\"MANI-VER-404\",\"correlationId\":\"qa1267-B6-01-31496477\"}"
+ },
+ {
+  "caso": "[850-01] SCRUM-850 - Admin t1 registra un empleado directo",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Empleado directo registrado exitosamente. No requirió flujo de aprobación KYC.\",\"correlationId\":\"qa1267-850-01-31496477\",\"tenantId\":\"10000000-0000-4000-8000-00000000001"
+ },
+ {
+  "caso": "[850-02] SCRUM-850 - Correo repetido se rechaza",
+  "http": 409,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Ya existe un usuario registrado con ese email en este tenant\",\"code\":\"EMAIL_ALREADY_REGISTERED\",\"correlationId\":\"qa1267-850-02-31496477\"}"
+ },
+ {
+  "caso": "[850-03] SCRUM-850 - Un cliente no puede registrar empleados",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Acceso denegado: se requiere uno de los siguientes roles: ADMIN\",\"code\":\"FORBIDDEN\",\"correlationId\":\"qa1267-850-03-31496477\"}"
+ },
+ {
+  "caso": "[850-04] SCRUM-850 - Categoría de otro tenant se rechaza",
+  "http": 400,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"La categoría \\\"60000000-0000-4000-8000-000000000021\\\" no existe o no está activa\",\"code\":\"CATEGORY_NOT_FOUND\",\"correlationId\":\"qa1267-850-04-31496477\"}"
+ },
+ {
+  "caso": "[852-00] SCRUM-852 - Admin t1 registra un cliente empresa con una sede",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Cliente empresa y sitios registrados exitosamente.\",\"correlationId\":\"qa1267-852-00-31496477\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"isNew\":true,\"temporaryPa"
+ },
+ {
+  "caso": "[852-01] SCRUM-852 - Lista las sedes del cliente empresa",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"correlationId\":\"qa1267-852-01-31496477\",\"clienteId\":\"17ef14b5-5a17-4fa1-9cd2-cf47cf4c85af\",\"razonSocial\":\"Empresa QA 31496477 SAS\",\"totalSitios\":1,\"sitios\":[{\"id\":\"35e2a17b-a899-"
+ },
+ {
+  "caso": "[852-02] SCRUM-852 - Agrega una segunda sede al cliente empresa",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Sitio agregado exitosamente.\",\"correlationId\":\"qa1267-852-02-31496477\",\"sitio\":{\"id\":\"bcf2e6f7-147f-4a04-a6d7-8e38c2050959\",\"clienteId\":\"17ef14b5-5a17-4fa1-9cd2-cf47cf4"
+ },
+ {
+  "caso": "[852-04] SCRUM-852 - NIT repetido en el mismo tenant se rechaza",
+  "http": 409,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Ya existe un cliente empresa registrado con ese NIT en este tenant\",\"code\":\"NIT_ALREADY_REGISTERED\",\"correlationId\":\"qa1267-852-04-31496477\"}"
+ },
+ {
+  "caso": "[852-05] SCRUM-852 - Admin t2 no ve las sedes del cliente empresa de t1",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Cliente con ID \\\"17ef14b5-5a17-4fa1-9cd2-cf47cf4c85af\\\" no encontrado en tenant \\\"10000000-0000-4000-8000-000000000021\\\".\",\"code\":\"CLIENT_NOT_FOUND\",\"correlationId\":\"qa12"
+ },
+ {
+  "caso": "[852-03] SCRUM-852 - Un aliado no puede agregar sitios",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Rol no autorizado\",\"code\":\"FORBIDDEN\",\"correlationId\":\"qa1267-852-03-31496477\"}"
+ },
+ {
+  "caso": "[853-01] SCRUM-853 - Cliente t1 configura reglas de su sitio",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Reglas contextuales del sitio configuradas exitosamente.\",\"correlationId\":\"qa1267-853-01-31496477\",\"sitioId\":\"70000000-0000-4000-8000-000000000011\",\"nombreSitio\":\"Calle"
+ },
+ {
+  "caso": "[853-02] SCRUM-853 - Aliado t1 sin servicio asignado no lee las reglas del sitio",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Solo el cliente dueño de la sede o el admin del tenant consultan sus reglas\",\"code\":\"FORBIDDEN\",\"correlationId\":\"qa1267-853-02-31496477\"}"
+ },
+ {
+  "caso": "[853-03] SCRUM-853 - Aliado t2 no lee reglas del sitio de t1",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Sitio con ID \\\"70000000-0000-4000-8000-000000000011\\\" no encontrado en tenant \\\"10000000-0000-4000-8000-000000000021\\\".\",\"code\":\"SITE_NOT_FOUND\",\"correlationId\":\"qa1267-8"
+ },
+ {
+  "caso": "[854-01] SCRUM-854 - Cliente t1 consulta su perfil",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Perfil de usuario autenticado\",\"correlationId\":\"qa1267-854-01-31496477\",\"profile\":{\"id\":\"30000000-0000-4000-8000-000000000012\",\"tenantId\":\"10000000-0000-4000-8000-00000"
+ },
+ {
+  "caso": "[854-02] SCRUM-854 - Cliente t1 edita su teléfono",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Perfil actualizado exitosamente\",\"correlationId\":\"qa1267-854-02-31496477\",\"profile\":{\"id\":\"30000000-0000-4000-8000-000000000012\",\"tenantId\":\"10000000-0000-4000-8000-000"
+ },
+ {
+  "caso": "[854-03] SCRUM-854 - No se puede cambiar el rol desde el perfil",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"No está permitido modificar el campo privilegiado \\\"rol\\\"\",\"code\":\"MANI-PRF-403\",\"correlationId\":\"qa1267-854-03-31496477\"}"
+ },
+ {
+  "caso": "[855-01] SCRUM-855 - Aliado t1 registra una ausencia",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Ausencia registrada\",\"correlationId\":\"qa1267-855-01-31496477\",\"data\":{\"id\":\"f7dc02db-e669-4aa7-a084-37822e57d66c\",\"startsAt\":\"2026-11-19T21:24:56.477Z\",\"endsAt\":\"2026-1"
+ },
+ {
+  "caso": "[855-02] SCRUM-855 - Aliado t1 lista sus ausencias",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Ausencias vigentes y futuras del aliado\",\"correlationId\":\"qa1267-855-02-31496477\",\"availableNow\":true,\"data\":[{\"id\":\"f7dc02db-e669-4aa7-a084-37822e57d66c\",\"startsAt\":\"2"
+ },
+ {
+  "caso": "[855-03] SCRUM-855 - Motivo fuera del catálogo se rechaza",
+  "http": 422,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-AUS-422V: reason debe ser uno de VACACIONES, ENFERMEDAD, OTRO\",\"code\":\"MANI-AUS-422V\",\"correlationId\":\"qa1267-855-03-31496477\"}"
+ },
+ {
+  "caso": "[855-04] SCRUM-855 - Aliado t2 no borra la ausencia de t1",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-AUS-404: ausencia no encontrada\",\"code\":\"MANI-AUS-404\",\"correlationId\":\"qa1267-855-04-31496477\"}"
+ },
+ {
+  "caso": "[855-05] SCRUM-855 - Aliado t1 borra su ausencia",
+  "http": 204,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": ""
+ },
+ {
+  "caso": "[855-06] SCRUM-855 - Un cliente no gestiona disponibilidad",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-AUS-403: solo un aliado puede gestionar su disponibilidad\",\"code\":\"MANI-AUS-403\",\"correlationId\":\"qa1267-855-06-31496477\"}"
+ },
+ {
+  "caso": "[856-01] SCRUM-856 - Documentos legales activos del tenant t1 (sesion iniciada)",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"correlationId\":\"qa1267-856-01-31496477\",\"data\":[{\"id\":\"e918ef92-1f7f-41dc-b9c5-23988cbcccec\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"tipo\":\"TERMS_AND_CONDITIONS\",\"vers"
+ },
+ {
+  "caso": "[856-05] SCRUM-856 - Documentos legales visibles antes del registro (sin token)",
+  "http": 401,
+  "resultado": "FALLA",
+  "fallas": [
+   "856-05 estado esperado 200"
+  ],
+  "cuerpo": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id\",\"correlationId\":\"qa1267-856-05-31496477\"}"
+ },
+ {
+  "caso": "[856-02] SCRUM-856 - Cliente t1 registra su consentimiento",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Consentimientos registrados con éxito\",\"correlationId\":\"qa1267-856-02-31496477\",\"consents\":[]}"
+ },
+ {
+  "caso": "[856-03] SCRUM-856 - Consentimiento sobre un documento de t2 se rechaza",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Documento legal \\\"1d708f01-c2d5-40ca-8fad-3bfabe2ea25a\\\" no pertenece al tenant\",\"code\":\"LEGAL_DOCUMENT_NOT_FOUND\",\"correlationId\":\"qa1267-856-03-31496477\"}"
+ },
+ {
+  "caso": "[856-04] SCRUM-856 - Registro de aliado sin aceptar términos se rechaza",
+  "http": 400,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Debe aceptar los términos y condiciones explícitamente\",\"code\":\"TERMS_NOT_ACCEPTED\",\"correlationId\":\"qa1267-856-04-31496477\"}"
+ },
+ {
+  "caso": "[858-01] SCRUM-858 - Admin t1 lista categorías con conteo de aliados",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"categories\":[{\"id\":\"60000000-0000-4000-8000-000000000011\",\"name\":\"Plomeria\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOperativo\":null"
+ },
+ {
+  "caso": "[858-02] SCRUM-858 - Admin t1 crea una categoría (pasa por Rules)",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"category\":{\"id\":\"4536b1ec-3848-404c-ade0-77deb850f98d\",\"name\":\"Categoria QA 31496477\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOpera"
+ },
+ {
+  "caso": "[858-03] SCRUM-858 - Admin t1 desactiva la categoría",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"category\":{\"id\":\"4536b1ec-3848-404c-ade0-77deb850f98d\",\"name\":\"Categoria QA 31496477\",\"active\":false,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOper"
+ },
+ {
+  "caso": "[858-04] SCRUM-858 - Categoría desactivada no aparece en la vitrina pública",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"categories\":[{\"id\":\"1d4e9074-cc6d-4238-92b2-f276b67f13f6\",\"name\":\"Categoria QA 25355805\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOp"
+ },
+ {
+  "caso": "[858-05] SCRUM-858 - Admin t1 reactiva la categoría",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"category\":{\"id\":\"4536b1ec-3848-404c-ade0-77deb850f98d\",\"name\":\"Categoria QA 31496477\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOpera"
+ },
+ {
+  "caso": "[858-06] SCRUM-858 - Un cliente no administra categorías",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Acceso denegado: se requiere uno de los siguientes roles: ADMIN\",\"code\":\"FORBIDDEN\",\"correlationId\":\"qa1267-858-06-31496477\"}"
+ },
+ {
+  "caso": "[858-07] SCRUM-858 - Admin t2 no ve la categoría de t1",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"No se encontró la categoría 4536b1ec-3848-404c-ade0-77deb850f98d para este tenant\",\"code\":\"CATEGORY_NOT_FOUND\",\"correlationId\":\"qa1267-858-07-31496477\"}"
+ },
+ {
+  "caso": "[1069-01] SCRUM-1069 - Vitrina pública por slug del tenant",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"categories\":[{\"id\":\"1d4e9074-cc6d-4238-92b2-f276b67f13f6\",\"name\":\"Categoria QA 25355805\",\"active\":true,\"description\":\"\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"flujoOp"
+ },
+ {
+  "caso": "[1070-01] SCRUM-1070 - Nombre de 2 caracteres se rechaza por Rules",
+  "http": 400,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"La categoría no cumple las reglas de negocio: el nombre debe tener entre 3 y 60 caracteres\",\"code\":\"VALIDATION_ERROR\",\"violations\":[{\"code\":\"MANI-CAT-422N\",\"field\":\"name\""
+ },
+ {
+  "caso": "[1070-02] SCRUM-1070 - Flujo operativo desconocido se rechaza por Rules",
+  "http": 400,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"La categoría no cumple las reglas de negocio: flujo operativo inválido (INVENTADO); permitidos: COTIZACION_PREVIA, TARIFA_ESTANDAR\",\"code\":\"VALIDATION_ERROR\",\"violations\""
+ },
+ {
+  "caso": "[1070-03] SCRUM-1070 - Rules directo: aliado no evalúa CREATE",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Solo el administrador del tenant gestiona categorías\",\"code\":\"FORBIDDEN\",\"correlationId\":\"qa1267-1070-03-31496477\"}"
+ },
+ {
+  "caso": "[1066-01] SCRUM-1066 - Admin t1 lista aliados por verificar",
+  "http": 500,
+  "resultado": "FALLA",
+  "fallas": [
+   "1066-01 estado esperado 200"
+  ],
+  "cuerpo": "{\"error\":\"Error consultando documentos KYC: column documento_kyc.created_at does not exist\",\"code\":\"INTERNAL_ERROR\",\"correlationId\":\"qa1267-1066-01-31496477\"}"
+ },
+ {
+  "caso": "[1066-02] SCRUM-1066 - Admin t1 ve el detalle de su aliado",
+  "http": 500,
+  "resultado": "FALLA",
+  "fallas": [
+   "1066-02 estado esperado 200"
+  ],
+  "cuerpo": "{\"error\":\"Error consultando documentos KYC: column documento_kyc.created_at does not exist\",\"code\":\"INTERNAL_ERROR\",\"correlationId\":\"qa1267-1066-02-31496477\"}"
+ },
+ {
+  "caso": "[1066-03] SCRUM-1066 - Un aliado no lista verificaciones",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-VER-403: solo el administrador del tenant puede acceder a la bandeja de verificación\",\"code\":\"MANI-VER-403\",\"correlationId\":\"qa1267-1066-03-31496477\"}"
+ },
+ {
+  "caso": "[1063-01] SCRUM-1063 - Registro de aliado empresa sin documentos se rechaza",
+  "http": 400,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"nombreRepresentante es requerido\",\"code\":\"VALIDATION_ERROR\",\"correlationId\":\"qa1267-1063-01-31496477\"}"
+ },
+ {
+  "caso": "[1072-01] SCRUM-1072 - Cliente t1 crea una solicitud en su sitio",
+  "http": 201,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"solicitud\":{\"id\":\"36f5e8c6-fb72-42a4-8638-6b453fc042a5\",\"estado\":\"PENDIENTE\",\"categoriaId\":\"60000000-0000-4000-8000-000000000011\",\"categoria\":\"Plomeria\",\"flujoOperativo\":null,\"de"
+ },
+ {
+  "caso": "[1072-02] SCRUM-1072 - Misma clave de idempotencia no duplica",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"solicitud\":{\"id\":\"36f5e8c6-fb72-42a4-8638-6b453fc042a5\",\"estado\":\"PENDIENTE\",\"categoriaId\":\"60000000-0000-4000-8000-000000000011\",\"categoria\":\"Plomeria\",\"flujoOperativo\":null,\"de"
+ },
+ {
+  "caso": "[1072-03] SCRUM-1072 - Descripción corta se rechaza",
+  "http": 422,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-SOL-422D: la descripción debe tener entre 20 y 1000 caracteres\",\"code\":\"MANI-SOL-422D\",\"correlationId\":\"qa1267-1072-03-31496477\"}"
+ },
+ {
+  "caso": "[1072-04] SCRUM-1072 - Un aliado no publica solicitudes",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-SOL-403C: solo un cliente activo puede publicar solicitudes\",\"code\":\"MANI-SOL-403C\",\"correlationId\":\"qa1267-1072-04-31496477\"}"
+ },
+ {
+  "caso": "[1072-05] SCRUM-1072 - Categoría de t2 se rechaza para cliente t1",
+  "http": 422,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"MANI-SOL-422C: categoría no disponible\",\"code\":\"MANI-SOL-422C\",\"correlationId\":\"qa1267-1072-05-31496477\"}"
+ },
+ {
+  "caso": "[861-01] SCRUM-861 - Match de aliados por cobertura y categoría",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Aliados válidos obtenidos con éxito por cobertura y categoría (RF-12, ADR-0011).\",\"correlationId\":\"qa1267-861-01-31496477\",\"tenantId\":\"10000000-0000-4000-8000-000000000"
+ },
+ {
+  "caso": "[861-02] SCRUM-861 - Match sin token responde 401",
+  "http": 401,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id\",\"correlationId\":\"qa1267-861-02-31496477\"}"
+ },
+ {
+  "caso": "[862-01] SCRUM-862 - Elegibles filtrados por PERSONA_NATURAL",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Aliados válidos obtenidos con éxito por cobertura y categoría (RF-12, ADR-0011).\",\"correlationId\":\"qa1267-862-01-31496477\",\"tenantId\":\"10000000-0000-4000-8000-000000000"
+ },
+ {
+  "caso": "[862-02] SCRUM-862 - Tipo inválido se rechaza",
+  "http": 400,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"El parámetro Tipo 'MARCIANO' no es válido. Valores permitidos: PERSONA_NATURAL, PERSONA_JURIDICA, EMPLEADO_DIRECTO. (Parameter 'Tipo')\",\"status\":400,\"correlationId\":\"qa12"
+ },
+ {
+  "caso": "[1073-01] SCRUM-1073 - Orquesta el despacho de la solicitud t1",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Despacho orquestado con éxito. Oferta transmitida a 1 aliados elegibles (ADR-0016).\",\"requestId\":\"36f5e8c6-fb72-42a4-8638-6b453fc042a5\",\"tenantId\":\"10000000-0000-4000-8"
+ },
+ {
+  "caso": "[1073-02] SCRUM-1073 - Ruta interna allies/eligible cerrada desde fuera",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"NOT_FOUND\",\"message\":\"Ruta no disponible a traves del Gateway\",\"correlationId\":\"qa1267-1073-02-31496477\"}"
+ },
+ {
+  "caso": "[1073-03] SCRUM-1073 - Ruta interna notifications cerrada desde fuera",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"NOT_FOUND\",\"message\":\"Ruta no disponible a traves del Gateway\",\"correlationId\":\"qa1267-1073-03-31496477\"}"
+ },
+ {
+  "caso": "[1074-01] SCRUM-1074 - Aliado t1 acepta la solicitud t1",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Solicitud asignada exitosamente al profesional.\",\"requestId\":\"36f5e8c6-fb72-42a4-8638-6b453fc042a5\",\"assignedAllyId\":\"50000000-0000-4000-8000-000000000011\",\"status\":\"AS"
+ },
+ {
+  "caso": "[1074-02] SCRUM-1074 - Reaceptación del mismo aliado es idempotente",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Solicitud ya asignada previamente a este profesional (reintento idempotente).\",\"requestId\":\"36f5e8c6-fb72-42a4-8638-6b453fc042a5\",\"assignedAllyId\":\"50000000-0000-4000-8"
+ },
+ {
+  "caso": "[853-04] SCRUM-853 - Aliado t1 con el servicio asignado lee las reglas del sitio (criterio de aceptacion de 853)",
+  "http": 403,
+  "resultado": "FALLA",
+  "fallas": [
+   "853-04 estado esperado 200",
+   "853-04 trae las reglas destacadas"
+  ],
+  "cuerpo": "{\"error\":\"Solo el cliente dueño de la sede o el admin del tenant consultan sus reglas\",\"code\":\"FORBIDDEN\",\"correlationId\":\"qa1267-853-04-31496477\"}"
+ },
+ {
+  "caso": "[1074-05] SCRUM-1074 - Aliado PoC 1 acepta la solicitud PoC",
+  "http": 200,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"message\":\"Solicitud ya asignada previamente a este profesional (reintento idempotente).\",\"requestId\":\"a0000000-0000-4000-8000-900000000001\",\"assignedAllyId\":\"50000000-0000-4000-8"
+ },
+ {
+  "caso": "[1074-06] SCRUM-1074 - Un segundo aliado no puede aceptar la misma solicitud (409)",
+  "http": 409,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"La solicitud ya fue aceptada por otro profesional.\",\"status\":409,\"correlationId\":\"qa1267-1074-06-31496477\",\"assignedTo\":\"50000000-0000-4000-8000-900000000001\",\"timestamp\""
+ },
+ {
+  "caso": "[1074-03] SCRUM-1074 - Aliado de t2 no acepta solicitudes de t1",
+  "http": 404,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Solicitud con ID '36f5e8c6-fb72-42a4-8638-6b453fc042a5' no encontrada para el tenant autenticado.\",\"status\":404,\"correlationId\":\"qa1267-1074-03-31496477\",\"timestamp\":\"202"
+ },
+ {
+  "caso": "[1074-04] SCRUM-1074 - Un cliente no acepta solicitudes",
+  "http": 403,
+  "resultado": "OK",
+  "fallas": [],
+  "cuerpo": "{\"error\":\"Rol no autorizado: únicamente los aliados pueden aceptar solicitudes.\",\"status\":403,\"correlationId\":\"qa1267-1074-04-31496477\",\"timestamp\":\"2026-10-20T21:25:19.0249332Z\"}"
+ }
+]

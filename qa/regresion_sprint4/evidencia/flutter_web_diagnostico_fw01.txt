@@ -2,7 +2,7 @@ Diagnostico de FW-01 en la VM de QA (SCRUM-1267, 20 de octubre de 2026, 21:21 UT
 Parte 1: trace de la corrida anterior de Playwright, con el encabezado X-Correlation-ID en todas las peticiones del navegador (la prueba fallaba por errores CORS).
 Parte 2: carga en vivo de http://localhost:8080 sin ese encabezado: Flutter Web arranca en 3133 ms y llega a /login (captura flutter_login_qa.png).
 
-== 1. Trace de la corrida final (FW-01)
+== 1. Trace de la corrida anterior con el encabezado global (FW-01)
 corrida: playwright_20261020T204231Z | prueba: flutter_web-Flutter-Web-en-af2c7-arranca-el-motor-de-Flutter
 peticiones correctas: 6 | fallidas: 3
   fallida (-1, 'https://www.gstatic.com/flutter-canvaskit/4c525dac5ebe5971c5708ef73558ed8edcf4a362/chromium/canvaskit.js', 'net::ERR_FAILED')

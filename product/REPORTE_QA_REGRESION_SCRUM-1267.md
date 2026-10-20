@@ -6,7 +6,8 @@
 | Responsable | Santiago Hernández (QA) |
 | Fecha de ejecución | 20 de octubre de 2026 |
 | Ambiente | QA `10.43.100.141`, rama `release`, base Supabase `MANI-QA` |
-| Corridas finales (UTC) | Newman `20261020T212453Z`; Playwright `20261020T212519Z` |
+| Corridas (UTC) | Newman `20261020T212453Z`; Playwright `20261020T212519Z` |
+| Revisión | 20 de octubre de 2026: estados, cobertura y defectos revisados contra el DoD de QA (`product/CRITERIOS_ACEPTACION_SPRINT4.md` §4), los criterios de SCRUM-1257, la matriz SCRUM-1264, ADR-0005 y el reporte de SCRUM-1266 (sección 16) |
 | Matriz | [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](MANI_Matriz_Ejecucion_Sprint4.xlsx) |
 | Evidencia | [`qa/regresion_sprint4/evidencia/`](../qa/regresion_sprint4/evidencia/) |
 | Suites | MANI-APIGateway, rama `qa/SCRUM-1267-regresion-sprint4` (`qa/`) |
@@ -17,32 +18,34 @@ Se ejecutó en QA la regresión de las 27 historias priorizadas del Sprint 4: la
 
 | Estado QA | Historias | Cuáles |
 |---|---|---|
-| Aprobado | 3 | 1070, 1073, 1335 |
-| Parcial | 10 | 850, 852, 854, 855, 858, 861, 862, 1063, 1072, 1074 |
+| Aprobado | 0 | - |
+| Ejecutado | 13 | 850, 852, 854, 855, 858, 861, 862, 1063, 1070, 1072, 1073, 1074, 1335 |
 | Fallido | 3 | 853, 856, 1066 |
 | Bloqueado | 5 | 866, 874, 875, 1060, 1068 |
 | No disponible | 6 | 865, 867, 868, 869, 870, 879 |
 
-- **Newman:** 77 solicitudes y 91 aserciones, con 5 fallidas en 4 casos (853-04, 856-05, 1066-01 y 1066-02). Los cuatro corresponden a defectos de Desarrollo (sección 9).
-- **Playwright:** 11 pruebas, 9 aprobadas y 2 fallidas (FW-02 y FW-03), que son la evidencia de D-04.
-- **Recorrido E2E en QA:** crear solicitud (1072) → aliados elegibles (861/862) → despacho (1073) → aceptación (1074), con control cross-tenant. Aprobado en sus 5 pasos.
-- **Multi-tenant:** los casos B1, B2, B3, B4 (855-04) y B5 se aprueban a través del Gateway; B6 queda parcial (sección 7).
-- **Cobertura:** sobre las 17 historias con casos diseñados en SCRUM-1264 se ejecutaron 65 casos frente a 228 diseñados (29 %). "Aprobado" significa que lo ejecutado pasa; no equivale a la aceptación de la historia ni a la cobertura completa de sus casos diseñados.
-- **Interfaz:** la web de QA arranca y llega a `/login` en 3,1 s, pero usa el Supabase del proyecto MANI y no el de MANI-QA (D-04). No se ejecutaron flujos de interfaz.
-- **Defectos propuestos:** 8 abiertos (1 crítica, 5 altas, 2 medias) y 1 hallazgo retirado (sección 8).
+Ninguna historia queda en Aprobado. "Ejecutado" significa que los casos ejecutados no fallan por un defecto del sistema, pero la evidencia no alcanza para aprobar: la cobertura de los casos diseñados en SCRUM-1264 o de los criterios de aceptación es incompleta, la identidad usada es un token de prueba que un usuario real no puede obtener (R-10) o la interfaz no es ejecutable (R-04).
+
+- **Cobertura de SCRUM-1264 (DoD de QA):** de 228 casos diseñados, 20 quedan cubiertos de forma completa y 21 de forma parcial por casos válidos de la regresión. De los 200 casos de prioridad Alta, 13 completos y 18 parciales. ADR-0005 exige una cobertura de casos críticos de al menos 90 %: el umbral no se cumple. La trazabilidad caso a caso está en la hoja `cobertura_1264` de la matriz.
+- **Multi-tenant (SCRUM-1279):** de los 90 casos cross-tenant aplicables de SCRUM-1264 (X1 a X6 de 17 historias), 10 se ejecutaron y se aprobaron (2 de ellos de forma parcial), 6 están bloqueados y 74 no se ejecutaron. Todos los accesos cruzados ejecutados se rechazaron.
+- **Identidad:** toda la regresión usó tokens HS256 sintéticos. Un usuario real recibe un token ES256 que el Gateway rechaza (R-10, comprobado en SCRUM-1266).
+- **Newman:** 77 solicitudes y 91 aserciones, con 5 fallidas en 4 casos (853-04, 856-05, 1066-01 y 1066-02), que corresponden a defectos de Desarrollo. Cuatro casos no cuentan como evidencia: 1063-01 (no válido), 856-02 (no concluyente), 1074-05 y 1074-06 (excluidos).
+- **Playwright:** 11 pruebas, 9 aprobadas y 2 fallidas (FW-02 y FW-03), que son la evidencia de R-04.
+- **Recorrido E2E en QA:** crear solicitud (1072) → aliados elegibles (861/862) → despacho (1073) → aceptación (1074), con control cross-tenant, aprobado en sus 5 pasos por API. El recorrido desde Flutter Web, que exige SCRUM-1278, está bloqueado por R-04 y R-10.
+- **Defectos propuestos:** 10 abiertos (2 críticos, 5 altos y 3 medios) y 1 retirado (sección 8).
 
 ## 2. Ambiente verificado y preparación
 
 La promoción de `develop` a `release` se hizo el 20 de octubre a las 11:27 (Bogotá) en los seis repositorios: MANI-APIGateway#17, MANI-Node#48, MANI-Java#6, MANI-.NET#10, MANI-Flutter#50 y MANI-Landing#5. El árbol de `release` quedó idéntico al de `develop` en los seis.
 
-QA no se actualizó con la promoción (D-08). Para dejarlo en el código de `release` se hizo lo siguiente, con respaldo previo de los archivos modificados en `/opt/mani`:
+QA no quedó operativo con la promoción (R-08). Para dejarlo en el código de `release`, QA (Santiago Hernández) hizo los siguientes cambios el 20 de octubre, con respaldo previo de los archivos modificados en `/opt/mani`. Según `governance/GOBIERNO_DEL_EQUIPO.md` §2.3, las decisiones sobre CI/CD, despliegue y secretos corresponden a DevOps; la comunicación formal de estos cambios a DevOps está pendiente.
 
 1. Se bajaron las imágenes `:staging` y se recrearon los seis contenedores.
 2. En el compose se cambió `NODE_ENV: staging` por `qa`, porque Core en `release` solo acepta `development`, `qa`, `production` o `test`. A Dispatch se le agregaron `SUPABASE_JWT_SECRET`, la cadena de conexión y `CORE_SERVICE_URL`, que el código nuevo exige. `SUPABASE_URL` perdió su valor por defecto hacia `mock.supabase.co`.
-3. `.env.qa` tenía credenciales de relleno y `SUPABASE_URL` apuntaba a `mock.supabase.co`. Se cargaron las credenciales de MANI-QA y se verificaron sin imprimirlas: la referencia de las llaves, la firma de la llave anon con el JWT secret y la autenticación real contra la base. La conexión usa el Session pooler, porque la conexión directa solo tiene IPv6 y la VM no tiene salida IPv6.
-4. Se aplicaron en MANI-QA las migraciones de Core 0001 a 0010 y 0013 de MANI-Node `release` 2745bb0, desde el SQL Editor (antes solo estaban las 001 a 008 del Gateway). Las numeradas 0011 y 0012 no existen en `release`: pertenecen a ramas sin fusionar de SCRUM-865 y SCRUM-869.
+3. `.env.qa` tenía credenciales de relleno y `SUPABASE_URL` apuntaba a `mock.supabase.co`. Se cargaron las credenciales de MANI-QA y se verificaron sin imprimirlas. La conexión usa el Session pooler, porque la conexión directa solo tiene IPv6 y la VM no tiene salida IPv6.
+4. Se aplicaron en MANI-QA las migraciones de Core 0001 a 0010 y 0013 de MANI-Node `release` 2745bb0, desde el SQL Editor. Las numeradas 0011 y 0012 no existen en `release`: pertenecen a ramas sin fusionar de SCRUM-865 y SCRUM-869.
 
-**Verificación posterior (21:06 UTC):** seis contenedores con las revisiones de la tabla, sin reinicios; salud en 200 en los cuatro endpoints, también por la IP externa de la VM; el compose difiere del respaldo original en tres cambios (los del punto 2); `.env.qa` con permisos 600, sin variables duplicadas y sin referencias a mock.
+Estos cambios no están versionados: el ambiente sobre el que se ejecutó la regresión no se puede reproducir desde los repositorios (R-08).
 
 | Contenedor | Revisión |
 |---|---|
@@ -53,83 +56,94 @@ QA no se actualizó con la promoción (D-08). Para dejarlo en el código de `rel
 | mani-flutter-web | 74bab53 |
 | mani-landing-web | a82b94e |
 
-Core y Dispatch se conectan a la base como `postgres`, que ignora RLS (D-09).
-
 ## 3. Cómo se ejecutó
 
-- **Datos:** tenants de prueba de MANI-QA `acme-servicios` (t1) y `nova-mantenimiento` (t2) para la regresión y el aislamiento, y `poc-concurrencia` para la doble aceptación. Cada corrida crea datos marcados con `QA <corrida>`.
-- **Autenticación de prueba:** tokens HS256 firmados dentro de la VM con el JWT secret legado de MANI-QA, con los claims `sub`, `app_metadata.tenant_id` y `app_metadata.user_role`. Los tokens no salen de la VM. No se usó `/auth/dev-token`, que en QA responde 404 (caso PER-05). Esto limita lo que los resultados prueban (L-01).
-- **Newman:** colección generada por `qa/newman/generar_coleccion.js` (77 casos en 18 carpetas), ejecutada en contenedor dentro de la VM contra el Gateway (`localhost:80`).
+- **Datos:** tenants de prueba `acme-servicios` (t1) y `nova-mantenimiento` (t2) de `supabase/seed/seed_qa_multitenant.sql`, la semilla que SCRUM-1264 toma como base (supuesto S-03). El aliado `aliado_t1b` (sin servicio asignado) no está en la semilla. Cada corrida crea datos marcados con `QA <corrida>`.
+- **Identidad de prueba:** tokens HS256 firmados dentro de la VM con el JWT secret legado de MANI-QA, con los claims `sub`, `app_metadata.tenant_id` y `app_metadata.user_role`. No salen de la VM. `/auth/dev-token` responde 404 en QA (PER-05).
+- **Newman:** colección generada por `qa/newman/generar_coleccion.js`, ejecutada en contenedor dentro de la VM contra el Gateway (`localhost:80`). La guía CFG4-03 prevé ejecutar desde el runner de la VM de Calidad; eso queda pendiente (L-02).
 - **Playwright:** imagen oficial `mcr.microsoft.com/playwright:v1.48.2-jammy` en la VM, con trace, capturas y reporte HTML. Los traces se conservan en la VM porque contienen tokens de prueba ya vencidos.
-- **Evidencia versionada:** Newman exporta las respuestas como arreglos de bytes. El ejecutor los decodifica, enmascara contraseñas temporales y tokens, y verifica que no quede ninguna credencial antes de guardar. La evidencia versionada se revisó además con una herramienta independiente que decodifica esos arreglos.
-- **Verificación del motor:** `db/verify/0005` y `db/verify/0007` de Core con `psql`, en transacciones revertidas (sección 7).
-- **Diagnóstico de Flutter Web:** carga de la aplicación en un navegador sin pantalla dentro de la VM, con eventos y cronología (`flutter_web_diagnostico_fw01.txt` y `flutter_login_qa.png`).
+- **Evidencia versionada:** el ejecutor decodifica las respuestas de Newman, enmascara contraseñas temporales y tokens y verifica que no quede ninguna credencial antes de guardar.
+- **Trazabilidad:** cada caso de la regresión se relaciona con los casos de SCRUM-1264 que cubre, de forma completa o parcial (hoja `ejecucion_casos`, columna `caso_1264`, y hoja `cobertura_1264`), como pide el DoD de QA.
+- **Correcciones posteriores a la corrida:** la colección se corrigió después de la auditoría (1063-01, 856-00, 856-02, 856-06, aserciones de negocio y precondiciones). Las correcciones se verificaron reproduciendo las respuestas guardadas de la corrida (`verificacion_coleccion_por_reproduccion.txt`), no con una corrida nueva en QA (L-10).
 
-## 4. Criterios de estado y cobertura
+## 4. Criterios de estado y de origen
 
-| Estado | Criterio |
+Los estados de historia usan el vocabulario de SCRUM-1267 y el estado multi-tenant por caso usa el de SCRUM-1279.
+
+| Estado de la historia | Criterio |
 |---|---|
-| Aprobado | Todos los casos ejecutados pasan, no hay bloqueos y menos de la mitad de los casos diseñados de la historia involucra la interfaz de Flutter. No equivale a la aceptación de la PO ni a la cobertura completa de los casos diseñados (ver cobertura). |
-| Parcial | Los casos ejecutados pasan, pero la mitad o más de los casos diseñados involucra la interfaz de Flutter (no ejecutada) o solo se ejecutó una parte del alcance. |
-| Fallido | Al menos un caso ejecutado falla por un defecto del sistema. |
-| Bloqueado | Una dependencia impide ejecutar la historia (estado blocked sin PR, o historia solo de interfaz sin acceso por la interfaz). |
+| Aprobado | Todos los casos diseñados aplicables están cubiertos, pasan con una identidad que un usuario real puede usar (o la historia no usa rutas protegidas) y se verificaron todos sus criterios de aceptación. |
+| Ejecutado | Se ejecutaron casos y ninguno falla por un defecto del sistema, pero la evidencia no alcanza para aprobar. Incluye historias cuyos casos ejecutados no son válidos. |
+| Fallido | Al menos un caso válido falla por un defecto del sistema. |
+| Bloqueado | Una dependencia externa a QA impide ejecutar la historia. |
 | No disponible | La historia no tiene código fusionado. |
-| Origen probable | Desarrollo, DevOps, Prueba de QA o Por determinar. Indica dónde se espera que se corrija; no es un juicio sobre las personas. |
-| Confianza | Alta: confirmado en el código y en el ambiente. Media: confirmado solo en un lado o con otra explicación posible. Baja: inferencia. |
 
-La cobertura de cada historia compara los casos ejecutados de la colección con los casos diseñados en SCRUM-1264. Los IDs de ambos no coinciden: la trazabilidad uno a uno queda pendiente (L-03). Las historias 1070 y 1073 figuran como Aprobado con una cobertura baja (3 de 16 y 4 de 14 casos diseñados).
+| Estado multi-tenant por caso (X1 a X6) | Criterio |
+|---|---|
+| aprobado / fallido | El caso se ejecutó; "(parcial)" indica que cubre una parte del caso diseñado. |
+| bloqueado | Una dependencia externa impide ejecutarlo. |
+| no aplica | SCRUM-1264 lo declara no aplicable. |
+| sin ejecutar | El caso es ejecutable y QA no lo corrió. No es un estado del DoD de SCRUM-1279: se declara para no ocultar la brecha. |
+
+Cada caso de la regresión se marca además como No válido, No concluyente o Excluido cuando no cuenta como evidencia.
+
+| Origen | Condición |
+|---|---|
+| Desarrollo | La prueba sigue el criterio de aceptación o el contrato y el sistema responde distinto, con la causa en el código. |
+| DevOps | El mismo código funciona con otra configuración, o falta un componente del despliegue. |
+| QA | La prueba, los datos o la cobertura no corresponden al criterio. |
 
 ## 5. Resultado por historia
 
-| Historia | Nombre | Subtarea QA | Ejecutados (OK/total) | Diseñados | Estado QA | Origen probable (confianza) | Observación |
-|---|---|---|---|---|---|---|---|
-| SCRUM-850 | US-02.1.5 - Registrar empleado directo | SCRUM-1306 | 4/4 | 12 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada. Pantalla no ejecutada: el login de la web de QA usa el Supabase del proyecto MANI (D-04). |
-| SCRUM-852 | US-02.2.2 - Cliente empresa con múltiples sitios | SCRUM-1307 | 6/6 | 10 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada con un cliente empresa creado en la corrida. Pantalla no ejecutada (D-04). |
-| SCRUM-853 | US-02.2.3 - Reglas contextuales del sitio visibles al aliado | SCRUM-1308 | 3/4 | 10 | Fallido | Desarrollo (Alta) | El aliado con el servicio asignado no puede leer las reglas del sitio (D-02); los demás casos pasan, incluido el negativo con un aliado sin asignación. |
-| SCRUM-854 | US-02.3.1 - Editar perfil propio | SCRUM-1309 | 3/3 | 11 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada. Pantalla no ejecutada (D-04). |
-| SCRUM-855 | US-02.1.6 - Aliado gestiona su disponibilidad | SCRUM-1310 | 6/6 | 11 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada, incluido el aislamiento entre aliados (caso B4 real). Pantalla no ejecutada (D-04). |
-| SCRUM-856 | US-02.3.2 - Aceptación de Términos y Condiciones | SCRUM-1311 | 4/5 | 11 | Fallido | Desarrollo (Alta) | Documentos legales inaccesibles antes del registro (D-01); el consentimiento con sesión se aprueba. |
-| SCRUM-858 | US-03.1.2 - Desactivar categoría sin afectar en curso | SCRUM-1312 | 8/8 | 11 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada, incluida la vitrina pública (SCRUM-1069): crear, desactivar sin aparecer en la vitrina, reactivar y aislamiento. Pantalla no ejecutada (D-04). |
-| SCRUM-861 | US-04.1.2 - Ver aliados válidos por cobertura y categoría | SCRUM-1313 | 3/3 | 11 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada (Newman y E2E-02). La mayoría de los casos diseñados involucra la interfaz de Flutter, no ejecutada (D-04). |
-| SCRUM-862 | US-04.1.3 - Filtrar por tipo de aliado | SCRUM-1314 | 2/2 | 11 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada (Newman y E2E-02). La mayoría de los casos diseñados involucra la interfaz de Flutter, no ejecutada (D-04). |
-| SCRUM-865 | US-04.2.1 - Cotización con mano de obra y materiales separados | SCRUM-1315 | - | - | No disponible | Desarrollo (Alta) | Sin código fusionado (MANI-Node#32 cerrado sin fusionar). Sin casos diseñados en SCRUM-1264. |
-| SCRUM-866 | US-04.2.2 - Alerta de tarifa bidireccional | SCRUM-1316 | - | - | Bloqueado | Desarrollo (Alta) | Historia en estado blocked en Jira, sin PR. |
-| SCRUM-867 | US-04.2.3 - Cliente acepta/rechaza/ajusta cotización | SCRUM-1317 | - | - | No disponible | Desarrollo (Alta) | Sin código fusionado (MANI-Node#33 cerrado sin fusionar). Sin casos diseñados en SCRUM-1264. |
-| SCRUM-868 | US-04.3.1 - Marcar inicio/fin de ejecución | SCRUM-1318 | - | - | No disponible | Desarrollo (Alta) | Sin código fusionado (MANI-Node#34 cerrado sin fusionar). Sin casos diseñados en SCRUM-1264. |
-| SCRUM-869 | US-04.3.2 - Registrar eventos durante la ejecución | SCRUM-1319 | - | - | No disponible | Desarrollo (Alta) | Sin código fusionado (MANI-Node#35 cerrado sin fusionar). Sin casos diseñados en SCRUM-1264. |
-| SCRUM-870 | US-04.3.3 - Cliente consulta el log del servicio | SCRUM-1320 | - | - | No disponible | Desarrollo (Alta) | Sin código fusionado (MANI-Node#36 cerrado sin fusionar). Sin casos diseñados en SCRUM-1264. |
-| SCRUM-874 | US-04.4.1 - Cliente califica al aliado | SCRUM-1321 | - | - | Bloqueado | Desarrollo (Alta) | Historia en estado blocked en Jira, sin PR. |
-| SCRUM-875 | US-04.4.2 - Aliado califica al cliente | SCRUM-1326 | - | - | Bloqueado | Desarrollo (Alta) | Historia en estado blocked en Jira, sin PR. |
-| SCRUM-879 | US-04.6.1 - Consultar historial de servicios | SCRUM-1327 | - | - | No disponible | Desarrollo (Alta) | Sin código fusionado (MANI-Node#37 cerrado sin fusionar). Sin casos diseñados en SCRUM-1264. |
-| SCRUM-1060 | US-02.1.2-M3 - Migracion: reescribir el datasource de registr… | SCRUM-1328 | - | 22 | Bloqueado | DevOps, con Desarrollo de Flutter (Alta) | Historia solo de interfaz. La web de QA arranca y llega a /login, pero usa el Supabase del proyecto MANI y no el de MANI-QA (D-04): se infiere que los usuarios de prueba de MANI-QA no pueden iniciar sesión; no se intentó. |
-| SCRUM-1070 | US-03.1.1-M6 - Migracion: llevar las reglas evaluables de la … | SCRUM-1329 | 3/3 | 16 | Aprobado | - | Rules rechaza nombre y flujo inválidos a través de Core; el aliado no evalúa CREATE. |
-| SCRUM-1072 | US-04.1.1-M2 - Migracion: creacion de solicitud en Core Node,… | SCRUM-1330 | 6/6 | 15 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | API aprobada y E2E-01. Pantalla no ejecutada (D-04). |
-| SCRUM-1073 | US-04.1.1-M6 - Migracion: orquestacion de despacho de la soli… | SCRUM-1331 | 4/4 | 14 | Aprobado | - | Orquestación y rutas internas cerradas (Newman y E2E-03). Publicación de eventos no ejecutable: QA no tiene Kafka. |
-| SCRUM-1074 | US-04.1.4-M6 - Migracion: aceptar o rechazar solicitud sin do… | SCRUM-1332 | 7/7 | 14 | Parcial | DevOps, con Desarrollo de Flutter (Alta) | Aceptación y reaceptación idempotente (E2E-04), 409 al segundo aliado sobre una solicitud ya asignada (1074-06) y 404 al aliado de otro tenant. No se ejecutó la concurrencia. La mayoría de los casos diseñados involucra la interfaz (D-04). |
-| SCRUM-1335 | US-09.1.1 - Landing page comercial como entrada publica a la … | SCRUM-1356 | 3/3 | - | Aprobado | - | Tarifas, estimador con aviso y botón de ingreso a Flutter Web (Playwright). La historia no tiene casos diseñados en SCRUM-1264. |
-| SCRUM-1063 | US-02.1.2-M2 - Migracion: implementar el registro de aliado e… | sin subtarea QA | 1/1 | 18 | Parcial | Prueba de QA (Alta) | Solo se ejecutó el caso negativo (sin documentos responde 400); el registro con documentos no se ejecutó. |
-| SCRUM-1066 | US-02.1.3-M2 - Migracion: aprobacion y rechazo de registro de… | sin subtarea QA | 1/3 | 20 | Fallido | Desarrollo (Alta) | Listado y detalle de verificación responden 500: falta documento_kyc.created_at (D-03). |
-| SCRUM-1068 | US-02.1.4-M2 - Migracion: declaracion de zona de cobertura so… | sin subtarea QA | - | 11 | Bloqueado | Desarrollo (Alta) | Historia en estado blocked en Jira, sin PR identificado. |
+| Historia | Subtarea QA | Casos SCRUM-1264: completos / parciales / diseñados | Estado QA | Origen de la brecha o del fallo | Observación |
+|---|---|---|---|---|---|
+| SCRUM-850 | SCRUM-1306 | 0 / 3 / 12 | Ejecutado | QA (cobertura); interfaz R-04 y R-10 | Alta, duplicado de correo y rol cliente, cada uno de forma parcial. Sin campos vacíos ni casos cross-tenant X1 a X5. |
+| SCRUM-852 | SCRUM-1307 | 1 / 2 / 10 | Ejecutado | QA (cobertura); interfaz R-04 y R-10 | Cliente empresa con dos sedes creado por el admin del tenant; X1 aprobado. |
+| SCRUM-853 | SCRUM-1308 | 3 / 1 / 10 | Fallido | Desarrollo (R-02) | El aliado asignado recibe 403 al leer las reglas del sitio (C1); el negativo con un aliado sin asignación pasa. |
+| SCRUM-854 | SCRUM-1309 | 1 / 2 / 11 | Ejecutado | QA (cobertura) | Teléfono actualizado; el rol no se puede cambiar. |
+| SCRUM-855 | SCRUM-1310 | 2 / 1 / 11 | Ejecutado | QA (cobertura) | Incluye el borrado ajeno (855-04, X4). Sin solapamiento (C4), fin anterior al inicio (C2) ni elegibilidad durante la ausencia (C5). |
+| SCRUM-856 | SCRUM-1311 | 1 / 1 / 11 | Fallido | Desarrollo (R-01) | Los documentos legales no se pueden consultar antes del registro. 856-02 no es concluyente. Core no expone una consulta del consentimiento propio (C4): por confirmar con Desarrollo. |
+| SCRUM-858 | SCRUM-1312 | 3 / 1 / 11 | Ejecutado | QA (cobertura) | Desactivar sin aparecer en la vitrina (C1) y aislamiento. Sin C2 (solicitud nueva con categoría inactiva) ni C3 (servicios en curso). |
+| SCRUM-861 | SCRUM-1313 | 2 / 0 / 11 | Ejecutado | QA (cobertura); R-11 | Elegible y sin aliados de t2 (Newman y E2E-02). |
+| SCRUM-862 | SCRUM-1314 | 2 / 0 / 11 | Ejecutado | QA (cobertura); R-11 | Filtro por persona natural y rechazo de tipo inválido. El filtro ya acepta EMPLEADO_DIRECTO (PE6 de SCRUM-1257 resuelto). |
+| SCRUM-865 | SCRUM-1315 | - | No disponible | Desarrollo | MANI-Node#32 cerrado sin fusionar. |
+| SCRUM-866 | SCRUM-1316 | - | Bloqueado | Desarrollo | Historia en estado blocked en Jira, sin PR. |
+| SCRUM-867 | SCRUM-1317 | - | No disponible | Desarrollo | MANI-Node#33 cerrado sin fusionar. |
+| SCRUM-868 | SCRUM-1318 | - | No disponible | Desarrollo | MANI-Node#34 cerrado sin fusionar. |
+| SCRUM-869 | SCRUM-1319 | - | No disponible | Desarrollo | MANI-Node#35 cerrado sin fusionar. |
+| SCRUM-870 | SCRUM-1320 | - | No disponible | Desarrollo | MANI-Node#36 cerrado sin fusionar. |
+| SCRUM-874 | SCRUM-1321 | - | Bloqueado | Desarrollo | Historia en estado blocked en Jira, sin PR. |
+| SCRUM-875 | SCRUM-1326 | - | Bloqueado | Desarrollo | Historia en estado blocked en Jira, sin PR. |
+| SCRUM-879 | SCRUM-1327 | - | No disponible | Desarrollo | MANI-Node#37 cerrado sin fusionar. |
+| SCRUM-1060 | SCRUM-1328 | 0 / 0 / 22 | Bloqueado | DevOps (R-04) y Desarrollo (R-10); QA en los casos API | Historia de interfaz. Sus casos de API por el Gateway (CC-2 a CC-4 y X1 a X6) son ejecutables y no se ejecutaron. |
+| SCRUM-1070 | SCRUM-1329 | 0 / 4 / 16 | Ejecutado | QA (cobertura); interfaz R-04 y R-10 | Rules rechaza nombre y flujo inválidos a través de Core y el aliado no evalúa CREATE; ninguno cubre por completo un caso diseñado. |
+| SCRUM-1072 | SCRUM-1330 | 1 / 2 / 15 | Ejecutado | QA (cobertura); interfaz R-04 y R-10 | Creación, reintento con la misma clave, validación y rol. Sin C3 (sitio de otro cliente). |
+| SCRUM-1073 | SCRUM-1331 | 0 / 1 / 14 | Ejecutado | QA (cobertura); interfaz R-04 y R-10; R-11 | Orquestación y rutas internas cerradas. La publicación de eventos no es ejecutable: QA no tiene Kafka. |
+| SCRUM-1074 | SCRUM-1332 | 2 / 2 / 14 | Ejecutado | QA (cobertura); interfaz R-04 y R-10; R-11 | Aceptación, reaceptación idempotente y rechazo cross-tenant. La doble aceptación se excluyó (L-07); la concurrencia (K1) no se ejecutó. |
+| SCRUM-1335 | SCRUM-1356 | - | Ejecutado | QA (criterios sin verificar) | CA-1 y CA-2 verificados con Playwright. CA-3 solo en parte (el botón abre Flutter Web; no se verifica que conserve el contexto). CA-4 a CA-7 requieren revisión de código y de pipeline y no se ejecutaron. Sin casos en SCRUM-1264. |
+| SCRUM-1063 | sin subtarea QA | 0 / 0 / 18 | Ejecutado | QA | El único caso ejecutado (1063-01) es un falso positivo; corregido en la colección y pendiente de corrida. |
+| SCRUM-1066 | sin subtarea QA | 2 / 1 / 20 | Fallido | Desarrollo (R-03) | Listado y detalle de verificación responden 500; aprobar, rechazar y auditoría no se pudieron ejecutar. |
+| SCRUM-1068 | sin subtarea QA | 0 / 0 / 11 | Bloqueado | Desarrollo | Historia en estado blocked en Jira, sin PR identificado. |
 
-Cada fila corresponde a la subtarea "QA - Validar US" indicada y es su evidencia. El detalle caso por caso está en la hoja `ejecucion_casos` de la matriz, y el origen probable de cada fallo en `defectos_propuestos`.
+Todas las historias en Ejecutado o Fallido con rutas protegidas llevan además R-10, y las que tienen casos de interfaz previstos llevan R-04. El detalle está en las hojas `resumen_historias`, `cobertura_1264` y `ejecucion_casos` de la matriz.
 
 ## 6. Recorrido E2E en QA
 
 Prueba `qa/playwright/tests/e2e_solicitud.spec.js`, corrida `20261020T212519Z`.
 
-| Paso | Historia | API (a través del Gateway) | Resultado |
-|---|---|---|---|
-| E2E-01 | SCRUM-1072 | `POST /api/v1/core/solicitudes` (cliente t1, sitio t1) | 201, solicitud en estado PENDIENTE |
-| E2E-02 | SCRUM-861/862 | `GET /api/v1/dispatch/requests/{id}/eligible-allies?tipo=PERSONA_NATURAL` | 200, incluye al aliado t1 y no al de t2 |
-| E2E-03 | SCRUM-1073 | `POST /api/v1/dispatch/requests/orchestrate` | 200, oferta transmitida a 1 aliado elegible |
-| E2E-04 | SCRUM-1074 | `POST /api/v1/dispatch/requests/{id}/accept` dos veces (aliado t1) | 200 y 200 (reintento idempotente, mismo aliado) |
-| E2E-05 | Cross-tenant | Aceptación por el aliado t2 | 404 |
+| Paso | Historia | API (a través del Gateway) | Resultado | Caso de SCRUM-1264 |
+|---|---|---|---|---|
+| E2E-01 | SCRUM-1072 | `POST /api/v1/core/solicitudes` (cliente t1, sitio t1) | 201, solicitud en estado PENDIENTE | US0411M2-P1 (parcial) |
+| E2E-02 | SCRUM-861/862 | `GET /api/v1/dispatch/requests/{id}/eligible-allies?tipo=PERSONA_NATURAL` | 200, incluye al aliado t1 y no al de t2 | US0412-P1, US0412-S1, US0413-P2 |
+| E2E-03 | SCRUM-1073 | `POST /api/v1/dispatch/requests/orchestrate` | 200, oferta transmitida a 1 aliado elegible | US0411M6-P1 (parcial) |
+| E2E-04 | SCRUM-1074 | `POST /api/v1/dispatch/requests/{id}/accept` dos veces (aliado t1) | 200 y 200 (reintento idempotente, mismo aliado) | US0414M6-P1, US0414M6-K2 |
+| E2E-05 | Cross-tenant | Aceptación por el aliado t2 | 404 | US0414M6-X3 (parcial) |
 
-El inicio del recorrido desde la interfaz Flutter no se ejecutó (D-04); los cinco pasos se ejecutaron por API dentro de la misma prueba de Playwright.
-
-Newman complementa el paso de aceptación: 1074-06 devuelve 409 al segundo aliado sobre una solicitud ya asignada. En esta corrida esa solicitud (la de PoC) ya estaba asignada por corridas anteriores, por lo que 1074-05 fue un reintento idempotente y no una primera aceptación. La concurrencia de dos aceptaciones simultáneas sobre el Dispatch real no se ejecutó (L-07).
+El recorrido usa APIs y datos reales de QA, con tokens de prueba. El inicio desde la interfaz Flutter no se ejecutó: la web de QA apunta al Supabase de producción (R-04) y, aunque se corrija, un usuario real no puede usar rutas protegidas (R-10).
 
 ## 7. Regresión multi-tenant (SCRUM-1279)
+
+Los seis casos cross-tenant (B1 a B6) se definieron en SCRUM-1105 y ADR-0015, y SCRUM-1264 los detalla por historia (hoja `cross_tenant`). El reporte de SCRUM-1105 (`product/REPORTE_QA_CFG-23c.md`) se retiró de `main` en el commit e4950fc (SCRUM-1249); esta regresión reutiliza la definición de los casos, no ese documento.
 
 | Caso | Qué se prueba | Casos de la colección | Resultado |
 |---|---|---|---|
@@ -138,66 +152,72 @@ Newman complementa el paso de aceptación: 1074-06 devuelve 409 al segundo aliad
 | B3 | Escritura en otro tenant (reglas de un sitio de t2) | B3-01 | 404, aprobado |
 | B4 | Borrado de un recurso ajeno (ausencia de otro aliado) | 855-04 (B4-01 es un control con un id inexistente) | 404, aprobado |
 | B5 | Token expirado, firma alterada, sin `tenant_id` y `X-Tenant-Id` falso | B5-01 a B5-04 | 401, 401, 401 y sin efecto; aprobado |
-| B6 | KYC de un aliado de otro tenant | B6-01 | 404 sobre el detalle de verificación; parcial (L-05) |
+| B6 | KYC de un aliado de otro tenant | B6-01 | 404 sobre el detalle de verificación; las URL firmadas de Storage no se probaron (L-05) |
 
-Además, cada historia incluye su caso de tenant cruzado, todos aprobados: 850-04 (categoría de otro tenant, 400), 852-05 (404), 853-03 (404), 856-03 (404), 858-07 (404), 862-01 (200 sin aliados de t2), 1072-05 (422), 1074-03 (404) y E2E-05 (404).
+**Por historia (DoD: seis casos cross-tenant en cada historia que toca tenant o datos).** De 90 casos aplicables, 10 se ejecutaron y se aprobaron (US0222-X1, US0223-X1, US0223-X3, US0231-X5 parcial, US0216-X4, US0232-X3, US0312-X1, US0312-X2, US0213M2-X1 y US0414M6-X3 parcial), 6 están bloqueados (SCRUM-1068 y el X6 de SCRUM-1066 por R-03) y 74 no se ejecutaron. Ninguna historia cumple todavía ese añadido del DoD. El detalle por historia está en la columna `multitenant_x1_x6_scrum_1279` de la matriz.
 
-**Verificación en el motor (`db/verify` de Core):**
-- `0005_verificar_exposiciones` falla porque supone que existe la función `registrar_aliado_persona_natural`. En MANI-QA no existe, así que no hay exposición; es una observación sobre el script.
-- `0007_verificar_modelo_identidad_rls` se detiene en el invariante "tablas con `tenant_id` sin FORCE RLS: poc_asignacion_log" (D-07), por lo que los seis casos del motor no llegaron a ejecutarse.
-- En MANI-QA quedan 18 políticas heredadas `tenant_isolation_*` con `TO public` (D-06), y Core y Dispatch usan `postgres`, que ignora RLS (D-09).
-
-El aislamiento comprobado es el de la aplicación a través del Gateway. La defensa en la base de datos (RLS) no se ejerce en QA y queda pendiente de D-06, D-07 y D-09.
+El aislamiento comprobado es el de la aplicación a través del Gateway. La defensa en la base (RLS) no se ejerce en QA: Core y Dispatch se conectan como `postgres` (R-09), `db/verify/0007` se detiene en `poc_asignacion_log` (R-07) y quedan 18 políticas heredadas con `TO public` (R-06). Estas tres observaciones no tienen todavía evidencia versionada.
 
 ## 8. Defectos propuestos
 
-Los defectos se proponen aquí; su registro en el backlog lo decide la Scrum Master. La numeración D-xx es propia de este reporte y no coincide con la de SCRUM-1266.
+Los defectos se proponen aquí; su registro en el backlog lo decide la Scrum Master. El formato sigue el de las propuestas de SCRUM-1266 y el de los defectos existentes del proyecto (tipo Error, resumen `BUG-<área>-NN`, como SCRUM-1333 y SCRUM-1334). La numeración R-xx es propia de este reporte; la hoja `equivalencias` de la matriz la relaciona con la versión anterior y con SCRUM-1266.
 
-| Id | Severidad | Historia | Descripción | Origen probable (confianza) | Fundamento |
+| Id | Propuesta | Severidad | Prioridad sugerida | Historia | Hallazgo | Origen |
+|---|---|---|---|---|---|---|
+| R-10 | BUG-SEC-04 (ya propuesto en SCRUM-1266) | Crítica | Highest | Todas con rutas protegidas | `validate-token` acepta solo HS256; Supabase Auth de MANI-QA emite ES256. Ningún usuario real usa las rutas protegidas. SCRUM-1266 lo propuso como High; con Core real desplegado bloquea a todos los usuarios | Desarrollo |
+| R-04 | BUG-QA-07 | Crítica | Highest | Historias con interfaz | La imagen `mani-flutter:staging` se construye con `.env.example`: Supabase de producción y Gateway en `localhost` | DevOps, con Flutter |
+| R-08 | BUG-QA-08 | Alta | High | Todas | La promoción a release no dejó QA operativo; compose y despliegue sin versionar | DevOps |
+| R-01 | BUG-GW-01 | Alta | High | SCRUM-856 | El Gateway exige token en `GET /legal/documents/active`, que Core declara pública | Desarrollo (Gateway) |
+| R-02 | BUG-CORE-01 | Alta | High | SCRUM-853 | `GET /sites/:id/rules` no permite al aliado asignado leer las reglas | Desarrollo (Core) |
+| R-03 | BUG-CORE-02 | Alta | High | SCRUM-1066 | El repositorio selecciona `documento_kyc.created_at`; la tabla tiene `fecha_carga` | Desarrollo (Core) |
+| R-09 | BUG-SEC-05 | Alta | High | SCRUM-1279 | Core y Dispatch conectan como `postgres`; los roles de servicio no tienen LOGIN | DevOps |
+| R-11 | BUG-DISP-01 | Media | Medium | 861, 862, 1073, 1074 | Las respuestas de error de Dispatch no tienen `code` (criterio transversal T5); confirma el pendiente PE5 de SCRUM-1257 | Desarrollo (Dispatch) |
+| R-06 | BUG-SEC-06 | Media | Medium | SCRUM-1279 | 18 políticas heredadas `tenant_isolation_*` con `TO public` | Desarrollo |
+| R-07 | BUG-QA-09 | Media | Medium | SCRUM-1279 | `poc_asignacion_log` sin FORCE RLS detiene `db/verify/0007` | DevOps |
+
+Detalle para el registro:
+
+| Id | Ambiente | Cómo se reproduce | Esperado | Observado | Evidencia |
 |---|---|---|---|---|---|
-| D-04 | Crítica | Todas las historias con interfaz | La imagen mani-flutter:staging se construye con .env.example: SUPABASE_URL apunta al proyecto MANI (el que el equipo designó como producción el 19 de octubre) y API_GATEWAY_URL=localhost. La pantalla de login de QA lista empresas de ese proyecto (por ejemplo "Plomería Express CDMX SA"), que no son tenants de MANI-QA. Se infiere que los usuarios de prueba de MANI-QA no pueden iniciar sesión por la interfaz; no se intentó. | DevOps, con Desarrollo de Flutter (Alta) | El Dockerfile de Flutter indica que el .env se inyecta en CI, pero docker-publish.yml copia .env.example; el panel de Supabase identifica tjxueukivwxsgipltqwb como el proyecto MANI. |
-| D-01 | Alta | SCRUM-856 | El Gateway exige token en GET /api/v1/core/legal/documents/active. Core declara la ruta como consulta pública previa al inicio de sesión y Flutter la consulta con X-Tenant-Slug antes del registro. Resultado: 401; el formulario de registro no puede mostrar los términos. | Desarrollo (Alta) | legal.routes.js (comentario "Consulta pública / pre-login"); nginx.conf no define la ruta; core.yaml no define /legal/*. |
-| D-02 | Alta | SCRUM-853 | GET /sites/:id/rules (GetSiteRulesForAllyUseCase) solo permite al cliente dueño o al admin del tenant; no tiene rama para el aliado asignado. El criterio de la historia exige mostrar al aliado las reglas del sitio asociado a su servicio. Con el aliado asignado (caso 853-04) la respuesta es 403. | Desarrollo (Alta) | La prueba de desarrollo (sites.routes.test.js) documenta que ningún aliado lee las reglas hasta integrar la asignación; MANI-.NET#1 y MANI-Node#43 ya están fusionados y el caso de uso no tiene rama para el aliado. |
-| D-03 | Alta | SCRUM-1066 | El listado y el detalle de verificación de aliados responden 500: SupabaseDocumentoKycRepository selecciona documento_kyc.created_at; la tabla (esquema versionado y MANI-QA) tiene fecha_carga. | Desarrollo (Alta) | SupabaseDocumentoKycRepository.js línea 44; database/init/01-schema.sql; consulta a las columnas de MANI-QA el 20 de octubre. |
-| D-08 | Alta | Todas | La promoción a release no dejaba QA operativo: compose con NODE_ENV=staging (Core no arranca), Dispatch sin JWT, base ni CORE_SERVICE_URL, .env.qa con credenciales de relleno y migraciones de Core sin aplicar. Se corrigió a mano el 20 de octubre; el compose y deploy-qa.sh solo existen en la VM. | DevOps, con Desarrollo (migraciones sin mecanismo de aplicación) (Alta) | db/README.md de Core asigna a Operaciones aplicar las migraciones; no hay compose de QA en ningún repositorio. |
-| D-09 | Alta | SCRUM-1279 | Core y Dispatch se conectan a la base como postgres (con BYPASSRLS). Los roles de servicio mani_core_svc y mani_dispatch_svc existen sin LOGIN, por lo que las políticas RLS de la migración 0007 no se ejercen en QA: el aislamiento comprobado es el de la aplicación, no el de la base. | DevOps (Alta) | db/README.md de Core: Operaciones asigna LOGIN y contraseña a los roles de servicio fuera de git (ADR-0032). |
-| D-06 | Media | SCRUM-1279 | 18 políticas heredadas tenant_isolation_* con TO public conviven con las políticas de la migración 0007. | Desarrollo (Media) | La migración 0007 reemplaza políticas por nombre y no retira estas; también pueden venir de migraciones anteriores del Gateway o de una aplicación manual. |
-| D-07 | Media | SCRUM-1279 | La tabla de PoC poc_asignacion_log (con tenant_id y RLS sin FORCE) sigue en MANI-QA; db/verify/0007 se detiene en ese invariante y no ejecuta los seis casos dentro del motor. | DevOps (Media) | supabase/poc-cfg09 del Gateway es el origen de la tabla de PoC; no pertenece al esquema de Core. |
+| R-10 | QA, Core 2745bb0, Supabase MANI-QA | Password grant de un usuario de prueba y llamada a `GET /api/v1/core/profiles/me` por el Gateway (`qa/monitoreo_qas/confirmar_d02.sh`) | 200 con el tenant del claim | 401 en Core, Rules y Dispatch | `confirmacion_d02_login_real.txt` (SCRUM-1266); MANI-Node `src/routes/auth.routes.js:9` |
+| R-04 | QA, Flutter 74bab53 | Abrir `http://10.43.100.141:8080` y leer `/assets/.env` | Supabase de MANI-QA y Gateway de QA | Proyecto MANI y `localhost`; el login lista empresas de producción | FW-02, FW-03; `flutter_login_qa.png`; MANI-Flutter `docker-publish.yml:30` |
+| R-08 | VM de QA | Desplegar `:staging` de release con el compose de `/opt/mani` | Servicios sanos con la configuración del repositorio | Core no arranca con `NODE_ENV=staging`; Dispatch sin configuración | Sección 2 (sin evidencia versionada) |
+| R-01 | QA, Gateway 82473d6 | `GET /api/v1/core/legal/documents/active` con `X-Tenant-Slug` y sin token | 200 | 401 | 856-05; MANI-Node `src/routes/legal.routes.js:7` |
+| R-02 | QA, Core 2745bb0 | El aliado t1 acepta una solicitud del sitio de t1 y consulta sus reglas | 200 | 403 | 853-04; `GetSiteRulesForAllyUseCase.js:8` |
+| R-03 | QA, Core 2745bb0 | Admin t1 consulta `GET /api/v1/core/aliados/verificacion` | 200 | 500 `column documento_kyc.created_at does not exist` | 1066-01, 1066-02; `SupabaseDocumentoKycRepository.js:44` |
+| R-09 | VM de QA y MANI-QA | Usuario de conexión de Core y Dispatch y `pg_roles` de los roles de servicio | Roles sin BYPASSRLS | `postgres`; roles sin LOGIN | Sin evidencia versionada |
+| R-11 | QA, Dispatch 41ba171 | Filtro con `tipo=MARCIANO` (862-02) o aceptación como cliente (1074-04) | `{ error, code, correlationId }` | `{ error, status, correlationId, timestamp }` | Cuerpos de 862-02, 1074-03 y 1074-04 en `newman_reporte_redactado.json` |
+| R-06 | MANI-QA | `pg_policies` con `policyname like 'tenant_isolation_%'` | Solo las políticas de la migración 0007 | 18 políticas con `TO public` | Sin evidencia versionada |
+| R-07 | MANI-QA | `db/verify/0007` en una transacción revertida | Invariantes en verde | Se detiene en `poc_asignacion_log` | Sin evidencia versionada |
 
-**Correcciones sugeridas**
+Fundamento, corrección sugerida y responsable de cada defecto: hoja `defectos_propuestos` de la matriz.
 
-- **D-04:** Inyectar el .env de QA (Supabase de MANI-QA y URL del Gateway de QA) al construir la imagen :staging.
-- **D-01:** Agregar la ruta pública en nginx.conf (solo GET, sin Authorization, con X-Tenant-Slug), como /api/v1/core/catalog, y documentarla en core.yaml.
-- **D-02:** Habilitar la lectura al aliado asignado a una solicitud del sitio, sin exponer otros clientes.
-- **D-03:** Seleccionar fecha_carga o agregar la columna con una migración de Core.
-- **D-08:** Versionar el compose y el despliegue de QA y aplicar las migraciones en el pipeline.
-- **D-09:** Asignar LOGIN y credenciales a los roles de servicio, usarlos en Core y Dispatch y repetir la regresión multi-tenant.
-- **D-06:** Retirar las políticas heredadas con una migración de Core y repetir db/verify/0007.
-- **D-07:** Retirar la tabla de PoC de QA o forzar RLS.
+**Hallazgo retirado (R-05).** Se había propuesto que Flutter Web no arranca en QA. Era un error de la prueba: el encabezado global X-Correlation-ID de Playwright provocaba el rechazo del preflight CORS en el CDN de Google. Sin el encabezado la aplicación llega a `/login` en 3,1 s y FW-01 pasa.
 
-**Hallazgo retirado (D-05).** Se había propuesto que Flutter Web no arranca en QA. Era un error de la prueba: la configuración de Playwright agregaba el encabezado X-Correlation-ID a todas las peticiones del navegador y el CDN de Google rechazaba el preflight CORS (CanvasKit y fuentes). Sin el encabezado la aplicación arranca en 3,1 s y llega a /login. Evidencia: errores CORS en la consola del trace anterior; diagnóstico en vivo en la VM sin el encabezado; FW-01 aprobado en la corrida final.
+## 9. Atribución de los resultados
 
-## 9. Origen de los resultados
-
-| Origen probable | Defectos | Comentario |
-|---|---|---|
-| Desarrollo | D-01, D-02, D-03 (confianza alta); D-06 (media) | Los cuatro casos fallidos de Newman (853-04, 856-05, 1066-01 y 1066-02) corresponden a D-01, D-02 y D-03. Se confirmaron en el código y en el ambiente; ninguno se explica por la escritura de la prueba |
-| DevOps | D-04, D-08, D-09 (alta); D-07 (media) | Pipeline de Flutter, despliegue de QA, roles de servicio de la base y restos de PoC. D-04 y D-08 con apoyo de Desarrollo |
-| Prueba de QA | D-05 (retirado) y los límites L-01, L-02, L-03, L-05, L-06, L-07, L-08 | El único falso positivo (FW-01) se corrigió. Los fallos de la primera corrida del día se debían al ambiente (D-08) y a tres errores de la propia colección, ya corregidos. Los límites no producen fallos, pero acotan lo que los resultados prueban |
+| Origen | Qué le corresponde |
+|---|---|
+| Desarrollo | R-01, R-02 y R-03 (fallos de 856, 853 y 1066), R-10 (identidad real), R-11 (formato de error de Dispatch) y R-06. |
+| DevOps | R-04 (Flutter apunta a producción), R-08 (despliegue sin versionar), R-09 (RLS no ejercido) y R-07. |
+| QA | La cobertura de SCRUM-1264 (20 completos y 21 parciales de 228; 74 casos cross-tenant sin ejecutar), los criterios de SCRUM-1335 sin verificar, el falso positivo de 1063-01, el caso no concluyente 856-02, los casos PENDIENTE de la colección de contrato (SCRUM-1277) y la evidencia no versionada de R-06, R-07 y R-09. El falso positivo FW-01 (R-05) ya se corrigió. |
 
 ## 10. Discrepancias con Jira
 
-- Las subtareas "QA - Validar US" de 850, 852, 853, 854, 855, 856, 858, 861, 862, 1060, 1070, 1072, 1073, 1074 y 1335 están en Finalizada. Su cierre se basó en el merge a `develop` y el CI en verde, no en una ejecución en QA. Este reporte deja su resultado real en QA: de esas 15 historias, 3 quedan en Aprobado, 9 en Parcial, 2 en Fallido (853 y 856) y 1 en Bloqueado (1060).
-- SCRUM-1063, 1066 y 1068 están en la matriz de diseño SCRUM-1264 pero no tienen subtarea QA.
+- Las subtareas "QA - Validar US" de 850, 852, 853, 854, 855, 856, 858, 861, 862, 1060, 1070, 1072, 1073, 1074 y 1335 están en Finalizada. Su cierre se basó en el merge a `develop` y el CI en verde, no en una ejecución en QA. Resultado real en QA de esas 15 historias: 12 Ejecutado, 2 Fallido (853 y 856) y 1 Bloqueado (1060).
+- Las historias 853, 856 y 1066 están en Finalizada con un fallo en QA. El texto de cada historia ("Flujo de estados y QA obligatorio") indica que, si QA falla, se registra el defecto y la historia no se marca Done; la decisión sobre el estado corresponde a la Scrum Master.
+- El DoD de QA (`CRITERIOS_ACEPTACION_SPRINT4.md` §4) pide que la evidencia vaya en la subtarea QA de cada historia con los IDs de casos de SCRUM-1264. La evidencia está en este reporte y en la matriz; falta enlazarla en cada subtarea.
+- SCRUM-1277 y SCRUM-1278 están en Finalizada sin PR fusionado y con el gate de CI sin ejecutar.
+- SCRUM-1063, 1066 y 1068 no tienen subtarea QA (pendiente PE4 de SCRUM-1257).
 - SCRUM-865, 867, 868, 869, 870, 879 y 1335 tienen subtarea QA pero no tienen casos diseñados en SCRUM-1264.
 - Este reporte no modifica Jira.
 
 ## 11. Relación con SCRUM-1266
 
-La regresión usó los mismos datos de prueba y la misma fuente de tokens que SCRUM-1266, y deja:
-- **QAS-01:** casos B1 a B6 a través del Gateway (sección 7).
-- **QAS-07:** la doble aceptación sobre el Dispatch real queda parcialmente cubierta (sección 6). La solicitud de PoC que el arnés de QAS-07 necesita en estado PENDIENTE quedó asignada (L-07); restablecerla con `supabase/poc-cfg09/11_reset_solicitud.sql` del Gateway es una decisión pendiente.
-- El defecto de `/auth/dev-token` público propuesto en SCRUM-1266 ya no se reproduce en QA: PER-05 responde 404.
+- **R-10** es el hallazgo H-02 de SCRUM-1266 (propuesta D-02, BUG-SEC-04), comprobado allí con un inicio de sesión real.
+- **Propuestas de SCRUM-1266 que ya no se reproducen** tras el redespliegue del 20 de octubre: D-01 (`/auth/dev-token` público: PER-05 responde 404) y D-03 (el Gateway de QA no corría la revisión de `release`: ahora corre 82473d6). D-08 (`SUPABASE_URL` hacia un mock) se corrigió a mano y queda dentro de R-08.
+- **QAS-01:** SCRUM-1266 dejó bloqueados los casos 1 a 4 y 6 porque Core era un stub. Con Core real, esta regresión ejecuta B1 a B6 por el Gateway (sección 7), con la cobertura por historia indicada allí.
+- **QAS-07:** la regresión ya no usa la solicitud de PoC que el arnés de QAS-07 necesita en PENDIENTE (1074-05 y 1074-06 excluidos). Esa solicitud quedó ASIGNADA por corridas anteriores; restablecerla con `supabase/poc-cfg09/11_reset_solicitud.sql` del Gateway es una decisión pendiente.
 
 ## 12. Reproducibilidad
 
@@ -207,41 +227,53 @@ COLECCION=qa/newman/mani_regresion_sprint4.postman_collection.json bash qa/ejecu
 SUITE_DIR=qa/playwright bash qa/ejecutar_playwright_qa.sh
 ```
 
-Se ejecutan en la VM de QA desde una copia de MANI-APIGateway. La corrida final usó la colección y la suite empaquetadas, idénticas a las versionadas (comparación byte a byte). No se ejercieron las variantes `COLECCION` y `SUITE_DIR` ni el workflow `.github/workflows/qa-regresion.yml`, que corre Newman desde el runner `nbig02-calidad` y necesita el secreto `QA_JWT_SECRET` (L-08).
+Se ejecutan en la VM de QA desde una copia de MANI-APIGateway, o desde la VM de Calidad indicando las URLs de QA (`qa/README.md`). La corrida de las 21:24 UTC usó la colección y la suite empaquetadas, idénticas a las versionadas en ese momento. La colección vigente incluye las correcciones de la sección 3 y todavía no se ha ejecutado en QA. El workflow `.github/workflows/qa-regresion.yml` (jobs `newman_qa` y `playwright_qa`) queda omitido hasta que DevOps cree el environment `qa-regresion`, su secreto y las variables `QA_*` (L-08).
 
 ## 13. Límites y supuestos
 
 | Id | Tema | Descripción | Origen |
 |---|---|---|---|
-| L-01 | Autenticación | Toda la regresión usó tokens HS256 firmados dentro de la VM con el JWT secret legado de MANI-QA. No se probó el flujo con un token emitido por Supabase Auth. Según el panel de JWT Keys de MANI-QA (verificado el 20 de octubre), la llave de firma vigente es ECC P-256 (ES256) y HS256 figura como llave anterior; validate-token de Core, que usa el Gateway, acepta solo HS256, por lo que un inicio de sesión real podría recibir 401. Sin verificar. | Prueba de QA |
-| L-02 | Punto de ejecución | Newman y Playwright se ejecutaron dentro de la VM de QA (localhost). El puerto 80 de QA desde el equipo del QA por la VPN responde reset, mientras la VM responde 200 por su propia IP; la causa está fuera del host y no se probó desde la VM de Calidad. | Prueba de QA |
-| L-03 | Cobertura | Los casos ejecutados son los de la colección de regresión y no los IDs de SCRUM-1264. Sobre las 17 historias con casos diseñados: 65 casos ejecutados frente a 228 diseñados. La trazabilidad uno a uno con los IDs diseñados queda pendiente. | Prueba de QA |
-| L-04 | Interfaz | No se ejecutaron flujos de interfaz. La web de QA arranca y llega a /login, pero usa el Supabase del proyecto MANI (D-04), por lo que se infiere que los usuarios de MANI-QA no pueden iniciar sesión; no se intentó. | DevOps |
-| L-05 | Casos B4 y B6 | B4-01 borra una ausencia inexistente y solo es un control; el aislamiento de borrado se prueba en 855-04. B6 se ejecutó sobre el detalle de verificación de otro tenant (404); el camino de los documentos KYC falla antes por D-03 y no se probó el aislamiento de las URL firmadas. | Prueba de QA |
-| L-06 | Expectativas ajustadas | Tras la primera corrida se ajustaron expectativas: la reaceptación del mismo aliado pasó de 409 a 200 (1074-02 y E2E-04) porque Dispatch documenta el reintento idempotente en su respuesta; 856-01 y 856-02 usan una sesión; 1070-03 corrige la forma del cuerpo; 852 crea primero un cliente empresa; 853-02 se redefinió como negativo con un aliado sin asignación y se agregó 853-04 con el aliado asignado. | Prueba de QA |
-| L-07 | Datos de prueba y concurrencia | Cada corrida crea datos en MANI-QA (empleado, cliente empresa, sedes, categoría, consentimiento y solicitud). La solicitud de PoC que SCRUM-1266 necesita en estado PENDIENTE quedó ASIGNADA; en la corrida final 1074-05 fue un reintento idempotente. La concurrencia de dos aceptaciones simultáneas sobre el Dispatch real no se ejecutó. Para restablecer la solicitud existe supabase/poc-cfg09/11_reset_solicitud.sql del Gateway. | Prueba de QA |
-| L-08 | Gate de CI | El workflow qa-regresion.yml no se ejecutó: necesita el secreto QA_JWT_SECRET en MANI-APIGateway y no se probó en el runner de Calidad. Tampoco se ejecutaron las variantes COLECCION y SUITE_DIR de los ejecutores (la corrida usó la colección y la suite empaquetadas). | Prueba de QA |
-| L-09 | Aislamiento en el motor | db/verify/0007 se detiene en el invariante de poc_asignacion_log (D-07) y no ejecutó los seis casos dentro del motor. db/verify/0005 supone que existe registrar_aliado_persona_natural; en MANI-QA no existe, así que no hay exposición, pero el script falla. Además Core y Dispatch usan postgres (D-09). | Desarrollo y DevOps |
+| L-01 | Identidad de prueba | Toda la regresión usó tokens HS256 sintéticos. Un usuario real recibe un token ES256 que el Gateway rechaza (R-10). Los usuarios de prueba que prevé SCRUM-1269 no se pueden usar mientras R-10 siga abierto. | Desarrollo (R-10) |
+| L-02 | Punto de ejecución | Newman y Playwright se ejecutaron dentro de la VM de QA, no desde el runner de Calidad que prevé la guía CFG4-03. El puerto 80 de QA desde el equipo del QA por la VPN responde reset; no se probó desde Calidad. | DevOps |
+| L-03 | Cobertura de SCRUM-1264 | 20 casos completos y 21 parciales de 228; de los 200 de prioridad Alta, 13 completos y 18 parciales. ADR-0005 exige al menos 90 % de casos críticos: no se cumple. | QA |
+| L-04 | Interfaz | No se ejecutaron flujos de interfaz por R-04 y R-10. | DevOps y Desarrollo |
+| L-05 | Casos B4 y B6 | B4-01 es un control con un id inexistente; el borrado ajeno se prueba en 855-04. B6 no cubre las URL firmadas de Storage porque el camino de documentos KYC falla antes (R-03). | QA |
+| L-06 | Expectativas y casos invalidados | Tras la primera corrida se ajustaron expectativas (1074-02 y E2E-04 de 409 a 200 por reintento idempotente documentado; 853-02 redefinido y 853-04 agregado). En la auditoría se invalidó 1063-01 y 856-02 quedó como no concluyente. | QA |
+| L-07 | Datos de prueba | Cada corrida crea datos `QA <corrida>` en MANI-QA. 1074-05 y 1074-06 se excluyeron para no alterar la solicitud de QAS-07. `aliado_t1b` no está en la semilla versionada. | QA |
+| L-08 | Gate de CI | El workflow no se ha ejecutado. Según GOBIERNO_DEL_EQUIPO §2.3 los secretos y el CI los decide DevOps: el environment, el secreto y las variables quedan como propuesta. | DevOps |
+| L-09 | Aislamiento en el motor | RLS no se ejerce en QA (R-06, R-07 y R-09). | Desarrollo y DevOps |
+| L-10 | Correcciones sin corrida | Las correcciones de la colección se verificaron reproduciendo las respuestas guardadas, no con una corrida nueva en QA. | QA |
+| L-11 | Pruebas de desarrollo y contrato | Los casos de SCRUM-1264 previstos como prueba de integración nativa, SQL, revisión estática, prueba unitaria de Flutter, k6 o manual no forman parte de esta regresión, y no se recopiló la evidencia de desarrollo. Los tres casos PENDIENTE de la colección de contrato `postman/MANI-Core` (login, refresh y logout) siguen pendientes. | QA |
 
 ## 14. Pendientes
 
-1. Probar el flujo con un token emitido por Supabase Auth (ES256), con un usuario de prueba de contraseña conocida.
-2. Ejecutar flujos de interfaz cuando D-04 esté corregido.
-3. Mapear los casos ejecutados a los IDs de SCRUM-1264 y ampliar la cobertura.
-4. Restablecer la solicitud de PoC y ejecutar la concurrencia de QAS-07 sobre el Dispatch real (requiere autorización).
-5. Retirar de la VM de QA los respaldos de `.env.qa` y los datos y traces de las corridas, y los datos de prueba de MANI-QA (requiere autorización).
-6. Ejecutar el workflow `qa-regresion.yml` en el runner de Calidad con el secreto `QA_JWT_SECRET`.
-7. Probar el puerto 80 de QA desde la VM de Calidad.
-8. Corregir D-01 a D-09 por sus responsables y repetir la regresión.
+1. Ejecutar en QA la colección corregida (1063-01, 856-00, 856-02, 856-06 y aserciones nuevas) y actualizar la matriz.
+2. Enlazar la evidencia en cada subtarea "QA - Validar US", con los IDs de casos de SCRUM-1264 (DoD de QA).
+3. Versionar la evidencia de R-06, R-07 y R-09 con consultas de solo lectura.
+4. Ampliar la colección hacia los casos de SCRUM-1264 con su ID, empezando por los 74 casos cross-tenant sin ejecutar, y completar los casos PENDIENTE de la colección de contrato.
+5. Verificar CA-3 a CA-7 de SCRUM-1335 (contexto en la redirección, revisión de código y pipeline, ejecución local).
+6. Agregar a la semilla `aliado_t1b`, documentos legales por tenant, un usuario sin consentimiento y un segundo aliado elegible de t1, y reemplazar la doble aceptación excluida.
+7. Habilitar el gate de CI (decisión de DevOps) y comprobarlo con una corrida en rojo y otra en verde desde el runner de Calidad.
+8. Probar el flujo con un token real de Supabase Auth y los flujos de interfaz cuando se corrijan R-10 y R-04.
+9. Restablecer la solicitud de PoC y retirar de la VM los respaldos de `.env.qa` y los traces de las corridas (requiere autorización).
+10. Corregir R-01 a R-11 por sus responsables y repetir la regresión.
+11. Presentar los resultados a la PO.
 
 ## 15. Cumplimiento del DoD de SCRUM-1267
 
-| Criterio | Estado |
-|---|---|
-| Matriz de ejecución con el 100 % de las historias priorizadas, con estado y evidencia o bloqueo | Cumplido: 27 de 27 (sección 5 y matriz), con criterios de estado y cobertura declarados |
-| Al menos un recorrido E2E en QA con sus APIs y datos | Cumplido por API (sección 6); el inicio desde la interfaz queda sin ejecutar por D-04 |
-| Informe de defectos priorizados | Cumplido como propuesta (sección 8): 8 abiertos |
-| Resultados presentados a Camila (PO) | Pendiente |
-| SCRUM-1277: colección versionada, workflow de CI, casos ejecutados, resultado y evidencia por historia, gate comprobable | Colección, ejecutor y workflow en la rama del Gateway; casos ejecutados con evidencia por historia. El gate no se ha comprobado: el workflow requiere el secreto `QA_JWT_SECRET` (L-08) |
-| SCRUM-1278: suite reproducible, ejecución de CI contra QA, evidencias por historia, registro de errores | Suite reproducible y ejecutada dentro de la VM con trace, capturas y reporte. La ejecución desde CI queda pendiente (L-08) |
-| SCRUM-1279: matriz aprobado, fallido, bloqueado o no ejecutable y validación de la PO | Matriz lista; validación de la PO pendiente |
+| Criterio | Estado | Razón |
+|---|---|---|
+| Matriz de ejecución con el 100 % de las historias priorizadas, con estado y evidencia o bloqueo | Cumplido | 27 de 27 con estado, evidencia o bloqueo, y trazabilidad a los casos de SCRUM-1264 |
+| Al menos un recorrido E2E en QA con sus APIs y datos | Parcial | Recorrido completo por API con datos de QA; desde Flutter Web, bloqueado por R-04 y R-10 |
+| Informe de defectos priorizados | Cumplido como propuesta | 10 abiertos con severidad, prioridad sugerida, reproducción, resultado esperado y observado |
+| Resultados presentados a Camila (PO) | Pendiente | |
+| SCRUM-1277: colección versionada, workflow de CI, casos ejecutados, evidencia por historia, gate comprobable | Parcial | Colección y workflow listos; el gate no se ha ejecutado (L-08), la colección corregida no se ha corrido (L-10) y los casos PENDIENTE del contrato siguen abiertos |
+| SCRUM-1278: suite reproducible, ejecución de CI contra QA, evidencias asociadas a historias, registro de errores | Parcial | Suite con lockfile y job de CI listos; sin ejecución en CI y sin flujos Flutter Web → Gateway → servicios |
+| SCRUM-1279: matriz aprobado, fallido, bloqueado o no ejecutable y validación de la PO | Parcial | 10 de 90 casos cross-tenant aplicables ejecutados y aprobados; RLS no ejercido; validación de la PO pendiente |
+
+## 16. Cambios frente a la versión anterior de este reporte
+
+- El estado "Parcial" se reemplazó por el vocabulario de SCRUM-1267 y SCRUM-1279.
+- Ninguna historia queda en Aprobado: SCRUM-1070 y SCRUM-1073 pasaron a Ejecutado (cobertura parcial y token de prueba) y SCRUM-1335 también, porque CA-3 a CA-7 no se verificaron.
+- La cobertura se mide contra los casos de SCRUM-1264 caso a caso, como exige el DoD de QA, en lugar de contar casos ejecutados. La causa de la cobertura incompleta se atribuyó a QA en lugar de a la interfaz.
+- Se agregaron R-10 (H-02 de SCRUM-1266) y R-11 (formato de error de Dispatch), y los defectos siguen el formato de propuestas de SCRUM-1266.

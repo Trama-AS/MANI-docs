@@ -1,0 +1,87 @@
+Verificacion de la coleccion corregida por reproduccion de respuestas guardadas (SCRUM-1267, 20 de octubre de 2026)
+
+Metodo: un servidor local devuelve, para cada caso, el codigo y el cuerpo que QA respondio en la corrida
+20261020T212453Z (newman_reporte_redactado.json), identificando el caso por su X-Correlation-ID. Newman corre la
+coleccion corregida contra ese servidor. No es una corrida en QA: confirma que las aserciones nuevas aceptan las
+respuestas reales correctas y rechazan las incorrectas. Los casos nuevos (856-00, 856-06) no tienen respuesta
+guardada y fallan por diseno de la verificacion.
+
+Peticiones 77 | aserciones 125 | fallidas 10 | errores de script 0
+
+OK    [PER-01] PERIMETRO - Salud del Gateway
+OK    [PER-02] PERIMETRO - Salud de Core con base conectada
+OK    [PER-03] PERIMETRO - Salud de Rules
+OK    [PER-04] PERIMETRO - Salud de Dispatch
+OK    [PER-05] PERIMETRO - dev-token no existe fuera de desarrollo
+OK    [PER-06] PERIMETRO - Ruta protegida sin token responde 401
+OK    [PER-07] PERIMETRO - X-Correlation-ID presente en la respuesta
+OK    [B1-01] CROSS_TENANT - B1 lectura: admin t1 no lee sitios de un cliente de t2
+OK    [B2-01] CROSS_TENANT - B2 listado: categorías de admin t1 sin ids de t2
+OK    [B3-01] CROSS_TENANT - B3 escritura: admin t1 no configura reglas del sitio de t2
+OK    [B4-01] CROSS_TENANT - B4 control: borrar una ausencia inexistente responde 404 (no prueba
+OK    [B5-01] CROSS_TENANT - B5 token expirado responde 401
+OK    [B5-02] CROSS_TENANT - B5 token con firma alterada responde 401
+OK    [B5-03] CROSS_TENANT - B5 token sin tenant_id responde 401
+OK    [B5-04] CROSS_TENANT - B5 X-Tenant-Id del cliente no gana sobre el claim
+OK    [B6-01] CROSS_TENANT - B6 KYC: admin t1 no ve la verificación de un aliado de t2
+OK    [850-01] SCRUM-850 - Admin t1 registra un empleado directo
+OK    [850-02] SCRUM-850 - Correo repetido se rechaza
+OK    [850-03] SCRUM-850 - Un cliente no puede registrar empleados
+OK    [850-04] SCRUM-850 - Categoría de otro tenant se rechaza
+OK    [852-00] SCRUM-852 - Admin t1 registra un cliente empresa con una sede
+OK    [852-01] SCRUM-852 - Lista las sedes del cliente empresa
+OK    [852-02] SCRUM-852 - Agrega una segunda sede al cliente empresa
+OK    [852-04] SCRUM-852 - NIT repetido en el mismo tenant se rechaza
+OK    [852-05] SCRUM-852 - Admin t2 no ve las sedes del cliente empresa de t1
+OK    [852-03] SCRUM-852 - Un aliado no puede agregar sitios
+OK    [853-01] SCRUM-853 - Cliente t1 configura reglas de su sitio
+OK    [853-02] SCRUM-853 - Aliado t1 sin servicio asignado no lee las reglas del sitio
+OK    [853-03] SCRUM-853 - Aliado t2 no lee reglas del sitio de t1
+OK    [854-01] SCRUM-854 - Cliente t1 consulta su perfil
+OK    [854-02] SCRUM-854 - Cliente t1 edita su teléfono
+OK    [854-03] SCRUM-854 - No se puede cambiar el rol desde el perfil
+OK    [855-01] SCRUM-855 - Aliado t1 registra una ausencia
+OK    [855-02] SCRUM-855 - Aliado t1 lista sus ausencias
+OK    [855-03] SCRUM-855 - Motivo fuera del catálogo se rechaza
+OK    [855-04] SCRUM-855 - Aliado t2 no borra la ausencia de t1
+OK    [855-05] SCRUM-855 - Aliado t1 borra su ausencia
+OK    [855-06] SCRUM-855 - Un cliente no gestiona disponibilidad
+FALLA [856-00] SCRUM-856 - Documentos legales activos del tenant t2 (preparación de 856-03)  <- 856-00 estado esperado 200
+OK    [856-01] SCRUM-856 - Documentos legales activos del tenant t1 (sesion iniciada)
+FALLA [856-05] SCRUM-856 - Documentos legales visibles antes del registro (sin token)  <- 856-05 estado esperado 200
+OK    [856-02] SCRUM-856 - Cliente t1 registra su consentimiento
+FALLA [856-06] SCRUM-856 - Repetir el consentimiento no crea registros duplicados  <- 856-06 estado esperado 200/201; 856-06 sin consentimientos nuevos
+FALLA [856-03] SCRUM-856 - Consentimiento sobre un documento de t2 se rechaza  <- 856-03 precondicion: doc_legal_t2 definida
+OK    [856-04] SCRUM-856 - Registro de aliado sin aceptar términos se rechaza
+OK    [858-01] SCRUM-858 - Admin t1 lista categorías con conteo de aliados
+OK    [858-02] SCRUM-858 - Admin t1 crea una categoría (pasa por Rules)
+OK    [858-03] SCRUM-858 - Admin t1 desactiva la categoría
+OK    [858-04] SCRUM-858 - Categoría desactivada no aparece en la vitrina pública
+OK    [858-05] SCRUM-858 - Admin t1 reactiva la categoría
+OK    [858-06] SCRUM-858 - Un cliente no administra categorías
+OK    [858-07] SCRUM-858 - Admin t2 no ve la categoría de t1
+OK    [1069-01] SCRUM-1069 - Vitrina pública por slug del tenant
+OK    [1070-01] SCRUM-1070 - Nombre de 2 caracteres se rechaza por Rules
+OK    [1070-02] SCRUM-1070 - Flujo operativo desconocido se rechaza por Rules
+OK    [1070-03] SCRUM-1070 - Rules directo: aliado no evalúa CREATE
+FALLA [1066-01] SCRUM-1066 - Admin t1 lista aliados por verificar  <- 1066-01 estado esperado 200
+FALLA [1066-02] SCRUM-1066 - Admin t1 ve el detalle de su aliado  <- 1066-02 estado esperado 200
+OK    [1066-03] SCRUM-1066 - Un aliado no lista verificaciones
+FALLA [1063-01] SCRUM-1063 - Registro de aliado empresa sin documentos se rechaza  <- 1063-01 rechazo por falta de camara de comercio
+OK    [1072-01] SCRUM-1072 - Cliente t1 crea una solicitud en su sitio
+OK    [1072-02] SCRUM-1072 - Misma clave de idempotencia no duplica
+OK    [1072-03] SCRUM-1072 - Descripción corta se rechaza
+OK    [1072-04] SCRUM-1072 - Un aliado no publica solicitudes
+OK    [1072-05] SCRUM-1072 - Categoría de t2 se rechaza para cliente t1
+OK    [861-01] SCRUM-861 - Match de aliados por cobertura y categoría
+OK    [861-02] SCRUM-861 - Match sin token responde 401
+OK    [862-01] SCRUM-862 - Elegibles filtrados por PERSONA_NATURAL
+OK    [862-02] SCRUM-862 - Tipo inválido se rechaza
+OK    [1073-01] SCRUM-1073 - Orquesta el despacho de la solicitud t1
+OK    [1073-02] SCRUM-1073 - Ruta interna allies/eligible cerrada desde fuera
+OK    [1073-03] SCRUM-1073 - Ruta interna notifications cerrada desde fuera
+OK    [1074-01] SCRUM-1074 - Aliado t1 acepta la solicitud t1
+OK    [1074-02] SCRUM-1074 - Reaceptación del mismo aliado es idempotente
+FALLA [853-04] SCRUM-853 - Aliado t1 con el servicio asignado lee las reglas del sitio (criterio  <- 853-04 estado esperado 200; 853-04 trae las reglas destacadas
+OK    [1074-03] SCRUM-1074 - Aliado de t2 no acepta solicitudes de t1
+OK    [1074-04] SCRUM-1074 - Un cliente no acepta solicitudes

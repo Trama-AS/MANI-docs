@@ -1,0 +1,25 @@
+{
+  "escenario": "QAS-07 (asignacion y conflicto)",
+  "ticket": "SCRUM-1275",
+  "fecha_utc": "2026-10-19T21:52:38.561Z",
+  "modo": "arnes",
+  "base_url": "http://10.43.100.141",
+  "solicitud_id": "qa1266-1792446758292",
+  "fuente_token": "dev_token",
+  "tokens_distintos": 1,
+  "carga": {
+    "aceptaciones_simultaneas": 20
+  },
+  "criterio": {
+    "exito_200": 1,
+    "conflicto_409": 19,
+    "fuente": "SDD seccion 8, QAS-07"
+  },
+  "medido": {
+    "exito_200": 1,
+    "conflicto_409": 19,
+    "otros_status": 0,
+    "reintento_idempotente_200": 0
+  },
+  "pendiente": "Las dobles asignaciones se deciden con qas07_verificar_asignacion.sql sobre la base; si la base y k6 discrepan, manda la base."
+}

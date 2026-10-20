@@ -1,0 +1,104 @@
+newman
+
+mani_qas01_perimetro_scrum_1266
+
+❏ qa_mon_01_healthchecks
+↳ 01 Gateway health
+  GET http://10.43.100.141/health [200 OK, 532B, 46ms]
+  ✓  status 200
+  ✓  status UP
+  ✓  propaga X-Correlation-ID
+
+↳ 02 Core health via Gateway
+  GET http://10.43.100.141/api/v1/core/health [200 OK, 782B, 10ms]
+  ✓  status 200
+  ✓  status UP
+  ✓  servicio correcto
+  ✓  propaga X-Correlation-ID
+
+↳ 03 Rules health via Gateway
+  GET http://10.43.100.141/api/v1/rules/health [200 OK, 703B, 13ms]
+  ✓  status 200
+  ✓  status UP
+  ✓  servicio correcto
+  ✓  propaga X-Correlation-ID
+
+↳ 04 Dispatch health via Gateway
+  GET http://10.43.100.141/api/v1/dispatch/health [200 OK, 702B, 8ms]
+  ✓  status 200
+  ✓  status UP
+  ✓  servicio correcto
+  ✓  propaga X-Correlation-ID
+
+❏ qas01_caso5_token
+↳ 05 Sin Authorization
+  GET http://10.43.100.141/api/v1/core/profiles/me [401 Unauthorized, 649B, 9ms]
+  ✓  status 401
+  ✓  cuerpo JSON con error y correlationId
+  ✓  sin datos del recurso
+
+↳ 06 Authorization sin esquema Bearer
+  GET http://10.43.100.141/api/v1/core/profiles/me [401 Unauthorized, 649B, 8ms]
+  ✓  status 401
+  ✓  cuerpo JSON con error y correlationId
+  ✓  sin datos del recurso
+
+↳ 07 Token con firma alterada
+  GET http://10.43.100.141/api/v1/core/profiles/me [401 Unauthorized, 649B, 11ms]
+  ✓  status 401
+  ✓  cuerpo JSON con error y correlationId
+  ✓  sin datos del recurso
+
+↳ 08 Token vencido
+  GET http://10.43.100.141/api/v1/core/profiles/me [401 Unauthorized, 649B, 13ms]
+  ✓  status 401
+  ✓  cuerpo JSON con error y correlationId
+  ✓  sin datos del recurso
+
+↳ 09 Control positivo con token valido
+  GET http://10.43.100.141/api/v1/core/profiles/me [200 OK, 926B, 15ms]
+  ✓  status 200
+  ┌
+  │ `Using "atob" is deprecated. Use "require('atob')" ins
+  │ tead.`
+  └
+  ✓  tenant de la respuesta = tenant del claim
+
+❏ qas01_dev_token
+↳ 10 dev-token no expuesto por el Gateway
+  POST http://10.43.100.141/api/v1/core/auth/dev-token [200 OK, 1.22kB, 11ms]
+  1. dev-token no disponible fuera de desarrollo (esperado 404)
+  2. no emite token
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               10 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               10 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                2 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               31 │                2 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 441ms                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 2.19kB (approx)                          │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 14ms [min: 8ms, max: 46ms, s.d.: 10ms] │
+└───────────────────────────────────────────────────────────────┘
+
+  #  failure         detail                                                             
+                                                                                        
+ 1.  AssertionError  dev-token no disponible fuera de desarrollo (esperado 404)         
+                     expected response to have status code 404 but got 200              
+                     at assertion:0 in test-script                                      
+                     inside "qas01_dev_token / 10 dev-token no expuesto por el Gateway" 
+                                                                                        
+ 2.  AssertionError  no emite token                                                     
+                     expected { …(6) } to not have property 'token'                     
+                     at assertion:1 in test-script                                      
+                     inside "qas01_dev_token / 10 dev-token no expuesto por el Gateway" 
+codigo_salida_newman=1

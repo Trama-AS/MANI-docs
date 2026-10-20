@@ -1,0 +1,536 @@
+
+== contexto
+host=NBIG438 fecha_utc=2026-10-20T00:31:47Z
+Docker version 29.8.1, build 4a63305
+
+== contenedores del compose
+NAME                    IMAGE                                                                     COMMAND                  SERVICE            CREATED      STATUS      PORTS
+mani-api-gateway        sha256:8eed09624bd77aa760df079b697048652eedc9408692d09e4b495dc294b95fa7   "/docker-entrypoint.…"   gateway            2 days ago   Up 2 days   0.0.0.0:80->80/tcp, [::]:80->80/tcp
+mani-core-service       ghcr.io/trama-as/mani-node:staging                                        "docker-entrypoint.s…"   core-service       2 days ago   Up 2 days   3000/tcp
+mani-dispatch-service   ghcr.io/trama-as/mani-dotnet:staging                                      "dotnet Mani.Dispatc…"   dispatch-service   2 days ago   Up 2 days   5000/tcp
+mani-flutter-web        ghcr.io/trama-as/mani-flutter:staging                                     "/docker-entrypoint.…"   flutter-web        2 days ago   Up 2 days   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+mani-landing-web        ghcr.io/trama-as/mani-landing:staging                                     "/docker-entrypoint.…"   landing-web        2 days ago   Up 2 days   0.0.0.0:3001->80/tcp, [::]:3001->80/tcp
+mani-rules-service      ghcr.io/trama-as/mani-java:staging                                        "java -jar app.jar"      rules-service      2 days ago   Up 2 days   8080/tcp
+
+== imagen, revision, healthcheck y reinicios por contenedor
+/mani-core-service | ghcr.io/trama-as/mani-node:staging | rev=6ca27ab19629dd2127685f968aa0801446e5ea67 | healthcheck=no_declarado | estado=sin_healthcheck | inicio=2026-10-17T21:03:30.437363222Z | reinicios=0
+/mani-api-gateway | ghcr.io/trama-as/mani-apigateway:staging | rev=6b475f9ef43e1129c9f6a64e43c3c36f8d7f81ce | healthcheck=no_declarado | estado=sin_healthcheck | inicio=2026-10-17T20:41:20.104804078Z | reinicios=0
+/mani-landing-web | ghcr.io/trama-as/mani-landing:staging | rev=c015164b8ec24f7f713dd1b6d2eeeb08988e3e50 | healthcheck=no_declarado | estado=sin_healthcheck | inicio=2026-10-17T20:41:19.437993007Z | reinicios=0
+/mani-flutter-web | ghcr.io/trama-as/mani-flutter:staging | rev=5e7135899144ea7fce61de2d0f5270a7272eb1df | healthcheck=no_declarado | estado=sin_healthcheck | inicio=2026-10-17T20:41:17.863423906Z | reinicios=0
+/mani-rules-service | ghcr.io/trama-as/mani-java:staging | rev=f8582aaef4f218875c6c84475726085dd7b098f7 | healthcheck=no_declarado | estado=sin_healthcheck | inicio=2026-10-17T20:41:19.000438275Z | reinicios=0
+/mani-dispatch-service | ghcr.io/trama-as/mani-dotnet:staging | rev=e40f84ecd147d87a6749178c87815efad0f9c721 | healthcheck=no_declarado | estado=sin_healthcheck | inicio=2026-10-17T20:41:17.482348569Z | reinicios=0
+
+== Kafka y observabilidad en ejecucion
+ninguno
+
+== variables de autenticacion del Core (definida o vacia, sin valor)
+NODE_ENV=staging
+SUPABASE_JWT_SECRET=definida
+JWT_SECRET=vacia
+SUPABASE_URL=definida
+ref_supabase=mock
+
+== limpieza autorizada: tail residual en el Gateway
+no_habia
+
+== docker stats (66 muestras cada 10s)
+-- muestra 1 00:31:48Z
+mani-core-service cpu=25.82% mem=56.18MiB / 11.63GiB red=5.53MB / 4.3MB pids=7
+mani-api-gateway cpu=6.36% mem=4.117MiB / 11.63GiB red=12.1MB / 15.6MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.36MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=11.91% mem=107.6MiB / 11.63GiB red=5.32MB / 3.42MB pids=21
+-- muestra 2 00:32:00Z
+mani-core-service cpu=23.01% mem=56.93MiB / 11.63GiB red=6.21MB / 4.82MB pids=7
+mani-api-gateway cpu=7.18% mem=4.133MiB / 11.63GiB red=13.8MB / 17.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.24% mem=53.36MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=9.24% mem=111.1MiB / 11.63GiB red=5.91MB / 3.8MB pids=21
+-- muestra 3 00:32:13Z
+mani-core-service cpu=24.81% mem=70.57MiB / 11.63GiB red=6.88MB / 5.35MB pids=7
+mani-api-gateway cpu=7.49% mem=4.148MiB / 11.63GiB red=15.3MB / 19.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.20% mem=53.37MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=8.05% mem=115.1MiB / 11.63GiB red=6.56MB / 4.22MB pids=21
+-- muestra 4 00:32:25Z
+mani-core-service cpu=24.29% mem=72.35MiB / 11.63GiB red=7.57MB / 5.89MB pids=7
+mani-api-gateway cpu=8.53% mem=4.395MiB / 11.63GiB red=16.8MB / 21.6MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.24% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=8.92% mem=119MiB / 11.63GiB red=7.21MB / 4.65MB pids=21
+-- muestra 5 00:32:37Z
+mani-core-service cpu=23.98% mem=72.57MiB / 11.63GiB red=8.25MB / 6.42MB pids=7
+mani-api-gateway cpu=8.92% mem=4.125MiB / 11.63GiB red=18.3MB / 23.6MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.28% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=9.86% mem=123.2MiB / 11.63GiB red=7.87MB / 5.08MB pids=22
+-- muestra 6 00:32:49Z
+mani-core-service cpu=21.11% mem=72.94MiB / 11.63GiB red=8.92MB / 6.94MB pids=7
+mani-api-gateway cpu=7.07% mem=4.121MiB / 11.63GiB red=19.8MB / 25.5MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.29% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=11.71% mem=126.9MiB / 11.63GiB red=8.53MB / 5.51MB pids=21
+-- muestra 7 00:33:01Z
+mani-core-service cpu=20.53% mem=73.18MiB / 11.63GiB red=9.59MB / 7.47MB pids=7
+mani-api-gateway cpu=8.10% mem=4.109MiB / 11.63GiB red=21.1MB / 27.2MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.26% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=10.43% mem=131.2MiB / 11.63GiB red=9.24MB / 5.97MB pids=21
+-- muestra 8 00:33:14Z
+mani-core-service cpu=21.75% mem=73.42MiB / 11.63GiB red=10.3MB / 8MB pids=7
+mani-api-gateway cpu=6.69% mem=4.121MiB / 11.63GiB red=22.7MB / 29.3MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.24% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=10.90% mem=135MiB / 11.63GiB red=9.83MB / 6.36MB pids=22
+-- muestra 9 00:33:26Z
+mani-core-service cpu=18.83% mem=73.55MiB / 11.63GiB red=10.9MB / 8.52MB pids=7
+mani-api-gateway cpu=6.41% mem=4.121MiB / 11.63GiB red=24.2MB / 31.3MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.29% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=12.14% mem=139.1MiB / 11.63GiB red=10.5MB / 6.79MB pids=21
+-- muestra 10 00:33:38Z
+mani-core-service cpu=17.30% mem=73.96MiB / 11.63GiB red=11.6MB / 9.05MB pids=7
+mani-api-gateway cpu=9.13% mem=4.113MiB / 11.63GiB red=25.6MB / 33.1MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.29% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=8.17% mem=143.6MiB / 11.63GiB red=11.2MB / 7.25MB pids=21
+-- muestra 11 00:33:50Z
+mani-core-service cpu=15.07% mem=74.05MiB / 11.63GiB red=12.3MB / 9.57MB pids=7
+mani-api-gateway cpu=4.07% mem=4.117MiB / 11.63GiB red=27.2MB / 35.1MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=6.34% mem=147.6MiB / 11.63GiB red=11.8MB / 7.67MB pids=21
+-- muestra 12 00:34:02Z
+mani-core-service cpu=19.40% mem=74MiB / 11.63GiB red=12.9MB / 10.1MB pids=7
+mani-api-gateway cpu=5.01% mem=4.113MiB / 11.63GiB red=28.7MB / 37MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.20% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=7.10% mem=151.8MiB / 11.63GiB red=12.5MB / 8.1MB pids=21
+-- muestra 13 00:34:14Z
+mani-core-service cpu=17.04% mem=73.98MiB / 11.63GiB red=13.6MB / 10.6MB pids=7
+mani-api-gateway cpu=5.38% mem=4.121MiB / 11.63GiB red=30.2MB / 39MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=9.46% mem=155.7MiB / 11.63GiB red=13.1MB / 8.49MB pids=22
+-- muestra 14 00:34:26Z
+mani-core-service cpu=19.19% mem=74.25MiB / 11.63GiB red=14.3MB / 11.2MB pids=7
+mani-api-gateway cpu=6.60% mem=4.141MiB / 11.63GiB red=31.6MB / 40.9MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.21% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=11.04% mem=160MiB / 11.63GiB red=13.7MB / 8.92MB pids=22
+-- muestra 15 00:34:39Z
+mani-core-service cpu=17.97% mem=74.24MiB / 11.63GiB red=15MB / 11.7MB pids=7
+mani-api-gateway cpu=5.78% mem=4.105MiB / 11.63GiB red=33.1MB / 42.8MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.20% mem=53.39MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=8.71% mem=163.8MiB / 11.63GiB red=14.4MB / 9.34MB pids=21
+-- muestra 16 00:34:51Z
+mani-core-service cpu=20.21% mem=74.28MiB / 11.63GiB red=15.7MB / 12.2MB pids=7
+mani-api-gateway cpu=6.82% mem=4.121MiB / 11.63GiB red=34.6MB / 44.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.41MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=8.77% mem=168.5MiB / 11.63GiB red=15MB / 9.77MB pids=22
+-- muestra 17 00:35:03Z
+mani-core-service cpu=15.06% mem=74.27MiB / 11.63GiB red=16.3MB / 12.7MB pids=7
+mani-api-gateway cpu=6.63% mem=4.102MiB / 11.63GiB red=36.1MB / 46.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.19% mem=53.41MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=10.39% mem=172.5MiB / 11.63GiB red=15.8MB / 10.2MB pids=21
+-- muestra 18 00:35:15Z
+mani-core-service cpu=14.69% mem=74.31MiB / 11.63GiB red=16.9MB / 13.2MB pids=7
+mani-api-gateway cpu=8.12% mem=4.379MiB / 11.63GiB red=37.6MB / 48.6MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.27% mem=53.41MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=11.45% mem=175.2MiB / 11.63GiB red=16.4MB / 10.7MB pids=21
+-- muestra 19 00:35:27Z
+mani-core-service cpu=24.30% mem=74.5MiB / 11.63GiB red=17.7MB / 13.8MB pids=7
+mani-api-gateway cpu=6.78% mem=4.113MiB / 11.63GiB red=39.1MB / 50.5MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.18% mem=53.41MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=6.50% mem=174.9MiB / 11.63GiB red=17MB / 11MB pids=21
+-- muestra 20 00:35:39Z
+mani-core-service cpu=21.70% mem=74.5MiB / 11.63GiB red=18.4MB / 14.3MB pids=7
+mani-api-gateway cpu=5.66% mem=4.09MiB / 11.63GiB red=40.5MB / 52.3MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.19% mem=53.41MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=8.75% mem=174.9MiB / 11.63GiB red=17.7MB / 11.5MB pids=21
+-- muestra 21 00:35:52Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.7MB / 14.6MB pids=7
+mani-api-gateway cpu=0.00% mem=4.035MiB / 11.63GiB red=41.4MB / 53.5MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.21% mem=53.42MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.03% mem=174.9MiB / 11.63GiB red=18.1MB / 11.7MB pids=20
+-- muestra 22 00:36:04Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=3.293MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.27% mem=53.42MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=21
+-- muestra 23 00:36:16Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=3.125MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.27% mem=53.42MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=21
+-- muestra 24 00:36:28Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.965MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.42MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=21
+-- muestra 25 00:36:40Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.805MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.21% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=19
+-- muestra 26 00:36:52Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.707MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.27% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=175MiB / 11.63GiB red=18.1MB / 11.8MB pids=19
+-- muestra 27 00:37:04Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.27% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=175MiB / 11.63GiB red=18.1MB / 11.8MB pids=20
+-- muestra 28 00:37:17Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.04% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 29 00:37:29Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.21% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 30 00:37:41Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.24% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 31 00:37:53Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.20% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 32 00:38:05Z
+mani-core-service cpu=0.03% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 33 00:38:17Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.28% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 34 00:38:29Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.34% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 35 00:38:42Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.21% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 36 00:38:54Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.28% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 37 00:39:06Z
+mani-core-service cpu=0.02% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 38 00:39:18Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.30% mem=53.43MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 39 00:39:30Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.45MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 40 00:39:42Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.45MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 41 00:39:54Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 42 00:40:06Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.25% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.03% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 43 00:40:19Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.18% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 44 00:40:31Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.28% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 45 00:40:43Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 46 00:40:55Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 47 00:41:07Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 48 00:41:19Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.23% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 49 00:41:31Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 50 00:41:44Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.29% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 51 00:41:56Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.32% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.03% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 52 00:42:08Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 53 00:42:20Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.31% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 54 00:42:32Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.27% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 55 00:42:44Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.31% mem=53.46MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 56 00:42:57Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.48MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 57 00:43:09Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.30% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 58 00:43:21Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.20% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 59 00:43:33Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.25% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.02% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 60 00:43:45Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.20% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 61 00:43:57Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 62 00:44:09Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.30% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 63 00:44:22Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.28% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 64 00:44:34Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.21% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 65 00:44:46Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.26% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.03% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+-- muestra 66 00:44:58Z
+mani-core-service cpu=0.00% mem=74.49MiB / 11.63GiB red=18.8MB / 14.7MB pids=7
+mani-api-gateway cpu=0.00% mem=2.668MiB / 11.63GiB red=41.6MB / 53.7MB pids=5
+mani-landing-web cpu=0.00% mem=1.652MiB / 11.63GiB red=52.4kB / 14.5kB pids=5
+mani-flutter-web cpu=0.00% mem=1.715MiB / 11.63GiB red=66kB / 3.41MB pids=5
+mani-rules-service cpu=0.22% mem=53.5MiB / 11.63GiB red=66.8kB / 16.8kB pids=39
+mani-dispatch-service cpu=0.01% mem=174.9MiB / 11.63GiB red=18.1MB / 11.8MB pids=16
+
+== log del Gateway: peticiones con correlation qa1266 (ultimas 2h)
+lineas=16632
+{"time_local": "20/Oct/2026:00:35:55 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/dispatch/requests/qa1266-1792456555135/accept","status": "409","body_bytes_sent": "194","request_time": "0.075","http_referrer": "","http_user_agent": "Grafana k6/2.3.0","x_correlation_id": "qa1266-qas07-47"}
+{"time_local": "20/Oct/2026:00:35:55 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/dispatch/requests/qa1266-1792456555135/accept","status": "409","body_bytes_sent": "194","request_time": "0.077","http_referrer": "","http_user_agent": "Grafana k6/2.3.0","x_correlation_id": "qa1266-qas07-43"}
+{"time_local": "20/Oct/2026:00:35:55 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/dispatch/requests/qa1266-1792456555135/accept","status": "409","body_bytes_sent": "194","request_time": "0.077","http_referrer": "","http_user_agent": "Grafana k6/2.3.0","x_correlation_id": "qa1266-qas07-40"}
+{"time_local": "20/Oct/2026:00:35:55 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/dispatch/requests/qa1266-1792456555135/accept","status": "409","body_bytes_sent": "194","request_time": "0.079","http_referrer": "","http_user_agent": "Grafana k6/2.3.0","x_correlation_id": "qa1266-qas07-42"}
+{"time_local": "20/Oct/2026:00:35:55 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/dispatch/requests/qa1266-1792456555135/accept","status": "409","body_bytes_sent": "203","request_time": "0.079","http_referrer": "","http_user_agent": "Grafana k6/2.3.0","x_correlation_id": "qa1266-qas07-4-reintento"}
+-- conteo por status (todas las lineas JSON de la ventana)
+  16577 "status": "200"
+      5 "status": "401"
+     50 "status": "409"
+
+== log de servicios: ultima linea con correlation qa1266
+-- mani-core-service: 16627 lineas
+[2026-10-20T00:35:55.226Z] [GET] /api/v1/auth/validate-token - Correlation: qa1266-qas07-42
+[2026-10-20T00:35:55.227Z] [GET] /api/v1/auth/validate-token - Correlation: qa1266-qas07-4-reintento
+-- mani-rules-service: 0 lineas
+-- mani-dispatch-service: 0 lineas
+
+== procesos dentro del Gateway
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                218962              218901              0                   oct17               ?                   00:00:00            nginx: master process nginx -g daemon off;
+systemd+            224684              218962              0                   oct17               ?                   00:00:05            nginx: worker process
+systemd+            224685              218962              0                   oct17               ?                   00:00:04            nginx: worker process
+systemd+            224686              218962              0                   oct17               ?                   00:00:05            nginx: worker process
+systemd+            224687              218962              0                   oct17               ?                   00:00:05            nginx: worker process
+
+== latencia en el Gateway (request_time) de las peticiones qa1266-qas03
+n=16564 p50_s=0.007 p95_s=0.011 max_s=0.090
+-- status de las peticiones qa1266-qas03
+  16564 "status": "200"
+
+== recursos del host
+4
+               total        used        free      shared  buff/cache   available
+Mem:            11Gi       5,4Gi       1,2Gi        68Mi       5,0Gi       6,2Gi
+/dev/sda2        68G   24G   41G  37% /

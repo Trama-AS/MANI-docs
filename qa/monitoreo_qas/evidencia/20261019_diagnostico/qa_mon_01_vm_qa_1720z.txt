@@ -1,0 +1,84 @@
+Warning: Permanently added '10.43.100.141' (ED25519) to the list of known hosts.
+Permission denied, please try again.
+Permission denied, please try again.
+== host
+NBIG438
+2026-10-19T17:20:54Z
+Docker version 29.8.1, build 4a63305
+Docker Compose version v5.5.1
+dir /opt/mani
+== archivos compose
+total 24
+drwxr-xr-x 2 estudiante estudiante 4096 oct 17 15:45 .
+drwxr-xr-x 5 root       root       4096 sep 21 22:34 ..
+-rwxrwxr-x 1 estudiante estudiante 1128 oct 17 15:45 check-qa.sh
+-rwxrwxr-x 1 estudiante estudiante  346 oct 17 15:38 deploy-qa.sh
+-rw-rw-r-- 1 estudiante estudiante 2183 oct 17 15:41 docker-compose.qa.yml
+== compose ps
+no configuration file provided: not found
+== imagen, revision y health por contenedor
+/mani-core-service | ghcr.io/trama-as/mani-node:staging | rev=6ca27ab19629dd2127685f968aa0801446e5ea67 | creada=2026-10-17T21:02:27.985Z | sin-healthcheck | inicio=2026-10-17T21:03:30.437363222Z | restarts=0
+/mani-api-gateway | ghcr.io/trama-as/mani-apigateway:staging | rev=6b475f9ef43e1129c9f6a64e43c3c36f8d7f81ce | creada=2026-10-17T20:31:44.251Z | sin-healthcheck | inicio=2026-10-17T20:41:20.104804078Z | restarts=0
+/mani-landing-web | ghcr.io/trama-as/mani-landing:staging | rev=c015164b8ec24f7f713dd1b6d2eeeb08988e3e50 | creada=2026-10-17T20:30:50.117Z | sin-healthcheck | inicio=2026-10-17T20:41:19.437993007Z | restarts=0
+/mani-flutter-web | ghcr.io/trama-as/mani-flutter:staging | rev=5e7135899144ea7fce61de2d0f5270a7272eb1df | creada=2026-10-17T20:35:01.928Z | sin-healthcheck | inicio=2026-10-17T20:41:17.863423906Z | restarts=0
+/mani-rules-service | ghcr.io/trama-as/mani-java:staging | rev=f8582aaef4f218875c6c84475726085dd7b098f7 | creada=2026-10-17T20:32:43.775Z | sin-healthcheck | inicio=2026-10-17T20:41:19.000438275Z | restarts=0
+/mani-dispatch-service | ghcr.io/trama-as/mani-dotnet:staging | rev=e40f84ecd147d87a6749178c87815efad0f9c721 | creada=2026-10-17T20:32:16.510Z | sin-healthcheck | inicio=2026-10-17T20:41:17.482348569Z | restarts=0
+== digests
+ghcr.io/trama-as/mani-apigateway:staging sha256:de3e8ff2687c5cd3b6f6047f3e2938478aee05e81f1e4b9b36a06c1c68a3fda8 44 hours ago
+ghcr.io/trama-as/mani-node:staging sha256:59c41531bbf0008ab3bea0a4db5d84101b1b4b95a44987025caedec95a20c49f 44 hours ago
+ghcr.io/trama-as/mani-flutter:staging sha256:ff9870174fad505232cc212da02a23600c2e402f2bb5ebd19c44b457716b8e9f 45 hours ago
+ghcr.io/trama-as/mani-java:staging sha256:1af338ba68accfaa6b52b087a40fa895e2765cb291fc2f030c3c50502fc37d20 45 hours ago
+ghcr.io/trama-as/mani-dotnet:staging sha256:2f3caa2aefe6ebc372dea01632b1251fc371c4c89bce9023413c016230a17b42 45 hours ago
+ghcr.io/trama-as/mani-landing:staging sha256:505d06d0fcb2478bc8ae9aba45239028fae4f60b7f40606b2cb7a7ac784fa601 45 hours ago
+== claves relevantes del compose (sin valores de entorno)
+-- docker-compose.qa.yml
+1:services:
+2:  gateway:
+3:    image: ghcr.io/trama-as/mani-apigateway:staging
+6:    ports:
+7:      - "80:80"
+8:    networks:
+10:    depends_on:
+15:  core-service:
+16:    image: ghcr.io/trama-as/mani-node:staging
+20:    environment:
+22:      NODE_ENV: staging
+31:    expose:
+33:    networks:
+36:  rules-service:
+37:    image: ghcr.io/trama-as/mani-java:staging
+41:    environment:
+43:      SPRING_PROFILES_ACTIVE: staging
+44:    expose:
+46:    networks:
+49:  dispatch-service:
+50:    image: ghcr.io/trama-as/mani-dotnet:staging
+54:    environment:
+56:      ASPNETCORE_ENVIRONMENT: Staging
+57:    expose:
+59:    networks:
+62:  flutter-web:
+63:    image: ghcr.io/trama-as/mani-flutter:staging
+66:    ports:
+67:      - "8080:80"
+68:    networks:
+71:  landing-web:
+72:    image: ghcr.io/trama-as/mani-landing:staging
+75:    ports:
+76:      - "3001:80"
+77:    networks:
+80:networks:
+81:  mani-network:
+82:    driver: bridge
+== observabilidad o kafka corriendo
+ninguno
+== variables (definida/vacia, sin valor)
+-- mani-core-service
+NODE_ENV=staging
+SUPABASE_JWT_SECRET=definida
+JWT_SECRET=VACIA
+SUPABASE_URL=definida
+SUPABASE_SERVICE_ROLE_KEY=definida
+DATABASE_URL=definida
+== log gateway (ultimas 8)
+contenedor=mani-api-gateway

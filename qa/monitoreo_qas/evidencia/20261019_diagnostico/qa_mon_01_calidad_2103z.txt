@@ -1,0 +1,92 @@
+== host
+NBIG02
+2026-10-19T21:03:25Z
+== k6
+k6 no instalado
+== newman/node
+6.2.3
+v20.20.2
+== runners
+newman
+playwright
+== health via gateway QA
+/health 200 0.003154s
+/api/v1/core/health 200 0.005285s
+/api/v1/rules/health 200 0.023611s
+/api/v1/dispatch/health 200 0.036496s
+== cuerpos health
+/health: {"status":"UP","gateway":"MANI-APIGateway","timestamp":"2026-10-19T21:03:28+00:00"}
+/api/v1/core/health: {"status":"UP","service":"MANI-Core-Node","timestamp":"2026-10-19T21:03:28.292Z","correlationId":"qa-mon-01-diag"}
+/api/v1/rules/health: {"service":"MANI-Rules-Java","correlationId":"qa-mon-01-diag","status":"UP","timestamp":"2026-10-19T21:03:28.336336413Z"}
+/api/v1/dispatch/health: {"status":"UP","service":"MANI-Dispatch-DotNet","timestamp":"2026-10-19T21:03:28.3819615Z","correlationId":"qa-mon-01-diag"}
+
+== 401 perimetral
+HTTP/1.1 401 Unauthorized
+Server: nginx/1.31.7
+Content-Type: application/json
+Content-Length: 157
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug
+X-Correlation-ID: qa-mon-01-diag-401
+
+{"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-mon-01-diag-401"}
+
+== dev-token (solo codigo HTTP, el cuerpo se descarta)
+200
+== puertos QA
+22 abierto
+80 abierto
+3001 abierto
+8080 abierto
+3000 cerrado
+5000 cerrado
+9092 cerrado
+9093 cerrado
+2181 cerrado
+9090 cerrado
+9100 cerrado
+8081 cerrado
+3100 cerrado
+8126 cerrado
+== colecciones y reportes
+total 128
+drwxr-xr-x 2 estudiante estudiante  4096 oct 17 16:52 .
+drwxr-xr-x 3 estudiante estudiante  4096 oct 17 16:52 ..
+-rw-rw-r-- 1 estudiante estudiante 83669 oct 17 16:52 mani-aislamiento.postman_collection.json
+-rw-rw-r-- 1 estudiante estudiante 25226 oct 17 16:52 mani-claims.postman_collection.json
+-rw-rw-r-- 1 estudiante estudiante  5561 oct 17 16:52 qa-health-contract.json
+qa-perimeter.spec.js
+/opt/quality/reports:
+total 16
+drwxr-xr-x 4 estudiante estudiante 4096 oct 17 17:53 .
+drwxr-xr-x 6 estudiante estudiante 4096 oct 17 16:54 ..
+drwxr-xr-x 2 estudiante estudiante 4096 oct 17 16:52 newman
+drwxrwxr-x 4 estudiante estudiante 4096 oct 17 17:53 playwright
+
+/opt/quality/reports/newman:
+total 176
+drwxr-xr-x 2 estudiante estudiante   4096 oct 17 16:52 .
+drwxr-xr-x 4 estudiante estudiante   4096 oct 17 17:53 ..
+-rw-rw-r-- 1 estudiante estudiante 120114 oct 17 17:53 qa-contract-report.html
+-rw-rw-r-- 1 estudiante estudiante  45765 oct 17 17:53 qa-contract-report.json
+
+/opt/quality/reports/playwright:
+total 544
+drwxrwxr-x 4 estudiante estudiante   4096 oct 17 17:53 .
+drwxr-xr-x 4 estudiante estudiante   4096 oct 17 17:53 ..
+drwxrwxr-x 2 estudiante estudiante   4096 oct 17 17:53 data
+-rw-rw-r-- 1 estudiante estudiante 521248 oct 17 17:53 index.html
+-rw-rw-r-- 1 estudiante estudiante  12733 oct 17 17:53 results.json
+drwxrwxr-x 3 estudiante estudiante   4096 oct 17 17:53 trace
+== recursos
+4
+               total        used        free      shared  buff/cache   available
+Mem:            11Gi       5,5Gi       2,2Gi       119Mi       3,9Gi       5,7Gi
+/dev/sda2        68G   24G   41G  37% /
+ulimit -n 1024
+== docker en calidad
+quality-sonarqube	sonarqube:community	Up 47 hours
+quality-sonar-db	postgres:15-alpine	Up 47 hours (healthy)
+== fin calidad

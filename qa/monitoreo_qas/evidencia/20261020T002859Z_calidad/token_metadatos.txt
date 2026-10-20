@@ -1,0 +1,2 @@
+token_ok alg=HS256 tenant_id=10000000-0000-4000-8000-000000000021 user_role=cliente vigencia_s=7200
+fuente_token=dev_token archivo=/home/estudiante/.mani_qa/token.txt

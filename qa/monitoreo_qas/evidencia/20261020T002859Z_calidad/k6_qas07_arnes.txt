@@ -1,0 +1,2 @@
+time="2026-10-19T19:35:55-05:00" level=info msg="ganador vu=4 aliado=qa1266-aliado-4" source=console
+QAS-07 modo=arnes solicitud=qa1266-1792456555135 n=50 -> 200=1 409=49 otros=0 reintento_200=0

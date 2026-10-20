@@ -1,0 +1,26 @@
+
+== contexto
+host=NBIG02 fecha_utc=2026-10-20T00:29:05Z base_url=http://10.43.100.141
+
+== healthchecks por el Gateway (ruta codigo tiempo correlation_devuelto)
+/health 200 0.001663s correlation_propagado=si
+/api/v1/core/health 200 0.004763s correlation_propagado=no
+/api/v1/rules/health 200 0.013851s correlation_propagado=si
+/api/v1/dispatch/health 200 0.005575s correlation_propagado=no
+
+== rechazo perimetral sin token
+{"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-mon-401"} HTTP=401
+
+== puertos de QA (aplicacion, Kafka y observabilidad)
+80 gateway abierto
+3001 landing abierto
+8080 flutter_web abierto
+9092 kafka cerrado
+9093 kafka_controller cerrado
+2181 zookeeper cerrado
+9090 prometheus cerrado
+3000 grafana cerrado
+9100 node_exporter cerrado
+8081 cadvisor cerrado
+3100 loki cerrado
+8126 datadog_apm cerrado

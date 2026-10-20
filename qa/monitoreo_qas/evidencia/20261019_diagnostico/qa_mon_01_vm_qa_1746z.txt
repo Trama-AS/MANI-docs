@@ -1,0 +1,118 @@
+== host
+NBIG438
+2026-10-19T17:46:09Z
+== compose ps
+NAME                    IMAGE                                                                     COMMAND                  SERVICE            CREATED        STATUS        PORTS
+mani-api-gateway        sha256:8eed09624bd77aa760df079b697048652eedc9408692d09e4b495dc294b95fa7   "/docker-entrypoint.…"   gateway            45 hours ago   Up 45 hours   0.0.0.0:80->80/tcp, [::]:80->80/tcp
+mani-core-service       ghcr.io/trama-as/mani-node:staging                                        "docker-entrypoint.s…"   core-service       45 hours ago   Up 45 hours   3000/tcp
+mani-dispatch-service   ghcr.io/trama-as/mani-dotnet:staging                                      "dotnet Mani.Dispatc…"   dispatch-service   45 hours ago   Up 45 hours   5000/tcp
+mani-flutter-web        ghcr.io/trama-as/mani-flutter:staging                                     "/docker-entrypoint.…"   flutter-web        45 hours ago   Up 45 hours   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+mani-landing-web        ghcr.io/trama-as/mani-landing:staging                                     "/docker-entrypoint.…"   landing-web        45 hours ago   Up 45 hours   0.0.0.0:3001->80/tcp, [::]:3001->80/tcp
+mani-rules-service      ghcr.io/trama-as/mani-java:staging                                        "java -jar app.jar"      rules-service      45 hours ago   Up 45 hours   8080/tcp
+== procesos en el gateway (busca un tail huerfano de la vuelta anterior)
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                218962              218901              0                   oct17               ?                   00:00:00            nginx: master process nginx -g daemon off;
+systemd+            224684              218962              0                   oct17               ?                   00:00:00            nginx: worker process
+systemd+            224685              218962              0                   oct17               ?                   00:00:00            nginx: worker process
+systemd+            224686              218962              0                   oct17               ?                   00:00:00            nginx: worker process
+systemd+            224687              218962              0                   oct17               ?                   00:00:00            nginx: worker process
+root                450867              218901              0                   12:20               ?                   00:00:00            tail -n 8 /var/log/nginx/access.log
+== scripts de operacion (sin lineas con secretos)
+-- check-qa.sh
+#!/usr/bin/env bash
+echo "=========================================================="
+echo "          ESTADO DE SALUD DEL AMBIENTE QA (10.43.100.141)"
+echo "=========================================================="
+
+echo -e "\n1. Contenedores en ejecucion:"
+docker compose -f /opt/mani/docker-compose.qa.yml ps
+
+echo -e "\n2. Verificacion de Endpoints:"
+endpoints=(
+    "Gateway Health|http://localhost/health"
+    "Core Service Health|http://localhost/api/v1/core/health"
+    "Rules Service Health|http://localhost/api/v1/rules/health"
+    "Dispatch Service Health|http://localhost/api/v1/dispatch/health"
+    "Flutter Web|http://localhost:8080/"
+    "Landing Web|http://localhost:3001/"
+)
+
+for item in "${endpoints[@]}"; do
+    IFS="|" read -r name url <<< "$item"
+    code=$(curl -s -o /dev/null -w "%{http_code}" -m 5 "$url")
+    body=$(curl -s -m 5 "$url" | head -c 90 | tr '\n' ' ')
+    if [ "$code" == "200" ]; then
+        echo -e "  [\e[32m$code OK\e[0m] $name -> $body"
+    else
+        echo -e "  [\e[31m$code FAIL\e[0m] $name -> $body"
+    fi
+done
+echo "=========================================================="
+-- deploy-qa.sh
+#!/usr/bin/env bash
+set -e
+cd /opt/mani
+echo "== Pulling latest images =="
+docker compose -f docker-compose.qa.yml --env-file .env.qa pull
+echo "== Recreating containers =="
+docker compose -f docker-compose.qa.yml --env-file .env.qa down --remove-orphans || true
+docker compose -f docker-compose.qa.yml --env-file .env.qa up -d
+echo "== Done =="
+== log gateway: peticiones de diagnostico
+== log gateway: ultimas 5
+{"time_local": "17/Oct/2026:22:53:26 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/api/v1/rules/health","status": "200","body_bytes_sent": "129","request_time": "0.006","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-qa-smoke"}
+{"time_local": "17/Oct/2026:22:53:27 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/api/v1/dispatch/health","status": "200","body_bytes_sent": "132","request_time": "0.003","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-qa-smoke"}
+{"time_local": "17/Oct/2026:22:53:27 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "150","request_time": "0.003","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-qa-smoke"}
+{"time_local": "17/Oct/2026:22:53:27 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/health","status": "200","body_bytes_sent": "83","request_time": "0.000","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-trace-verification-id"}
+{"time_local": "17/Oct/2026:22:53:29 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/health","status": "200","body_bytes_sent": "83","request_time": "0.000","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-qa-smoke"}
+== log gateway: conteo por status ultimas 24h
+== log gateway: rutas protegidas rules/dispatch ultimas 48h
+{"time_local": "17/Oct/2026:21:14:59 +0000","remote_addr": "172.18.0.1","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "171","request_time": "0.004","http_referrer": "","http_user_agent": "Python-urllib/3.10","x_correlation_id": ""}
+{"time_local": "17/Oct/2026:21:14:59 +0000","remote_addr": "172.18.0.1","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "171","request_time": "0.004","http_referrer": "","http_user_agent": "Python-urllib/3.10","x_correlation_id": ""}
+{"time_local": "17/Oct/2026:21:14:59 +0000","remote_addr": "172.18.0.1","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "171","request_time": "0.004","http_referrer": "","http_user_agent": "Python-urllib/3.10","x_correlation_id": ""}
+{"time_local": "17/Oct/2026:21:14:59 +0000","remote_addr": "172.18.0.1","request_method": "POST","request_uri": "/api/v1/dispatch/match","status": "200","body_bytes_sent": "457","request_time": "0.059","http_referrer": "","http_user_agent": "Python-urllib/3.10","x_correlation_id": ""}
+{"time_local": "17/Oct/2026:21:52:32 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "153","request_time": "0.002","http_referrer": "","http_user_agent": "PostmanRuntime/7.39.1","x_correlation_id": "newman-test-c5"}
+{"time_local": "17/Oct/2026:21:53:57 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "150","request_time": "0.004","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-qa-smoke"}
+{"time_local": "17/Oct/2026:22:53:11 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "153","request_time": "0.002","http_referrer": "","http_user_agent": "PostmanRuntime/7.39.1","x_correlation_id": "newman-test-c5"}
+{"time_local": "17/Oct/2026:22:53:27 +0000","remote_addr": "10.43.98.196","request_method": "POST","request_uri": "/api/v1/rules/evaluate-rate","status": "401","body_bytes_sent": "150","request_time": "0.003","http_referrer": "","http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36","x_correlation_id": "pw-qa-smoke"}
+== log mani-core-service (ultimas 8)
+[2026-10-17T21:52:32.297Z] [GET] /health - Correlation: newman-test-c2
+[2026-10-17T21:52:32.413Z] [GET] /api/v1/auth/validate-token - Correlation: newman-test-c5
+[2026-10-17T21:53:56.946Z] [GET] /health - Correlation: pw-qa-smoke
+[2026-10-17T21:53:57.141Z] [GET] /api/v1/auth/validate-token - Correlation: pw-qa-smoke
+[2026-10-17T22:53:11.002Z] [GET] /health - Correlation: newman-test-c2
+[2026-10-17T22:53:11.115Z] [GET] /api/v1/auth/validate-token - Correlation: newman-test-c5
+[2026-10-17T22:53:26.904Z] [GET] /health - Correlation: pw-qa-smoke
+[2026-10-17T22:53:27.111Z] [GET] /api/v1/auth/validate-token - Correlation: pw-qa-smoke
+== log mani-rules-service (ultimas 8)
+2026-10-17 20:41:23 [main] INFO  o.a.catalina.core.StandardEngine - [Correlation: ] Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-10-17 20:41:23 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - [Correlation: ] Initializing Spring embedded WebApplicationContext
+2026-10-17 20:41:23 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - [Correlation: ] Root WebApplicationContext: initialization completed in 1683 ms
+2026-10-17 20:41:23 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - [Correlation: ] Tomcat started on port 8080 (http) with context path '/'
+2026-10-17 20:41:24 [main] INFO  c.t.mani.rules.ManiRulesApplication - [Correlation: ] Started ManiRulesApplication in 3.176 seconds (process running for 4.608)
+2026-10-17 20:41:51 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - [Correlation: ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-17 20:41:51 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - [Correlation: ] Initializing Servlet 'dispatcherServlet'
+2026-10-17 20:41:51 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - [Correlation: ] Completed initialization in 1 ms
+== log mani-dispatch-service (ultimas 8)
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://[::]:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Staging
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /app
+== stats
+CONTAINER ID   NAME                    CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O        PIDS
+dad8ed4d2767   mani-core-service       0.00%     2.863MiB / 11.63GiB   0.02%     61.6kB / 25kB     963kB / 11.9MB   7
+ed76c6690656   mani-api-gateway        0.00%     1.461MiB / 11.63GiB   0.01%     140kB / 124kB     57.3kB / 4.4MB   6
+6308046968b3   mani-landing-web        0.00%     1.551MiB / 11.63GiB   0.01%     45.3kB / 13.8kB   0B / 3.79MB      5
+10a17d084d17   mani-flutter-web        0.00%     1.625MiB / 11.63GiB   0.01%     58.9kB / 3.41MB   0B / 3.63MB      5
+ded2417a8b03   mani-rules-service      0.21%     5.812MiB / 11.63GiB   0.05%     53.7kB / 10.2kB   745kB / 263MB    39
+836ecc67e7e9   mani-dispatch-service   0.01%     5.469MiB / 11.63GiB   0.05%     51.9kB / 8.35kB   0B / 65.4MB      16
+== recursos
+4
+               total        used        free      shared  buff/cache   available
+Mem:            11Gi       5,1Gi       1,9Gi        84Mi       4,6Gi       6,4Gi
+/dev/sda2        68G   24G   42G  37% /
+== fin qa 2

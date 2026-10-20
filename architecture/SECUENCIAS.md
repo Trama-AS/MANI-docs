@@ -195,7 +195,7 @@ database "Supabase Rules\n[PostgreSQL + RLS]" as DbRules
 database "Supabase Core\n[PostgreSQL + RLS]" as DbCore
 
 Aliado -> App: elabora la cotización\n(mano de obra + materiales)
-App -> GW: POST /api/v1/cotizaciones
+App -> GW: POST /api/v1/core/cotizaciones
 GW -> Core: enruta tras validar el token
 activate Core
 
@@ -261,7 +261,7 @@ database "Supabase Core\n[PostgreSQL + RLS]" as DbCore
 == Carga ==
 
 Aliado -> App: carga los documentos requeridos
-App -> GW: POST /api/v1/aliados/{id}/documentos
+App -> GW: POST /api/v1/core/aliados/{id}/documentos
 GW -> Core: enruta tras validar el token
 activate Core
 
@@ -277,20 +277,20 @@ App --> Aliado: documentación recibida
 == Verificación ==
 
 Admin -> App: revisa la documentación del aliado
-App -> GW: GET /api/v1/aliados/{id}/documentos
+App -> GW: GET /api/v1/core/aliados/{id}/documentos
 GW -> Core: enruta
 Core -> Storage: URL firmada y temporal del documento
 Core --> App: documentos para revisión
 
 alt documentación completa y válida
     Admin -> App: aprueba al aliado (RF-06)
-    App -> GW: PATCH /api/v1/aliados/{id}\nestado = "aprobado"
+    App -> GW: PATCH /api/v1/core/aliados/{id}\nestado = "aprobado"
     GW -> Core: enruta
     Core -> DbCore: marca al aliado como habilitado
     note right of Core: solo desde aquí el aliado\nentra en los listados de despacho
 else documentación incompleta o ilegible
     Admin -> App: rechaza indicando el motivo
-    App -> GW: PATCH /api/v1/aliados/{id}\nestado = "rechazado"
+    App -> GW: PATCH /api/v1/core/aliados/{id}\nestado = "rechazado"
     GW -> Core: enruta
     Core -> DbCore: registra el rechazo y el motivo
 end
@@ -332,7 +332,7 @@ participant "Supabase Realtime" as RT
 participant "FCM / APNs" as Push
 
 Cliente -> App: escribe un mensaje del servicio
-App -> GW: POST /api/v1/servicios/{id}/mensajes
+App -> GW: POST /api/v1/core/servicios/{id}/mensajes
 GW -> Core: enruta tras validar el token
 activate Core
 
@@ -351,7 +351,7 @@ else destinatario no conectado
     Core -> Push: solicita la notificación push (RF-21)
     Push --> Aliado: notificación en el dispositivo
     Aliado -> App: abre la aplicación
-    App -> GW: GET /api/v1/servicios/{id}/mensajes
+    App -> GW: GET /api/v1/core/servicios/{id}/mensajes
     GW -> Core: enruta
     Core -> DbCore: lee la conversación
     Core --> App: historial de mensajes

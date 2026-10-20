@@ -15,7 +15,7 @@
 
 Conforme a la decisión formal adoptada en **ADR-0019** y el **Documento de Arquitectura de Software (SAD V3)**, el ecosistema **MANI** opera bajo una **arquitectura orientada a servicios (SOA) distribuida, multi-tenant y políglota**, organizada bajo una estrategia **multi-repositorio**.
 
-El sistema desacopla la capa de presentación de la lógica de negocio y la persistencia, estableciendo a **`MANI-API-Gateway` (NGINX)** como la **única frontera de entrada** para el cliente frontend (**`MANI-Frontend`**) y coordinando los microservicios backend especializados (**`MANI-Core-Service`**, **`MANI-Rules-Service`**, **`MANI-Dispatch-Service`**).
+El sistema desacopla la capa de presentación de la lógica de negocio y la persistencia, estableciendo a **`MANI-API-Gateway` (NGINX)** como la **única frontera de entrada** para el cliente frontend (**`MANI-Frontend`**) y coordinando los servicios backend especializados (**`MANI-Core-Service`**, **`MANI-Rules-Service`**, **`MANI-Dispatch-Service`**).
 
 ---
 
@@ -59,7 +59,7 @@ El sistema desacopla la capa de presentación de la lógica de negocio y la pers
 | **`MANI-API-Gateway`** | NGINX | Entrada & Proxy | `80` (Host) | Enrutamiento, CORS, trazabilidad (`X-Correlation-ID`) y balanceo. |
 | **`MANI-Core-Service`** | Node.js / Express | Core Backend | `3000` (Interno) | Gestión de usuarios, perfiles, tenants, KYC, catálogos e historial. |
 | **`MANI-Rules-Service`** | Java 17 / Spring Boot | Motor de Reglas | `8080` (Interno) | Evaluación de reglas por tenant, validación de tarifas y ranking de aliados. |
-| **`MANI-Dispatch-Service`**| C# / .NET 8 | Despacho | `5000` (Interno) | Algoritmo de cercanía geográfica y **exclusión concurrente atómica**. |
+| **`MANI-Dispatch-Service`**| C# / .NET 8 | Despacho | `5000` (Interno) | Selección de aliados elegibles por categoría y coincidencia exacta de zona, sin radio ni proximidad (REST-01, RNF-09, ADR-0011), y **exclusión concurrente atómica**. |
 | **`MANI-Docs`** | Markdown / Git | Documentación | N/A | Repositorio central de ADRs, SAD, SDD, Gobierno y manuales técnicos. |
 
 ---
@@ -143,7 +143,7 @@ El token portador emitido por Supabase Auth y validado en el ecosistema MANI con
 
 #### 4.1.3 Validación Perimetral y Reglas de Propagación
 * **Validación en el API Gateway:** Todas las rutas protegidas (`/api/v1/core/*`, `/api/v1/rules/*`, `/api/v1/dispatch/*`) ejecutan una subpetición interna de validación (`auth_request /_auth_validate`) contra el servicio Core antes de permitir el paso del tráfico.
-* **Rechazo Inmediato:** Peticiones sin encabezado `Authorization: Bearer <JWT>`, con token expirado/inválido o **sin claim obligatorio `tenant_id`** son rechazadas directamente en el Gateway con HTTP **`401 Unauthorized`**, sin alcanzar jamás a los microservicios backend.
+* **Rechazo Inmediato:** Peticiones sin encabezado `Authorization: Bearer <JWT>`, con token expirado/inválido o **sin claim obligatorio `tenant_id`** son rechazadas directamente en el Gateway con HTTP **`401 Unauthorized`**, sin alcanzar jamás a los servicios backend.
 * **Propagación Confiable de Claims (Token Relay):** Tras validar el token criptográficamente y verificar que contiene `app_metadata.tenant_id` y `user_role`, el Gateway inyecta los encabezados autenticados limpios hacia los microservicios aguas abajo:
   - `X-Tenant-Id: <tenant_id>`
   - `X-User-Role: <user_role>`
@@ -153,7 +153,7 @@ El token portador emitido por Supabase Auth y validado en el ecosistema MANI con
 
 ### 4.2 Trazabilidad Distribuida con Correlation ID
 * Si el cliente no suministra un encabezado `X-Correlation-ID`, NGINX genera automáticamente un identificador único por petición.
-* Este identificador se propaga en los encabezados HTTP hacia los microservicios backend y se registra en los logs de auditoría para permitir la depuración distribuida de transacciones (*RNF-07*).
+* Este identificador se propaga en los encabezados HTTP hacia los servicios backend y se registra en los logs de auditoría para permitir la depuración distribuida de transacciones (*RNF-04*).
 
 ### 4.3 Semántica de Respuestas y Manejo de Errores
 * Todas las comunicaciones emplean `application/json; charset=utf-8`.

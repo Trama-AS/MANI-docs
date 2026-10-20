@@ -171,9 +171,9 @@ reglas de       despacho y      servicios funcionales
 negocio         asignación      de la plataforma
 ```
 
-- **MANI-Rules-Service — decide.** Un único servicio: evalúa si una condición de negocio se cumple. Ranking, elegibilidad, requisitos KYC, tarifarios y reglas por tenant. No es un backend general.
+- **MANI-Rules-Service — decide.** Un único servicio: evalúa si una condición de negocio se cumple. Ranking, requisitos KYC, tarifarios y reglas por tenant. La elegibilidad la resuelve Core (SAD §4.2.1 y §7.3); Rules aporta el orden del listado, no quién es elegible. No es un backend general.
 - **MANI-Dispatch-Service — asigna.** Un único servicio: selecciona aliados válidos, asigna, controla estados y exclusiones. Consume Rules antes de asignar; no reimplementa las reglas.
-- **MANI-Core-Service — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, solicitudes, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación.
+- **MANI-Core-Service — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación. Las solicitudes son de Dispatch (SAD §4.2.1, `despacho.solicitud` en ModeloDatos §13).
 
 El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnología debe justificar su existencia, mantener contratos estables y cumplir los mismos criterios de seguridad, observabilidad, pruebas y despliegue.
 
@@ -239,8 +239,16 @@ leer sin abrir las imágenes.
 > | La imagen muestra | El modelo dice |
 > |---|---|
 > | `Availability Service` como contenedor propio | no existe: la disponibilidad es un dominio del Core Service |
-> | grupos `MANI-Core-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet` | `MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service` |
-> | `Core Services`, en plural | `Core Service` |
+> | `dinamico-aceptacion` recortado por el borde derecho | el modelo no fija tamaños; es el límite del renderizador |
+>
+> **Lo que el aviso decía mal.** Los grupos `MANI-Core-Node`, `MANI-Rules-Java` y
+> `MANI-Dispatch-DotNet` y el contenedor `Core Services` **no son un resto de las imágenes: están
+> así en el `workspace.dsl` vigente** (`diagrams/c4/workspace.dsl:76,91,106,108`). Son los nombres
+> que fija [ADR-0004](../adr/ADR-0004-cicd-multirepo-ambientes.md), hoy el único ADR `Aceptado` que
+> los define. Los nombres `MANI-Core-Service`, `MANI-Rules-Service` y `MANI-Dispatch-Service` que
+> usan §13 y el SAD §17 vienen de [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md),
+> que está `Propuesto`. **Alinear DSL y documentos queda pendiente de que la Mesa apruebe
+> ADR-0028**; hasta entonces la discrepancia es de gobernanza, no un error del modelo.
 > | `dinamico-aceptacion` cita ADR-0021 | ADR-0021 está `Superseded` por ADR-0016 |
 >
 > **Además, una exportación sigue cortada por el borde derecho**, con nodos partidos a media
@@ -806,7 +814,7 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 | **QAS-02** | **Fiabilidad** | **Tolerancia a fallos** | P1 | Proveedor externo de notificaciones | FCM/APNs deja de responder después de confirmarse una operación de negocio | QA con dependencia externa degradada o indisponible, simulada mediante un adaptador de prueba | Core Service, Notification Component y adaptador externo | La operación principal permanece confirmada y la notificación queda disponible para reintento controlado | **0 operaciones confirmadas revertidas únicamente por fallo de notificación** | QA simula timeout, error y caída del proveedor con un adaptador de prueba; tras cada fallo verifica el estado final de la operación, la persistencia del evento de notificación, los logs con correlation ID y la ejecución del mecanismo de retry. Evidencia: registro de cada simulación con el estado final de la operación |
 | **QAS-03** | **Eficiencia de desempeño** | **Comportamiento temporal** | P1 | Usuario o servicio consumidor | Consulta disponibilidad de aliados por categoría y zona | QA bajo carga nominal: 300 sesiones concurrentes y 50 req/s sostenidos (sección 7.4) | API Gateway, Core Service (dominio de disponibilidad), persistencia y componentes involucrados en la consulta | El sistema retorna candidatos elegibles dentro del tiempo objetivo | **p95 ≤ 500 ms** para la consulta bajo carga nominal | QA ejecuta un escenario k6 propio de la consulta por categoría y zona con la carga nominal sostenida, registra los tiempos de respuesta del endpoint y calcula el percentil 95; el escenario se aprueba si el p95 permanece dentro del umbral. El resultado declara el camino medido (Gateway → Core Service, dominio de disponibilidad, o, mientras rija la excepción de la sección 2.1, acceso directo a Supabase), la carga, el ambiente y la fecha, y no se extrapola desde otro escenario |
 | **QAS-04** | **Mantenibilidad** | **Capacidad para ser modificado** | P1 | Equipo de desarrollo | Modifica una regla de ranking o comportamiento configurable de un tenant manteniendo el contrato externo | DEV y QA | Rules Service (estrategias de ranking, tarifa y KYC por tenant), su configuración y los contratos de integración | El cambio se implementa solo en Rules Service y su configuración, sin exigir modificaciones en consumidores externos compatibles | **0 cambios obligatorios en Flutter, Gateway, Dispatch ni en otros servicios consumidores de Rules para un cambio interno compatible** | QA ejecuta pruebas de regresión, integración y contract tests (Newman); toma el PR del cambio y verifica por su diff que solo toca Rules Service y su configuración, y que los consumidores existentes continúan operando sin modificaciones derivadas del cambio. Evidencia: enlace al PR y reporte de contract tests |
-| **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad objetivo de las réplicas actuales | Kubernetes en QA bajo carga controlada | Deployment, HPA y servicio crítico contenerizado (Rules, Dispatch o Core) | La plataforma incrementa horizontalmente la capacidad del servicio cuando la utilización sostenida de CPU por pod supera el 70% (sección 7.4), sin modificar código ni reconstruir el artefacto | **Escalamiento de 2 a 6 réplicas sin cambio de código** | QA genera carga progresiva con k6 y monitorea réplicas, CPU, memoria, latencia, errores y continuidad del servicio mediante Kubernetes y la plataforma de observabilidad (Prometheus/Grafana); verifica que el servicio escala de 2 a 6 réplicas con la misma imagen. Evidencia: gráficas de réplicas y CPU junto con la configuración del HPA |
+| **QAS-05** | **Flexibilidad** | **Escalabilidad** | P1 | Incremento de demanda del sistema | La carga de un servicio crítico supera la capacidad objetivo de las réplicas actuales | Kubernetes en QA bajo carga controlada — **Abierto, pendiente de DevOps (INFRA-01, INFRA-02; issue #…)**: sin clúster, el escenario no es medible | Deployment, HPA y servicio crítico contenerizado (Rules, Dispatch o Core) | La plataforma incrementa horizontalmente la capacidad del servicio cuando la utilización sostenida de CPU por pod supera el 70% (sección 7.4), sin modificar código ni reconstruir el artefacto | **Escalamiento de 2 a 6 réplicas sin cambio de código** | QA genera carga progresiva con k6 y monitorea réplicas, CPU, memoria, latencia, errores y continuidad del servicio mediante Kubernetes y la plataforma de observabilidad (Prometheus/Grafana); verifica que el servicio escala de 2 a 6 réplicas con la misma imagen. Evidencia: gráficas de réplicas y CPU junto con la configuración del HPA |
 | **QAS-06** | **Compatibilidad** | **Interoperabilidad** | P2 | Servicio interno o consumidor autorizado | Consume una API publicada por un servicio implementado en otra tecnología | QA de integración | APIs REST de los servicios publicadas por el API Gateway y sus contratos OpenAPI | Productor y consumidor intercambian información respetando el contrato publicado | **100% de APIs documentadas con OpenAPI y contract tests críticos aprobados antes de promoción** | QA contrasta las APIs publicadas por el Gateway con los contratos OpenAPI (cada API publicada debe tener el suyo), ejecuta contract tests y pruebas de integración/Newman entre servicios de distinta tecnología; valida códigos HTTP, payloads, tipos de datos, campos obligatorios y compatibilidad del contrato. Evidencia: tabla API ↔ contrato y reporte de contract tests |
 | **QAS-07** | **Adecuación funcional** | **Corrección funcional** | P2 | Usuarios o servicios que ejecutan reglas y operaciones críticas | Ejecutan escenarios críticos de ranking, tarifa, asignación o conflicto | QA con datos de prueba controlados | Rules Service, Dispatch Service y servicios involucrados | El sistema produce el resultado funcional definido para cada regla, asignación y transición de estado | **100% de escenarios críticos de ranking, tarifa, asignación y conflicto aprobados** | QA mantiene casos de prueba trazados a los requisitos críticos y verifica resultados esperados, estados persistidos, códigos de respuesta y reglas de negocio; para asignación y conflicto incluye la aceptación concurrente de una misma solicitud sobre Dispatch con k6 (una aceptación confirmada con 200, las demás con 409, 0 dobles asignaciones y reintentos idempotentes). Evidencia: matriz requisito ↔ caso y reporte de ejecución |
 | **QAS-08** | **Capacidad de interacción** | **Protección contra errores de usuario** | P2 | Usuario autorizado | Intenta ejecutar una acción irreversible o envía información inválida en un flujo crítico | Aplicación web/móvil en operación normal | Flutter (presentación) y servicio de dominio asociado al caso de uso, detrás del Gateway | El sistema previene la ejecución accidental mediante validación o confirmación y devuelve errores accionables; el servicio valida también las entradas y no depende solo del cliente | **100% de acciones irreversibles definidas requieren validación o confirmación previa** | QA recorre los flujos críticos de pantalla en Flutter con Maestro y prueba entradas inválidas, cancelaciones y acciones irreversibles; verifica validaciones, confirmaciones, mensajes y conservación del estado previo cuando la operación es rechazada, y comprueba con Newman que el servicio rechaza con error accionable las entradas inválidas enviadas sin pasar por la interfaz. Evidencia: reporte de Maestro y de Newman |
@@ -868,9 +876,9 @@ MANI adopta **tres ambientes de despliegue**. No se define un ambiente STAGING i
 | Ambiente | Objetivo | Infraestructura | Datos |
 |---|---|---|---|
 | Local | desarrollo individual | Docker Compose + Flutter + servicios + Supabase local | datos sintéticos |
-| DEV | integración continua temprana | Kubernetes con aislamiento lógico del ambiente | datos sintéticos |
-| QA | pruebas funcionales, integración, seguridad y validación previa a producción | Kubernetes con aislamiento lógico + instancia/base separada | dataset controlado y anonimizado |
-| PROD | operación real | Kubernetes productivo + Supabase productivo | datos reales |
+| DEV | integración continua temprana | Kubernetes con aislamiento lógico del ambiente — **Abierto, pendiente de DevOps (INFRA-01, INFRA-02; issue #…)**: hoy DEV corre en máquinas personales con Docker local (INFRAESTRUCTURA_MANI §25) | datos sintéticos |
+| QA | pruebas funcionales, integración, seguridad y validación previa a producción | Kubernetes con aislamiento lógico + instancia/base separada — **Abierto, pendiente de DevOps (INFRA-01, INFRA-02; issue #…)**: hoy Docker sobre una VM por ambiente | dataset controlado y anonimizado |
+| PROD | operación real | Kubernetes productivo + Supabase productivo — **Abierto, pendiente de DevOps (INFRA-01, INFRA-02; issue #…)**: hoy Docker sobre una VM por ambiente | datos reales |
 
 ### Reglas
 
@@ -1016,6 +1024,12 @@ GitHub / Organización MANI
 - la promoción entre ambientes preserva el mismo artefacto validado;
 - la estrategia multi-repo es una decisión explícita del proyecto (ADR-0004) y los nombres los fija [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md).
 
+> **Conflicto de gobernanza abierto — `MANI-Availability`.** [ADR-0004](../adr/ADR-0004-cicd-multirepo-ambientes.md)
+> está `Aceptado` y lo lista como repositorio del proyecto (`adr/ADR-0004:31`); el retiro lo propone
+> [ADR-0028](../adr/ADR-0028-nombres-repositorios-y-ambientes.md), que está `Propuesto`. El repositorio
+> no existe en la organización. **Mientras la Mesa no apruebe ADR-0028, este documento no declara el
+> retiro ejecutado**: lo registra como propuesto. Este párrafo y el punto de arriba se unifican en ese momento.
+>
 > **Pendiente de decisión — `MANI-Availability`.** Desde §4.3.3 la disponibilidad es un dominio interno de Core, no un servicio desplegable, así que ese repositorio ya no corresponde a ningún artefacto desplegable propio. La lista de repositorios la fija [ADR-0004](../adr/ADR-0004-cicd-multirepo-ambientes.md), de modo que retirarlo o reconvertirlo en librería compartida exige un ADR nuevo que lo supersede, no una edición de este documento. Mientras tanto el repositorio queda declarado aquí tal como lo definió esa decisión.
 
 ---
@@ -1047,31 +1061,31 @@ DEV/QA → base de datos PROD
 
 # 15. Decisiones arquitectónicas principales
 
-## ADR-001 — SOA
+## DA-01 — SOA
 
 **Decisión:** organizar capacidades del negocio como servicios.  
 **Motivo:** modificabilidad, interoperabilidad y separación de responsabilidades.  
 **Costo:** mayor complejidad operacional y de observabilidad.
 
-## ADR-002 — API Gateway
+## DA-02 — API Gateway
 
 **Decisión:** NGINX como frontera única de API.  
 **Motivo:** centralizar políticas transversales sin replicarlas en clientes.  
 **Costo:** componente crítico que debe ser redundante.
 
-## ADR-003 — Arquitectura políglota
+## DA-03 — Arquitectura políglota
 
 **Decisión:** Java, .NET y Node.js según dominio.  
 **Motivo:** aprovechar componentes especializados y permitir evolución independiente.  
 **Costo:** más toolchains, imágenes, skills y pipelines.
 
-## ADR-004 — Propiedad de datos por dominio
+## DA-04 — Propiedad de datos por dominio
 
 **Decisión:** cada servicio modifica únicamente su propio modelo de persistencia.  
 **Motivo:** reducir acoplamiento.  
 **Costo:** algunas consultas requieren APIs, eventos o modelos analíticos.
 
-## ADR-005 — Data Warehouse separado
+## DA-05 — Data Warehouse separado
 
 **Decisión:** analítica fuera de OLTP.  
 **Motivo:** evitar que reporting degrade transacciones.  

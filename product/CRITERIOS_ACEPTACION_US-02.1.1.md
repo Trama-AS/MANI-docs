@@ -37,7 +37,7 @@ Autoridad de decisión (`governance/GOBIERNO_DEL_EQUIPO.md`, sección 2.3): el P
 | `AGENTS.md` y `CLAUDE.md` de `MANI-Flutter` (`develop`), `MANI-Node`, `MANI-APIGateway`, `MANI-Java` y `MANI-.NET` | Leídos en su rama vigente | `MANI-docs` no tiene esos archivos. Fijan lo siguiente: el Gateway reenvía el JWT sin validarlo (PA-16); el error del Core es `{ error, code?, correlationId }`; el servicio de reglas se encarga de las reglas por tenant (RF-02, PA-03); Flutter hace PR a `develop` o `release`; ninguno menciona Availability ni un repo de infraestructura |
 | Jira | Leído en línea el 6 de octubre, sin escrituras | SCRUM-1076, 1126 a 1131, 1062, 1184 a 1188, 1061, 1065, 1099, 1075, 1083, 1102 a 1104 y 1112 |
 
-No se citan ADR-0023 a ADR-0026: la wiki indica que no están en el repositorio. ADR-0022 se cita desde su rama sin fusionar y se señala como Propuesto.
+No se cita ADR-0026, número nunca emitido; ADR-0023 a ADR-0025 sí están en `adr/` desde el 2026-10-18. ADR-0022 se cita desde su rama sin fusionar y se señala como Propuesto.
 
 Base de código al 7 de octubre de 2026, tras `git fetch --all --prune`: `MANI-docs` `origin/main` `12dd5ff`; **`MANI-Flutter` rama `develop` `25c2a76`** (la rama vigente; `main` y `release` están atrasadas); `MANI-Node` `develop` `f84dab7` (10 commits sobre `main`, que sigue revertida a `07069d3`); `MANI-APIGateway` rama `CFG-16` `b1b5048` (`main` `e312793`); `MANI-Java` `ae5d6ce` y `MANI-.NET` `e2e8370`, en `main`. `MANI-Infrastructure` ya no existe (borrado por DevOps).
 

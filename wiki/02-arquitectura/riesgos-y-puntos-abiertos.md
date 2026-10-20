@@ -51,7 +51,7 @@ Detectados al navegar este repositorio. **No alteran ninguna decisión**; se lis
 | Hueco | Detalle |
 |---|---|
 | `docs/governance/POLITICA_USO_IA.md` | Citado por ADR-0009 como su sustituto; no existe. La política vigente es Políticas DevOps §18 |
-| ADR-0022..ADR-0026 | Referenciados por `DOC-27` como recuperables; no están en `adr/` |
+| ADR-0026 | Número nunca emitido y no reutilizable; `ADR-0022` a `ADR-0025` sí están en `adr/` |
 | `architecture_context.txt` | `DOC-25` pide actualizarlo; no está en este repositorio |
 
 Cerrar cualquiera de estos huecos es trabajo de EP-10 en Jira, no una edición improvisada.

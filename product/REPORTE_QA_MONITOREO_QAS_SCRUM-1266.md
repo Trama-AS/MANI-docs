@@ -190,6 +190,37 @@ Observaciones documentales (no son defectos del producto):
   MANI-.NET quedan fuera. Falta reflejarlo en la documentación.
 - SDD §8 cita SCRUM-1121 (k6) y SCRUM-1122 (ZAP); ninguno es visible en Jira al 19 oct.
 
+### 5.1 Defectos propuestos
+
+Los hallazgos se dejan **propuestos**, no registrados: el backlog de Jira lo administra la Scrum
+Master, que decide cuáles se crean. El formato sigue el de los defectos existentes del proyecto
+(tipo **Error**, resumen `BUG-<área>-NN - …`, como SCRUM-1333 y SCRUM-1334). La numeración es
+sugerida.
+
+| Propuesta | Hallazgo | Resumen sugerido | Prioridad sugerida | Etiquetas sugeridas | Estado de la propuesta |
+|---|---|---|---|---|---|
+| D-01 | H-01 | BUG-SEC-03 - El endpoint dev-token es público en QA y emite tokens aceptados para cualquier tenant y rol | Highest | `seguridad`, `multi-tenant`, `ADR-0018`, `qa` | Comprobado |
+| D-02 | H-02 | BUG-SEC-04 - La validación de JWT del Gateway no acepta la firma ES256 que usa Supabase | High | `seguridad`, `ADR-0031`, `qa` | **Por confirmar** con un inicio de sesión real en `MANI-QA`; no se propone registrar hasta entonces |
+| D-03 | H-03 | BUG-QA-01 - El Gateway de QA no corre la revisión de release | Medium | `devops`, `qa` | Comprobado |
+| D-04 | H-04 | BUG-QA-02 - Los contenedores de QA no declaran healthcheck en docker-compose.qa.yml | Medium | `devops`, `qa` | Comprobado |
+| D-05 | H-05 | BUG-QA-03 - QA no tiene métricas ni logs estructurados | Medium | `devops`, `ADR-0006`, `qa` | Comprobado, pero transversal: se sugiere tratarlo dentro del alcance de CFG-30 y no como defecto aparte |
+| D-06 | H-06 | BUG-QA-04 - Los 401 del Gateway no indican la causa del rechazo | Low | `gateway`, `qa` | Comprobado |
+| D-07 | H-07 | BUG-QA-05 - X-Correlation-ID duplicado en las respuestas de Core y Dispatch | Low | `gateway`, `trazabilidad`, `qa` | Comprobado |
+| D-08 | H-08 | BUG-QA-06 - SUPABASE_URL del Core en QA apunta a un mock | Medium | `devops`, `qa` | Comprobado |
+
+Detalle para el registro, por propuesta:
+
+| Propuesta | Ambiente | Cómo se reproduce | Esperado | Observado | Evidencia |
+|---|---|---|---|---|---|
+| D-01 | QA, Core `6ca27ab`, Gateway `6b475f9` | `POST /api/v1/core/auth/dev-token` sin `Authorization`, con `{"tenantId":"<uuid>","role":"admin"}`; usar el token en `GET /api/v1/core/profiles/me` | 404 en el primer paso | 200 y JWT HS256; el segundo paso da 200 con el tenant y el rol pedidos, también en Rules y Dispatch | §4.1; `newman_qas01_perimetro.txt` (petición 10) |
+| D-02 | QA, Supabase `MANI-QA` | Iniciar sesión con un usuario de `MANI-QA` y llamar `GET /api/v1/core/profiles/me` por el Gateway | 200 | No ejecutado; por configuración se espera 401 | Dashboard de Supabase (JWT Keys, 19 oct); `auth.routes.js` de `release` y `develop` |
+| D-03 | VM de QA | `docker inspect` de `mani-api-gateway`, etiqueta `org.opencontainers.image.revision` | Cabeza de `release` (`9874e93`) | `6b475f9`; la imagen `:staging` nueva está descargada pero el contenedor no se recreó | `qa_mon_01_vm_qa_1746z.txt` |
+| D-04 | VM de QA | `verificar_monitoreo.sh vm_qa`, sección de healthcheck | `healthcheck:` por contenedor (INFRAESTRUCTURA_MANI §9) | `no_declarado` en los seis | `qa_mon_01_vm_qa_durante_carga.txt` |
+| D-05 | VM de QA | `verificar_monitoreo.sh calidad` y `vm_qa` | Métricas y logs JSON con `correlation_id` (ADR-0006) | Sin contenedores ni puertos de métricas; Rules y Dispatch sin log de peticiones | `qa_mon_01_calidad.txt`; `qa_mon_01_vm_qa_durante_carga.txt` |
+| D-06 | QA | Peticiones 5 a 8 de la colección Newman | Código que distinga vencido, firma inválida y falta de tenant | Siempre `{"error":"UNAUTHORIZED"}` con el mismo mensaje | `newman_qas01_perimetro.json` |
+| D-07 | QA | `GET /api/v1/core/health` y `GET /api/v1/dispatch/health` con `X-Correlation-ID` | Una cabecera `X-Correlation-ID` | Dos, con el mismo valor | `newman_qas01_perimetro.json` (peticiones 2, 4, 9 y 10) |
+| D-08 | VM de QA | `verificar_monitoreo.sh vm_qa`, sección de variables del Core | URL del proyecto `MANI-QA` (POLITICA_CONFIGURACION_JWT_CFG4-04) | `mock.supabase.co` | `qa_mon_01_vm_qa_durante_carga.txt` |
+
 ## 6. Reproducibilidad
 
 - Todos los scripts leen la configuración de variables de entorno y no contienen secretos
@@ -233,5 +264,5 @@ Observaciones documentales (no son defectos del producto):
 | Scripts y configuración versionados | Cumplido (`qa/monitoreo_qas/`) |
 | Capturas o enlaces a logs, informes o series de métricas reales por escenario | Cumplido para los escenarios ejecutados (QAS-01, QAS-03, QAS-06, arnés de QAS-07) y para el monitoreo; los bloqueados no tienen serie que mostrar |
 | Al menos una medición p95 reproducible | Cumplido: p95 12,4 ms con la carga nominal, con la limitación de §4.2 (línea base del perímetro) |
-| Incidentes y regresiones registrados | Pendiente: los hallazgos H-01 a H-08 se registran en Jira según decida QA |
-| Informe entregado a la Scrum Master y a la PO | Pendiente de entrega |
+| Incidentes y regresiones registrados | Documentados como defectos propuestos (§5.1, D-01 a D-08). No se registran en Jira desde QA: el backlog lo administra la Scrum Master, que decide su creación |
+| Informe entregado a la Scrum Master y a la PO | Entregado por PR a MANI-docs (#53), pendiente de su aceptación |

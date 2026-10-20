@@ -1078,7 +1078,7 @@ CREATE TABLE core.aliado_cobertura (
     FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona)
 );
 
--- RF-08: cliente persona natural o empresa.
+-- RF-08: cliente persona natural o empresa (con múltiples sitios y datos corporativos).
 CREATE TABLE core.cliente (
     id_cliente UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_tenant UUID NOT NULL,
@@ -1086,23 +1086,31 @@ CREATE TABLE core.cliente (
     tipo_cliente VARCHAR(20) NOT NULL
         CHECK (tipo_cliente IN ('PERSONA_NATURAL','EMPRESA')),
     razon_social VARCHAR(180),
+    nit VARCHAR(20),
     documento_fiscal VARCHAR(50),
+    telefono VARCHAR(30),
+    nombre_representante VARCHAR(150),
     estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
         CHECK (estado IN ('ACTIVO','INACTIVO')),
     fecha_registro TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
     FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
     CONSTRAINT ck_cliente_empresa_razon_social
-        CHECK (tipo_cliente <> 'EMPRESA' OR razon_social IS NOT NULL)
+        CHECK (tipo_cliente <> 'EMPRESA' OR razon_social IS NOT NULL),
+    CONSTRAINT cliente_nit_tenant_unique
+        UNIQUE (id_tenant, nit)
 );
 
--- RF-09: sitios de servicio del cliente empresa. Todo sitio tiene zona.
+-- RF-09: sitios de servicio del cliente empresa. Todo sitio tiene zona y reglas contextuales.
 CREATE TABLE core.sitio_servicio (
     id_sitio UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_cliente UUID NOT NULL,
     id_zona UUID NOT NULL,
     nombre VARCHAR(150) NOT NULL,
     direccion TEXT NOT NULL,
+    reglas JSONB, -- Estructura (objeto de valor SiteRules, MANI-Node#12): {"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}. Días válidos: LUN..DOM; horas HH:mm (24 h); el horario se evalúa en America/Bogota.
+    contacto_nombre VARCHAR(150), -- contacto de la sede (MANI-Node migración 0013)
+    contacto_telefono VARCHAR(30),
     reglas_acceso TEXT,
     condiciones TEXT,
     estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
@@ -1111,6 +1119,50 @@ CREATE TABLE core.sitio_servicio (
     FOREIGN KEY (id_zona) REFERENCES core.zona(id_zona),
     UNIQUE (id_cliente, nombre)
 );
+
+-- US-02.3.2 / Ley 1581 (Habeas Data): Términos y Condiciones y Políticas de Privacidad
+CREATE TABLE core.documento_legal (
+    id_documento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_tenant UUID, -- NULL si es documento global de plataforma
+    tipo VARCHAR(50) NOT NULL
+        CHECK (tipo IN ('TERMS_AND_CONDITIONS','PRIVACY_POLICY','CUSTOM')),
+    version VARCHAR(20) NOT NULL,
+    contenido TEXT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant)
+);
+
+-- Registro de consentimiento legal expreso. El servicio solo puede insertarlo y leerlo (sin UPDATE ni DELETE).
+CREATE TABLE core.consentimiento_usuario (
+    id_consentimiento UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_usuario UUID NOT NULL,
+    id_documento UUID NOT NULL,
+    id_tenant UUID NOT NULL,
+    version_aceptada VARCHAR(20) NOT NULL,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    aceptado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_usuario) REFERENCES core.usuario(id_usuario),
+    FOREIGN KEY (id_documento) REFERENCES core.documento_legal(id_documento),
+    FOREIGN KEY (id_tenant) REFERENCES core.tenant(id_tenant),
+    UNIQUE (id_usuario, id_documento) -- un usuario acepta una vez cada versión de documento
+);
+
+-- RLS (ADR-0012, ADR-0030 §1, ADR-0032). Ambas tablas: ENABLE + FORCE ROW LEVEL SECURITY.
+-- Las políticas leen el contexto solo de app.tenant_id() / app.user_id() (migración 0007 de MANI-Node).
+--   documento_legal
+--     documento_legal_lectura  FOR SELECT TO anon, authenticated, mani_core_svc
+--       USING (is_active AND (id_tenant IS NULL OR id_tenant = app.tenant_id()))
+--     documento_legal_alta     FOR INSERT TO mani_core_svc
+--       WITH CHECK (id_tenant IS NULL OR id_tenant = app.tenant_id())
+--   consentimiento_usuario
+--     consentimiento_usuario_propio  FOR SELECT TO authenticated, mani_core_svc
+--       USING (id_usuario = app.user_id() AND (id_tenant IS NULL OR id_tenant = app.tenant_id()))
+--     consentimiento_usuario_alta    FOR INSERT TO authenticated, mani_core_svc
+--       WITH CHECK (id_usuario = app.user_id() AND (id_tenant IS NULL OR id_tenant = app.tenant_id()))
+--   Con id_tenant NOT NULL (migración 0010) la rama IS NULL no se cumple nunca: la condición efectiva es id_tenant = app.tenant_id().
+--   Privilegios: mani_core_svc tiene SELECT, INSERT en las dos tablas; mani_dispatch_svc ninguno.
 
 -- RF-22: tarifario de referencia por tenant y categoria.
 CREATE TABLE reglas.tarifario (
@@ -1465,7 +1517,7 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 |---|---|---|---|
 | id_aliado | UUID | PK | Identificador de aliado |
 | id_usuario | UUID | FK, UNIQUE | Usuario asociado |
-| tipo_aliado | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA / EMPLEADO_DIRECTO (RF-05) |
+| tipo_aliado | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA / EMPLEADO_DIRECTO (RF-05). En el esquema implementado la columna es `aliado.tipo` con los valores `PERSONA_NATURAL`, `PERSONA_JURIDICA` (equivale a EMPRESA) y `EMPLEADO_DIRECTO` (empleado directo del tenant, SCRUM-850); la alineación completa de nombres es DOC4-04 (SCRUM-1247) |
 | estado | VARCHAR(30) | CHECK | Estado operacional |
 | nivel_verificacion | VARCHAR(30) | NULL | Nivel KYC |
 | calificacion | NUMERIC(3,2) | 0..5 | Promedio derivado de `servicio.calificacion` |
@@ -1527,8 +1579,11 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | id_tenant | UUID | FK | Tenant propietario |
 | id_usuario | UUID | FK, UNIQUE | Usuario asociado |
 | tipo_cliente | VARCHAR(20) | CHECK | PERSONA_NATURAL / EMPRESA (RF-08) |
-| razon_social | VARCHAR(180) | obligatorio si EMPRESA | Razón social |
-| documento_fiscal | VARCHAR(50) | NULL | Identificación fiscal |
+| razon_social | VARCHAR(180) | obligatorio si EMPRESA | Razón social de la empresa |
+| nit | VARCHAR(20) | UNIQUE por tenant (`cliente_nit_tenant_unique`) | NIT de la empresa cliente |
+| documento_fiscal | VARCHAR(50) | NULL | Identificación fiscal alternativa |
+| telefono | VARCHAR(30) | NULL | Teléfono de contacto de la sede/empresa |
+| nombre_representante | VARCHAR(150) | NULL | Nombre del representante legal |
 | estado | VARCHAR(20) | CHECK | Estado |
 | fecha_registro | TIMESTAMPTZ | NOT NULL | Alta |
 
@@ -1540,10 +1595,51 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | id_cliente | UUID | FK | Cliente que lo administra |
 | id_zona | UUID | FK, NOT NULL | Zona del sitio; obligatoria (RF-09) |
 | nombre | VARCHAR(150) | UNIQUE por cliente | Nombre del sitio |
-| direccion | TEXT | NOT NULL | Dirección |
-| reglas_acceso | TEXT | NULL | Reglas visibles al aliado antes de programar (RF-09) |
+| direccion | TEXT | NOT NULL | Dirección física |
+| reglas | JSONB | NULL | Objeto `SiteRules` (MANI-Node#12): `{"horario": {"inicio": "08:00", "fin": "17:00", "diasPermitidos": ["LUN","MAR","MIE","JUE","VIE"]}, "permisosRequeridos": ["ARL"], "elementosProteccion": ["CASCO","BOTAS"], "instruccionesIngreso": "Registrarse en portería", "requiereAprobacionPrevia": false, "contactoAcceso": {"nombre": "...", "telefono": "..."}}`. `horario` es opcional (sin él no hay restricción horaria); días `LUN`..`DOM`; horas `HH:mm` en 24 h con `inicio < fin`, evaluadas en America/Bogota (RF-09). Las leen el cliente dueño del sitio y el admin del tenant; otro cliente o un aliado reciben 403. El aliado asignado a una solicitud del sitio se habilita cuando la asignación esté en Core (MANI-Node#12) |
+| contacto_nombre | VARCHAR(150) | NULL | Persona de contacto de la sede (migración 0013 de MANI-Node) |
+| contacto_telefono | VARCHAR(30) | NULL | Teléfono de contacto de la sede |
+| reglas_acceso | TEXT | NULL | Reglas en texto libre del sitio; mismo acceso que `reglas` |
 | condiciones | TEXT | NULL | Condiciones particulares del sitio |
 | estado | VARCHAR(20) | CHECK | Estado |
+
+## `core.documento_legal`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_documento | UUID | PK | Identificador único del documento legal |
+| id_tenant | UUID | FK, NULL | Tenant propietario (NULL si aplica a toda la plataforma) |
+| tipo | VARCHAR(50) | CHECK | TERMS_AND_CONDITIONS / PRIVACY_POLICY / CUSTOM (US-02.3.2) |
+| version | VARCHAR(20) | NOT NULL | Versión del documento legal (ej. "1.0", "2026-V1") |
+| contenido | TEXT | NOT NULL | Texto íntegro del documento o términos |
+| is_active | BOOLEAN | DEFAULT TRUE | Indica si es la versión activa para consentimiento |
+| creado_en | TIMESTAMPTZ | NOT NULL | Fecha y hora de creación y publicación |
+
+## `core.consentimiento_usuario`
+
+| Campo | Tipo | Restricción | Descripción |
+|---|---|---|---|
+| id_consentimiento | UUID | PK | Identificador del registro de consentimiento |
+| id_usuario | UUID | FK | Usuario que otorga el consentimiento expreso |
+| id_documento | UUID | FK, UNIQUE con `id_usuario` | Documento legal aceptado; un usuario lo acepta una sola vez |
+| id_tenant | UUID | FK, NOT NULL | Tenant bajo el cual se registra la aceptación. Siempre presente: un consentimiento ocurre dentro de un tenant (migración 0010 de MANI-Node) |
+| version_aceptada | VARCHAR(20) | NOT NULL | Versión exacta aceptada conforme a Ley 1581 |
+| ip_address | VARCHAR(45) | NULL | Dirección IP del cliente al momento de la aceptación |
+| user_agent | TEXT | NULL | Dispositivo / User Agent del firmante |
+| aceptado_en | TIMESTAMPTZ | NOT NULL | Marca temporal verificable del consentimiento |
+
+**RLS de `core.documento_legal` y `core.consentimiento_usuario`** (ADR-0012, ADR-0030 §1, ADR-0032): ambas tablas tienen `ENABLE` y `FORCE ROW LEVEL SECURITY`, y sus políticas leen el contexto solo de `app.tenant_id()` y `app.user_id()`.
+
+| Tabla | Política | Operación y roles | Condición |
+|---|---|---|---|
+| `documento_legal` | `documento_legal_lectura` | SELECT · anon, authenticated, mani_core_svc | activo y (`id_tenant` NULL o igual a `app.tenant_id()`) |
+| `documento_legal` | `documento_legal_alta` | INSERT · mani_core_svc | `id_tenant` NULL o igual a `app.tenant_id()` |
+| `consentimiento_usuario` | `consentimiento_usuario_propio` | SELECT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y (`id_tenant` NULL o igual a `app.tenant_id()`) |
+| `consentimiento_usuario` | `consentimiento_usuario_alta` | INSERT · authenticated, mani_core_svc | `id_usuario = app.user_id()` y (`id_tenant` NULL o igual a `app.tenant_id()`) |
+
+En `consentimiento_usuario` la rama `id_tenant` NULL de las políticas viene de la 0004 y ya no se cumple: con `id_tenant NOT NULL` (migración 0010 de MANI-Node, PR #14) la condición efectiva es `id_tenant = app.tenant_id()`.
+
+`mani_core_svc` solo tiene `SELECT` e `INSERT` sobre las dos tablas (el consentimiento no se edita ni se borra desde el servicio); `mani_dispatch_svc` no tiene permisos.
 
 ## `core.disponibilidad`
 

@@ -1,0 +1,374 @@
+{
+  "info": {
+    "_postman_id": "2d136792-54d6-4752-9ef9-55abacfd47ed",
+    "name": "mani_qas01_perimetro_scrum_1266",
+    "description": "SCRUM-1266. QA-MON-01 (healthchecks y correlation id) y QAS-01 caso 5 (token ausente, mal formado, alterado o vencido) mas la exposicion de dev-token, por el Gateway de QA. Los casos 1 a 4 y 6 de QAS-01 no tienen endpoints reales en QA (Core release es stub). Variables de ambiente: base_url, token, token_vencido (opcional).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "qa_mon_01_healthchecks",
+      "item": [
+        {
+          "name": "01 Gateway health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('status UP', function () { pm.expect(pm.response.json().status).to.eql('UP'); });",
+                  "",
+                  "pm.test('propaga X-Correlation-ID', function () {",
+                  "  pm.expect(pm.response.headers.get('X-Correlation-ID')).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              }
+            ],
+            "url": "{{base_url}}/health"
+          }
+        },
+        {
+          "name": "02 Core health via Gateway",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('status UP', function () { pm.expect(pm.response.json().status).to.eql('UP'); });",
+                  "pm.test('servicio correcto', function () { pm.expect(pm.response.json().service).to.eql('MANI-Core-Node'); });",
+                  "pm.test('propaga X-Correlation-ID', function () {",
+                  "  pm.expect(pm.response.headers.get('X-Correlation-ID')).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/health"
+          }
+        },
+        {
+          "name": "03 Rules health via Gateway",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('status UP', function () { pm.expect(pm.response.json().status).to.eql('UP'); });",
+                  "pm.test('servicio correcto', function () { pm.expect(pm.response.json().service).to.eql('MANI-Rules-Java'); });",
+                  "pm.test('propaga X-Correlation-ID', function () {",
+                  "  pm.expect(pm.response.headers.get('X-Correlation-ID')).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/rules/health"
+          }
+        },
+        {
+          "name": "04 Dispatch health via Gateway",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('status UP', function () { pm.expect(pm.response.json().status).to.eql('UP'); });",
+                  "pm.test('servicio correcto', function () { pm.expect(pm.response.json().service).to.eql('MANI-Dispatch-DotNet'); });",
+                  "pm.test('propaga X-Correlation-ID', function () {",
+                  "  pm.expect(pm.response.headers.get('X-Correlation-ID')).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/dispatch/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "qas01_caso5_token",
+      "item": [
+        {
+          "name": "05 Sin Authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', function () { pm.response.to.have.status(401); });",
+                  "pm.test('cuerpo JSON con error y correlationId', function () {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a('string');",
+                  "  pm.expect(j.correlationId).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});",
+                  "pm.test('sin datos del recurso', function () { pm.expect(pm.response.json()).to.not.have.property('profile'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/profiles/me"
+          }
+        },
+        {
+          "name": "06 Authorization sin esquema Bearer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', function () { pm.response.to.have.status(401); });",
+                  "pm.test('cuerpo JSON con error y correlationId', function () {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a('string');",
+                  "  pm.expect(j.correlationId).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});",
+                  "pm.test('sin datos del recurso', function () { pm.expect(pm.response.json()).to.not.have.property('profile'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/profiles/me"
+          }
+        },
+        {
+          "name": "07 Token con firma alterada",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.environment.get('token') || '';",
+                  "const partes = t.split('.');",
+                  "if (partes.length === 3) {",
+                  "  const firma = partes[2];",
+                  "  const cambio = firma.slice(0, -4) + (firma.slice(-4) === 'AAAA' ? 'BBBB' : 'AAAA');",
+                  "  pm.variables.set('token_alterado', partes[0] + '.' + partes[1] + '.' + cambio);",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', function () { pm.response.to.have.status(401); });",
+                  "pm.test('cuerpo JSON con error y correlationId', function () {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a('string');",
+                  "  pm.expect(j.correlationId).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});",
+                  "pm.test('sin datos del recurso', function () { pm.expect(pm.response.json()).to.not.have.property('profile'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_alterado}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/profiles/me"
+          }
+        },
+        {
+          "name": "08 Token vencido",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('token_vencido')) {",
+                  "  console.log('Sin token_vencido: el caso se omite');",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', function () { pm.response.to.have.status(401); });",
+                  "pm.test('cuerpo JSON con error y correlationId', function () {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a('string');",
+                  "  pm.expect(j.correlationId).to.eql(pm.request.headers.get('X-Correlation-ID'));",
+                  "});",
+                  "pm.test('sin datos del recurso', function () { pm.expect(pm.response.json()).to.not.have.property('profile'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_vencido}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/profiles/me"
+          }
+        },
+        {
+          "name": "09 Control positivo con token valido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('tenant de la respuesta = tenant del claim', function () {",
+                  "  const carga = JSON.parse(atob(pm.environment.get('token').split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));",
+                  "  pm.expect(pm.response.json().profile.tenantId).to.eql(carga.app_metadata.tenant_id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/profiles/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "qas01_dev_token",
+      "item": [
+        {
+          "name": "10 dev-token no expuesto por el Gateway",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('dev-token no disponible fuera de desarrollo (esperado 404)', function () { pm.response.to.have.status(404); });",
+                  "pm.test('no emite token', function () {",
+                  "  let j = {};",
+                  "  try { j = pm.response.json(); } catch (e) { j = {}; }",
+                  "  pm.expect(j).to.not.have.property('token');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Correlation-ID",
+                "value": "qa1266-newman-{{$guid}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/core/auth/dev-token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tenantId\":\"99999999-9999-4999-8999-999999999999\",\"role\":\"admin\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

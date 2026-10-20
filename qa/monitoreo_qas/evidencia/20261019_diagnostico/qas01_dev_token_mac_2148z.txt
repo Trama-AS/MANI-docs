@@ -1,0 +1,12 @@
+# Prueba dev-token desde el Mac de Santiago, 2026-10-19T21:48:08Z, fuente_token=dev_token
+1 dev-token emitido: si (token no registrado)
+2 header alg=HS256 | app_metadata.tenant_id=10000000-0000-4000-8000-000000000021 user_role=cliente | exp-iat=600s
+3 GET /api/v1/core/profiles/me con token t2: tenantId=10000000-0000-4000-8000-000000000021 role=cliente id=30000000-0000-4000-8000-000000000022  HTTP=200
+4 POST /api/v1/rules/evaluate-rate con token: HTTP=200 bytes=174 t=0.473565s
+4 POST /api/v1/rules/rank-allies con token: HTTP=200 bytes=291 t=0.504708s
+4 POST /api/v1/dispatch/match con token: HTTP=200 bytes=432 t=0.300212s
+5 tenant inexistente + rol admin, GET profiles/me: "tenantId":"99999999-9999-4999-8999-999999999999" "role":"admin"  HTTP=200 
+6 token alterado (firma cambiada): {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-c5-alterado"} HTTP=401
+7 token vencido: {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-c5-vencido"} HTTP=401
+8 sin Authorization: {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-c5-sin-token"} HTTP=401
+9 Bearer mal formado: {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-c5-formato"} HTTP=401

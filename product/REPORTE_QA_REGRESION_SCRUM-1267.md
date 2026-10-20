@@ -65,7 +65,7 @@ Estos cambios no están versionados: el ambiente sobre el que se ejecutó la reg
 - **Evidencia versionada:** el ejecutor decodifica las respuestas de Newman, enmascara contraseñas temporales y tokens y verifica que no quede ninguna credencial antes de guardar.
 - **Trazabilidad:** cada caso de la regresión se relaciona con los casos de SCRUM-1264 que cubre, de forma completa o parcial (hoja `ejecucion_casos`, columna `caso_1264`, y hoja `cobertura_1264`), como pide el DoD de QA.
 - **Correcciones posteriores a la primera corrida:** la colección se corrigió después de la auditoría (1063-01, 856-00, 856-02, 856-06, aserciones de negocio y precondiciones). Primero se verificaron reproduciendo las respuestas guardadas (`verificacion_coleccion_por_reproduccion.txt`) y después se ejecutaron en QA en la corrida `20261020T224842Z` (L-10 cerrada). Las aserciones pasan de 91 a 125 y las 5 fallidas son las mismas de la primera corrida.
-- **Consultas sobre la base:** para R-06, R-07 y R-09 se ejecutaron consultas de catálogo de solo lectura (`BEGIN READ ONLY ... ROLLBACK`) con `psql` en contenedor dentro de la VM y la cadena de conexión de `.env.qa`, sin imprimir credenciales (`consultas_rls_20261020T225146Z.txt`).
+- **Consultas sobre la base:** para R-06, R-07 y R-09 se ejecutaron consultas de catálogo de solo lectura (`BEGIN READ ONLY ... ROLLBACK`) con `psql` en contenedor dentro de la VM y las cadenas de conexión de Core y Dispatch de `.env.qa`, sin imprimir credenciales (`consultas_rls_20261020T225146Z.txt` y `dispatch_rol_20261020T232719Z.txt`).
 
 ## 4. Criterios de estado y de origen
 
@@ -159,7 +159,7 @@ Los seis casos cross-tenant (B1 a B6) se definieron en SCRUM-1105 y ADR-0015, y 
 
 El aislamiento comprobado es el de la aplicación a través del Gateway. La defensa en la base (RLS) no se ejerce en QA, según las consultas de solo lectura de `consultas_rls_20261020T225146Z.txt`:
 
-- **R-09:** Core se conecta como `postgres` (`current_user = postgres`, `rolbypassrls = t`). La cadena de Dispatch usa el mismo rol `postgres`; la conexión de prueba con esa cadena desde la VM fue rechazada por autenticación, así que el rol de Dispatch se toma de la configuración y no de una sesión. `mani_core_svc` y `mani_dispatch_svc` existen sin LOGIN y sin BYPASSRLS.
+- **R-09:** Core y Dispatch se conectan como `postgres` (`current_user = postgres`, `rolbypassrls = t`), cada uno con su propia cadena de `.env.qa` (`consultas_rls_20261020T225146Z.txt` y `dispatch_rol_20261020T232719Z.txt`). `mani_core_svc` y `mani_dispatch_svc` existen sin LOGIN y sin BYPASSRLS.
 - **R-07:** `poc_asignacion_log` tiene RLS habilitado sin FORCE (`relforcerowsecurity = f`), y `db/verify/0007` se detiene en ese invariante (`verify_0007_rls_20261020T202905Z.log`).
 - **R-06:** 15 políticas `tenant_isolation_*` con `TO public`, una por tabla. Con las 3 de lectura global (`documento_legal`, `tenant` y `zona`) son 18 las políticas con `TO public`; la versión anterior del reporte las contaba todas como `tenant_isolation_*`.
 
@@ -190,7 +190,7 @@ Detalle para el registro:
 | R-01 | QA, Gateway 82473d6 | `GET /api/v1/core/legal/documents/active` con `X-Tenant-Slug` y sin token | 200 | 401 | 856-05 en `newman_resumen_20261020T224842Z.json` (igual en `20261020T212453Z`); MANI-Node `src/routes/legal.routes.js:7` |
 | R-02 | QA, Core 2745bb0 | El aliado t1 acepta una solicitud del sitio de t1 y consulta sus reglas | 200 | 403 | 853-04 en `newman_resumen_20261020T224842Z.json` (igual en `20261020T212453Z`); `GetSiteRulesForAllyUseCase.js:8` |
 | R-03 | QA, Core 2745bb0 | Admin t1 consulta `GET /api/v1/core/aliados/verificacion` | 200 | 500 `column documento_kyc.created_at does not exist` | 1066-01 y 1066-02 en `newman_resumen_20261020T224842Z.json` (igual en `20261020T212453Z`); `SupabaseDocumentoKycRepository.js:44` |
-| R-09 | VM de QA y MANI-QA | `current_user` con la cadena de cada servicio y `pg_roles` de `postgres`, `mani_core_svc` y `mani_dispatch_svc` | Servicios conectados con roles sin BYPASSRLS | Core como `postgres` (`rolbypassrls = t`); Dispatch configurado con `postgres` (su conexión de prueba se rechazó por autenticación); roles de servicio sin LOGIN | `consultas_rls_20261020T225146Z.txt` (sección 3 y usuarios de conexión) |
+| R-09 | VM de QA y MANI-QA | `current_user` con la cadena de cada servicio y `pg_roles` de `postgres`, `mani_core_svc` y `mani_dispatch_svc` | Servicios conectados con roles sin BYPASSRLS | Core y Dispatch como `postgres` (`rolbypassrls = t`); roles de servicio sin LOGIN | `consultas_rls_20261020T225146Z.txt` (sección 3 y usuario de Core); `dispatch_rol_20261020T232719Z.txt` (usuario de Dispatch) |
 | R-11 | QA, Dispatch 41ba171 | Filtro con `tipo=MARCIANO` (862-02) o aceptación como cliente (1074-04) | `{ error, code, correlationId }` | `{ error, status, correlationId, timestamp }` | Cuerpos de 862-02, 1074-03 y 1074-04 en `newman_reporte_redactado_20261020T224842Z.json` (igual en `newman_reporte_redactado.json`) |
 | R-06 | MANI-QA | `pg_policies` con `policyname like 'tenant_isolation_%'` | Solo las políticas de la migración 0007 | 15 políticas `tenant_isolation_*` con `TO public` (18 con `TO public` en total) | `consultas_rls_20261020T225146Z.txt` (secciones 1, 1b y 1c) |
 | R-07 | MANI-QA | `pg_class` de `poc_asignacion_log` y `db/verify/0007` en una transacción revertida | Invariantes en verde | `relforcerowsecurity = f`; `db/verify/0007` se detiene en `poc_asignacion_log` | `consultas_rls_20261020T225146Z.txt` (sección 2); `verify_0007_rls_20261020T202905Z.log` |
@@ -261,8 +261,7 @@ Atendidos el 20 de octubre: la corrida de la colección corregida (L-10), la evi
 5. Probar el flujo con un token real de Supabase Auth y los flujos de interfaz cuando se corrijan R-10 y R-04.
 6. Restablecer la solicitud de PoC y retirar de la VM los respaldos de `.env.qa` y los traces de las corridas (requiere autorización).
 7. Corregir R-01 a R-11 por sus responsables y repetir la regresión.
-8. Confirmar con DevOps con qué credenciales se conecta Dispatch a MANI-QA: la conexión de prueba con `DISPATCH_DB_CONNECTION` se rechazó por autenticación (R-09).
-9. Presentar los resultados a la PO y obtener su validación de SCRUM-1279.
+8. Presentar los resultados a la PO y obtener su validación de SCRUM-1279.
 
 ## 15. Cumplimiento del DoD de SCRUM-1267
 
@@ -289,5 +288,5 @@ Actualización del 20 de octubre, con la colección corregida ejecutada en QA:
 - 1063-01 pasa de No válido a Aprobado (US0212M2-N1, parcial): SCRUM-1063 sigue en Ejecutado y ya no tiene casos que no cuentan.
 - 856-00 y 856-06 se ejecutaron y aprueban; 856-03 se confirma con `LEGAL_DOCUMENT_NOT_FOUND`; 856-02 sigue no concluyente, y su causa queda documentada en `consentimiento_previo_856_20261020T200914Z.json`.
 - Cobertura de SCRUM-1264: de 20 completos y 21 parciales a 20 completos y 22 parciales. Ningún estado de historia cambia.
-- R-06, R-07 y R-09 tienen evidencia versionada. R-06 se corrige a 15 políticas `tenant_isolation_*` (18 con `TO public` en total). R-09 agrega que la conexión de prueba con la cadena de Dispatch se rechazó por autenticación.
+- R-06, R-07 y R-09 tienen evidencia versionada. R-06 se corrige a 15 políticas `tenant_isolation_*` (18 con `TO public` en total). R-09 queda comprobado para Core y Dispatch: ambos se conectan como `postgres` con BYPASSRLS. Un primer intento con la cadena de Dispatch falló porque QA interpretó mal las comillas de la cadena Npgsql, no por la credencial; Dispatch sí accede a la base (1074-01 asigna la solicitud) y la consulta repetida con la cadena bien interpretada está en `dispatch_rol_20261020T232719Z.txt`.
 - L-10 se cierra.

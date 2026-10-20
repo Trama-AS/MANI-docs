@@ -1,13 +1,136 @@
-# Backlog MANI — versión final
+# Backlog MANI — V5
 
-- **Versión:** final, Sprint 3
-- **Fecha:** 2026-10-03 (actualizado el 2026-10-06 por PO-02 y ADR-0022)
+- **Versión:** V5, cierre del Sprint 4 y objetivo del Sprint 5 (último sprint)
+- **Fecha:** 2026-10-20 (versión anterior: 2026-10-03, actualizada el 2026-10-06 por PO-02 y ADR-0022)
 - **Proyecto Jira:** MANI (`SCRUM`)
-- **Arquitectura vigente:** `Flutter → NGINX API Gateway → Core Service (lógica de negocio en el servicio) → Supabase/PostgreSQL`, con Supabase Auth emitiendo el token y el tenant viajando como claim. La lógica que estaba en Flutter y en las funciones PL/pgSQL se migra a los servicios (ADR-0022)
+- **Arquitectura vigente:** `Flutter → NGINX API Gateway → Core Node, Rules Java y Dispatch .NET (lógica de negocio en el servicio, límites en SAD §7.4) → Supabase/PostgreSQL`, con Supabase Auth emitiendo el token y el tenant viajando como claim. La lógica que estaba en Flutter y en las funciones PL/pgSQL se migra a los servicios (ADR-0022)
 
-Este documento es la única fuente del backlog. Reemplaza las versiones anteriores y el inventario de transición.
+Este documento es la única fuente del backlog. Reemplaza las versiones anteriores y el inventario de transición. La sección 0 es el cierre del Sprint 4 y el plan del Sprint 5; los estados de §2 son los de Jira al 2026-10-20; las secciones 3 y 4 conservan el registro del Sprint 3.
 
 ---
+
+## 0. Backlog V5 — cierre del Sprint 4 y objetivo del Sprint 5
+
+- **Tarea:** [SCRUM-1245](https://maniservices.atlassian.net/browse/SCRUM-1245) (DOC4-02), subtareas [SCRUM-1290](https://maniservices.atlassian.net/browse/SCRUM-1290) y [SCRUM-1291](https://maniservices.atlassian.net/browse/SCRUM-1291).
+- **Autora:** Camila Beltrán (PO). **Fecha:** 2026-10-20, al cierre del Sprint 4. **Revisión:** Scrum Master (Sara Albarracín) y QA (Santiago).
+- **Contexto:** el Sprint 5 es el **último**. Las historias que entren deben terminar el producto prometido: el MVP de `SRS.md` §1.2.
+- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), `product/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), `product/CRITERIOS_ACEPTACION_SPRINT4.md`) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
+- **Enlaces:** cada clave `SCRUM-n` de esta sección enlaza a Jira; el estado es el del tablero al 2026-10-20.
+
+### 0.1 Estado real de los servicios al cierre del Sprint 4
+
+Una historia cuenta como verificada solo si su subtarea QA está finalizada con evidencia. La regresión funcional, de API, E2E y de seguridad multi-tenant ([SCRUM-1267](https://maniservices.atlassian.net/browse/SCRUM-1267)) sigue en curso.
+
+| Servicio | Verificado por QA en el Sprint 4 | Finalizado sin subtarea QA visible | Abierto |
+|---|---|---|---|
+| Core — Node.js | Empleado directo ([SCRUM-850](https://maniservices.atlassian.net/browse/SCRUM-850), QA [SCRUM-1306](https://maniservices.atlassian.net/browse/SCRUM-1306)), cliente empresa con sitios ([SCRUM-852](https://maniservices.atlassian.net/browse/SCRUM-852), [SCRUM-1307](https://maniservices.atlassian.net/browse/SCRUM-1307)), reglas del sitio ([SCRUM-853](https://maniservices.atlassian.net/browse/SCRUM-853), [SCRUM-1308](https://maniservices.atlassian.net/browse/SCRUM-1308)), perfil ([SCRUM-854](https://maniservices.atlassian.net/browse/SCRUM-854), [SCRUM-1309](https://maniservices.atlassian.net/browse/SCRUM-1309)), disponibilidad ([SCRUM-855](https://maniservices.atlassian.net/browse/SCRUM-855), [SCRUM-1310](https://maniservices.atlassian.net/browse/SCRUM-1310)), términos y condiciones ([SCRUM-856](https://maniservices.atlassian.net/browse/SCRUM-856), [SCRUM-1311](https://maniservices.atlassian.net/browse/SCRUM-1311)), desactivar categoría ([SCRUM-858](https://maniservices.atlassian.net/browse/SCRUM-858), [SCRUM-1312](https://maniservices.atlassian.net/browse/SCRUM-1312)), creación de solicitud ([SCRUM-1072](https://maniservices.atlassian.net/browse/SCRUM-1072), [SCRUM-1330](https://maniservices.atlassian.net/browse/SCRUM-1330)) | Aliado empresa ([SCRUM-1063](https://maniservices.atlassian.net/browse/SCRUM-1063)), aprobar o rechazar aliado ([SCRUM-1066](https://maniservices.atlassian.net/browse/SCRUM-1066)), gestión de categoría ([SCRUM-1069](https://maniservices.atlassian.net/browse/SCRUM-1069)) | Zonas de cobertura ([SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067), [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068)) |
+| Rules — Java | Reglas de categoría ([SCRUM-1070](https://maniservices.atlassian.net/browse/SCRUM-1070), [SCRUM-1329](https://maniservices.atlassian.net/browse/SCRUM-1329)) | — | — |
+| Dispatch — .NET | Aliados válidos ([SCRUM-861](https://maniservices.atlassian.net/browse/SCRUM-861), [SCRUM-1313](https://maniservices.atlassian.net/browse/SCRUM-1313)), filtro por tipo ([SCRUM-862](https://maniservices.atlassian.net/browse/SCRUM-862), [SCRUM-1314](https://maniservices.atlassian.net/browse/SCRUM-1314)), orquestación ([SCRUM-1073](https://maniservices.atlassian.net/browse/SCRUM-1073), [SCRUM-1331](https://maniservices.atlassian.net/browse/SCRUM-1331)), aceptar sin doble asignación ([SCRUM-1074](https://maniservices.atlassian.net/browse/SCRUM-1074), [SCRUM-1332](https://maniservices.atlassian.net/browse/SCRUM-1332)) | — | — |
+| App Flutter | Registro de empresa vía Gateway ([SCRUM-1060](https://maniservices.atlassian.net/browse/SCRUM-1060), [SCRUM-1328](https://maniservices.atlassian.net/browse/SCRUM-1328)) | — | — |
+
+Para [SCRUM-1063](https://maniservices.atlassian.net/browse/SCRUM-1063), [SCRUM-1066](https://maniservices.atlassian.net/browse/SCRUM-1066) y [SCRUM-1069](https://maniservices.atlassian.net/browse/SCRUM-1069) se debe enlazar la evidencia de QA o crear su subtarea (pendiente PE4 de `CRITERIOS_ACEPTACION_SPRINT4.md`); hasta entonces este backlog no las declara aceptadas.
+
+Del MVP **falta el ciclo del servicio después de la asignación** (cotización, ejecución, calificación y cierre), la **comunicación** y el **tarifario con su reporte**.
+
+### 0.2 Objetivo del Sprint 5
+
+> Cerrar de punta a punta el ciclo del servicio del MVP —de la solicitud aceptada a la cotización, la ejecución, la calificación y el cierre—, con tarifario de referencia y notificaciones, cada historia verificada por QA con evidencia y sin deuda técnica abierta.
+
+### 0.3 Prioridades del Sprint 5
+
+**P0 — Cierre del flujo principal.** Sin ellas no existe el producto prometido. Se comprometen completas.
+
+| Clave | Historia | Estado | RF | Repo principal | Otros repos | Responsable |
+|---|---|---|---|---|---|---|
+| [SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) + [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068) | Catálogo jerárquico de zonas y zona de cobertura | Por hacer / Bloqueada | RF-07 | Core | Front, GW | Nicolás León |
+| [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885) | Cargar tabla de tarifas por categoría | Por hacer | RF-22 | Rules | Core, Front, GW | Por asignar |
+| [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | Cotización con mano de obra y materiales | Por hacer | RF-15 | Core | Rules, Front, GW | Por asignar |
+| [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | Cliente acepta, rechaza o ajusta la cotización | Por hacer | RF-17 | Core | Front, GW | Por asignar |
+| [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868) | Marcar inicio y fin de la ejecución | Por hacer | RF-18 | Core | Front, GW | Por asignar |
+| [SCRUM-869](https://maniservices.atlassian.net/browse/SCRUM-869) | Registrar eventos durante la ejecución | Por hacer | RF-18 | Core | Front, GW | Por asignar |
+| [SCRUM-874](https://maniservices.atlassian.net/browse/SCRUM-874) | Cliente califica al aliado | Bloqueada | RF-19 | Core | Front, GW | Juan Sebastián Álvarez |
+| [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) | Aliado califica al cliente | Bloqueada | RF-19 | Core | Front, GW | José Nicolás Álvarez |
+| [SCRUM-884](https://maniservices.atlassian.net/browse/SCRUM-884) | Notificaciones push del ciclo del servicio | Por hacer | RF-21 | Core | Front, GW | Por asignar |
+
+**P1 — Completan el MVP prometido.** Entran después de las P0. Si alguna no termina, se declara en la Review con su razón; no se cierra a medias.
+
+| Clave | Historia | Estado | RF | Repo principal | Otros repos |
+|---|---|---|---|---|---|
+| [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866) | Alerta de tarifa bidireccional | Bloqueada | RF-16 | Rules | Core, Front, GW |
+| [SCRUM-886](https://maniservices.atlassian.net/browse/SCRUM-886) | Ver tarifa de referencia al cotizar | Por hacer | RF-16, RF-22 | Core | Rules, Front, GW |
+| [SCRUM-887](https://maniservices.atlassian.net/browse/SCRUM-887) | Reporte de cotizaciones fuera de rango | Por hacer | RF-23 | Core | Front, GW |
+| [SCRUM-870](https://maniservices.atlassian.net/browse/SCRUM-870) | Cliente consulta el log del servicio | Por hacer | RF-18 | Core | Front, GW |
+| [SCRUM-881](https://maniservices.atlassian.net/browse/SCRUM-881) | Mensajería cliente-aliado por servicio | Por hacer | RF-20 | Core | Front, GW |
+| [SCRUM-882](https://maniservices.atlassian.net/browse/SCRUM-882) | Notificaciones de mensajes nuevos | Por hacer | RF-21 | Core | Front, GW |
+| [SCRUM-864](https://maniservices.atlassian.net/browse/SCRUM-864) | Priorizar por comisión ofrecida | Por hacer | RF-13 | Rules | Disp, GW |
+| Nueva | Recuperar contraseña | Sin historia | RF-04 | GW (Supabase Auth) | Front |
+
+**No entran en el Sprint 5.**
+
+| Grupo | Historias | Razón |
+|---|---|---|
+| Backlog secundario (PO-02, §2.1) | [SCRUM-872](https://maniservices.atlassian.net/browse/SCRUM-872), [SCRUM-873](https://maniservices.atlassian.net/browse/SCRUM-873), [SCRUM-876](https://maniservices.atlassian.net/browse/SCRUM-876), [SCRUM-877](https://maniservices.atlassian.net/browse/SCRUM-877), [SCRUM-878](https://maniservices.atlassian.net/browse/SCRUM-878), [SCRUM-879](https://maniservices.atlassian.net/browse/SCRUM-879), [SCRUM-880](https://maniservices.atlassian.net/browse/SCRUM-880) | Siguen fuera del compromiso del MVP. El SRS V5 les dio requisito (RF-32 a RF-36, prioridad Media) para que queden trazables; su implementación va después del MVP. [SCRUM-878](https://maniservices.atlassian.net/browse/SCRUM-878) sigue a [SCRUM-877](https://maniservices.atlassian.net/browse/SCRUM-877). |
+| Incremento 2 | [SCRUM-871](https://maniservices.atlassian.net/browse/SCRUM-871) y [SCRUM-888](https://maniservices.atlassian.net/browse/SCRUM-888) a [SCRUM-901](https://maniservices.atlassian.net/browse/SCRUM-901) | [SCRUM-871](https://maniservices.atlassian.net/browse/SCRUM-871) (rastreo en vivo) se asignó al Incremento 2 el 17-oct (decisión SM/PO); pagos, quejas, comercialización y métricas ya estaban ahí (§2.1). |
+| Depende de quejas | [SCRUM-883](https://maniservices.atlassian.net/browse/SCRUM-883) | Consultar la conversación para atender una queja requiere quejas (RF-26), que son del Incremento 2. |
+| Sin historia | RF-01 Gestión de tenants | El alta de tenants existe desde la configuración inicial; la administración de tenants ([SCRUM-901](https://maniservices.atlassian.net/browse/SCRUM-901)) es del Incremento 2. |
+
+**Carga.** Las P0 nuevas suman 47 SP más la migración de zonas, y las P1, 42 SP. La asignación se decide en el Planning; en el Sprint 4, Nicolás León tuvo 12 de las 17 historias, así que conviene repartir las nuevas.
+
+### 0.4 Dependencias
+
+| Historia | Depende de | Motivo |
+|---|---|---|
+| [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | Pendiente P1 del SAD §7.4 | Quién es dueño del estado de la solicitud después de la asignación (Core o Dispatch). Responsable: Juan Sebastián Álvarez. Se cierra el primer día del sprint. |
+| [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885) | Pendiente P2 del SAD §7.4 | Qué servicio escribe el tarifario (RF-22). Responsables: equipos de Rules y Core. |
+| [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | No hay qué aceptar sin cotización. |
+| [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868), [SCRUM-869](https://maniservices.atlassian.net/browse/SCRUM-869) | [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | La ejecución empieza con la cotización aceptada. |
+| [SCRUM-874](https://maniservices.atlassian.net/browse/SCRUM-874), [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) | [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868) | Se califica al terminar la ejecución; el servicio no cierra hasta que ambas partes califiquen (RF-19). |
+| [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866), [SCRUM-886](https://maniservices.atlassian.net/browse/SCRUM-886) | [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885), [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | Se compara la cotización contra el tarifario. |
+| [SCRUM-887](https://maniservices.atlassian.net/browse/SCRUM-887) | [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866) | El reporte agrupa las cotizaciones fuera de rango. |
+| [SCRUM-882](https://maniservices.atlassian.net/browse/SCRUM-882) | [SCRUM-881](https://maniservices.atlassian.net/browse/SCRUM-881) | Notifica mensajes nuevos. |
+| [SCRUM-884](https://maniservices.atlassian.net/browse/SCRUM-884), [SCRUM-882](https://maniservices.atlassian.net/browse/SCRUM-882) | ADR-0030 | Las notificaciones push las emite Core; en QA son simuladas. |
+| [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068) | [SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) | La zona se declara sobre el catálogo jerárquico. |
+
+### 0.5 Criterios de aceptación y DoD
+
+- **[SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) y [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068):** aplican sus criterios de `product/CRITERIOS_ACEPTACION_SPRINT4.md` y los CC/CA de Jira.
+- **Historias nuevas del Sprint 5:** no entran al sprint sin criterios C1 (positivo), C2 (negativo) y C3 (regla crítica), redactados por el PO a partir del RF y revisados por QA (DoR). Mínimo exigido:
+
+| Historia | C1 mínimo | C3 regla crítica |
+|---|---|---|
+| [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | El aliado asignado cotiza con mano de obra y materiales separados. | Solo el aliado asignado cotiza esa solicitud. |
+| [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | El cliente acepta, rechaza o pide ajuste, y la solicitud cambia de estado. | Un cliente no decide sobre cotizaciones de otro cliente o tenant. |
+| [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868), [SCRUM-869](https://maniservices.atlassian.net/browse/SCRUM-869) | El aliado marca inicio y fin, y registra eventos con fecha y hora. | Solo el aliado asignado registra la ejecución; los eventos no se editan. |
+| [SCRUM-874](https://maniservices.atlassian.net/browse/SCRUM-874), [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) | Cada parte califica una vez al terminar la ejecución. | El servicio no cierra hasta que ambas partes califiquen (RF-19). |
+| [SCRUM-884](https://maniservices.atlassian.net/browse/SCRUM-884) | Cada cambio de estado del servicio genera su notificación. | Un fallo de push no revierte la operación (QAS-02). |
+| [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885) | El administrador del tenant carga rangos de tarifa por categoría. | El tarifario del tenant A no se aplica al tenant B. |
+
+- **DoD:** `wiki/05-proceso/dor-y-dod.md` con los añadidos decididos por QA; subtarea QA de la historia finalizada con los IDs de casos de la matriz de pruebas; PR enlazado en Jira; aceptación funcional del PO. Ninguna historia se declara aceptada sin esa evidencia.
+
+### 0.6 Pruebas y deuda técnica
+
+El Sprint 5 entrega las pruebas. Antes de cualquier historia nueva se termina la regresión del Sprint 4 ([SCRUM-1267](https://maniservices.atlassian.net/browse/SCRUM-1267)) y se completa la evidencia de [SCRUM-1063](https://maniservices.atlassian.net/browse/SCRUM-1063), [SCRUM-1066](https://maniservices.atlassian.net/browse/SCRUM-1066) y [SCRUM-1069](https://maniservices.atlassian.net/browse/SCRUM-1069). No se deja deuda técnica abierta: lo que no cumpla el DoD vuelve a desarrollo.
+
+### 0.7 Riesgos
+
+| Riesgo | Impacto | Mitigación |
+|---|---|---|
+| Las P0 nuevas (47 SP) son casi todo el ciclo del servicio en un solo sprint. | No cerrar el MVP. | Comprometer solo las P0; las P1 entran si hay capacidad. Repartir la carga desde el Planning. |
+| Los pendientes P1 y P2 del SAD §7.4 siguen abiertos. | Bloquean cotización y tarifario. | Cerrarlos el primer día del sprint. |
+| La regresión del Sprint 4 ([SCRUM-1267](https://maniservices.atlassian.net/browse/SCRUM-1267)) no ha terminado. | Defectos que se arrastran al último sprint. | Terminarla antes de las historias nuevas. |
+| [SCRUM-1063](https://maniservices.atlassian.net/browse/SCRUM-1063), [SCRUM-1066](https://maniservices.atlassian.net/browse/SCRUM-1066) y [SCRUM-1069](https://maniservices.atlassian.net/browse/SCRUM-1069) no tienen evidencia de QA visible. | Historias finalizadas sin evidencia comprobable. | Enlazar la evidencia o crear su subtarea QA. |
+| [SCRUM-874](https://maniservices.atlassian.net/browse/SCRUM-874), [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) y [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866) llevan bloqueadas desde sprints anteriores. | Calificación y alertas sin avanzar. | Sus dependencias quedan explícitas en §0.4. |
+
+### 0.8 Decisiones para el Planning
+
+1. Confirmar el objetivo del Sprint 5 (§0.2).
+2. Crear la historia de **recuperar contraseña** (RF-04) como P1.
+3. Confirmar que el backlog secundario (RF-32 a RF-36) queda fuera del Sprint 5.
+4. Asignar responsables de las P0 nuevas, repartiendo la carga.
+5. Cerrar los pendientes P1 y P2 del SAD §7.4 el primer día del sprint.
+
+---
+
 
 ## 1. Épicas
 
@@ -43,29 +166,29 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 | `US-02.1.2` | `SCRUM-847` | Registro aliado empresa | Done | Medium | 3.0 | `US-02.1.2-M3`, `US-02.1.2-M2` |
 | `US-02.1.3` | `SCRUM-848` | Aprobar/rechazar registro de aliado | Done | Medium | 5.0 | `US-02.1.3-M2` |
 | `US-02.1.4` | `SCRUM-849` | Declarar zona de cobertura | Done | High | 5.0 | `US-02.1.4-R1`, `US-02.1.4-M2` |
-| `US-02.1.5` | `SCRUM-850` | Registrar empleado directo | To Do | Medium | 3.0 | — |
-| `US-02.1.6` | `SCRUM-855` | Aliado gestiona su disponibilidad | To Do | Medium | 3.0 | — |
+| `US-02.1.5` | `SCRUM-850` | Registrar empleado directo | Done | Medium | 3.0 | — |
+| `US-02.1.6` | `SCRUM-855` | Aliado gestiona su disponibilidad | Done | Medium | 3.0 | — |
 | `US-02.2.1` | `SCRUM-851` | Registro cliente persona natural | Done | Highest | 3.0 | `US-02.2.1-M2` |
-| `US-02.2.2` | `SCRUM-852` | Cliente empresa con múltiples sitios | To Do | Medium | 8.0 | — |
-| `US-02.2.3` | `SCRUM-853` | Reglas contextuales del sitio visibles al aliado | To Do | Medium | 5.0 | — |
-| `US-02.3.1` | `SCRUM-854` | Editar perfil propio | To Do | Medium | 2.0 | — |
-| `US-02.3.2` | `SCRUM-856` | Aceptación de Términos y Condiciones | To Do | Low | 8.0 | — |
+| `US-02.2.2` | `SCRUM-852` | Cliente empresa con múltiples sitios | Done | Medium | 8.0 | — |
+| `US-02.2.3` | `SCRUM-853` | Reglas contextuales del sitio visibles al aliado | Done | Medium | 5.0 | — |
+| `US-02.3.1` | `SCRUM-854` | Editar perfil propio | Done | Medium | 2.0 | — |
+| `US-02.3.2` | `SCRUM-856` | Aceptación de Términos y Condiciones | Done | Low | 8.0 | — |
 
 ### EP-03 — Catalogo y cobertura
 
 | Código | Clave | Historia | Estado | Prioridad | SP | Migración |
 |---|---|---|---|---|---|---|
 | `US-03.1.1` | `SCRUM-857` | Crear categoría con flujo operativo | Done | Highest | 5.0 | `US-03.1.1-M2`, `US-03.1.1-M6` |
-| `US-03.1.2` | `SCRUM-858` | Desactivar categoría sin afectar en curso | To Do | High | 8.0 | — |
-| `US-03.1.3` | `SCRUM-859` | Aliado declara categorías que atiende | In Progress | Medium | 3.0 | `US-03.1.3-M2` |
+| `US-03.1.2` | `SCRUM-858` | Desactivar categoría sin afectar en curso | Done | High | 8.0 | — |
+| `US-03.1.3` | `SCRUM-859` | Aliado declara categorías que atiende | Done | Medium | 3.0 | `US-03.1.3-M2` |
 
 ### EP-04A — Ciclo del servicio: solicitud y asignacion
 
 | Código | Clave | Historia | Estado | Prioridad | SP | Migración |
 |---|---|---|---|---|---|---|
 | `US-04.1.1` | `SCRUM-860` | Crear solicitud | Done | Highest | 3.0 | `US-04.1.1-M2`, `US-04.1.1-M6` |
-| `US-04.1.2` | `SCRUM-861` | Ver aliados válidos por cobertura y categoría | To Do | High | 5.0 | — |
-| `US-04.1.3` | `SCRUM-862` | Filtrar por tipo de aliado | To Do | High | 5.0 | — |
+| `US-04.1.2` | `SCRUM-861` | Ver aliados válidos por cobertura y categoría | Done | High | 5.0 | — |
+| `US-04.1.3` | `SCRUM-862` | Filtrar por tipo de aliado | Done | High | 5.0 | — |
 | `US-04.1.4` | `SCRUM-863` | Aceptar/rechazar solicitud sin doble asignación | Done | Highest | 5.0 | `US-04.1.4-M6` |
 | `US-04.1.5` | `SCRUM-864` | Priorizar por comisión ofrecida | To Do | Medium | 2.0 | — |
 
@@ -74,7 +197,7 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 | Código | Clave | Historia | Estado | Prioridad | SP | Migración |
 |---|---|---|---|---|---|---|
 | `US-04.2.1` | `SCRUM-865` | Cotización con mano de obra y materiales separados | To Do | High | 8.0 | — |
-| `US-04.2.2` | `SCRUM-866` | Alerta de tarifa bidireccional | To Do | High | 5.0 | — |
+| `US-04.2.2` | `SCRUM-866` | Alerta de tarifa bidireccional | Blocked | High | 5.0 | — |
 | `US-04.2.3` | `SCRUM-867` | Cliente acepta/rechaza/ajusta cotización | To Do | Medium | 8.0 | — |
 
 ### EP-04C — Ciclo del servicio: ejecucion y trazabilidad
@@ -92,8 +215,8 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 
 | Código | Clave | Historia | Estado | Prioridad | SP | Migración |
 |---|---|---|---|---|---|---|
-| `US-04.4.1` | `SCRUM-874` | Cliente califica al aliado | To Do | High | 8.0 | — |
-| `US-04.4.2` | `SCRUM-875` | Aliado califica al cliente | To Do | Medium | 3.0 | — |
+| `US-04.4.1` | `SCRUM-874` | Cliente califica al aliado | Blocked | High | 8.0 | — |
+| `US-04.4.2` | `SCRUM-875` | Aliado califica al cliente | Blocked | Medium | 3.0 | — |
 | `US-04.4.3` | `SCRUM-876` | Calificación agregada visible en el listado | To Do | High | 3.0 | — |
 | `US-04.5.1` | `SCRUM-877` | Cancelar solicitud antes de la ejecución | To Do | High | 8.0 | — |
 | `US-04.5.2` | `SCRUM-878` | Penalización por cancelación tardía | To Do | High | 3.0 | — |
@@ -145,8 +268,8 @@ La columna **Migración** indica qué historia nueva rehace a una cerrada bajo l
 
 | Código | Clave | Historia | Estado | Prioridad | SP | Migración |
 |---|---|---|---|---|---|---|
-| `US-09.1.1` | `SCRUM-1335` | Landing page comercial como entrada pública a la plataforma | To Do | Medium | — | — |
-| `US-09.1.2` | `SCRUM-1343` | Documentar la landing page y actualizar la arquitectura afectada | To Do | Medium | — | — |
+| `US-09.1.1` | `SCRUM-1335` | Landing page comercial como entrada pública a la plataforma | Done | Medium | — | — |
+| `US-09.1.2` | `SCRUM-1343` | Documentar la landing page y actualizar la arquitectura afectada | Done | Medium | — | — |
 
 - **Épica.** El código `US-09` las ubica en `EP-09` (`SCRUM-452`), pero en Jira no tienen épica
   asignada; la tabla de §1 no se cambia hasta que se vinculen. Tampoco tienen puntos estimados.
@@ -183,7 +306,7 @@ Al postergarse las épicas `EP-07` y `EP-08`, sus demás historias tampoco entra
 
 | Clave | Historia | Referencia SRS |
 |---|---|---|
-| `SCRUM-871` | Cliente rastrea ubicación del aliado en vivo | §1.2 "Fuera de alcance del MVP" y REST-01 |
+| `SCRUM-871` | Cliente rastrea ubicación del aliado en vivo | §1.2 "Fuera de alcance del MVP" y REST-01. Asignada al Incremento 2 el 2026-10-17 (§0.3) |
 
 **Backlog secundario** — etiqueta `backlog-secundario`
 
@@ -431,4 +554,6 @@ calidad P1 de ISO/IEC 25010.
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](../architecture/SDD.md) |
 | Modelo de datos | [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](../adr/) |
+| Matriz historia ↔ repositorios del Sprint 4 | [`product/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) |
+| Criterios de aceptación del Sprint 4 | [`product/CRITERIOS_ACEPTACION_SPRINT4.md`](CRITERIOS_ACEPTACION_SPRINT4.md) |
 | Políticas DevOps y versionamiento de despliegue | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) |

@@ -20,7 +20,9 @@ QA ejecuta las imágenes de `release` de los cuatro servicios, y las de Core, Ru
 stubs con datos fijos. Con eso, de los nueve escenarios del SDD §8:
 
 - **QAS-01** se ejecutó en la parte que QA permite (caso 5 del token) y **no cumple**: el Gateway
-  acepta tokens emitidos por un endpoint público de desarrollo para cualquier tenant y rol (H-01).
+  acepta tokens emitidos por un endpoint público de desarrollo para cualquier tenant y rol (H-01),
+  y rechaza los tokens reales que emite Supabase para `MANI-QA` (H-02): en QA solo funciona el
+  camino inseguro.
 - **QAS-06** se ejecutó por inspección y **no cumple**: 1 de 12 operaciones publicadas en QA tiene
   contrato OpenAPI.
 - **QAS-03** tiene una medición p95 reproducible con la carga nominal del SDD (300 sesiones,
@@ -171,7 +173,7 @@ corrida valida el arnés, no QAS-07.
 | ID | Severidad | Hallazgo | Evidencia | Responsable sugerido |
 |---|---|---|---|---|
 | H-01 | Crítica | `POST /api/v1/core/auth/dev-token` está publicado sin autenticación por el Gateway de QA y firma, con el secreto real del ambiente, tokens para cualquier `tenantId`, `userId` y rol que pida el cliente. El Gateway los acepta en las rutas protegidas de Core, Rules y Dispatch. En MANI-Node `release` (`6ca27ab`) la ruta no tiene guarda de entorno; `develop` ya la restringe a `development` y `test` (`isDevTokenEnabled`). `release` también conserva en el código un secreto JWT de respaldo, que en QA no se usa porque `SUPABASE_JWT_SECRET` está definida | §4.1; `qa_mon_01_calidad_2103z.txt` | Core (MANI-Node), Daniel para el despliegue |
-| H-02 | Alta (inferida) | `MANI-QA` y `MANI` firman con ECC P-256 (ES256); HS256 solo queda como llave previa. La validación que usa el Gateway (`/api/v1/auth/validate-token`) acepta solo HS256/384/512 en `release` y solo HS256 en `develop`; los PR de Dispatch validan con llave simétrica. Un token real emitido hoy por Supabase sería rechazado con 401. No se confirmó con un inicio de sesión real | Dashboard de Supabase, JWT Keys (19 oct); código de `release` y `develop` | Core y Dispatch |
+| H-02 | Alta | `MANI-QA` y `MANI` firman con ECC P-256 (ES256); HS256 solo queda como llave previa, y el JWKS público de `MANI-QA` publica únicamente la llave ES256. La validación que usa el Gateway (`/api/v1/auth/validate-token`) acepta solo HS256/384/512 en `release` y solo HS256 en `develop`; los PR de Dispatch validan con llave simétrica. **Comprobado el 20 oct 02:05 UTC:** un inicio de sesión real de `admin.t1@qa.mani.test` en `MANI-QA` devolvió 200 y un token ES256 con `tenant_id` de t1; el Gateway lo rechazó con 401 en `core/profiles/me`, `rules/evaluate-rate` y `dispatch/match`. Ningún usuario real puede usar las rutas protegidas en QA | `evidencia/20261020T020546Z_d02/confirmacion_d02_login_real.txt`; dashboard de Supabase (JWT Keys); código de `release` y `develop` | Core y Dispatch |
 | H-03 | Media | El Gateway de QA corre `6b475f9`, no la cabeza de `release` (`9874e93`): la imagen nueva se descargó pero el contenedor no se recreó. Lo desplegado no coincide con la rama que se promovió | `qa_mon_01_vm_qa_1746z.txt` | Daniel |
 | H-04 | Media | Ningún contenedor de QA declara `healthcheck:` en `docker-compose.qa.yml`, aunque INFRAESTRUCTURA_MANI §9 lo exige | `qa_mon_01_vm_qa_1720z.txt` | Daniel |
 | H-05 | Media | No hay plataforma de métricas ni de logs centralizados en QA, y los logs de Core, Rules y Dispatch no son JSON estructurado (ADR-0006). En la muestra, Rules y Dispatch no registraron las peticiones atendidas | §2.2 | Daniel y dueños de servicio |
@@ -200,7 +202,7 @@ sugerida.
 | Propuesta | Hallazgo | Resumen sugerido | Prioridad sugerida | Etiquetas sugeridas | Estado de la propuesta |
 |---|---|---|---|---|---|
 | D-01 | H-01 | BUG-SEC-03 - El endpoint dev-token es público en QA y emite tokens aceptados para cualquier tenant y rol | Highest | `seguridad`, `multi-tenant`, `ADR-0018`, `qa` | Comprobado |
-| D-02 | H-02 | BUG-SEC-04 - La validación de JWT del Gateway no acepta la firma ES256 que usa Supabase | High | `seguridad`, `ADR-0031`, `qa` | **Por confirmar** con un inicio de sesión real en `MANI-QA`; no se propone registrar hasta entonces |
+| D-02 | H-02 | BUG-SEC-04 - La validación de JWT del Gateway rechaza los tokens ES256 que emite Supabase: ningún usuario real accede a las rutas protegidas | High | `seguridad`, `ADR-0031`, `qa` | Comprobado (20 oct, inicio de sesión real) |
 | D-03 | H-03 | BUG-QA-01 - El Gateway de QA no corre la revisión de release | Medium | `devops`, `qa` | Comprobado |
 | D-04 | H-04 | BUG-QA-02 - Los contenedores de QA no declaran healthcheck en docker-compose.qa.yml | Medium | `devops`, `qa` | Comprobado |
 | D-05 | H-05 | BUG-QA-03 - QA no tiene métricas ni logs estructurados | Medium | `devops`, `ADR-0006`, `qa` | Comprobado, pero transversal: se sugiere tratarlo dentro del alcance de CFG-30 y no como defecto aparte |
@@ -213,7 +215,7 @@ Detalle para el registro, por propuesta:
 | Propuesta | Ambiente | Cómo se reproduce | Esperado | Observado | Evidencia |
 |---|---|---|---|---|---|
 | D-01 | QA, Core `6ca27ab`, Gateway `6b475f9` | `POST /api/v1/core/auth/dev-token` sin `Authorization`, con `{"tenantId":"<uuid>","role":"admin"}`; usar el token en `GET /api/v1/core/profiles/me` | 404 en el primer paso | 200 y JWT HS256; el segundo paso da 200 con el tenant y el rol pedidos, también en Rules y Dispatch | §4.1; `newman_qas01_perimetro.txt` (petición 10) |
-| D-02 | QA, Supabase `MANI-QA` | Iniciar sesión con un usuario de `MANI-QA` y llamar `GET /api/v1/core/profiles/me` por el Gateway | 200 | No ejecutado; por configuración se espera 401 | Dashboard de Supabase (JWT Keys, 19 oct); `auth.routes.js` de `release` y `develop` |
+| D-02 | QA, Supabase `MANI-QA`, Core `6ca27ab` | `qa/monitoreo_qas/confirmar_d02.sh` desde Calidad: password grant de `admin.t1@qa.mani.test` en `MANI-QA` y llamada con ese token a `GET /api/v1/core/profiles/me`, `POST /api/v1/rules/evaluate-rate` y `POST /api/v1/dispatch/match` | 200 con el tenant del claim | Login 200 con token ES256 (kid `a069a215`); 401 `UNAUTHORIZED` en las tres rutas | `evidencia/20261020T020546Z_d02/confirmacion_d02_login_real.txt` |
 | D-03 | VM de QA | `docker inspect` de `mani-api-gateway`, etiqueta `org.opencontainers.image.revision` | Cabeza de `release` (`9874e93`) | `6b475f9`; la imagen `:staging` nueva está descargada pero el contenedor no se recreó | `qa_mon_01_vm_qa_1746z.txt` |
 | D-04 | VM de QA | `verificar_monitoreo.sh vm_qa`, sección de healthcheck | `healthcheck:` por contenedor (INFRAESTRUCTURA_MANI §9) | `no_declarado` en los seis | `qa_mon_01_vm_qa_durante_carga.txt` |
 | D-05 | VM de QA | `verificar_monitoreo.sh calidad` y `vm_qa` | Métricas y logs JSON con `correlation_id` (ADR-0006) | Sin contenedores ni puertos de métricas; Rules y Dispatch sin log de peticiones | `qa_mon_01_calidad.txt`; `qa_mon_01_vm_qa_durante_carga.txt` |
@@ -234,7 +236,6 @@ Detalle para el registro, por propuesta:
 
 - No se ejecutó ninguna prueba sobre datos reales de `MANI-QA`: los servicios desplegados no la
   consultan.
-- H-02 es inferencia de configuración y código; falta un inicio de sesión real en `MANI-QA`.
 - La causa de que las rutas protegidas de Rules y Dispatch respondan 200 con el Gateway `6b475f9`
   (cuyo `proxy_pass` termina en `/`) no se explicó; se observó el 200, no se supuso.
 - El monitoreo de QA no tiene retención: `docker logs` conserva lo que el contenedor no rotó.

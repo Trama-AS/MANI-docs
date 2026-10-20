@@ -23,6 +23,7 @@ k6 en la VM de QA le quitaría CPU a los servicios medidos y alteraría el p95.
 | `k6/qas07_aceptacion_concurrente.js` | QAS-07: N aceptaciones simultáneas sobre una solicitud (arnés o evidencia) | Calidad |
 | `k6/qas07_verificar_asignacion.sql` | QAS-07: lectura en base del estado final y del ganador | Supabase MANI-QA |
 | `ejecutar_calidad.sh` | Orquesta todo lo anterior en Calidad e instala k6 si falta | Calidad |
+| `confirmar_d02.sh` | H-02: inicio de sesión real en `MANI-QA` y llamada por el Gateway; pide anon key, correo y contraseña con entrada oculta e imprime solo códigos y el algoritmo del token | Calidad (`ssh -t`) |
 | `redactar_evidencia.mjs` | Reemplaza JWT y valores `Bearer` por `<REDACTADO>` antes de versionar | Calidad o local |
 | `plantilla_evidencia.md` | Registro por escenario: fecha, ambiente, carga, medido, umbral, estado, defectos | — |
 | `qas06_api_vs_contrato.md` | QAS-06: tabla API publicada en QA contra contrato OpenAPI | — |
@@ -33,9 +34,9 @@ k6 en la VM de QA le quitaría CPU a los servicios medidos y alteraría el p95.
 `FUENTE_TOKEN` es obligatoria y queda registrada en cada resumen:
 
 - `supabase`: password grant contra el proyecto Supabase `MANI-QA`. Requiere `SUPABASE_URL`,
-  `SUPABASE_ANON_KEY`, `QA_EMAIL` y `QA_PASSWORD` como variables de entorno. Al 19 oct 2026 este
-  camino no sirve: `MANI-QA` firma con ES256 y el Core desplegado en QA solo valida HS256, HS384 y
-  HS512 (ver el informe, hallazgo H-02).
+  `SUPABASE_ANON_KEY`, `QA_EMAIL` y `QA_PASSWORD` como variables de entorno. Al 20 oct 2026 este
+  camino no sirve: `MANI-QA` firma con ES256 y el Gateway rechaza esos tokens con 401 (comprobado
+  con `confirmar_d02.sh`; hallazgo H-02 del informe).
 - `dev_token`: `POST /api/v1/core/auth/dev-token` del Gateway de QA. Usa el defecto H-01 del
   informe. Toda corrida con esta fuente se declara así.
 

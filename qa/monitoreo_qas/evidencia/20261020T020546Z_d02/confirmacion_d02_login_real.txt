@@ -1,0 +1,10 @@
+Anon key de MANI-QA (oculta): 
+Correo del usuario de prueba: admin.t1@qa.mani.test
+Contrasena del usuario de prueba (oculta): 
+fecha_utc=2026-10-20T02:05:46Z host=NBIG02 usuario=admin.t1@qa.mani.test
+1 login MANI-QA: HTTP=200 token_obtenido=si
+2 token: alg=ES256 kid=a069a215 iss=https://hpsxdotaizzclkeufzct.supabase.co/auth/v1 app_metadata.tenant_id=10000000-0000-4000-8000-000000000011 user_role=admin_tenant
+3 GET /api/v1/core/profiles/me por el Gateway con el token real: HTTP=401 cuerpo={"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-d02-1792461947"}
+3 POST /api/v1/rules/evaluate-rate por el Gateway con el token real: HTTP=401 cuerpo={"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-d02-1792461947"}
+3 POST /api/v1/dispatch/match por el Gateway con el token real: HTTP=401 cuerpo={"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa1266-d02-1792461947"}
+fin

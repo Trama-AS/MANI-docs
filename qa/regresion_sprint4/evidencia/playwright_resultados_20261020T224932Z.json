@@ -1,0 +1,651 @@
+{
+  "config": {
+    "configFile": "/suite/playwright.config.js",
+    "rootDir": "/suite/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "reporte_html",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "resultados.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/suite/artefactos",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "",
+        "name": "",
+        "testDir": "/suite/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.48.2",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e_solicitud.spec.js",
+      "file": "e2e_solicitud.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E solicitud de servicio en QA",
+          "file": "e2e_solicitud.spec.js",
+          "line": 12,
+          "column": 6,
+          "specs": [
+            {
+              "title": "E2E-01 SCRUM-1072 el cliente t1 crea la solicitud en su sitio",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "respuesta",
+                      "description": "201 {\"solicitud\":{\"id\":\"bc01333b-a0e6-4c79-a2cb-71aec3c34f87\",\"estado\":\"PENDIENTE\",\"categoriaId\":\"60000000-0000-4000-8000-000000000011\",\"categoria\":\"Plomeria\",\"flujoOperativo\":null,\"descripcion\":\"Fuga en "
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 1498,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:37.204Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/e2e_solicitud-E2E-solicitu-29eab-ea-la-solicitud-en-su-sitio/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dbe63ac024be8034eb01-de590581f55674cccca8",
+              "file": "e2e_solicitud.spec.js",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "E2E-02 SCRUM-861/862 Dispatch encuentra al aliado t1 por cobertura, categoria y tipo",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "respuesta",
+                      "description": "200 {\"message\":\"Aliados válidos obtenidos con éxito por cobertura y categoría (RF-12, ADR-0011).\",\"correlationId\":\"qa1267-pw-admin_t1-1792536578775\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"requ"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 210,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:38.758Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/e2e_solicitud-E2E-solicitu-f0114--cobertura-categoria-y-tipo/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dbe63ac024be8034eb01-541a6a8e85da7ce70c99",
+              "file": "e2e_solicitud.spec.js",
+              "line": 33,
+              "column": 3
+            },
+            {
+              "title": "E2E-03 SCRUM-1073 Dispatch orquesta el despacho",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "respuesta",
+                      "description": "200 {\"message\":\"Despacho orquestado con éxito. Oferta transmitida a 1 aliados elegibles (ADR-0016).\",\"requestId\":\"bc01333b-a0e6-4c79-a2cb-71aec3c34f87\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"z"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 540,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:38.993Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/e2e_solicitud-E2E-solicitu-12149-spatch-orquesta-el-despacho/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dbe63ac024be8034eb01-151c7db618d3a5d42891",
+              "file": "e2e_solicitud.spec.js",
+              "line": 46,
+              "column": 3
+            },
+            {
+              "title": "E2E-04 SCRUM-1074 el aliado t1 acepta y la reaceptacion es idempotente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "respuesta",
+                      "description": "primera 200 segunda 200"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 825,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:39.563Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/e2e_solicitud-E2E-solicitu-2f1eb-reaceptacion-es-idempotente/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dbe63ac024be8034eb01-7d86fd4b16aa5d289a99",
+              "file": "e2e_solicitud.spec.js",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "E2E-05 Cross-tenant: el aliado t2 no puede aceptar la solicitud de t1",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "respuesta",
+                      "description": "404"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 286,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:40.411Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/e2e_solicitud-E2E-solicitu-b2664--aceptar-la-solicitud-de-t1/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dbe63ac024be8034eb01-8176992a6dae8d1b9b82",
+              "file": "e2e_solicitud.spec.js",
+              "line": 67,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "flutter_web.spec.js",
+      "file": "flutter_web.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Flutter Web en QA",
+          "file": "flutter_web.spec.js",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "FW-01 la aplicacion carga, arranca el motor de Flutter y llega a /login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 8944,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:40.723Z",
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/suite/artefactos/flutter_web-Flutter-Web-en-c5a37--de-Flutter-y-llega-a-login/test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/flutter_web-Flutter-Web-en-c5a37--de-Flutter-y-llega-a-login/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3c09ff3ff458a9e975e4-44178a125d43eb6fac8c",
+              "file": "flutter_web.spec.js",
+              "line": 16,
+              "column": 3
+            },
+            {
+              "title": "FW-02 la imagen de QA apunta al Supabase de MANI-QA",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "supabase_host",
+                      "description": "tjxueukivwxsgipltqwb.supabase.co"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "failed",
+                      "duration": 52,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"hpsxdotaizzclkeufzct\"\u001b[39m\nReceived string:    \u001b[31m\"tjxueukivwxsgipltqwb.supabase.co\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"hpsxdotaizzclkeufzct\"\u001b[39m\nReceived string:    \u001b[31m\"tjxueukivwxsgipltqwb.supabase.co\"\u001b[39m\n    at /suite/tests/flutter_web.spec.js:30:18",
+                        "location": {
+                          "file": "/suite/tests/flutter_web.spec.js",
+                          "column": 18,
+                          "line": 30
+                        },
+                        "snippet": "  28 |     const host = hostDe(await respuesta.text(), 'SUPABASE_URL');\n  29 |     test.info().annotations.push({ type: 'supabase_host', description: host });\n> 30 |     expect(host).toContain(datos.ref_supabase_qa);\n     |                  ^\n  31 |   });\n  32 |\n  33 |   test('FW-03 la imagen de QA apunta al Gateway de QA y no a localhost', async ({ request }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/suite/tests/flutter_web.spec.js",
+                            "column": 18,
+                            "line": 30
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"hpsxdotaizzclkeufzct\"\u001b[39m\nReceived string:    \u001b[31m\"tjxueukivwxsgipltqwb.supabase.co\"\u001b[39m\n\n  28 |     const host = hostDe(await respuesta.text(), 'SUPABASE_URL');\n  29 |     test.info().annotations.push({ type: 'supabase_host', description: host });\n> 30 |     expect(host).toContain(datos.ref_supabase_qa);\n     |                  ^\n  31 |   });\n  32 |\n  33 |   test('FW-03 la imagen de QA apunta al Gateway de QA y no a localhost', async ({ request }) => {\n\n    at /suite/tests/flutter_web.spec.js:30:18"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:53.228Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/flutter_web-Flutter-Web-en-370f4-unta-al-Supabase-de-MANI-QA/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/suite/tests/flutter_web.spec.js",
+                        "column": 18,
+                        "line": 30
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3c09ff3ff458a9e975e4-1593a0f5bd361a31fac9",
+              "file": "flutter_web.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "FW-03 la imagen de QA apunta al Gateway de QA y no a localhost",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "gateway_host",
+                      "description": "localhost"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "status": "failed",
+                      "duration": 156,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected pattern: not \u001b[32m/^(localhost|127\\.0\\.0\\.1)(:\\d+)?$/\u001b[39m\nReceived string:      \u001b[31m\"\u001b[7mlocalhost\u001b[27m\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected pattern: not \u001b[32m/^(localhost|127\\.0\\.0\\.1)(:\\d+)?$/\u001b[39m\nReceived string:      \u001b[31m\"\u001b[7mlocalhost\u001b[27m\"\u001b[39m\n    at /suite/tests/flutter_web.spec.js:37:22",
+                        "location": {
+                          "file": "/suite/tests/flutter_web.spec.js",
+                          "column": 22,
+                          "line": 37
+                        },
+                        "snippet": "  35 |     const host = hostDe(await respuesta.text(), 'API_GATEWAY_URL');\n  36 |     test.info().annotations.push({ type: 'gateway_host', description: host || 'sin definir' });\n> 37 |     expect(host).not.toMatch(/^(localhost|127\\.0\\.0\\.1)(:\\d+)?$/);\n     |                      ^\n  38 |   });\n  39 | });\n  40 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/suite/tests/flutter_web.spec.js",
+                            "column": 22,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected pattern: not \u001b[32m/^(localhost|127\\.0\\.0\\.1)(:\\d+)?$/\u001b[39m\nReceived string:      \u001b[31m\"\u001b[7mlocalhost\u001b[27m\"\u001b[39m\n\n  35 |     const host = hostDe(await respuesta.text(), 'API_GATEWAY_URL');\n  36 |     test.info().annotations.push({ type: 'gateway_host', description: host || 'sin definir' });\n> 37 |     expect(host).not.toMatch(/^(localhost|127\\.0\\.0\\.1)(:\\d+)?$/);\n     |                      ^\n  38 |   });\n  39 | });\n  40 |\n\n    at /suite/tests/flutter_web.spec.js:37:22"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:54.637Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/flutter_web-Flutter-Web-en-f4546-eway-de-QA-y-no-a-localhost/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/suite/tests/flutter_web.spec.js",
+                        "column": 22,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3c09ff3ff458a9e975e4-b2d904f91e761e45e8c5",
+              "file": "flutter_web.spec.js",
+              "line": 33,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "landing.spec.js",
+      "file": "landing.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "SCRUM-1335 Landing comercial",
+          "file": "landing.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1335-01 carga la landing y muestra las tarifas base",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "status": "passed",
+                      "duration": 2761,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:55.721Z",
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-23679--y-muestra-las-tarifas-base/test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-23679--y-muestra-las-tarifas-base/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3370f39aa0d6cc6ba3dc-bc48afd31a33ec38e31d",
+              "file": "landing.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "1335-02 el estimador muestra un rango y el aviso de estimacion",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "status": "passed",
+                      "duration": 3130,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:49:59.285Z",
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-c8b7c-go-y-el-aviso-de-estimacion/test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-c8b7c-go-y-el-aviso-de-estimacion/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3370f39aa0d6cc6ba3dc-b3df0be08940b8c6844f",
+              "file": "landing.spec.js",
+              "line": 16,
+              "column": 3
+            },
+            {
+              "title": "1335-03 el boton de ingreso lleva a Flutter Web",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "status": "passed",
+                      "duration": 15722,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-20T22:50:03.054Z",
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-d556d-ingreso-lleva-a-Flutter-Web/test-finished-1.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-d556d-ingreso-lleva-a-Flutter-Web/test-finished-2.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/suite/artefactos/landing-SCRUM-1335-Landing-d556d-ingreso-lleva-a-Flutter-Web/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3370f39aa0d6cc6ba3dc-7323095b901a981b6f31",
+              "file": "landing.spec.js",
+              "line": 24,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-20T22:49:36.291Z",
+    "duration": 44473.465,
+    "expected": 9,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

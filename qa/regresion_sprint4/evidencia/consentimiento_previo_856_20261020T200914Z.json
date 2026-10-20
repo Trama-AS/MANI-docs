@@ -1,0 +1,26 @@
+{
+ "descripcion": "Extracto de resumen.json de la corrida Newman 20261020T200914Z en QA (coleccion previa a la auditoria). Se versiona solo para mostrar que el cliente t1 registro su consentimiento sobre el documento legal e918ef92 de t1; las corridas 20261020T212453Z y 20261020T224842Z responden consents vacio en 856-02 y 856-06 porque ese consentimiento ya existe.",
+ "corrida": "20261020T200914Z",
+ "origen": "~/scrum_1267/20261020T200914Z/resumen.json y resultado_redactado.json (cuerpo de la peticion de 856-02) en la VM de QA",
+ "casos": [
+  {
+   "caso": "[856-01] SCRUM-856 - Documentos legales activos del tenant t1 (sesion iniciada)",
+   "http": 200,
+   "resultado": "OK",
+   "fallas": [],
+   "cuerpo": "{\"correlationId\":\"qa1267-856-01-26956280\",\"data\":[{\"id\":\"e918ef92-1f7f-41dc-b9c5-23988cbcccec\",\"tenantId\":\"10000000-0000-4000-8000-000000000011\",\"tipo\":\"TERMS_AND_CONDITIONS\",\"vers"
+  },
+  {
+   "caso": "[856-02] SCRUM-856 - Cliente t1 registra su consentimiento",
+   "http": 201,
+   "resultado": "OK",
+   "fallas": [],
+   "cuerpo": "{\"message\":\"Consentimientos registrados con éxito\",\"correlationId\":\"qa1267-856-02-26956280\",\"consents\":[{\"id\":\"bf2f2ff9-c968-4596-b519-df497f9dcb8b\",\"tenantId\":\"10000000-0000-4000-"
+  }
+ ],
+ "peticion_856_02": {
+  "documentoLegalIds": [
+   "e918ef92-1f7f-41dc-b9c5-23988cbcccec"
+  ]
+ }
+}

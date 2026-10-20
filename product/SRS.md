@@ -248,7 +248,7 @@ Los identificadores no se renumeran: los requisitos RF-29 a RF-36 se incorporaro
 |---|---|---:|---|
 | **RF-10** | Permitir al tenant definir, activar y desactivar categorías de servicio. | Alta | RF-02 |
 | **RF-11** | Permitir asociar aliados con las categorías de servicio que pueden atender. | Media | RF-05, RF-10 |
-| **RF-29** | Permitir que los aliados gestionen su disponibilidad, indicando los horarios y periodos en los que pueden recibir solicitudes. Solo los aliados disponibles se presentan como aliados válidos. | Alta | RF-07 |
+| **RF-29** | Permitir que los aliados gestionen su disponibilidad registrando los periodos en los que no están disponibles (por ejemplo, vacaciones o enfermedad). Un periodo que se cruce con otro ya registrado se rechaza indicando el motivo. Durante un periodo de no disponibilidad el aliado no se presenta como aliado válido. | Alta | RF-07 |
 
 ## 4.4 Ciclo del servicio
 
@@ -407,7 +407,24 @@ Cada requisito funcional se relaciona con las historias de Jira que lo implement
 Observaciones:
 
 - RF-01, RF-03 y RF-04 no tienen una historia propia en Jira; su implementación aparece solo en historias de migración (por ejemplo SCRUM-1061). Se debe crear o identificar la historia correspondiente.
-- SCRUM-871 (rastreo del aliado en vivo) no se relaciona con ningún requisito: la geolocalización en tiempo real está fuera del alcance del MVP (§1.2).
+- SCRUM-871 (rastreo del aliado en vivo) no se relaciona con ningún requisito: la geolocalización en tiempo real está fuera del alcance del MVP (§1.2). Se asignó al Incremento 2 y se formaliza en el Backlog V5 (SCRUM-1245).
+
+
+## 7.2 Estado funcional por capacidad
+
+Inventario de las capacidades de negocio de MANI y su estado real al 19 de octubre de 2026 (SCRUM-1260). El estado lo da la historia de migración, no la historia original cerrada con la arquitectura anterior. **Ninguna capacidad está verificada todavía por QA en la arquitectura vigente.** El detalle por servicio está en el SAD §7.5.
+
+| Capacidad | Requisitos | Estado |
+|---|---|---|
+| Plataforma multi-tenant y autenticación | RF-01..RF-04, RF-31 | Autenticación migrada; términos y condiciones en desarrollo; gestión de tenants y recuperación de contraseña sin historia |
+| Directorio de aliados | RF-05, RF-06, RF-29, RF-30 | Persona natural migrada; empresa migrada en Core con la pantalla de la app bloqueada; empleado directo, disponibilidad y perfil en desarrollo; aprobación en migración |
+| Directorio de clientes | RF-08, RF-09 | Persona natural migrada; cliente empresa con sitios y reglas del sitio en desarrollo |
+| Catálogo y cobertura | RF-02, RF-07, RF-10, RF-11 | Categorías, asociación y reglas migradas; zonas en migración; desactivar categoría bloqueada |
+| Solicitud y despacho | RF-12..RF-14 | Creación, orquestación y aceptación en migración; aliados válidos y filtro en desarrollo; ranking no iniciado |
+| Ciclo del servicio | RF-15..RF-19, RF-32..RF-36 | No iniciado |
+| Comunicación | RF-20, RF-21 | No iniciado |
+| Tarifario y reportes | RF-16, RF-22, RF-23 | No iniciado |
+| Segundo incremento | RF-24..RF-28 | Incremento 2 |
 
 ---
 

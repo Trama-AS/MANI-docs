@@ -172,7 +172,17 @@ negocio         asignación      de la plataforma
 
 - **MANI-Rules-Service — decide.** Un único servicio: evalúa si una condición de negocio se cumple. Ranking, requisitos KYC, tarifarios y reglas por tenant. La elegibilidad la resuelve Core (SAD §4.2.1 y §7.3); Rules aporta el orden del listado, no quién es elegible. No es un backend general.
 - **MANI-Dispatch-Service — asigna.** Un único servicio: selecciona aliados válidos, asigna, controla estados y exclusiones. Consume Rules antes de asignar; no reimplementa las reglas.
-- **MANI-Core-Service — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación. Las solicitudes son de Dispatch (SAD §4.2.1, `despacho.solicitud` en ModeloDatos §13).
+- **MANI-Core-Service — opera.** El núcleo funcional: usuarios y tenants, identidad, aliados, solicitudes, cotizaciones, documentos y multimedia, notificaciones, reportes, disponibilidad y ubicación.
+
+> **Quién crea la solicitud: punto abierto, verificado el 2026-10-20.** La implementación fusionada
+> sigue el criterio ARQ-03 **«Core crea, Dispatch orquesta»**: `POST /solicitudes` vive en el Core
+> Node y persiste la solicitud en una sola transacción (`Trama-AS/MANI-Node#44`, SCRUM-1072,
+> fusionado en `develop` el 2026-10-19, 355 pruebas en verde), mientras Dispatch orquesta el reparto
+> (`Trama-AS/MANI-.NET#2`, SCRUM-1073). Eso coincide con ADR-0029 §1, que hace a Core el productor de
+> `SolicitudCreada`. **Contradice a [`SAD.md`](./SAD.md) §4.2.1**, que afirma que «las solicitudes
+> pertenecen a Dispatch», y a `ModeloDatos.md` §13, que asigna `despacho.solicitud` a Dispatch. El
+> conflicto es entre documentos de línea base y requiere decisión de Mesa; este documento no lo
+> resuelve por su cuenta.
 
 El enfoque políglota no implica libertad tecnológica irrestricta. Cada tecnología debe justificar su existencia, mantener contratos estables y cumplir los mismos criterios de seguridad, observabilidad, pruebas y despliegue.
 

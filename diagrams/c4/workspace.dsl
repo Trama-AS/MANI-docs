@@ -134,7 +134,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
                 dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de ranking y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
                 dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. Incluye despacho.outbox: el evento AliadoAsignado se escribe en la misma transacción que confirma la asignación (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Las solicitudes viven en Supabase Dispatch (`despacho.solicitud`). Incluye servicio.outbox para SolicitudCreada y CotizacionAceptada (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Quién crea la solicitud es punto abierto: la implementación fusionada la crea en Core (ARQ-03, MANI-Node#44) y SAD §4.2.1 la asigna a Dispatch. Incluye servicio.outbox para SolicitudCreada y CotizacionAceptada (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
 
                 storage = container "Supabase Storage" "Documentos KYC y multimedia en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
                 realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
@@ -192,7 +192,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         // infraestructura, timeout, reintento solo si la operación es idempotente y falla
         // cerrado — 503 al llamador, sin degradar a lógica local ni a un valor por omisión.
         core -> rules "Evalúa las reglas de la categoría del tenant. Implementado en RulesServiceHttpClient: timeout 3 s, un reintento, 503 si Rules no responde" "HTTPS / JSON"
-        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). NO IMPLEMENTADO al 2026-10-20: Dispatch no consulta a Core ni a ninguna base; devuelve candidatos fijos en el controlador (MANI-.NET/Controllers/DispatchController.cs:33-39). Frontera de datos propuesta en ADR-0030, en estado Propuesto" "HTTPS / JSON"
+        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). DESVIACIÓN VIGENTE al 2026-10-20: en develop Dispatch no usa esta API, consulta PostgreSQL directamente con PostgresAllyRepository contra tablas de Core (MANI-.NET#3, SCRUM-861, fusionado), y resuelve requestId contra solicitud. En main y en la imagen desplegada en QA devuelve candidatos fijos (DispatchController.cs:33-39). Frontera de datos propuesta en ADR-0030, en estado Propuesto" "HTTPS / JSON"
         dispatch -> rules "Consulta el orden del listado de candidatos (ranking)" "HTTPS / JSON"
 
         // Producción de eventos hacia el bus diferido: el servicio escribe en su outbox dentro de

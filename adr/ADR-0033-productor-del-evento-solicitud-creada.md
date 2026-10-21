@@ -72,6 +72,21 @@ zona antes de conformar el listado de candidatos (RF-12, `SAD.md` §7.3).
 - Queda pendiente, y no lo resuelve este ADR, quién expone el endpoint de creación: hoy no existe en
   ningún servicio.
 
+## Evidencia posterior a la redacción — 2026-10-20
+
+> **Este ADR no debe llevarse a Mesa tal como está redactado.** Después de escribirlo se verificó
+> que la implementación fusionada sigue el criterio **ARQ-03, «Core crea, Dispatch orquesta»**:
+> `POST /solicitudes` vive en el Core Node y persiste la solicitud en una sola transacción
+> (`Trama-AS/MANI-Node#44`, SCRUM-1072, fusionado en `develop` el 2026-10-19 con 355 pruebas en
+> verde), y Dispatch orquesta el reparto (`Trama-AS/MANI-.NET#2`, SCRUM-1073).
+>
+> Con eso, la fila de `SolicitudCreada` de ADR-0029 §1 —Core como productor— **coincide con la
+> implementación**, y la premisa de este ADR, que la solicitud la persiste Dispatch, no se sostiene.
+> Lo que queda abierto no es el productor del evento sino la contradicción entre `SAD.md` §4.2.1 y
+> `ModeloDatos.md` §13, que asignan la solicitud a Dispatch, y el criterio ARQ-03 que el equipo ya
+> implementó. Esa es la decisión que corresponde a la Mesa, y debería resolverse antes de reabrir
+> este ADR o de retirarlo.
+
 ## Estado de aprobación
 
 Propuesto. No reemplaza nada mientras la Mesa de Arquitectura no lo apruebe con el quórum de

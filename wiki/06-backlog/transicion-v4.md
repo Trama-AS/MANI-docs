@@ -57,7 +57,7 @@ En `-M3` **sólo cambia `data/datasources`**: las interfaces de `domain/reposito
 | `US-02.2.1` Registro cliente persona natural | SCRUM-851 | Done | RF-08 | Core Service |
 | `US-03.1.1` Crear categoría con flujo operativo | SCRUM-857 | Done | RF-10 | Core Service + Rules Service |
 | `US-03.1.3` Aliado declara categorías | SCRUM-859 | In Progress | RF-11 | Core Service |
-| `US-04.1.1` Crear solicitud | SCRUM-860 | Done | RF-12 | Dispatch Service (dueño de la solicitud) + Core Service para elegibilidad |
+| `US-04.1.1` Crear solicitud | SCRUM-860 | Done | RF-12 | Core Service crea la solicitud (ARQ-03, `MANI-Node#44`); Dispatch orquesta el reparto |
 | `US-04.1.4` Aceptar/rechazar sin doble asignación | SCRUM-863 | Done | RF-14 | Dispatch Service |
 
 Subtareas adicionales fuera del patrón, por historia: revalidar aislamiento de KYC entre aliados (`US-02.1.3`) · reemplazar selección libre de zona por catálogo jerárquico con coincidencia exacta (`US-02.1.4`) · separar gestión de categoría en Core de las reglas evaluables en Rules (`US-03.1.1`) · separar creación en Core de la orquestación del despacho (`US-04.1.1`) · **decidir dónde vive la atomicidad y revalidar PoC-001**, más idempotencia y ausencia de doble asignación bajo concurrencia (`US-04.1.4`).

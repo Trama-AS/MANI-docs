@@ -1,0 +1,67 @@
+Consultas de solo lectura sobre MANI-QA (SCRUM-1267, R-06, R-07 y R-09)
+Corrida (UTC): 20261021T170441Z
+Metodo: psql 16 (postgres:16-alpine) en la VM de QA, dentro de BEGIN READ ONLY ... ROLLBACK, con las
+cadenas de conexion de /opt/mani/.env.qa (DATABASE_URL de Core y DISPATCH_DB_CONNECTION de Dispatch).
+Las credenciales no se imprimen; del usuario de conexion se publica solo el nombre del rol.
+
+== Catalogo (conexion de Core), codigo psql 0
+BEGIN
+-- 1. Politicas tenant_isolation_% (R-06)
+ schemaname |     tablename      |             policyname              |  roles   
+------------+--------------------+-------------------------------------+----------
+ public     | aliado             | tenant_isolation_aliado             | {public}
+ public     | aliado_categoria   | tenant_isolation_aliado_categoria   | {public}
+ public     | calificacion       | tenant_isolation_calificacion       | {public}
+ public     | categoria_servicio | tenant_isolation_categoria_servicio | {public}
+ public     | cliente            | tenant_isolation_cliente            | {public}
+ public     | cobertura_aliado   | tenant_isolation_cobertura_aliado   | {public}
+ public     | cotizacion         | tenant_isolation_cotizacion         | {public}
+ public     | documento_kyc      | tenant_isolation_documento_kyc      | {public}
+ public     | evento_servicio    | tenant_isolation_evento_servicio    | {public}
+ public     | mensaje            | tenant_isolation_mensaje            | {public}
+ public     | notificacion       | tenant_isolation_notificacion       | {public}
+ public     | poc_asignacion_log | tenant_isolation_poc_log            | {public}
+ public     | sitio              | tenant_isolation_sitio              | {public}
+ public     | tarifa_referencia  | tenant_isolation_tarifa_referencia  | {public}
+ public     | usuario            | tenant_isolation_usuario            | {public}
+(15 rows)
+
+-- 1b. Conteo de politicas tenant_isolation_% con TO public (R-06)
+ politicas_to_public 
+---------------------
+                  15
+(1 row)
+
+-- 2. RLS y FORCE RLS de poc_asignacion_log (R-07)
+      relname       | relrowsecurity | relforcerowsecurity 
+--------------------+----------------+---------------------
+ poc_asignacion_log | t              | f
+(1 row)
+
+-- 3. Roles de servicio (R-09)
+      rolname      | rolcanlogin | rolbypassrls 
+-------------------+-------------+--------------
+ mani_core_svc     | f           | f
+ mani_dispatch_svc | f           | f
+ postgres          | t           | t
+(3 rows)
+
+ROLLBACK
+
+== Usuario de conexion de Core (DATABASE_URL): postgres.<ref_proyecto>; codigo psql 0
+BEGIN
+ rol_de_conexion | rolbypassrls | rolsuper 
+-----------------+--------------+----------
+ postgres        | t            | f
+(1 row)
+
+ROLLBACK
+
+== Usuario de conexion de Dispatch (DISPATCH_DB_CONNECTION, interpretada como Npgsql): postgres.<ref_proyecto>; codigo psql 0
+BEGIN
+ rol_de_conexion | rolbypassrls | rolsuper 
+-----------------+--------------+----------
+ postgres        | t            | f
+(1 row)
+
+ROLLBACK

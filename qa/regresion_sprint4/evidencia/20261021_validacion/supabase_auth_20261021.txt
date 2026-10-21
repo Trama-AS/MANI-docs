@@ -1,0 +1,25 @@
+Supabase MANI-QA: claims de Auth y hook de access token, consulta de solo lectura 2026-10-21T17:04:18Z
+Panel (JWT Keys): clave actual ECC P-256 kid a069a215-25f2-4958-8b90-ef5b289a025a; anterior HS256 (Previous, sin revocar). Auth Hooks: Customize Access Token habilitado con public.custom_access_token_hook.
+BEGIN
+-- usuarios de Auth por claims de app_metadata
+       tenant       |    user_role    | usuarios | confirmados | login_ultimos_2_dias 
+--------------------+-----------------+----------+-------------+----------------------
+ (sin tenant_id)    | (sin user_role) |       27 |          27 |                    0
+ acme-servicios     | admin_tenant    |        1 |           1 |                    1
+ acme-servicios     | aliado          |        1 |           1 |                    0
+ acme-servicios     | cliente         |        1 |           1 |                    0
+ nova-mantenimiento | admin_tenant    |        1 |           1 |                    0
+ nova-mantenimiento | aliado          |        1 |           1 |                    0
+ nova-mantenimiento | cliente         |        1 |           1 |                    0
+ poc-concurrencia   | aliado          |       50 |          50 |                    0
+ poc-concurrencia   | cliente         |        1 |           1 |                    0
+(9 rows)
+
+-- hook de access token configurado (funciones custom_access_token en la base)
+             funcion             
+---------------------------------
+ public.custom_access_token_hook
+(1 row)
+
+ROLLBACK
+

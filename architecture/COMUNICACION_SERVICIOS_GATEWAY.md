@@ -57,6 +57,10 @@ El sistema desacopla la capa de presentación de la lógica de negocio y la pers
 | :--- | :--- | :--- | :---: | :--- |
 | **`MANI-Frontend`** | Flutter / Dart | Frontend | N/A (Cliente) | Presentación UI para Clientes, Aliados y Admins. |
 | **`MANI-API-Gateway`** | NGINX | Entrada & Proxy | `80` (Host) — ver nota de TLS | Enrutamiento, CORS, trazabilidad (`X-Correlation-ID`) y balanceo. |
+| **`MANI-Core-Service`** | Node.js / Express | Core Backend | `3000` (Interno) | Gestión de usuarios, perfiles, tenants, KYC, catálogos e historial. |
+| **`MANI-Rules-Service`** | Java 17 / Spring Boot | Motor de Reglas | `8080` (Interno) | Evaluación de reglas por tenant, validación de tarifas y ranking de aliados. |
+| **`MANI-Dispatch-Service`**| C# / .NET 8 | Despacho | `5000` (Interno) | Selección de aliados elegibles por categoría y coincidencia exacta de zona, sin radio ni proximidad (REST-01, RNF-09, ADR-0011), y **exclusión concurrente atómica**. |
+| **`MANI-Docs`** | Markdown / Git | Documentación | N/A | Repositorio central de ADRs, SAD, SDD, Gobierno y manuales técnicos. |
 
 > **TLS: requisito de seguridad pendiente, no conformidad.** `SDD.md` §3.2 y `SAD.md` §6 exigen
 > terminación TLS en el borde. El `nginx.conf` del repositorio declara solo `listen 80`
@@ -64,10 +68,6 @@ El sistema desacopla la capa de presentación de la lógica de negocio y la pers
 > 2026-10-20, **no** una desviación aceptada: mientras no haya TLS, el tráfico de QA viaja en claro
 > y el escenario de confidencialidad QAS-01 no puede declararse conforme por esta vía. El puerto 80
 > es admisible solo en el Compose de desarrollo local.
-| **`MANI-Core-Service`** | Node.js / Express | Core Backend | `3000` (Interno) | Gestión de usuarios, perfiles, tenants, KYC, catálogos e historial. |
-| **`MANI-Rules-Service`** | Java 17 / Spring Boot | Motor de Reglas | `8080` (Interno) | Evaluación de reglas por tenant, validación de tarifas y ranking de aliados. |
-| **`MANI-Dispatch-Service`**| C# / .NET 8 | Despacho | `5000` (Interno) | Selección de aliados elegibles por categoría y coincidencia exacta de zona, sin radio ni proximidad (REST-01, RNF-09, ADR-0011), y **exclusión concurrente atómica**. |
-| **`MANI-Docs`** | Markdown / Git | Documentación | N/A | Repositorio central de ADRs, SAD, SDD, Gobierno y manuales técnicos. |
 
 ---
 

@@ -587,12 +587,27 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 1. Aliado                 → Flutter        carga los documentos requeridos por el tenant
 2. Flutter                → API Gateway    envía los documentos
 3. API Gateway            → Core           enruta tras validar el token
-4. Core                   → Storage        bucket privado tenant_id/aliado_id/documento
-5. Core                   → PostgreSQL     registra el documento; aliado en verificación
-6. Administrador tenant   → Flutter        aprueba o rechaza al aliado (RF-06)
+4. Core                   → Rules          qué documentos exige este tenant (RF-02, RNF-10)
+5. Core                   → Storage        bucket privado tenant_id/aliado_id/documento
+6. Core                   → PostgreSQL     registra el documento; aliado en verificación
+7. Administrador tenant   → Flutter        aprueba o rechaza al aliado (RF-06)
 ```
 
 La aprobación es una decisión humana del tenant, no un efecto automático de la carga.
+
+El paso 4 es el que faltaba en esta vista: la lista de documentos exigidos es configuración del
+tenant y la evalúa el Rules Service, igual que el ranking y el tarifario (§4.3.1, `SAD.md` §7.1 y
+§9, componente `KYC Policy Strategy` del modelo). Así esta vista coincide con
+[`SECUENCIAS.md`](./SECUENCIAS.md) §4, que ya lo mostraba.
+
+> **Diseño, no funcionalidad operativa.** Verificado el 2026-10-20: **no existe configuración de
+> documentos requeridos por tenant** en ninguna parte. La tabla `documento_kyc` del DDL real guarda
+> solo lo ya cargado, con `tipo_documento` como texto libre y un valor por omisión literal en el
+> registro (`MANI-Flutter/database/init/01-schema.sql:97`,
+> `03-registro-aliado.sql:88`, `07-registro-aliado-empresa.sql:97`). RF-02 y RNF-10 están sin
+> implementar para KYC, y el Core desplegado en QA es un stub sin endpoints de KYC (reporte QA de
+> SCRUM-1266 §3, QAS-01 y QAS-09 bloqueados). El paso 4 describe el diseño acordado, no algo que
+> hoy ocurra.
 
 ### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
 

@@ -192,7 +192,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         // infraestructura, timeout, reintento solo si la operación es idempotente y falla
         // cerrado — 503 al llamador, sin degradar a lógica local ni a un valor por omisión.
         core -> rules "Evalúa las reglas de la categoría del tenant. Implementado en RulesServiceHttpClient: timeout 3 s, un reintento, 503 si Rules no responde" "HTTPS / JSON"
-        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). NO IMPLEMENTADO al 2026-10-20: Dispatch no consulta a Core ni a ninguna base; devuelve candidatos fijos en el controlador (MANI-.NET/Controllers/DispatchController.cs:33-39). Frontera de datos en ADR-0030" "HTTPS / JSON"
+        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). NO IMPLEMENTADO al 2026-10-20: Dispatch no consulta a Core ni a ninguna base; devuelve candidatos fijos en el controlador (MANI-.NET/Controllers/DispatchController.cs:33-39). Frontera de datos propuesta en ADR-0030, en estado Propuesto" "HTTPS / JSON"
         dispatch -> rules "Consulta el orden del listado de candidatos (ranking)" "HTTPS / JSON"
 
         // Producción de eventos hacia el bus diferido: el servicio escribe en su outbox dentro de
@@ -471,6 +471,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             aliado -> flutter "Carga los documentos requeridos por el tenant"
             flutter -> gateway "Envía los documentos"
             gateway -> core "Enruta tras validar el token"
+            core -> rules "Consulta qué documentos exige este tenant (RF-02, RNF-10). DISEÑO: la configuración de requisitos KYC no está implementada"
             core -> storage "Guarda el documento en el bucket privado, aislado por tenant y aliado"
             core -> dbCore "Registra el documento y deja al aliado en verificación"
             adminTenant -> flutter "Revisa la documentación y aprueba o rechaza al aliado (RF-06)"

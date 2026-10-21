@@ -6,7 +6,7 @@
 | Responsable | Santiago Hernández (QA) |
 | Fecha de ejecución | 20 de octubre de 2026 |
 | Ambiente | QA `10.43.100.141`, rama `release`, base Supabase `MANI-QA` |
-| Corridas (UTC) | Vigentes, con la colección corregida: Newman `20261020T224842Z` y Playwright `20261020T224932Z`. Anteriores: Newman `20261020T212453Z` y Playwright `20261020T212519Z`. Consultas de solo lectura sobre MANI-QA: `20261020T225146Z` |
+| Corridas (UTC) | Vigentes, con la colección corregida: Newman `20261020T224842Z` y Playwright `20261020T224932Z`. Anteriores: Newman `20261020T212453Z` y Playwright `20261020T212519Z`. Consultas de solo lectura sobre MANI-QA: `20261020T225146Z`. Gate de CI desde el runner de Calidad ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)): Newman `20261020T234635Z` y Playwright `20261020T235520Z` |
 | Revisión | 20 de octubre de 2026: estados, cobertura y defectos revisados contra el DoD de QA (`product/CRITERIOS_ACEPTACION_SPRINT4.md` §4), los criterios de SCRUM-1257, la matriz SCRUM-1264, ADR-0005 y el reporte de SCRUM-1266. Actualizado con la corrida de la colección corregida y la evidencia de R-06, R-07 y R-09 (sección 16) |
 | Matriz | [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](MANI_Matriz_Ejecucion_Sprint4.xlsx) |
 | Evidencia | [`qa/regresion_sprint4/evidencia/`](../qa/regresion_sprint4/evidencia/) |
@@ -60,7 +60,7 @@ Estos cambios no están versionados: el ambiente sobre el que se ejecutó la reg
 
 - **Datos:** tenants de prueba `acme-servicios` (t1) y `nova-mantenimiento` (t2) de `supabase/seed/seed_qa_multitenant.sql`, la semilla que SCRUM-1264 toma como base (supuesto S-03). El aliado `aliado_t1b` (sin servicio asignado) no está en la semilla. Cada corrida crea datos marcados con `QA <corrida>`.
 - **Identidad de prueba:** tokens HS256 firmados dentro de la VM con el JWT secret legado de MANI-QA, con los claims `sub`, `app_metadata.tenant_id` y `app_metadata.user_role`. No salen de la VM. `/auth/dev-token` responde 404 en QA (PER-05).
-- **Newman:** colección generada por `qa/newman/generar_coleccion.js`, ejecutada en contenedor dentro de la VM contra el Gateway (`localhost:80`). La guía CFG4-03 prevé ejecutar desde el runner de la VM de Calidad; eso queda pendiente (L-02).
+- **Newman:** colección generada por `qa/newman/generar_coleccion.js`, ejecutada en contenedor dentro de la VM contra el Gateway (`localhost:80`) y, con el gate de CI habilitado, desde el runner `nbig02-calidad` de la VM de Calidad que prevé la guía CFG4-03 ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)), con el mismo resultado.
 - **Playwright:** imagen oficial `mcr.microsoft.com/playwright:v1.48.2-jammy` en la VM, con trace, capturas y reporte HTML. Los traces se conservan en la VM porque contienen tokens de prueba ya vencidos.
 - **Evidencia versionada:** el ejecutor decodifica las respuestas de Newman, enmascara contraseñas temporales y tokens y verifica que no quede ninguna credencial antes de guardar.
 - **Trazabilidad:** cada caso de la regresión se relaciona con los casos de SCRUM-1264 que cubre, de forma completa o parcial (hoja `ejecucion_casos`, columna `caso_1264`, y hoja `cobertura_1264`), como pide el DoD de QA.
@@ -212,7 +212,7 @@ Fundamento, corrección sugerida y responsable de cada defecto: hoja `defectos_p
 - Las subtareas "QA - Validar US" de 850, 852, 853, 854, 855, 856, 858, 861, 862, 1060, 1070, 1072, 1073, 1074 y 1335 están en Finalizada. Su cierre se basó en el merge a `develop` y el CI en verde, no en una ejecución en QA. Resultado real en QA de esas 15 historias: 12 Ejecutado, 2 Fallido (853 y 856) y 1 Bloqueado (1060).
 - Las historias 853, 856 y 1066 están en Finalizada con un fallo en QA. El texto de cada historia ("Flujo de estados y QA obligatorio") indica que, si QA falla, se registra el defecto y la historia no se marca Done; la decisión sobre el estado corresponde a la Scrum Master.
 - El DoD de QA (`CRITERIOS_ACEPTACION_SPRINT4.md` §4) pide que la evidencia vaya en la subtarea QA de cada historia con los IDs de casos de SCRUM-1264. La evidencia está en este reporte y en la matriz, y el 20 de octubre se registró con un comentario en cada una de las 14 subtareas de historias con ejecución (estado QA, casos de SCRUM-1264, casos de la regresión, corrida y defectos). SCRUM-1328 (SCRUM-1060, Bloqueado) y las subtareas de historias No disponible o Bloqueado no tienen ejecución que registrar.
-- SCRUM-1277 y SCRUM-1278 están en Finalizada sin PR fusionado y con el gate de CI sin ejecutar.
+- SCRUM-1277 y SCRUM-1278 están en Finalizada sin PR fusionado. El gate de CI se habilitó y se ejecutó el 20 de octubre (en rojo por R-01 a R-04).
 - SCRUM-1063, 1066 y 1068 no tienen subtarea QA (pendiente PE4 de SCRUM-1257).
 - SCRUM-865, 867, 868, 869, 870, 879 y 1335 tienen subtarea QA pero no tienen casos diseñados en SCRUM-1264.
 - Este reporte no modifica Jira.
@@ -232,20 +232,20 @@ COLECCION=qa/newman/mani_regresion_sprint4.postman_collection.json bash qa/ejecu
 SUITE_DIR=qa/playwright bash qa/ejecutar_playwright_qa.sh
 ```
 
-Se ejecutan en la VM de QA desde una copia de MANI-APIGateway, o desde la VM de Calidad indicando las URLs de QA (`qa/README.md`). La corrida de las 21:24 UTC usó la colección y la suite empaquetadas, idénticas a las versionadas en ese momento. Las corridas vigentes (`20261020T224842Z` y `20261020T224932Z`) se hicieron desde una copia de la rama `qa/SCRUM-1267-regresion-sprint4` en 7a5d6ea, con la colección regenerada por `generar_coleccion.js` sin diferencias frente a la versionada. El workflow `.github/workflows/qa-regresion.yml` (jobs `newman_qa` y `playwright_qa`) queda omitido hasta que DevOps cree el environment `qa-regresion`, su secreto y las variables `QA_*` (L-08).
+Se ejecutan en la VM de QA desde una copia de MANI-APIGateway, o desde la VM de Calidad indicando las URLs de QA (`qa/README.md`). La corrida de las 21:24 UTC usó la colección y la suite empaquetadas, idénticas a las versionadas en ese momento. Las corridas vigentes (`20261020T224842Z` y `20261020T224932Z`) se hicieron desde una copia de la rama `qa/SCRUM-1267-regresion-sprint4` en 7a5d6ea, con la colección regenerada por `generar_coleccion.js` sin diferencias frente a la versionada. El workflow `.github/workflows/qa-regresion.yml` (jobs `newman_qa` y `playwright_qa`) está habilitado desde el 20 de octubre: environment `qa-regresion` con revisor obligatorio y el secreto `QA_JWT_SECRET`, y variables de repositorio `QA_GATEWAY_URL`, `QA_FLUTTER_URL`, `QA_LANDING_URL` y `QA_REGRESION_HABILITADA=true` (`qa/README.md`). Cada job espera la aprobación del revisor.
 
 ## 13. Límites y supuestos
 
 | Id | Tema | Descripción | Origen |
 |---|---|---|---|
 | L-01 | Identidad de prueba | Toda la regresión usó tokens HS256 sintéticos. Un usuario real recibe un token ES256 que el Gateway rechaza (R-10). Los usuarios de prueba que prevé SCRUM-1269 no se pueden usar mientras R-10 siga abierto. | Desarrollo (R-10) |
-| L-02 | Punto de ejecución | Newman y Playwright se ejecutaron dentro de la VM de QA, no desde el runner de Calidad que prevé la guía CFG4-03. El puerto 80 de QA desde el equipo del QA por la VPN responde reset; no se probó desde Calidad. | DevOps |
+| L-02 | Punto de ejecución (cerrada) | Cerrada el 20 de octubre: además de la VM de QA, la regresión corrió desde el runner `nbig02-calidad` de la VM de Calidad ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)) con el mismo resultado. Desde el equipo del QA por la VPN, el puerto 80 de QA sigue respondiendo reset. | DevOps |
 | L-03 | Cobertura de SCRUM-1264 | 20 casos completos y 22 parciales de 228; de los 200 de prioridad Alta, 13 completos y 19 parciales. ADR-0005 exige al menos 90 % de casos críticos: no se cumple. | QA |
 | L-04 | Interfaz | No se ejecutaron flujos de interfaz por R-04 y R-10. | DevOps y Desarrollo |
 | L-05 | Casos B4 y B6 | B4-01 es un control con un id inexistente; el borrado ajeno se prueba en 855-04. B6 no cubre las URL firmadas de Storage porque el camino de documentos KYC falla antes (R-03). | QA |
 | L-06 | Expectativas y casos invalidados | Tras la primera corrida se ajustaron expectativas (1074-02 y E2E-04 de 409 a 200 por reintento idempotente documentado; 853-02 redefinido y 853-04 agregado). En la auditoría se invalidó 1063-01 y 856-02 quedó como no concluyente. En la corrida `20261020T224842Z`, 1063-01 ya rechaza por la Cámara de Comercio y cuenta como evidencia; 856-02 sigue no concluyente porque el cliente t1 ya había consentido. | QA |
 | L-07 | Datos de prueba | Cada corrida crea datos `QA <corrida>` en MANI-QA. 1074-05 y 1074-06 se excluyeron para no alterar la solicitud de QAS-07. `aliado_t1b` no está en la semilla versionada. | QA |
-| L-08 | Gate de CI | El workflow no se ha ejecutado. Según GOBIERNO_DEL_EQUIPO §2.3 los secretos y el CI los decide DevOps: el environment, el secreto y las variables quedan como propuesta. | DevOps |
+| L-08 | Gate de CI | Habilitado por QA el 20 de octubre y ejecutado una vez ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)): Newman 77 solicitudes, 125 aserciones y 5 fallidas; Playwright 11 pruebas y 9 aprobadas. Los dos jobs quedan en rojo por R-01 a R-04, que es la corrida en rojo que pide el DoD; la corrida en verde depende de que se corrijan esos defectos. El gate no es un check obligatorio de la rama. GOBIERNO_DEL_EQUIPO §2.3 asigna CI/CD y secretos a DevOps. | QA y DevOps |
 | L-09 | Aislamiento en el motor | RLS no se ejerce en QA (R-06, R-07 y R-09, con evidencia en `consultas_rls_20261020T225146Z.txt`). | Desarrollo y DevOps |
 | L-10 | Correcciones sin corrida (cerrada) | Cerrada el 20 de octubre: la colección corregida se ejecutó en QA (Newman `20261020T224842Z` y Playwright `20261020T224932Z`). La verificación por reproducción queda como antecedente. | QA |
 | L-11 | Pruebas de desarrollo y contrato | Los casos de SCRUM-1264 previstos como prueba de integración nativa, SQL, revisión estática, prueba unitaria de Flutter, k6 o manual no forman parte de esta regresión, y no se recopiló la evidencia de desarrollo. Los tres casos PENDIENTE de la colección de contrato `postman/MANI-Core` (login, refresh y logout) siguen pendientes. | QA |
@@ -257,7 +257,7 @@ Atendidos el 20 de octubre: la corrida de la colección corregida (L-10), la evi
 1. Ampliar la colección hacia los casos de SCRUM-1264 con su ID, empezando por los 74 casos cross-tenant sin ejecutar, y completar los casos PENDIENTE de la colección de contrato.
 2. Verificar CA-3 a CA-7 de SCRUM-1335 (contexto en la redirección, revisión de código y pipeline, ejecución local).
 3. Agregar a la semilla `aliado_t1b`, documentos legales por tenant, un usuario sin consentimiento (para que 856-02 sea concluyente) y un segundo aliado elegible de t1, y reemplazar la doble aceptación excluida.
-4. Habilitar el gate de CI (decisión de DevOps) y comprobarlo con una corrida en rojo y otra en verde desde el runner de Calidad.
+4. Comprobar el gate de CI con una corrida en verde cuando se corrijan R-01 a R-04 (la corrida en rojo ya se hizo).
 5. Probar el flujo con un token real de Supabase Auth y los flujos de interfaz cuando se corrijan R-10 y R-04.
 6. Restablecer la solicitud de PoC y retirar de la VM los respaldos de `.env.qa` y los traces de las corridas (requiere autorización).
 7. Corregir R-01 a R-11 por sus responsables y repetir la regresión.
@@ -271,8 +271,8 @@ Atendidos el 20 de octubre: la corrida de la colección corregida (L-10), la evi
 | Al menos un recorrido E2E en QA con sus APIs y datos | Parcial | Recorrido completo por API con datos de QA; desde Flutter Web, bloqueado por R-04 y R-10 |
 | Informe de defectos priorizados | Cumplido como propuesta | 10 abiertos con severidad, prioridad sugerida, reproducción, resultado esperado y observado |
 | Resultados presentados a Camila (PO) | Pendiente | |
-| SCRUM-1277: colección versionada, workflow de CI, casos ejecutados, evidencia por historia, gate comprobable | Parcial | Colección y workflow listos y colección corregida ejecutada en QA (`20261020T224842Z`); el gate no se ha ejecutado (L-08) y los casos PENDIENTE del contrato siguen abiertos |
-| SCRUM-1278: suite reproducible, ejecución de CI contra QA, evidencias asociadas a historias, registro de errores | Parcial | Suite con lockfile y job de CI listos; sin ejecución en CI y sin flujos Flutter Web → Gateway → servicios |
+| SCRUM-1277: colección versionada, workflow de CI, casos ejecutados, evidencia por historia, gate comprobable | Parcial | Colección versionada, colección corregida ejecutada en QA (`20261020T224842Z`) y gate de CI ejecutado desde el runner de Calidad, en rojo por R-01 a R-03 ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)). Falta la corrida en verde y siguen abiertos los casos PENDIENTE del contrato |
+| SCRUM-1278: suite reproducible, ejecución de CI contra QA, evidencias asociadas a historias, registro de errores | Parcial | Suite con lockfile ejecutada en CI contra QA ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492): 11 pruebas, 9 aprobadas; FW-02 y FW-03 por R-04). Faltan los flujos Flutter Web → Gateway → servicios, bloqueados por R-04 y R-10 |
 | SCRUM-1279: matriz aprobado, fallido, bloqueado o no ejecutable y validación de la PO | Parcial | 10 de 90 casos cross-tenant aplicables ejecutados y aprobados; RLS no ejercido (con evidencia versionada); validación de la PO pendiente |
 
 ## 16. Cambios frente a la versión anterior de este reporte
@@ -290,3 +290,8 @@ Actualización del 20 de octubre, con la colección corregida ejecutada en QA:
 - Cobertura de SCRUM-1264: de 20 completos y 21 parciales a 20 completos y 22 parciales. Ningún estado de historia cambia.
 - R-06, R-07 y R-09 tienen evidencia versionada. R-06 se corrige a 15 políticas `tenant_isolation_*` (18 con `TO public` en total). R-09 queda comprobado para Core y Dispatch: ambos se conectan como `postgres` con BYPASSRLS. Un primer intento con la cadena de Dispatch falló porque QA interpretó mal las comillas de la cadena Npgsql, no por la credencial; Dispatch sí accede a la base (1074-01 asigna la solicitud) y la consulta repetida con la cadena bien interpretada está en `dispatch_rol_20261020T232719Z.txt`.
 - L-10 se cierra.
+
+Actualización del 20 de octubre, gate de CI:
+
+- QA habilitó el gate en MANI-APIGateway (environment `qa-regresion`, secreto `QA_JWT_SECRET` y variables `QA_*`) y lo ejecutó desde el runner `nbig02-calidad` ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)). Newman `20261020T234635Z` y Playwright `20261020T235520Z` dan el mismo resultado que en la VM de QA; los dos jobs quedan en rojo por R-01 a R-04. El log público y los artefactos se revisaron sin hallar credenciales.
+- L-02 se cierra y L-08 se actualiza. Evidencia: `newman_resumen_ci_20261020T234635Z.json` y `playwright_resultados_ci_20261020T235520Z.json`.

@@ -32,7 +32,7 @@ Ninguna historia queda en Aprobado. "Ejecutado" significa que los casos ejecutad
 - **Newman (corrida `20261020T224842Z`, colección corregida):** 77 solicitudes y 125 aserciones, con 5 fallidas en 4 casos (853-04, 856-05, 1066-01 y 1066-02), que corresponden a defectos de Desarrollo. 1063-01 ya rechaza por la falta de la Cámara de Comercio y cuenta como evidencia; los casos nuevos 856-00 y 856-06 aprueban. Un caso ejecutado no cuenta como evidencia: 856-02 (no concluyente). 1074-05 y 1074-06 están excluidos de la colección.
 - **Playwright (corrida `20261020T224932Z`):** 11 pruebas, 9 aprobadas y 2 fallidas (FW-02 y FW-03), que son la evidencia de R-04.
 - **Recorrido E2E en QA:** crear solicitud (1072) → aliados elegibles (861/862) → despacho (1073) → aceptación (1074), con control cross-tenant, aprobado en sus 5 pasos por API. El recorrido desde Flutter Web, que exige SCRUM-1278, está bloqueado por R-04 y R-10.
-- **Defectos propuestos:** 10 abiertos (2 críticos, 5 altos y 3 medios) y 1 retirado (sección 8).
+- **Defectos propuestos:** 10 abiertos (2 críticos, 5 altos y 3 medios) y 1 retirado (sección 8). Los cinco que bloquean la aprobación se registraron en Jira el 20 de octubre: R-02 [SCRUM-1358](https://maniservices.atlassian.net/browse/SCRUM-1358), R-01 [SCRUM-1359](https://maniservices.atlassian.net/browse/SCRUM-1359), R-03 [SCRUM-1360](https://maniservices.atlassian.net/browse/SCRUM-1360), R-04 [SCRUM-1361](https://maniservices.atlassian.net/browse/SCRUM-1361) y R-10 [SCRUM-1362](https://maniservices.atlassian.net/browse/SCRUM-1362).
 
 ## 2. Ambiente verificado y preparación
 
@@ -165,16 +165,16 @@ El aislamiento comprobado es el de la aplicación a través del Gateway. La defe
 
 ## 8. Defectos propuestos
 
-Los defectos se proponen aquí; su registro en el backlog lo decide la Scrum Master. El formato sigue el de las propuestas de SCRUM-1266 y el de los defectos existentes del proyecto (tipo Error, resumen `BUG-<área>-NN`, como SCRUM-1333 y SCRUM-1334). La numeración R-xx es propia de este reporte; la hoja `equivalencias` de la matriz la relaciona con la versión anterior y con SCRUM-1266.
+R-01 a R-04 y R-10 se registraron en Jira el 20 de octubre (SCRUM-1358 a SCRUM-1362), asignados y enlazados a su historia y a SCRUM-1267, sin sprint ni estimación; su priorización corresponde a la Scrum Master. R-06 a R-09 y R-11 siguen como propuestas. El formato sigue el de las propuestas de SCRUM-1266 y el de los defectos existentes del proyecto (tipo Error, resumen `BUG-<área>-NN`, como SCRUM-1333 y SCRUM-1334). La numeración R-xx es propia de este reporte; la hoja `equivalencias` de la matriz la relaciona con la versión anterior y con SCRUM-1266.
 
 | Id | Propuesta | Severidad | Prioridad sugerida | Historia | Hallazgo | Origen |
 |---|---|---|---|---|---|---|
-| R-10 | BUG-SEC-04 (ya propuesto en SCRUM-1266) | Crítica | Highest | Todas con rutas protegidas | `validate-token` acepta solo HS256; Supabase Auth de MANI-QA emite ES256. Ningún usuario real usa las rutas protegidas. SCRUM-1266 lo propuso como High; con Core real desplegado bloquea a todos los usuarios | Desarrollo |
-| R-04 | BUG-QA-07 | Crítica | Highest | Historias con interfaz | La imagen `mani-flutter:staging` se construye con `.env.example`: Supabase de producción y Gateway en `localhost` | DevOps, con Flutter |
+| R-10 | BUG-SEC-04, [SCRUM-1362](https://maniservices.atlassian.net/browse/SCRUM-1362) (propuesto antes en SCRUM-1266) | Crítica | Highest | Todas con rutas protegidas | `validate-token` acepta solo HS256; Supabase Auth de MANI-QA emite ES256. Ningún usuario real usa las rutas protegidas. SCRUM-1266 lo propuso como High; con Core real desplegado bloquea a todos los usuarios | Desarrollo |
+| R-04 | BUG-QA-07, [SCRUM-1361](https://maniservices.atlassian.net/browse/SCRUM-1361) | Crítica | Highest | Historias con interfaz | La imagen `mani-flutter:staging` se construye con `.env.example`: Supabase de producción y Gateway en `localhost` | DevOps, con Flutter |
 | R-08 | BUG-QA-08 | Alta | High | Todas | La promoción a release no dejó QA operativo; compose y despliegue sin versionar | DevOps |
-| R-01 | BUG-GW-01 | Alta | High | SCRUM-856 | El Gateway exige token en `GET /legal/documents/active`, que Core declara pública | Desarrollo (Gateway) |
-| R-02 | BUG-CORE-01 | Alta | High | SCRUM-853 | `GET /sites/:id/rules` no permite al aliado asignado leer las reglas | Desarrollo (Core) |
-| R-03 | BUG-CORE-02 | Alta | High | SCRUM-1066 | El repositorio selecciona `documento_kyc.created_at`; la tabla tiene `fecha_carga` | Desarrollo (Core) |
+| R-01 | BUG-GW-01, [SCRUM-1359](https://maniservices.atlassian.net/browse/SCRUM-1359) | Alta | High | SCRUM-856 | El Gateway exige token en `GET /legal/documents/active`, que Core declara pública | Desarrollo (Gateway) |
+| R-02 | BUG-CORE-01, [SCRUM-1358](https://maniservices.atlassian.net/browse/SCRUM-1358) | Alta | High | SCRUM-853 | `GET /sites/:id/rules` no permite al aliado asignado leer las reglas | Desarrollo (Core) |
+| R-03 | BUG-CORE-02, [SCRUM-1360](https://maniservices.atlassian.net/browse/SCRUM-1360) | Alta | High | SCRUM-1066 | El repositorio selecciona `documento_kyc.created_at`; la tabla tiene `fecha_carga` | Desarrollo (Core) |
 | R-09 | BUG-SEC-05 | Alta | High | SCRUM-1279 | Core y Dispatch conectan como `postgres`; los roles de servicio no tienen LOGIN | DevOps |
 | R-11 | BUG-DISP-01 | Media | Medium | 861, 862, 1073, 1074 | Las respuestas de error de Dispatch no tienen `code` (criterio transversal T5); confirma el pendiente PE5 de SCRUM-1257 | Desarrollo (Dispatch) |
 | R-06 | BUG-SEC-06 | Media | Medium | SCRUM-1279 | 15 políticas heredadas `tenant_isolation_*` con `TO public` | Desarrollo |
@@ -295,3 +295,4 @@ Actualización del 20 de octubre, gate de CI:
 
 - QA habilitó el gate en MANI-APIGateway (environment `qa-regresion`, secreto `QA_JWT_SECRET` y variables `QA_*`) y lo ejecutó desde el runner `nbig02-calidad` ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)). Newman `20261020T234635Z` y Playwright `20261020T235520Z` dan el mismo resultado que en la VM de QA; los dos jobs quedan en rojo por R-01 a R-04. El log público y los artefactos se revisaron sin hallar credenciales.
 - L-02 se cierra y L-08 se actualiza. Evidencia: `newman_resumen_ci_20261020T234635Z.json` y `playwright_resultados_ci_20261020T235520Z.json`.
+- R-01 a R-04 y R-10 se registraron en Jira como SCRUM-1358 a SCRUM-1362, con su historia, el PR que introdujo cada cambio y la corrección propuesta.

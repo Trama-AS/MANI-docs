@@ -1,0 +1,8 @@
+== Usuario de conexion de Dispatch (DISPATCH_DB_CONNECTION, interpretada como Npgsql): postgres.<ref_proyecto>; codigo psql 0
+BEGIN
+ rol_de_conexion | rolbypassrls | rolsuper 
+-----------------+--------------+----------
+ postgres        | t            | f
+(1 row)
+
+ROLLBACK

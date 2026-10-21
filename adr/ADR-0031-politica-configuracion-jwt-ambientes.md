@@ -7,6 +7,7 @@
 - **Jira:** CFG4-04 (Auditoría y definición JWT), SCRUM-1102 (Emisión/Propagación JWT)
 - **Relacionado con:** ADR-0012 (Persistencia multi-tenant), ADR-0018 (Identificación de tenant), ADR-0022 (Lógica de negocio en servicios), ADR-0027 (Alcance Supabase), ADR-0028 (Nombres repos y ambientes), SCRUM-1103 (Core Node), SCRUM-1104 (Rules Java), SCRUM-1105 (Dispatch .NET), bloqueante previo para SCRUM-1263
 - **Enmienda:** SDD §3.1, §4.3 y SAD §6.2
+- **Modificado por:** SCRUM-1362 (BUG-SEC-04, 2026-10-21): §1 *Algoritmo* acepta ES256 verificado con el JWKS del proyecto, porque Supabase Auth firma con ES256 y la restricción a HS256 dejaba fuera a todo usuario real.
 
 ---
 
@@ -40,7 +41,11 @@ La auditoría técnica identificó dos requerimientos esenciales para cumplir lo
 
 ### 1. Cadena de Emisión y Ciclo de Vida
 - **Emisor (Issuer):** Supabase Auth (GoTrue) en ambientes integrados; endpoint interno controlado `/api/v1/auth/dev-token` en `MANI-Core-Node` exclusivamente para pruebas automatizadas y CI/CD.
-- **Algoritmo:** `HS256` (HMAC con SHA-256) en ambientes de desarrollo y staging; preparado para `RS256` vía JWKS de Supabase en producción.
+- **Algoritmos (lista blanca, SCRUM-1362):** la verificación acepta exactamente dos algoritmos, y cada uno se verifica solo con su propia clave, así un token no puede elegir con qué se verifica (*alg confusion*):
+  - `ES256`: tokens de usuario de Supabase Auth en todos los ambientes integrados. Clave pública del JWKS del proyecto del ambiente (`<SUPABASE_URL>/auth/v1/.well-known/jwks.json`) elegida por `kid`. Exige `aud = authenticated` e `iss = <SUPABASE_URL>/auth/v1`. El JWKS se cachea; un `kid` desconocido o un JWKS inalcanzable se rechazan (falla cerrado).
+  - `HS256`: secreto del ambiente (`SUPABASE_JWT_SECRET`), para el secreto legado de Supabase, `/api/v1/auth/dev-token` (solo desarrollo y pruebas) y los tokens sintéticos de las suites Newman.
+  - Cualquier otro algoritmo (`none`, `HS512`, `RS256`, etc.) se rechaza con `HTTP 401`.
+- **Dónde se aplica:** `validate-token` de `MANI-Core-Node` (el `auth_request` del Gateway) y `TokenService` de Core usan el mismo verificador. `MANI-Dispatch-DotNet` vuelve a verificar el token en sus controladores, así que aplica la misma política y necesita `SUPABASE_URL` y `SUPABASE_JWT_SECRET` en cada ambiente. `MANI-Rules-Java` confía en los encabezados que inyecta el Gateway.
 - **Audience (`aud`):** `authenticated`.
 - **Tiempo de Expiración (`exp`):** Tokens con TTL estándar de 3600 segundos (1 hora). La renovación se ejecuta mediante refresh tokens gestionados exclusivamente entre el cliente Flutter y Supabase Auth / Core.
 

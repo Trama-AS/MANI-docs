@@ -10,7 +10,7 @@
 | Revisión | 20 de octubre de 2026: estados, cobertura y defectos revisados contra el DoD de QA (`product/CRITERIOS_ACEPTACION_SPRINT4.md` §4), los criterios de SCRUM-1257, la matriz SCRUM-1264, ADR-0005 y el reporte de SCRUM-1266. Actualizado con la corrida de la colección corregida y la evidencia de R-06, R-07 y R-09 (sección 16) |
 | Matriz | [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](MANI_Matriz_Ejecucion_Sprint4.xlsx) |
 | Evidencia | [`qa/regresion_sprint4/evidencia/`](../qa/regresion_sprint4/evidencia/) |
-| Suites | MANI-APIGateway, rama `qa/SCRUM-1267-regresion-sprint4` (`qa/`) |
+| Suites | MANI-APIGateway `qa/`, fusionadas en `develop` (#18, `9f67ab1`) y promovidas a `release` (#19, `3c070db`) el 20 de octubre |
 
 ## 1. Resumen
 

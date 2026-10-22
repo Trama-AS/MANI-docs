@@ -713,7 +713,7 @@ No se define STAGING como cuarto ambiente.
 
 - desarrollo e integración;
 - Docker local cuando aplique;
-- Kubernetes para la validación del modelo de despliegue cuando corresponda;
+- Kubernetes para la validación del modelo de despliegue cuando corresponda — **Abierto, pendiente de DevOps (INFRA-01, INFRA-02; issue #…)**: hoy DEV corre en máquinas personales con Docker local (INFRAESTRUCTURA_MANI §25);
 - datos sintéticos;
 - sin datos reales de usuarios o KYC.
 
@@ -928,6 +928,13 @@ Aplicable a:
 **Riesgo:** duplicación, exposición de reglas y clientes inconsistentes.  
 **Control:** mover lógica al backend.
 
+> **Calibración, verificada el 2026-10-20.** La lógica no está en Flutter: vive en funciones
+> PL/pgSQL de `MANI-Flutter/database/` (entre ellas `crear_solicitud`, `aceptar_solicitud`,
+> `_sol_aliado_elegible`), y lo que Flutter contiene son casos de uso que las invocan por RPC
+> (19 `.from(` y 13 `.rpc(` en `MANI-Flutter/lib`). El riesgo real es ese, y retirarlo del cliente
+> es lo que propone [ADR-0022](../adr/ADR-0022-logica-de-negocio-en-servicios.md), en estado
+> `Propuesto`. Corregir este riesgo y su control es la tarea `DOC-28`.
+
 ## Acceso directo indiscriminado a Supabase
 
 **Riesgo:** bypass de controles y acoplamiento.  
@@ -1061,4 +1068,4 @@ La arquitectura contempla explícitamente:
 - `/docs/adr/` — decisiones arquitectónicas.
 - [`workspace.dsl`](../diagrams/c4/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `panorama`, `contexto`, `contenedores`, `componentes-*`, `dinamico-*` y `despliegue-prod`.
 - [`diagrams/c4/contexto/alto-nivel-arquitectura.png`](../diagrams/c4/contexto/alto-nivel-arquitectura.png) y [`diagrams/despliegue/infraestructura.png`](../diagrams/despliegue/infraestructura.png) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.
-- [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.4.
+- [`diagrams/MOCKUPS/`](../diagrams/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.5.

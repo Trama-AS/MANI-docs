@@ -60,6 +60,16 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) | La lógica de negocio vive en los servicios; se retira de Flutter y de las funciones PL/pgSQL | RF-05, RF-06, RF-08, RF-10, RF-11, RF-12, RNF-01 |
 | [ADR-0025](../../adr/ADR-0025-integracion-jira-github.md) | Integración Jira–GitHub con GitHub for Atlassian y convención `[SCRUM-<id>]` | trazabilidad |
 | [ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md) | Nombres de los repositorios y de los ambientes | PROY-07, PROY-08 |
+| [ADR-0029](../../adr/ADR-0029-comunicacion-asincrona-kafka.md) | Comunicación asíncrona entre servicios y adopción de Apache Kafka — adopción diferida al Sprint 5 | RNF-05, RNF-07 |
+| [ADR-0030](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) | Propiedad del esquema de base de datos y frontera de datos entre servicios | RNF-01 |
+| [ADR-0032](../../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) | Identidad en base de datos cuando el llamador es un servicio — revisión aprobada en PR #39, pendiente de acta de Mesa | RNF-01 |
+| [ADR-0033](../../adr/ADR-0033-productor-del-evento-solicitud-creada.md) | Productor del evento `SolicitudCreada`: Dispatch, no Core — reemplazaría ADR-0029 §1 en esa fila si se aprueba | RF-12 |
+
+### Fuera del catálogo de estados — `Aprobado`
+
+| ADR | Tema | Nota |
+|---|---|---|
+| [ADR-0031](../../adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | Política de configuración, validación perimetral y propagación de JWT por ambiente | Registra `Aprobado`, término que no está en la tabla de estados; pendiente de unificar en Mesa |
 
 ### Descartado — `Rejected`
 
@@ -82,8 +92,11 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 
 ## Numeración
 
-La secuencia vigente es **ADR-0001 a ADR-0025, más ADR-0027 y ADR-0028**. El único número sin
+La secuencia vigente es **ADR-0001 a ADR-0025, más ADR-0027 a ADR-0033**. El único número sin
 emitir es **ADR-0026**.
+
+`ADR-0031` registra su estado como `Aprobado`, palabra que no figura en la tabla de estados de
+arriba. Queda listado aparte hasta que la Mesa unifique el término.
 
 Dos avisos para no equivocarse al leer:
 
@@ -95,4 +108,4 @@ Dos avisos para no equivocarse al leer:
   orden cronológico. Conserva su número porque está referenciado por `CFG-35` y por el commit que
   lo introdujo.
 
-**No se reutiliza `ADR-0026`**: el siguiente ADR que se emita es `ADR-0029`.
+**No se reutiliza `ADR-0026`**: el siguiente ADR que se emita es `ADR-0034`.

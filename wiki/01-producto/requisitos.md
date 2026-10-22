@@ -19,7 +19,7 @@
 | RF-09 | Reglas y condiciones por sitio, visibles al aliado antes de programar; todo sitio con zona | Media | Core Service |
 | RF-10 | Definir, activar y desactivar categorías de servicio | Alta | Core Service |
 | RF-11 | Asociar aliados con categorías que atienden | Media | Core Service |
-| RF-12 | Crear solicitudes y presentar aliados válidos por categoría y cobertura | Crítica | Core Service + Availability + Dispatch |
+| RF-12 | Crear solicitudes y presentar aliados válidos por categoría y cobertura | Crítica | Dispatch Service (solicitud) + Core Service (elegibilidad; la disponibilidad es un dominio interno suyo) |
 | RF-13 | Ordenar aliados según la regla configurada por el tenant | Alta | Rules Service |
 | RF-14 | Aceptar o rechazar solicitud sin dobles asignaciones | Crítica | Dispatch Service |
 | RF-15 | Cotización separando mano de obra y materiales | Alta | Core Service |

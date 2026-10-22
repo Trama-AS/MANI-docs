@@ -73,7 +73,7 @@ La infraestructura física está compuesta por **cinco máquinas virtuales dedic
 | Host / VM | Dirección IP | Propósito Operativo | Rama Git / Tag OCI | Puertos Expuestos | Acceso / Credenciales |
 |---|---|---|---|---|---|
 | **Host DEV** | `10.43.98.232` | Ambiente de Desarrollo Integrado | `develop` / `:develop` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `11DarkGray*1` |
-| **Host QA** | `10.43.100.141` | Ambiente de Staging / Certificación QA | `release` / `:staging` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `*+BlancoBlan` |
+| **Host QA** | `10.43.100.141` | Ambiente de Staging / Certificación QA | `release` / `:staging` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `santi2583953` |
 | **Host PROD** | `10.43.98.203` | Ambiente Productivo MVP | `main` / `:latest` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `Turquesa+681` |
 | **Host Calidad** | `10.43.98.196` | SonarQube Server, Newman & Playwright Runners | N/A (Herramientas CI) | `9000` (SonarQube) | `estudiante` / `Nieve+4416Sn` |
 | **Host Backups** | `10.43.98.197` | Custodia de Volcados Lógicos y Rollback | N/A (Storage DB) | `22` (SSH / SFTP seguro) | `estudiante` / `Verdefuerte+` |

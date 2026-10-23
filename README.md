@@ -314,7 +314,7 @@ MANI-Docs/
 | Tema | Documento |
 |---|---|
 | Requerimientos | [`product/SRS.md`](wiki/01-producto/SRS.md) |
-| Backlog | [`backlog/BACKLOG_MANI.md`](wiki/06-backlog/BACKLOG_MANI.md) |
+| Backlog | [`backlog/BACKLOG_MANI.md`](wiki/05-backlog/BACKLOG_MANI.md) |
 | Arquitectura | [`architecture/SAD.md`](wiki/02-arquitectura/SAD.md) |
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](wiki/02-arquitectura/SDD.md) |
 | Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](wiki/02-arquitectura/SECUENCIAS.md) |
@@ -322,7 +322,7 @@ MANI-Docs/
 | Decisiones arquitectónicas | [`adr/`](wiki/02-arquitectura/adr/) |
 | Modelo C4 | [`diagrams/c4/workspace.dsl`](wiki/02-arquitectura/diagrams/c4/workspace.dsl) |
 | Tecnologías vigentes | [`architecture/TECH_RADAR.md`](wiki/02-arquitectura/TECH_RADAR.md) |
-| Calidad: planes, reportes y evidencia | [`qa/`](qa/) |
+| Calidad: planes, reportes y evidencia | [`qa/`](wiki/07-calidad) |
 | Conformidad técnica Core-Dispatch | [`architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](wiki/02-arquitectura/REPORTE_CONFORMIDAD_CORE_DISPATCH.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |

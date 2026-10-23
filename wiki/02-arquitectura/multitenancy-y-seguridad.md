@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](SAD.md) §8 y §9 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §13.4 y §16 · [`adr/ADR-0018`](adr/ADR-0018-identificacion-tenant.md), [`ADR-0012`](adr/ADR-0012-persistencia-multitenant.md), [`ADR-0013`](adr/ADR-0013-storage-kyc.md), [`ADR-0015`](adr/ADR-0015-pruebas-aislamiento-multitenant.md).
+**Fuente:** [`architecture/SAD.md`](SAD.md) §8 y §9 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §13.4 y §16 · [`adr/ADR-0018`](adr/ADR-0018-identificacion-tenant.md), [`ADR-0012`](adr/ADR-0012-persistencia-multitenant.md), [`ADR-0013`](adr/ADR-0013-storage-kyc.md), [`ADR-0015`](adr/ADR-0015-pruebas-aislamiento-multitenant.md).
 
 RNF-01 es el requisito crítico del producto. Esta página concentra cómo se cumple.
 

@@ -25,7 +25,7 @@ Del [inventario](01-inventario-rls.md):
    - 11 tablas no tienen RLS.
 3. **El repositorio y QA divergen.** `tenant_isolation_solicitud` existe solo en QA.
 
-Demostración en vivo opcional (1 min): `02-casos.sql` de la [PoC](../../../qa/PoC/PoC-CFG23a-identidad-servicio-rls/README.md), líneas L1 y L2.
+Demostración en vivo opcional (1 min): `02-casos.sql` de la [PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md), líneas L1 y L2.
 
 ## 3. Alternativas (8 min)
 

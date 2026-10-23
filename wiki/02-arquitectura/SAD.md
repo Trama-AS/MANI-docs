@@ -202,10 +202,10 @@ demuestra que esos procesos estén operativos** en los repositorios.
 El estado real de cada gate se registra aparte, no en el dibujo:
 
 - el estado del análisis de SonarCloud por repositorio, en
-  [`INFRAESTRUCTURA_MANI.md`](../07-gobernanza/INFRAESTRUCTURA_MANI.md) §24.1;
+  [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §24.1;
 - la regla para considerar un gate **vinculante** —check obligatorio en un ruleset activo y evidencia
   de un PR bloqueado—, en
-  [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6.2.
+  [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6.2.
 
 ---
 

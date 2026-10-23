@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](SAD.md) §4.1 · [`architecture/SDD.md`](SDD.md) §4.2 y §14 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §2.
+**Fuente:** [`architecture/SAD.md`](SAD.md) §4.1 · [`architecture/SDD.md`](SDD.md) §4.2 y §14 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §2.
 
 Página de consulta rápida antes de escribir código o revisar un PR. Todo lo de aquí sale de los documentos citados.
 

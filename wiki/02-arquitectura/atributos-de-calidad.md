@@ -50,7 +50,7 @@ mide QA:
 | `QAS-09` | Protección / safety | que una falla de terceros no deje transacciones ambiguas |
 
 Una historia que toque uno de esos temas debe demostrar su escenario, no solo sus criterios
-funcionales ([DoR y DoD](../05-proceso/dor-y-dod.md)).
+funcionales ([DoR y DoD](../04-proceso/dor-y-dod.md)).
 
 Cuando un escenario y un criterio de la sección §7 del SDD difieran, **prevalece el más
 restrictivo** (SDD §8).

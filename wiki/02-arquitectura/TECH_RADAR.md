@@ -59,7 +59,7 @@ ADR-0027 y ADR-0030, y habría que decidir si sigue en esta tecnología.
 ## En evaluación
 - **Kubernetes.** Es la plataforma de orquestación **objetivo** exigida por PROY-08, pero no está
   adoptada ni desplegada: la decisión sigue abierta como INFRA-01 e INFRA-02 de
-  [`INFRAESTRUCTURA_MANI.md`](../07-gobernanza/INFRAESTRUCTURA_MANI.md) §25 y requiere ADR. Hoy QA y
+  [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §25 y requiere ADR. Hoy QA y
   PROD corren con Docker sobre una máquina virtual por ambiente.
 
 ## Mejor no / descartado

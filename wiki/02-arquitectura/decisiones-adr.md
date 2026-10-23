@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** los archivos de [`adr/`](adr/) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §5 · [`adr/ADR-0003`](adr/ADR-0003-mesa-arquitectura.md).
+**Fuente:** los archivos de [`adr/`](adr/) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §5 · [`adr/ADR-0003`](adr/ADR-0003-mesa-arquitectura.md).
 
 ## Cómo funciona un ADR en MANI
 
@@ -78,7 +78,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0021](adr/ADR-0021-exclusion-concurrente.md) | Exclusión concurrente en despacho | ADR-0016 |
 | [ADR-0023](adr/ADR-0023-riesgo-regulatorio-pagos-escrow.md) | Riesgo regulatorio en la custodia de pagos (escrow) de EP-07 | ADR-0024 |
 
-> **Nota sobre ADR-0009.** Remite a `docs/governance/POLITICA_USO_IA.md`, archivo que no existe en este repositorio. La política de IA vigente y localizable es la sección 18 de [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), recogida en [Trabajo con asistentes de IA](../05-proceso/trabajo-con-ia.md). Queda listado en [Riesgos y puntos abiertos](riesgos-y-puntos-abiertos.md).
+> **Nota sobre ADR-0009.** Remite a `docs/governance/POLITICA_USO_IA.md`, archivo que no existe en este repositorio. La política de IA vigente y localizable es la sección 18 de [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), recogida en [Trabajo con asistentes de IA](../04-proceso/trabajo-con-ia.md). Queda listado en [Riesgos y puntos abiertos](riesgos-y-puntos-abiertos.md).
 
 ## Numeración
 
@@ -87,7 +87,7 @@ emitir es **ADR-0026**.
 
 Dos avisos para no equivocarse al leer:
 
-- Los documentos de [`Entregas/`](../03-entrega/) usaron una numeración **distinta y hoy
+- Los documentos de [`Entregas/`](../../Entregas) usaron una numeración **distinta y hoy
   abandonada**, en la que `ADR-0022` era «proveedor de identidad» y `ADR-0023` el cierre de KI-02.
   En el esquema vigente `ADR-0022` es la lógica de negocio en los servicios y `ADR-0023` el riesgo
   regulatorio de la custodia de pagos. `Entregas/` es un histórico y no es fuente de verdad.

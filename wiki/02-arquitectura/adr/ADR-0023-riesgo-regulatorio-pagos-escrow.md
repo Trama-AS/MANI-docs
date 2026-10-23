@@ -32,7 +32,7 @@ Al momento de este ADR, el equipo no sabía si MANI retendría los fondos direct
 
 ## Justificación
 
-Detener solo la parte de custodia evita construir una funcionalidad que podría requerir reestructuración legal y técnica, y permite que el resto del trabajo siga avanzando. La decisión es coherente con la documentación vigente: el SRS asigna los pagos a un operador certificado (RNF-06, RNF-11) y la wiki de transición del backlog (`wiki/06-backlog/transicion-v4.md`) establece que el escrow y la liberación automática no se asumen como alcance aprobado sin decisión funcional o regulatoria.
+Detener solo la parte de custodia evita construir una funcionalidad que podría requerir reestructuración legal y técnica, y permite que el resto del trabajo siga avanzando. La decisión es coherente con la documentación vigente: el SRS asigna los pagos a un operador certificado (RNF-06, RNF-11) y el registro de la transición del backlog (`05-backlog/BACKLOG_MANI.md` §10.4) establece que el escrow y la liberación automática no se asumen como alcance aprobado sin decisión funcional o regulatoria.
 
 ## Consecuencias
 

@@ -33,7 +33,7 @@ El enunciado de CFG-23a («RLS deja de filtrar por `auth.uid()` cuando el llamad
 
 La migración 008 lo deja escrito: «Core Node escribe con la service role (que salta RLS)». Hoy la autorización por tenant en código es la **única** defensa para todo el tráfico de servicios, que es lo que ADR-0022 registró como KI-05.
 
-Se verificó en PostgreSQL 16 con los mismos roles y funciones que Supabase ([PoC, caso L1](../../../qa/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)): `service_role` con claims del tenant T1 lee las filas de T1 y de T2.
+Se verificó en PostgreSQL 16 con los mismos roles y funciones que Supabase ([PoC, caso L1](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)): `service_role` con claims del tenant T1 lee las filas de T1 y de T2.
 
 ## 3. Políticas vigentes en el repositorio
 

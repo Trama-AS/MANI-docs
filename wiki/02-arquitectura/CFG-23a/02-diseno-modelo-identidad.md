@@ -5,7 +5,7 @@
 - **Fecha:** 2026-10-17
 - **Estado:** Para Mesa de Arquitectura (CFG-23a.4)
 - **Decisión:** [ADR-0032](../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) (Propuesto)
-- **Insumos:** [inventario CFG-23a.1](01-inventario-rls.md), [PoC](../../../qa/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)
+- **Insumos:** [inventario CFG-23a.1](01-inventario-rls.md), [PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)
 - **Insumo de:** CFG-23b (SCRUM-1104), que versiona y aplica; CFG-23c (SCRUM-1105), que acredita
 
 ## 1. Resumen
@@ -42,7 +42,7 @@ sequenceDiagram
 
 ## 3. Componentes en el motor
 
-Definición de referencia ejecutable: [`01-modelo.sql` de la PoC](../../../qa/PoC/PoC-CFG23a-identidad-servicio-rls/01-modelo.sql), secciones 2, 3 y 6.
+Definición de referencia ejecutable: [`01-modelo.sql` de la PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/01-modelo.sql), secciones 2, 3 y 6.
 
 | Componente | Definición | Notas |
 |---|---|---|

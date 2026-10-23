@@ -60,7 +60,7 @@ Notas que evitan errores de implementación:
 
 **Arquitectónicos** (SAD §21, SDD §5): SOA · API Gateway · Layered Architecture interna · Repository / Ports and Adapters · event-driven **sólo para efectos secundarios**, no para coordinar el flujo principal.
 
-**De diseño** (SAD §22, SDD §6): se aplican según el documento; un patrón nuevo con impacto estructural pasa por [Mesa de Arquitectura](../05-proceso/roles-y-decisiones.md).
+**De diseño** (SAD §22, SDD §6): se aplican según el documento; un patrón nuevo con impacto estructural pasa por [Mesa de Arquitectura](../04-proceso/roles-y-decisiones.md).
 
 ## Acceso del cliente a Supabase
 

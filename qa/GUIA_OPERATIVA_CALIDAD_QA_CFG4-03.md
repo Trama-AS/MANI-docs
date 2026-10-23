@@ -18,7 +18,7 @@
 
 ## 1. Resumen Ejecutivo y Arquitectura
 
-En cumplimiento de las políticas de DevSecOps ([`ADR-0005`](../adr/ADR-0005-devsecops.md)), aislamiento multi-tenant ([`ADR-0015`](../adr/ADR-0015-pruebas-aislamiento-multitenant.md)) y nombres de ambientes ([`ADR-0028`](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)), se ha habilitado y dejado **100% operativa** la cadena de calidad del ambiente QA en un host dedicado:
+En cumplimiento de las políticas de DevSecOps ([`ADR-0005`](../wiki/02-arquitectura/adr/ADR-0005-devsecops.md)), aislamiento multi-tenant ([`ADR-0015`](../wiki/02-arquitectura/adr/ADR-0015-pruebas-aislamiento-multitenant.md)) y nombres de ambientes ([`ADR-0028`](../wiki/02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md)), se ha habilitado y dejado **100% operativa** la cadena de calidad del ambiente QA en un host dedicado:
 
 - **Host Servidor de Calidad:** `10.43.98.196` (`NBIG02`, Ubuntu 22.04.5 LTS, 11 GiB RAM, 49 GB disco)
 - **Host Ambiente QA Objetivo:** `10.43.100.141` (`mani-api-gateway`, Core Node, Rules Java, Dispatch .NET)
@@ -109,7 +109,7 @@ QA_GATEWAY_URL=http://10.43.100.141
 
 ### 2.3 Runner self-hosted para el Quality Gate en CI (QA4-02, SCRUM-1265)
 
-El análisis de los PRs lo ejecuta el runner self-hosted de GitHub Actions instalado en este host. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../governance/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
+El análisis de los PRs lo ejecuta el runner self-hosted de GitHub Actions instalado en este host. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../wiki/07-gobernanza/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
 
 - **Registro:** `nbig02-calidad`, a nivel de la organización `Trama-AS`, grupo de runners `calidad` (repositorios seleccionados, con acceso para repositorios públicos), label `calidad`.
 - **Instalación:** `/home/estudiante/actions-runner`, servicio systemd `actions.runner.Trama-AS.nbig02-calidad`, ejecutado como `estudiante`.

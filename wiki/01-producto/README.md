@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-**Fuente:** [`product/SRS.md`](../../product/SRS.md) · [`README.md`](../../README.md) del repositorio.
+**Fuente:** [`product/SRS.md`](SRS.md) · [`README.md`](../../README.md) del repositorio.
 
 | Página | Tema |
 |---|---|

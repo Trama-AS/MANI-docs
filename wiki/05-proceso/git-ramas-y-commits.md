@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §5 y §6 · [`architecture/SDD.md`](../../architecture/SDD.md) §12.
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §5 y §6 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §12.
 
 ## Ramas principales
 
@@ -24,7 +24,7 @@
 Dos reglas que se olvidan a menudo:
 
 - Un **hotfix** no termina al desplegarse: termina cuando su corrección volvió a la línea de desarrollo.
-- Un **spike no se convierte automáticamente en decisión arquitectónica** (Políticas §5.2). Su resultado se lleva a Mesa de Arquitectura y produce un ADR si corresponde. Ejemplo: `SP-05`, cuyo resultado se registró en [`ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md).
+- Un **spike no se convierte automáticamente en decisión arquitectónica** (Políticas §5.2). Su resultado se lleva a Mesa de Arquitectura y produce un ADR si corresponde. Ejemplo: `SP-05`, cuyo resultado se registró en [`ADR-0022`](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md).
 
 ## Reglas de integración
 

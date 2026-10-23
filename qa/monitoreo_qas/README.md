@@ -2,7 +2,7 @@
 
 Scripts, configuración y evidencia de la tarea SCRUM-1266 (QA4-03) y sus subtareas SCRUM-1274
 (QA-MON-01), SCRUM-1275 (QA-MON-02) y SCRUM-1276 (QA-MON-03). Los umbrales provienen del
-[SDD §8](../../architecture/SDD.md) y no se modifican aquí. El resultado consolidado está en
+[SDD §8](../../wiki/02-arquitectura/SDD.md) y no se modifican aquí. El resultado consolidado está en
 [`qa/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md`](../REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md).
 
 ## Dónde corre cada herramienta

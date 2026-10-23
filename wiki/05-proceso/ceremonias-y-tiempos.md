@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §4, §6 y §10.
+**Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §4, §6 y §10.
 
 ## Ceremonias
 

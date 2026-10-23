@@ -9,7 +9,7 @@
 | Corridas (UTC) | Vigentes, tras las correcciones del 21 de octubre: Newman `20261021T161015Z` y Playwright `20261021T170129Z`. Del 20 de octubre, con la colección corregida: Newman `20261020T224842Z` y Playwright `20261020T224932Z`. Anteriores: Newman `20261020T212453Z` y Playwright `20261020T212519Z`. Consultas de solo lectura sobre MANI-QA: `20261020T225146Z`. Gate de CI desde el runner de Calidad ([run 39513870492](https://github.com/Trama-AS/MANI-APIGateway/actions/runs/39513870492)): Newman `20261020T234635Z` y Playwright `20261020T235520Z` |
 | Revisión | 20 de octubre de 2026: estados, cobertura y defectos revisados contra el DoD de QA (`backlog/CRITERIOS_ACEPTACION_SPRINT4.md` §4), los criterios de SCRUM-1257, la matriz SCRUM-1264, ADR-0005 y el reporte de SCRUM-1266. Actualizado con la corrida de la colección corregida y la evidencia de R-06, R-07 y R-09, y el 21 de octubre con la validación de las correcciones de R-01 a R-04 y R-10 (sección 16) |
 | Matriz | [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](MANI_Matriz_Ejecucion_Sprint4.xlsx) |
-| Evidencia | [`qa/regresion_sprint4/evidencia/`](../qa/regresion_sprint4/evidencia/); la del 21 de octubre en [`20261021_validacion/`](../qa/regresion_sprint4/evidencia/20261021_validacion/) |
+| Evidencia | [`qa/regresion_sprint4/evidencia/`](regresion_sprint4/evidencia/); la del 21 de octubre en [`20261021_validacion/`](regresion_sprint4/evidencia/20261021_validacion/) |
 | Suites | MANI-APIGateway `qa/`, fusionadas en `develop` (#18, `9f67ab1`) y promovidas a `release` (#19, `3c070db`) el 20 de octubre |
 
 ## 1. Resumen

@@ -2,7 +2,7 @@
 
 [← 01 · Producto](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`product/SRS.md`](../../product/SRS.md) §3, §4, §6 y §7. Esta página **resume e indexa**; el enunciado completo y la prioridad oficial están en el SRS.
+**Fuente:** [`product/SRS.md`](SRS.md) §3, §4, §6 y §7. Esta página **resume e indexa**; el enunciado completo y la prioridad oficial están en el SRS.
 
 ## Requerimientos funcionales — MVP
 
@@ -62,4 +62,4 @@ Los umbrales que verifican estos RNF están en [Atributos de calidad](../02-arqu
 
 **Del proyecto (PROY):** Scrum (PROY-01) · alcance académico limitado al MVP (PROY-02) · gobierno documental del equipo (PROY-03) · siete integrantes con responsabilidad técnica distribuida (PROY-04) · decisiones costosas de revertir documentadas formalmente (PROY-05) · sólo herramientas aprobadas (PROY-06) · **Java y .NET obligatorios en algún módulo de backend** (PROY-07) · **Kubernetes como orquestador** (PROY-08).
 
-PROY-07 y PROY-08 explican por qué la arquitectura es políglota y por qué Kubernetes no es opcional: ver [ADR-0019](../../adr/ADR-0019-arquitectura-soa-poliglota.md) y [Ambientes y promoción](../03-entrega/ambientes-y-promocion.md).
+PROY-07 y PROY-08 explican por qué la arquitectura es políglota y por qué Kubernetes no es opcional: ver [ADR-0019](../02-arquitectura/adr/ADR-0019-arquitectura-soa-poliglota.md) y [Ambientes y promoción](../05-proceso/ambientes-y-promocion.md).

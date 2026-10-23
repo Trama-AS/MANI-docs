@@ -2,7 +2,7 @@
 
 [← 01 · Producto](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SDD.md`](../../architecture/SDD.md) §19 · [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) §9 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §9–§11.
+**Fuente:** [`architecture/SDD.md`](../02-arquitectura/SDD.md) §19 · [`backlog/BACKLOG_MANI.md`](../06-backlog/BACKLOG_MANI.md) §9 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §9–§11.
 
 Hay tres niveles de «terminado» y no se confunden entre sí.
 

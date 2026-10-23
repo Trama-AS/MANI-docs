@@ -1,14 +1,39 @@
-# 03 · Entrega
+# Entregas — histórico académico
 
-[← Índice de la wiki](../Home.md)
+> **Esta carpeta no es fuente de verdad. No se consulta para resolver una duda ni para
+> implementar, y no se actualiza.**
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) · [`architecture/SDD.md`](../../architecture/SDD.md) §9–§12 · [`architecture/SAD.md`](../../architecture/SAD.md) §16–§19.
+Contiene los entregables presentados en cada corte académico, tal como se entregaron. Su valor es
+de registro: muestra qué se sabía y qué se había decidido en cada momento.
 
-| Página | Tema |
+## Por qué no se consulta
+
+Los archivos Markdown de `Entrega4/` son **copias congeladas** de documentos que siguieron
+evolucionando en `main`. Ya divergieron:
+
+| Copia en `Entregas/Entrega4/` | Documento vivo |
 |---|---|
-| [Ambientes y promoción](ambientes-y-promocion.md) | DEV → QA → PROD, build once deploy many, Docker sobre VM y la orquestación abierta |
-| [CI/CD y calidad](cicd-y-calidad.md) | Pipeline, pruebas exigidas y gates de seguridad |
-| [Secretos](secretos.md) | Qué está prohibido y qué aplica por ambiente |
-| [Observabilidad](observabilidad.md) | Métricas, dashboards, logs, trazas e incidentes |
+| `SRS_MANI_V3.md` | [`product/SRS.md`](../01-producto/SRS.md) |
+| `SAD_V3.md` | [`architecture/SAD.md`](../02-arquitectura/SAD.md) |
+| `SDD_V1.md` | [`architecture/SDD.md`](../02-arquitectura/SDD.md) |
+| `DD_V2.md` | [`architecture/ModeloDatos.md`](../02-arquitectura/ModeloDatos.md) |
+| `Backlog_V3.md` | [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) |
+| `Documento_Infraestructura_V1.md` | [`governance/INFRAESTRUCTURA_MANI.md`](../07-gobernanza/INFRAESTRUCTURA_MANI.md) |
+| `Documento_Herramientas_Politicas_Lineamientos_V3.md` | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
 
-El responsable técnico de esta área es **DevOps** (titular Daniel Ávila, secundario Nicolás León) y decide sobre repositorios, CI/CD, secretos y liberación a producción (`GOBIERNO_DEL_EQUIPO.md` §2.3).
+## La trampa de la numeración de ADR
+
+Estas copias usan una numeración de ADR **abandonada**, en la que `ADR-0022` era «proveedor de
+identidad», `ADR-0023` el cierre de KI-02 y existían borradores `ADR-0028` y `ADR-0029`.
+
+En la numeración vigente, `ADR-0022` es la lógica de negocio en los servicios y `ADR-0023` la
+consolidación de repositorios y ambientes. **Son decisiones distintas con el mismo número.**
+
+El índice vigente, con el hueco de `ADR-0024` a `ADR-0026` explicado, está en
+[Decisiones ADR](../02-arquitectura/decisiones-adr.md).
+
+## Dónde está la verdad
+
+En los documentos vivos de `main`, cuya tabla de fuente de verdad por tema está en el
+[`README.md`](../../README.md) §12. Esos documentos no llevan número de versión: la versión es el
+commit.

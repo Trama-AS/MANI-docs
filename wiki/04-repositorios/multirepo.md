@@ -2,7 +2,7 @@
 
 [← 04 · Repositorios](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §4 · [`architecture/SAD.md`](../../architecture/SAD.md) §17 · [`architecture/SDD.md`](../../architecture/SDD.md) §13 · [`adr/ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md).
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §4 · [`architecture/SAD.md`](../02-arquitectura/SAD.md) §17 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §13 · [`adr/ADR-0004`](../02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md).
 
 MANI adopta estrategia **multi-repo**: cada unidad desplegable mantiene ciclo técnico independiente.
 
@@ -18,12 +18,12 @@ MANI-Docs           ← este repositorio
 
 `MANI-Landing` es la entrada pública para quien aún no tiene sesión: redirige al login de
 `MANI-Frontend` Web y tiene su propio pipeline. Su registro (propósito, imagen y ambientes) está
-en [ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md) y su detalle técnico en
+en [ADR-0028](../02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md) y su detalle técnico en
 `MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`; esta página no lo repite.
 
-`MANI-Infra` ya no existe: DevOps lo borró el 2026-10-06 y su alcance quedó repartido según la [enmienda de ADR-0004](../../adr/ADR-0004-cicd-multirepo-ambientes.md).
+`MANI-Infra` ya no existe: DevOps lo borró el 2026-10-06 y su alcance quedó repartido según la [enmienda de ADR-0004](../02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md).
 
-`MANI-Availability` tampoco: la cobertura y la disponibilidad son un dominio del `MANI-Core-Service` ([ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md)). Los nombres de la lista son los únicos válidos.
+`MANI-Availability` tampoco: la cobertura y la disponibilidad son un dominio del `MANI-Core-Service` ([ADR-0028](../02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md)). Los nombres de la lista son los únicos válidos.
 
 Cada repositorio desplegable mantiene de forma independiente: código · dependencias · pruebas · `Dockerfile` · pipeline · configuración de build · versionamiento · artefactos · documentación técnica inmediata.
 
@@ -34,7 +34,7 @@ Cada repositorio desplegable mantiene de forma independiente: código · depende
 - Un cambio que cruza repositorios se parte en un PR por repositorio, cada uno con su referencia Jira.
 - Un contrato compartido (OpenAPI entre Gateway y servicios) se acuerda antes de implementar: es la tarea `CFG-16` del backlog de transición.
 - Crear los repositorios que faltan del modelo es `CFG-15`; replicar el pipeline en cada uno es `CFG-29`.
-- Los artefactos de infraestructura salieron del repositorio Flutter (tarea `CFG-33`, SCRUM-1110): `database/`, `scripts/`, `supabase/` y el Compose pasan a `MANI-API-Gateway`; `nginx.conf` queda en `MANI-Frontend` como `docker/nginx-web.conf` porque sirve la SPA dentro de la imagen web. El responsable de las migraciones por ambiente es DevOps ([`INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §15).
+- Los artefactos de infraestructura salieron del repositorio Flutter (tarea `CFG-33`, SCRUM-1110): `database/`, `scripts/`, `supabase/` y el Compose pasan a `MANI-API-Gateway`; `nginx.conf` queda en `MANI-Frontend` como `docker/nginx-web.conf` porque sirve la SPA dentro de la imagen web. El responsable de las migraciones por ambiente es DevOps ([`INFRAESTRUCTURA_MANI.md`](../07-gobernanza/INFRAESTRUCTURA_MANI.md) §15).
 
 ## Estado real a tener en cuenta
 

@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-**Fuente:** [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) y su CSV · [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md).
+**Fuente:** [`backlog/BACKLOG_MANI.md`](BACKLOG_MANI.md) y su CSV · [`adr/ADR-0002`](../02-arquitectura/adr/ADR-0002-jira-github.md).
 
 > **Jira es la fuente del trabajo.** Esta carpeta no lo duplica: explica cómo se lee el backlog V4 de transición y en qué orden se ejecuta.
 
@@ -32,4 +32,4 @@ Backlog V4 §3: la arquitectura anterior **no es un backend que haya que mover d
 
 Supabase, Auth, RLS y aislamiento multi-tenant · registro y aprobación de aliados · registro de cliente · categorías · creación de solicitud · exclusión concurrente · las PoC de despacho, identidad y Storage/KYC · pipelines, GHCR, secretos y promoción de ambientes · seeds multi-tenant · documentación y diagramas consolidados.
 
-Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa en Rules (Java), Dispatch (.NET) y Core Service (Node.js), y el cliente deja de invocarla ([ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md)).
+Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa en Rules (Java), Dispatch (.NET) y Core Service (Node.js), y el cliente deja de invocarla ([ADR-0022](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md)).

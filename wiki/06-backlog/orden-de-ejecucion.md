@@ -2,14 +2,14 @@
 
 [← 06 · Backlog](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) §4.1, §4.2 y §4.5.
+**Fuente:** [`backlog/BACKLOG_MANI.md`](BACKLOG_MANI.md) §4.1, §4.2 y §4.5.
 
 Este orden no es una sugerencia: las fases 1 y 2 **bloquean** el resto.
 
 | Fase | Trabajo | Por qué va aquí |
 |---:|---|---|
 | 1 | `CFG-37`, `CFG-38` — reconciliar las ramas de `MANI-Frontend` y fijar la base de código | Sin esto, todo lo demás se construye sobre una base incompleta |
-| 2 | ~~`SP-05`~~ **decidido el 2026-10-05**: los servicios reescriben la lógica. Registrado en [`ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) | Ya no bloquea la estimación de las subtareas `-M2` |
+| 2 | ~~`SP-05`~~ **decidido el 2026-10-05**: los servicios reescriben la lógica. Registrado en [`ADR-0022`](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md) | Ya no bloquea la estimación de las subtareas `-M2` |
 | 3 | `CFG-15`, `CFG-16`, `CFG-17`, `CFG-20` — repositorios, contratos OpenAPI, Gateway y esqueletos de servicio | Es la plataforma mínima para implementar casos de uso |
 | 4 | `CFG-22`, `CFG-23a`, `CFG-23b`, `CFG-23c` — identidad y propagación de JWT y **rediseño del modelo de identidad en base de datos** | `CFG-23a/b/c` es el punto que puede tumbar el aislamiento multi-tenant. El inventario de funciones PL/pgSQL no tiene tarea en el backlog vigente |
 | 5 | `CFG-26 … CFG-30`, `CFG-33` — Supabase por ambiente, GHCR, Compose, CI/CD, observabilidad y sacar `database/`, Compose, `scripts/` y `nginx.conf` del repo Flutter | Entrega y operación por repositorio |

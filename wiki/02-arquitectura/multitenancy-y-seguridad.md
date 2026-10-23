@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §8 y §9 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §13.4 y §16 · [`adr/ADR-0018`](../../adr/ADR-0018-identificacion-tenant.md), [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md), [`ADR-0013`](../../adr/ADR-0013-storage-kyc.md), [`ADR-0015`](../../adr/ADR-0015-pruebas-aislamiento-multitenant.md).
+**Fuente:** [`architecture/SAD.md`](SAD.md) §8 y §9 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §13.4 y §16 · [`adr/ADR-0018`](adr/ADR-0018-identificacion-tenant.md), [`ADR-0012`](adr/ADR-0012-persistencia-multitenant.md), [`ADR-0013`](adr/ADR-0013-storage-kyc.md), [`ADR-0015`](adr/ADR-0015-pruebas-aislamiento-multitenant.md).
 
 RNF-01 es el requisito crítico del producto. Esta página concentra cómo se cumple.
 
@@ -21,7 +21,7 @@ Authorization: Bearer <JWT>
 * **Propósito en la arquitectura:**
   1. **Autenticación sin estado (Stateless):** Permite que microservicios políglotas independientes (**Node.js, Java Spring Boot, .NET 8**) y el API Gateway NGINX verifiquen la identidad de forma criptográfica sin tener que consultar una base de datos centralizada de sesiones en cada petición.
   2. **Fuente canónica no falsificable (Anti-Spoofing):** El `tenant_id` viaja dentro de la firma criptográfica (`app_metadata.tenant_id`) inyectado por el hook de Supabase. El cliente no puede imponer ni alterar su tenant mediante un header arbitrario.
-  3. **Inspección en el Gateway ([ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md)):** Al retirar el acceso directo de Flutter a la base de datos, el Gateway intercepta el JWT y filtra perimetralmente solicitudes anónimas, expiradas o sin claim de tenant.
+  3. **Inspección en el Gateway ([ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md)):** Al retirar el acceso directo de Flutter a la base de datos, el Gateway intercepta el JWT y filtra perimetralmente solicitudes anónimas, expiradas o sin claim de tenant.
 
 - El `tenant_id` se obtiene de un **JWT firmado**: es la única fuente canónica de verdad.
 - El cliente **no** puede decidir el tenant de autorización mediante un header libre.

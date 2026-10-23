@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) · [`architecture/SDD.md`](../../architecture/SDD.md) · [`adr/`](../../adr/) · [`architecture/TECH_RADAR.md`](../../architecture/TECH_RADAR.md).
+**Fuente:** [`architecture/SAD.md`](SAD.md) · [`architecture/SDD.md`](SDD.md) · [`adr/`](adr/) · [`architecture/TECH_RADAR.md`](TECH_RADAR.md).
 
 | Página | Tema |
 |---|---|

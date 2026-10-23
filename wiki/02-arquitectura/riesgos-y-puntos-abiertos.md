@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §23 · [`architecture/SDD.md`](../../architecture/SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §25 · [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) §3, §4.1 y §4.2.
+**Fuente:** [`architecture/SAD.md`](SAD.md) §23 · [`architecture/SDD.md`](SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../07-gobernanza/INFRAESTRUCTURA_MANI.md) §25 · [`backlog/BACKLOG_MANI.md`](../06-backlog/BACKLOG_MANI.md) §3, §4.1 y §4.2.
 
 Esta página existe para que nadie —persona o asistente— «resuelva» en un PR algo que el equipo todavía no decidió.
 
@@ -30,7 +30,7 @@ Los riesgos se nombran, no se numeran: el SAD §23 es la fuente y cada uno trae 
 | `INFRA-01` | Hosting de Kubernetes | `INFRAESTRUCTURA_MANI.md` §25 |
 | `INFRA-02` | Topología final del clúster | `INFRAESTRUCTURA_MANI.md` §25 |
 
-**Ya decidido — `SP-05`.** Si los servicios reescriben la lógica PL/pgSQL o la invocan. **Resuelto en la daily del 2026-10-05: la lógica se reescribe en los servicios.** Registrado en [`adr/ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) (tarea `DOC-26`, cerrada). El ADR está en estado **Propuesto**: pasarlo a Aceptado requiere sesión formal de la Mesa (Gobierno §2.6). Ya no bloquea ninguna estimación.
+**Ya decidido — `SP-05`.** Si los servicios reescriben la lógica PL/pgSQL o la invocan. **Resuelto en la daily del 2026-10-05: la lógica se reescribe en los servicios.** Registrado en [`adr/ADR-0022`](adr/ADR-0022-logica-de-negocio-en-servicios.md) (tarea `DOC-26`, cerrada). El ADR está en estado **Propuesto**: pasarlo a Aceptado requiere sesión formal de la Mesa (Gobierno §2.6). Ya no bloquea ninguna estimación.
 
 Hasta que exista decisión sobre Kubernetes (Políticas DevOps §12): no se inventan nodos, no se fija proveedor, no se documenta capacidad como definitiva, y Docker Compose sobre VMs sigue siendo el mecanismo operativo. **No se asume AKS ni Azure.**
 

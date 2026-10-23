@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §18 · [`adr/ADR-0009`](../../adr/ADR-0009-politica-ia.md) (`Superseded`, conservado por trazabilidad) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §1.
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §18 · [`adr/ADR-0009`](../02-arquitectura/adr/ADR-0009-politica-ia.md) (`Superseded`, conservado por trazabilidad) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §1.
 
 ## Política vigente
 
@@ -16,7 +16,7 @@ Se permite IA para apoyo de código, pruebas, documentación, diagramas y explor
 6. una decisión relevante debe pasar por el proceso de gobierno correspondiente;
 7. **la autoría del entregable es de la persona que lo firma:** no se añaden atribuciones a herramientas de IA.
 
-La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o QA** ([Ambientes y promoción](../03-entrega/ambientes-y-promocion.md)). Tampoco se pegan en una herramienta de IA.
+La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o QA** ([Ambientes y promoción](ambientes-y-promocion.md)). Tampoco se pegan en una herramienta de IA.
 
 ## Cómo se aplica en este repositorio
 

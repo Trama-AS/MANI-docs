@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-**Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §5, §6 y §18 · [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md), [`ADR-0003`](../../adr/ADR-0003-mesa-arquitectura.md).
+**Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §5, §6 y §18 · [`adr/ADR-0002`](../02-arquitectura/adr/ADR-0002-jira-github.md), [`ADR-0003`](../02-arquitectura/adr/ADR-0003-mesa-arquitectura.md).
 
 Estas páginas son **normativas** para personas y asistentes de IA, y no añaden nada a los documentos: los ordenan.
 

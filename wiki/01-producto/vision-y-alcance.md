@@ -2,7 +2,7 @@
 
 [← 01 · Producto](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`product/SRS.md`](../../product/SRS.md) §1 y §2 · [`README.md`](../../README.md) §1–§3.
+**Fuente:** [`product/SRS.md`](SRS.md) §1 y §2 · [`README.md`](../../README.md) §1–§3.
 
 ## Problema
 

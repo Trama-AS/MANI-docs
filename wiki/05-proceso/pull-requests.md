@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §6.1 y §9.
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §6.1 y §9.
 
 ## Contenido obligatorio
 
@@ -47,7 +47,7 @@ Plantilla que cubre exactamente eso, sin añadir requisitos:
 - Una solicitud de revisión se responde en **≤ 24 horas hábiles** (`GOBIERNO_DEL_EQUIPO.md` §6.1).
 - Los **cambios de arquitectura requieren trazabilidad hacia un ADR**: si no hay ADR que los respalde, el PR se detiene y la decisión va a [Mesa de Arquitectura](roles-y-decisiones.md).
 - Los **cambios en datos** obligan a revisar migraciones, RLS y compatibilidad.
-- Un cambio que toque autenticación, tenant, RLS, endpoints de datos o Storage debe traer sus pruebas cross-tenant ([CI/CD y calidad](../03-entrega/cicd-y-calidad.md)).
+- Un cambio que toque autenticación, tenant, RLS, endpoints de datos o Storage debe traer sus pruebas cross-tenant ([CI/CD y calidad](cicd-y-calidad.md)).
 
 Lista corta para el revisor, derivada de [Reglas arquitectónicas](../02-arquitectura/reglas-arquitectonicas.md):
 

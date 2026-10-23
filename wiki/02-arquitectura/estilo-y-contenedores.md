@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §4–§7 y §21 · [`architecture/SDD.md`](../../architecture/SDD.md) §3 y §4.2 · [`adr/ADR-0019`](../../adr/ADR-0019-arquitectura-soa-poliglota.md).
+**Fuente:** [`architecture/SAD.md`](SAD.md) §4–§7 y §21 · [`architecture/SDD.md`](SDD.md) §3 y §4.2 · [`adr/ADR-0019`](adr/ADR-0019-arquitectura-soa-poliglota.md).
 
 ## Decisiones de línea base
 
@@ -54,7 +54,7 @@ Notas que evitan errores de implementación:
 - Rules **no** guarda reglas fijas por tenant en código: las lee de persistencia (SAD §7.1).
 - Core puede dividirse internamente por dominios, pero **no** se convierte cada CRUD en un servicio independiente (SAD §7.3, riesgo *Servicios excesivamente pequeños*). La disponibilidad es uno de esos dominios internos, no un servicio desplegable.
 - La primera aceptación válida se confirma con actualización condicional atómica; las siguientes reciben `409 Conflict` (SAD §7.2).
-- La landing comercial **no** es un servicio: no consulta datos, no llama al Gateway y queda fuera de ADR-0027 y ADR-0030 (SAD §7.4, [ADR-0028](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+- La landing comercial **no** es un servicio: no consulta datos, no llama al Gateway y queda fuera de ADR-0027 y ADR-0030 (SAD §7.4, [ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 
 ## Patrones
 
@@ -65,7 +65,7 @@ Notas que evitan errores de implementación:
 ## Acceso del cliente a Supabase
 
 **No hay excepciones.** El cliente Flutter alcanza Supabase por exactamente dos caminos
-([SAD §8.3](../../architecture/SAD.md), [SDD §2.2](../../architecture/SDD.md)):
+([SAD §8.3](SAD.md), [SDD §2.2](SDD.md)):
 
 | Camino | Para qué |
 |---|---|
@@ -74,11 +74,11 @@ Notas que evitan errores de implementación:
 
 Todo lo demás va por `Flutter → API Gateway → servicio → Supabase`. Están retirados del cliente
 `.from()`, `.rpc()` y `.storage.from()`
-([ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md)).
+([ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md)).
 
 La consulta de disponibilidades **no** es una excepción: entra por el Gateway al Core como
 cualquier otra lectura de negocio
-([ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md)).
+([ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md)).
 
 La «excepción transitoria de disponibilidades» que figuraba aquí quedó **retirada**: contradecía a
 ADR-0027, que está `Aceptado`.

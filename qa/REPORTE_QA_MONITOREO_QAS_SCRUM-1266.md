@@ -8,7 +8,7 @@
 | Ambiente | QA: VM 10.43.100.141 (Docker Compose, imágenes `:staging`), Supabase `MANI-QA` (`hpsxdotaizzclkeufzct`) |
 | Origen de las pruebas | VM de Calidad 10.43.98.196 y, donde se indica, el equipo del autor dentro de la red del campus |
 | Umbrales | SDD §8 (sin cambios) |
-| Scripts y evidencia | [`qa/monitoreo_qas/`](../qa/monitoreo_qas/README.md) |
+| Scripts y evidencia | [`qa/monitoreo_qas/`](monitoreo_qas/README.md) |
 
 > Ningún valor de este reporte está estimado: lo que no se midió se declara como no medido. Las
 > corridas reproducibles son `qa/monitoreo_qas/ejecutar_calidad.sh` (Calidad, 20 oct 00:28 a 00:35
@@ -99,7 +99,7 @@ tuvieron `request_time` p50 de 7 ms, p95 de 11 ms y máximo de 90 ms, todas con 
 | 03 | Eficiencia, comportamiento temporal | p95 ≤ 500 ms para la consulta bajo 300 sesiones y 50 req/s | k6 desde Calidad sobre `POST /api/v1/dispatch/match` (stub) con la carga nominal | p95 12,4 ms (k6) y 11 ms (Gateway); 49,99 req/s, 300 VUs, 0 errores | **Bloqueado** (con línea base dentro del umbral) | La ruta real (MANI-.NET #3 + MANI-Node#43) no está en QA. La medición sobre el stub no incluye base de datos ni elegibilidad: no acredita el escenario |
 | 04 | Mantenibilidad, modificabilidad | 0 cambios obligatorios en consumidores ante un cambio interno compatible de Rules | Revisión de PR de Rules | — | **No medible** | El único cambio de Rules fusionado (MANI-Java #2, SCRUM-1070) agrega un endpoint y obligó a cambiar Core (MANI-Node#23): no es un cambio interno compatible. No hay contract tests de Rules en ejecución |
 | 05 | Flexibilidad, escalabilidad | Escalamiento de 2 a 6 réplicas sin cambio de código | Nada ejecutable | — | **No medible** | QA corre en Docker Compose; no hay Kubernetes, HPA ni Prometheus (INFRA-01/02 sin decidir) |
-| 06 | Compatibilidad, interoperabilidad | 100 % de APIs con OpenAPI y contract tests críticos aprobados antes de promoción | Inventario de rutas publicadas en QA contra `core.yaml` y `rules.yaml` | 1 de 12 operaciones con contrato (8,3 %); contract tests solo para Core `develop` en memoria | **No cumple** | [`qas06_api_vs_contrato.md`](../qa/monitoreo_qas/qas06_api_vs_contrato.md) |
+| 06 | Compatibilidad, interoperabilidad | 100 % de APIs con OpenAPI y contract tests críticos aprobados antes de promoción | Inventario de rutas publicadas en QA contra `core.yaml` y `rules.yaml` | 1 de 12 operaciones con contrato (8,3 %); contract tests solo para Core `develop` en memoria | **No cumple** | [`qas06_api_vs_contrato.md`](monitoreo_qas/qas06_api_vs_contrato.md) |
 | 07 | Adecuación funcional, corrección | 100 % de escenarios críticos aprobados; en asignación: un 200, el resto 409, 0 dobles asignaciones | Arnés k6 de aceptación concurrente contra el stub (validación del arnés) | Arnés: 1×200 y 49×409 con 50 aceptaciones desde Calidad (antes, 1×200 y 19×409 en dos corridas de 20); reintento del ganador: 409 | **Bloqueado** | El stub guarda la asignación en memoria: un resultado correcto no prueba la exclusión en base. Falta MANI-.NET #1 (SCRUM-1074) en QA y una solicitud PENDIENTE en `MANI-QA`. Ranking y tarifa responden con datos fijos de stub |
 | 08 | Interacción, protección contra errores de usuario | 100 % de acciones irreversibles con validación o confirmación | Nada ejecutable | — | **Bloqueado / no medible** | Maestro no tiene ticket ni instalación; el Core de QA no tiene endpoints de escritura que validar |
 | 09 | Safety, protección ante fallos | 0 transacciones críticas en estado ambiguo por fallas de terceros | Nada ejecutable | — | **Bloqueado** | La carga de KYC existe en Core `develop`, no en QA, y no hay adaptador de fault injection |
@@ -226,7 +226,7 @@ Detalle para el registro, por propuesta:
 ## 6. Reproducibilidad
 
 - Todos los scripts leen la configuración de variables de entorno y no contienen secretos
-  ([README](../qa/monitoreo_qas/README.md)).
+  ([README](monitoreo_qas/README.md)).
 - Umbral de QAS-03 declarado en `thresholds` de k6; criterio de QAS-07 declarado en `thresholds`.
 - Cada petición de carga lleva `X-Correlation-ID` `qa1266-<escenario>-<vu>-<iteración>`, que permite
   recalcular la latencia del lado del Gateway con el log de nginx.

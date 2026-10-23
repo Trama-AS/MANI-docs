@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`adr/ADR-0001`](../../adr/ADR-0001-gestion-documental.md) · [`adr/ADR-0008`](../../adr/ADR-0008-diagramacion-tecnica.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3 y §9.4 · [`README.md`](../../README.md) §16.
+**Fuente:** [`adr/ADR-0001`](../02-arquitectura/adr/ADR-0001-gestion-documental.md) · [`adr/ADR-0008`](../02-arquitectura/adr/ADR-0008-diagramacion-tecnica.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §3 y §9.4 · [`README.md`](../../README.md) §16.
 
 ## Qué se actualiza con cada tipo de cambio
 

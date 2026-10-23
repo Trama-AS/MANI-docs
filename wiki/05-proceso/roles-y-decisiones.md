@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §2 y §5 · [`adr/ADR-0003`](../../adr/ADR-0003-mesa-arquitectura.md).
+**Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2 y §5 · [`adr/ADR-0003`](../02-arquitectura/adr/ADR-0003-mesa-arquitectura.md).
 
 Ninguna persona es dueña de un documento ni de una decisión: la autoridad es del **rol**, y las decisiones estructurales son de la **Mesa de Arquitectura**, no de un individuo.
 

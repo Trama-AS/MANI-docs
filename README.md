@@ -210,7 +210,7 @@ Estructura objetivo:
 | `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Son **siete repositorios** y seis desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+Son **siete repositorios** y seis desplegables ([ADR-0028](wiki/02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 No existe `MANI-Availability` ni `MANI-Infra`.
 
 Cada unidad desplegable mantiene de forma independiente:
@@ -317,17 +317,17 @@ MANI-Docs/
 
 | Tema | Documento |
 |---|---|
-| Requerimientos | [`product/SRS.md`](product/SRS.md) |
-| Backlog | [`backlog/BACKLOG_MANI.md`](backlog/BACKLOG_MANI.md) |
-| Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
-| Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
-| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
-| Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
-| Decisiones arquitectónicas | [`adr/`](adr/) |
-| Modelo C4 | [`diagrams/c4/workspace.dsl`](diagrams/c4/workspace.dsl) |
-| Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
+| Requerimientos | [`product/SRS.md`](wiki/01-producto/SRS.md) |
+| Backlog | [`backlog/BACKLOG_MANI.md`](wiki/06-backlog/BACKLOG_MANI.md) |
+| Arquitectura | [`architecture/SAD.md`](wiki/02-arquitectura/SAD.md) |
+| Diseño detallado y vistas C4 | [`architecture/SDD.md`](wiki/02-arquitectura/SDD.md) |
+| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](wiki/02-arquitectura/SECUENCIAS.md) |
+| Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](wiki/02-arquitectura/ModeloDatos.md) |
+| Decisiones arquitectónicas | [`adr/`](wiki/02-arquitectura/adr/) |
+| Modelo C4 | [`diagrams/c4/workspace.dsl`](wiki/02-arquitectura/diagrams/c4/workspace.dsl) |
+| Tecnologías vigentes | [`architecture/TECH_RADAR.md`](wiki/02-arquitectura/TECH_RADAR.md) |
 | Calidad: planes, reportes y evidencia | [`qa/`](qa/) |
-| Conformidad técnica Core-Dispatch | [`architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md) |
+| Conformidad técnica Core-Dispatch | [`architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](wiki/02-arquitectura/REPORTE_CONFORMIDAD_CORE_DISPATCH.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
 | Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |

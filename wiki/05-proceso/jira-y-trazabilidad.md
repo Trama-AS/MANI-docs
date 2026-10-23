@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3 y §9.5 · [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) §4 y §5.
+**Fuente:** [`adr/ADR-0002`](../02-arquitectura/adr/ADR-0002-jira-github.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §3 y §9.5 · [`backlog/BACKLOG_MANI.md`](../06-backlog/BACKLOG_MANI.md) §4 y §5.
 
 ## Reparto de herramientas
 
@@ -13,7 +13,7 @@
 | **OneDrive** | Actas, informes, entregables administrativos, matrices y evidencias formales |
 | **Discord** | Coordinación operativa. **Una decisión que sólo existe en chat no está formalizada** |
 
-GitHub Projects está **descartado** como backlog principal ([Tech Radar](../../architecture/TECH_RADAR.md)).
+GitHub Projects está **descartado** como backlog principal ([Tech Radar](../02-arquitectura/TECH_RADAR.md)).
 
 ## Cadena de trazabilidad
 

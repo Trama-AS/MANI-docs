@@ -2,7 +2,7 @@
 
 [← 04 · Repositorios](README.md) · [Índice](../Home.md)
 
-**Fuente:** árbol real del repositorio · [`adr/ADR-0001`](../../adr/ADR-0001-gestion-documental.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3.
+**Fuente:** árbol real del repositorio · [`adr/ADR-0001`](../02-arquitectura/adr/ADR-0001-gestion-documental.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../07-gobernanza/GOBIERNO_DEL_EQUIPO.md) §3.
 
 ## Árbol actual
 

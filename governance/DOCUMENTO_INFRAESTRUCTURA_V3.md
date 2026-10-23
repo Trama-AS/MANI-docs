@@ -12,7 +12,7 @@
 | **Ticket Jira Principal** | `DOC4-05` (SCRUM-1248) |
 | **Subtareas Vinculadas** | `SCRUM-1296` (Consolidar topología operativa, bases y pipelines) y `SCRUM-1297` (Publicar guía de despliegue y recuperación) |
 | **Responsables** | Daniel Ávila (DevOps Lead), Nicolás León (DevOps Secundario), Santiago (QA & Security Lead), Sara Albarracín (Scrum Master) |
-| **Fuentes y Tareas Previas** | [`CFG4-01`](../qa/ACTA_AUDITORIA_DEV_QA_CFG4-01.md), [`CFG4-04`](./POLITICA_CONFIGURACION_JWT_CFG4-04.md), [`CFG4-03`](../qa/GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), [`CFG-26`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md), [`CFG4-02`](./ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md), [`ADR-0004`](../adr/ADR-0004-cicd-multirepo-ambientes.md), [`ADR-0005`](../adr/ADR-0005-devsecops.md), [`ADR-0012`](../adr/ADR-0012-persistencia-multitenant.md), [`ADR-0015`](../adr/ADR-0015-pruebas-aislamiento-multitenant.md), [`ADR-0018`](../adr/ADR-0018-identificacion-tenant.md), [`ADR-0028`](../adr/ADR-0028-nombres-repositorios-y-ambientes.md), [`ADR-0030`](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md), [`ADR-0031`](../adr/ADR-0031-politica-configuracion-jwt-ambientes.md) |
+| **Fuentes y Tareas Previas** | [`CFG4-01`](../qa/REPORTE_QA_SPRINT4.md#2-ambientes-dev-y-qa-cfg4-01), [`CFG4-04`](./POLITICA_CONFIGURACION_JWT_CFG4-04.md), [`CFG4-03`](../qa/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03), [`CFG-26`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md), [`CFG4-02`](./ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md), [`ADR-0004`](../adr/ADR-0004-cicd-multirepo-ambientes.md), [`ADR-0005`](../adr/ADR-0005-devsecops.md), [`ADR-0012`](../adr/ADR-0012-persistencia-multitenant.md), [`ADR-0015`](../adr/ADR-0015-pruebas-aislamiento-multitenant.md), [`ADR-0018`](../adr/ADR-0018-identificacion-tenant.md), [`ADR-0028`](../adr/ADR-0028-nombres-repositorios-y-ambientes.md), [`ADR-0030`](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md), [`ADR-0031`](../adr/ADR-0031-politica-configuracion-jwt-ambientes.md) |
 
 ---
 
@@ -22,7 +22,7 @@
 | :---: | :---: | :--- | :---: | :---: |
 | 1.0 | 2026-09-23 | Versión inicial de Entrega 2. Topología teórica preliminar y propuesta de segregación. | Daniel Ávila | Superada |
 | 2.0 | 2026-10-07 | Versión de transición arquitectónica (Sprint 3). Adopción de modelo multi-repo y Gateway NGINX. | Daniel Ávila | Superada |
-| **3.0** | **2026-10-17** | **Versión consolidada y operativa del Sprint 4.** Formalización de 5 VMs dedicadas (DEV, QA, PROD, Calidad y Backups). Consolidación de base de datos Supabase con 8 migraciones y 25 políticas RLS ([ADR-0012](../adr/ADR-0012-persistencia-multitenant.md), [ADR-0030](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)). Perímetro de validación JWT ([ADR-0031](../adr/ADR-0031-politica-configuracion-jwt-ambientes.md)). Cadena de calidad automatizada con SonarQube, Newman y Playwright ([`CFG4-03`](../qa/GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md)). Runbook de despliegue y contingencia probado. | **Daniel Ávila** | **Vigente / Aprobada** |
+| **3.0** | **2026-10-17** | **Versión consolidada y operativa del Sprint 4.** Formalización de 5 VMs dedicadas (DEV, QA, PROD, Calidad y Backups). Consolidación de base de datos Supabase con 8 migraciones y 25 políticas RLS ([ADR-0012](../adr/ADR-0012-persistencia-multitenant.md), [ADR-0030](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)). Perímetro de validación JWT ([ADR-0031](../adr/ADR-0031-politica-configuracion-jwt-ambientes.md)). Cadena de calidad automatizada con SonarQube, Newman y Playwright ([`CFG4-03`](../qa/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03)). Runbook de despliegue y contingencia probado. | **Daniel Ávila** | **Vigente / Aprobada** |
 
 ---
 
@@ -199,7 +199,7 @@ Ambas bases de datos registran en `public.schema_migrations` exactamente las **8
 
 ## 7. Cadena de Calidad Automatizada: SonarQube, Newman y Playwright
 
-En concordancia con [`CFG4-03`](../qa/GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), el **Host de Calidad (`10.43.98.196`)** concentra las tres herramientas de certificación operativa:
+En concordancia con [`CFG4-03`](../qa/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03), el **Host de Calidad (`10.43.98.196`)** concentra las tres herramientas de certificación operativa:
 
 ### 7.1 SonarQube Community Build 26.10
 - **Acceso:** `http://10.43.98.196:9000` (Administración de Quality Gates, Cobertura y Deuda Técnica). Versión `26.10.0.133078`, modo MQR.
@@ -333,9 +333,9 @@ Antes de autorizar cualquier despliegue sobre el **Host PROD (`10.43.98.203`)**,
 |---|---|:---:|---|
 | **Consolidar Topología Operativa (DOC4-05)** | [`SCRUM-1248`](../backlog/BACKLOG_MANI.md) | **CUMPLIDO** | Secciones §2, §3 y §4 de este documento. |
 | **Inventario de Ambientes y Accesos** | `SCRUM-1296` | **CUMPLIDO** | Tabla de 5 VMs en Sección §3. |
-| **Auditoría DEV y QA** | [`CFG4-01`](../qa/ACTA_AUDITORIA_DEV_QA_CFG4-01.md) | **CUMPLIDO** | Acta de auditoría con matriz de componentes. |
+| **Auditoría DEV y QA** | [`CFG4-01`](../qa/REPORTE_QA_SPRINT4.md#2-ambientes-dev-y-qa-cfg4-01) | **CUMPLIDO** | Acta de auditoría con matriz de componentes. |
 | **Configuración JWT por Ambiente** | [`CFG4-04`](./POLITICA_CONFIGURACION_JWT_CFG4-04.md) / [`ADR-0031`](../adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | **CUMPLIDO** | Flujo perimetral `auth_request` en Sección §5. |
-| **Cadena de Calidad QA** | [`CFG4-03`](../qa/GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md) | **CUMPLIDO** | SonarQube, Newman y Playwright en Sección §7. |
+| **Cadena de Calidad QA** | [`CFG4-03`](../qa/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03) | **CUMPLIDO** | SonarQube, Newman y Playwright en Sección §7. |
 | **Alineación y Consolidación DB** | [`CFG-26`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md) / [`CFG4-02`](./ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md) | **CUMPLIDO** | Paridad de 8 migraciones y 25 RLS en Sección §6. |
 | **Guía de Despliegue y Recuperación** | `SCRUM-1297` | **CUMPLIDO** | Runbook operativo y rollback en Secciones §9 y §10. |
 

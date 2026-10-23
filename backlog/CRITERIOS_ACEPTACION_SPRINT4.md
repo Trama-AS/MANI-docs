@@ -20,7 +20,7 @@ Este documento fija los criterios de aceptación funcionales de las 17 historias
 
 **Mocks.** En QA, las notificaciones push y los pagos son simulados. Ningún criterio exige envíos reales a FCM/APNs ni cobros reales.
 
-**Línea de verificación por historia.** Cada historia indica quién acepta, qué subtarea de QA verifica y qué casos de la matriz de pruebas del Sprint 4 (`qa/MANI_Matriz_Pruebas_Sprint4.xlsx`, SCRUM-1264) la cubren.
+**Línea de verificación por historia.** Cada historia indica quién acepta, qué subtarea de QA verifica y qué casos de la matriz de pruebas del Sprint 4 (`qa/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx`, SCRUM-1264) la cubren.
 
 Fuentes revisadas: la descripción de cada historia en Jira (alcance, DoD y «QA - pruebas obligatorias»), la matriz de pruebas SCRUM-1264, `product/SRS.md`, `architecture/SAD.md` §7, `architecture/SDD.md` §4.2 y §8, los contratos del Gateway y ADR-0012, 0016, 0018, 0022, 0027, 0030 y 0031 con su estado vigente.
 

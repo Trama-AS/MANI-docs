@@ -6,7 +6,7 @@
 | Presenta | Sara Albarracín |
 | Corte de la verificación | 20 de octubre de 2026 |
 | Alcance | Organización `Trama-AS`: MANI-docs, MANI-Node, MANI-.NET, MANI-Java, MANI-Flutter, MANI-APIGateway, MANI-Landing |
-| Fuentes | `gh issue list` y `gh pr list` sobre los siete repositorios; código de `release` y `develop` de MANI-Node, MANI-APIGateway y MANI-.NET; [reporte de monitoreo QA](../qa/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md) (SCRUM-1266) y [reporte de regresión](../qa/REPORTE_QA_REGRESION_SCRUM-1267.md) (SCRUM-1267) |
+| Fuentes | `gh issue list` y `gh pr list` sobre los siete repositorios; código de `release` y `develop` de MANI-Node, MANI-APIGateway y MANI-.NET; [reporte general de QA del Sprint 4](../qa/REPORTE_QA_SPRINT4.md) (monitoreo SCRUM-1266 y regresión SCRUM-1267) |
 | Estado | Propuesta. Ningún issue se ha creado en GitHub; los borradores de §4 esperan aprobación |
 
 > Este documento no registra hallazgos nuevos ni cambia estados históricos. Los hallazgos son los de
@@ -121,8 +121,7 @@ fuente de llaves por ambiente, y no se implementa antes de esa enmienda.
 
 **Evidencia existente.**
 
-- [SCRUM-1266](../qa/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md) §5 (H-02) y §5.1 (D-02).
-- [SCRUM-1267](../qa/REPORTE_QA_REGRESION_SCRUM-1267.md) §8 (R-10).
+- [Reporte general de QA del Sprint 4](../qa/REPORTE_QA_SPRINT4.md) §7 (H-02, SCRUM-1266) y §9 (R-10 y D-02).
 - `qa/monitoreo_qas/evidencia/20261020T020546Z_d02/confirmacion_d02_login_real.txt`.
 - Reproducible con `qa/monitoreo_qas/confirmar_d02.sh` desde la VM de Calidad.
 - `MANI-APIGateway` `qa/README.md:73-74`.

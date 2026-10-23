@@ -8,7 +8,7 @@
 | Autor | Santiago (QA) |
 | Fecha | 6 de octubre de 2026 |
 | Estado | Borrador. Ningún caso se ha ejecutado. Rutas, campos y códigos tomados del contrato v0.3.0 de CFG-16 (`MANI-APIGateway`, rama `CFG-16`) cuando existen; lo que el contrato no cubre queda como marcador |
-| Fuente de los casos | `product/CRITERIOS_ACEPTACION_US-02.1.1.md` (SCRUM-1076, PR 13 de `MANI-docs`), escenarios A1 a A4 y B1 a B6 |
+| Fuente de los casos | `backlog/CRITERIOS_ACEPTACION_US-02.1.1.md` (SCRUM-1076, PR 13 de `MANI-docs`), escenarios A1 a A4 y B1 a B6 |
 
 ## 1. Propósito y reglas
 

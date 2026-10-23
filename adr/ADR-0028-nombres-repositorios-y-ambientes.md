@@ -96,7 +96,7 @@ Este ADR es la fuente única del registro del repositorio; los demás documentos
   (rama `develop`) en DEV, `:staging` (rama `release`) en QA y `:latest` (rama `main`) en PROD.
   `staging` es solo el nombre del tag de imagen, no un ambiente. En cada host corre como el
   contenedor `mani-landing-web`, publicado en el puerto 3001
-  ([`DOCUMENTO_INFRAESTRUCTURA_V3.md`](../product/DOCUMENTO_INFRAESTRUCTURA_V3.md) §3).
+  ([`DOCUMENTO_INFRAESTRUCTURA_V3.md`](../governance/DOCUMENTO_INFRAESTRUCTURA_V3.md) §3).
 - **Detalle técnico.** Vive en el propio repositorio: `MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`.
 - **Nombre.** Cumple las tres reglas: dice la capacidad, no el runtime, y no es un servicio.
 

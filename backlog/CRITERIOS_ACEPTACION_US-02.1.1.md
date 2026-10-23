@@ -21,7 +21,7 @@ Autoridad de decisión (`governance/GOBIERNO_DEL_EQUIPO.md`, sección 2.3): el P
 | `wiki/05-proceso/dor-y-dod.md` | Leída en `origin/main` (`3fd4473`) | DoR y DoD oficiales. Exige que toda historia que toque autenticación, tenant, RLS, endpoints de datos o Storage demuestre los seis casos cross-tenant con rechazo o ausencia de datos |
 | `governance/GOBIERNO_DEL_EQUIPO.md`, secciones 2.3, 8 y 9 | Leídas | El DoD lo decide QA. El DoR exige spike bloqueante cerrado |
 | `governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`, sección 13.4 | Leída | Define los seis casos |
-| `product/BACKLOG_MANI.md` | Leído | Única fuente del backlog. M1 no figura como paso propio: lo sustituye CFG-16 |
+| `backlog/BACKLOG_MANI.md` | Leído | Única fuente del backlog. M1 no figura como paso propio: lo sustituye CFG-16 |
 | `architecture/COMUNICACION_SERVICIOS_GATEWAY.md` | Leída | Rutas `/api/v1/core\|rules\|dispatch/*`. Cada servicio inspecciona el JWT para extraer `user_id` y `tenant_id`. Availability no aparece en la matriz de rutas |
 | `ADR/ADR-0015` (Propuesto), `ADR-0013` (Propuesto), `ADR-0005` (Aceptado), `ADR-0018` (Aceptado) | Leídos | ADR-0015 exige 100 % de rechazo cross-tenant. ADR-0005 fija los gates (ver sección 4) |
 | `product/SRS.md`: RF-02, RF-03, RF-05, RNF-01, RNF-04, REST-02 | Leídos | RF-05 exige documentos según la configuración del tenant y aislados por aliado y tenant |

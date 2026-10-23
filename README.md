@@ -263,21 +263,40 @@ La documentación del proyecto se divide por responsabilidad para evitar duplici
 MANI-Docs/
 ├── README.md
 ├── CONTRIBUTING.md
-├── product/
+├── product/                 requisitos y deuda tecnica
 │   ├── SRS.md
-│   └── BACKLOG_MANI.md
+│   └── TD.md
+├── backlog/                 backlog, criterios de aceptacion y seguimiento del sprint
+│   ├── BACKLOG_MANI.md
+│   ├── CRITERIOS_ACEPTACION_*.md
+│   ├── MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md
+│   └── SPRINT4_*.md
 ├── architecture/
 │   ├── SAD.md
 │   ├── SDD.md
 │   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
-│   └── TECH_RADAR.md
+│   ├── TECH_RADAR.md
+│   └── REPORTE_CONFORMIDAD_CORE_DISPATCH.md
 ├── adr/
 │   └── ADR-00XX-*.md
-├── governance/
+├── qa/                      planes, reportes y evidencia de calidad
+│   ├── PLAN_PRUEBAS_EP-02_MIGRACION.md
+│   ├── REPORTE_QA_*.md
+│   ├── GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md
+│   ├── ACTA_AUDITORIA_DEV_QA_CFG4-01.md
+│   ├── MANI_Matriz_*_Sprint4.xlsx
+│   ├── monitoreo_qas/
+│   ├── regresion_sprint4/
+│   └── td_v2/
+├── governance/              gobierno, infraestructura y politicas
 │   ├── GOBIERNO_DEL_EQUIPO.md
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md
-│   └── INFRAESTRUCTURA_MANI.md
+│   ├── INFRAESTRUCTURA_MANI.md
+│   ├── DOCUMENTO_INFRAESTRUCTURA_V3.md
+│   ├── POLITICA_CONFIGURACION_JWT_CFG4-04.md
+│   ├── PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md
+│   └── ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md
 ├── diagrams/                 estructura de ADR-0008
 │   ├── c4/
 │   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas C4
@@ -299,7 +318,7 @@ MANI-Docs/
 | Tema | Documento |
 |---|---|
 | Requerimientos | [`product/SRS.md`](product/SRS.md) |
-| Backlog | [`product/BACKLOG_MANI.md`](product/BACKLOG_MANI.md) |
+| Backlog | [`backlog/BACKLOG_MANI.md`](backlog/BACKLOG_MANI.md) |
 | Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
 | Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
@@ -307,6 +326,8 @@ MANI-Docs/
 | Decisiones arquitectónicas | [`adr/`](adr/) |
 | Modelo C4 | [`diagrams/c4/workspace.dsl`](diagrams/c4/workspace.dsl) |
 | Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
+| Calidad: planes, reportes y evidencia | [`qa/`](qa/) |
+| Conformidad técnica Core-Dispatch | [`architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
 | Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |

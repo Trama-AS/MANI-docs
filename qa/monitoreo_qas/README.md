@@ -3,13 +3,13 @@
 Scripts, configuración y evidencia de la tarea SCRUM-1266 (QA4-03) y sus subtareas SCRUM-1274
 (QA-MON-01), SCRUM-1275 (QA-MON-02) y SCRUM-1276 (QA-MON-03). Los umbrales provienen del
 [SDD §8](../../architecture/SDD.md) y no se modifican aquí. El resultado consolidado está en
-[`product/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md`](../../product/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md).
+[`qa/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md`](../REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md).
 
 ## Dónde corre cada herramienta
 
 Las herramientas corren en la VM de Calidad (10.43.98.196) y apuntan al Gateway de QA
 (10.43.100.141:80), igual que SonarQube, Newman y Playwright según la
-[Guía CFG4-03](../../product/GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md). En la VM de QA solo se lee el
+[Guía CFG4-03](../GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md). En la VM de QA solo se lee el
 estado de los contenedores, porque no hay una plataforma de métricas ni de logs centralizada. Correr
 k6 en la VM de QA le quitaría CPU a los servicios medidos y alteraría el p95.
 

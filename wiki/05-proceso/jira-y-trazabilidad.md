@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3 y §9.5 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §4 y §5.
+**Fuente:** [`adr/ADR-0002`](../../adr/ADR-0002-jira-github.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §3 y §9.5 · [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) §4 y §5.
 
 ## Reparto de herramientas
 

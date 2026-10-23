@@ -14,7 +14,7 @@ Este documento es la única fuente del backlog. Reemplaza las versiones anterior
 - **Tarea:** [SCRUM-1245](https://maniservices.atlassian.net/browse/SCRUM-1245) (DOC4-02), subtareas [SCRUM-1290](https://maniservices.atlassian.net/browse/SCRUM-1290) y [SCRUM-1291](https://maniservices.atlassian.net/browse/SCRUM-1291).
 - **Autora:** Camila Beltrán (PO). **Fecha:** 2026-10-20, al cierre del Sprint 4. **Revisión:** Scrum Master (Sara Albarracín) y QA (Santiago).
 - **Contexto:** el Sprint 5 es el **último**. Las historias que entren deben terminar el producto prometido: el MVP de `SRS.md` §1.2.
-- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), `product/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), `product/CRITERIOS_ACEPTACION_SPRINT4.md`) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
+- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), `backlog/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), `backlog/CRITERIOS_ACEPTACION_SPRINT4.md`) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
 - **Enlaces:** cada clave `SCRUM-n` de esta sección enlaza a Jira; el estado es el del tablero al 2026-10-20.
 
 ### 0.1 Estado real de los servicios al cierre del Sprint 4
@@ -93,7 +93,7 @@ Del MVP **falta el ciclo del servicio después de la asignación** (cotización,
 
 ### 0.5 Criterios de aceptación y DoD
 
-- **[SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) y [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068):** aplican sus criterios de `product/CRITERIOS_ACEPTACION_SPRINT4.md` y los CC/CA de Jira.
+- **[SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) y [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068):** aplican sus criterios de `backlog/CRITERIOS_ACEPTACION_SPRINT4.md` y los CC/CA de Jira.
 - **Historias nuevas del Sprint 5:** no entran al sprint sin criterios C1 (positivo), C2 (negativo) y C3 (regla crítica), redactados por el PO a partir del RF y revisados por QA (DoR). Mínimo exigido:
 
 | Historia | C1 mínimo | C3 regla crítica |
@@ -549,11 +549,11 @@ calidad P1 de ISO/IEC 25010.
 
 | Tema | Documento |
 |---|---|
-| Requerimientos | [`product/SRS.md`](SRS.md) |
+| Requerimientos | [`product/SRS.md`](../product/SRS.md) |
 | Arquitectura | [`architecture/SAD.md`](../architecture/SAD.md) |
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](../architecture/SDD.md) |
 | Modelo de datos | [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](../adr/) |
-| Matriz historia ↔ repositorios del Sprint 4 | [`product/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) |
-| Criterios de aceptación del Sprint 4 | [`product/CRITERIOS_ACEPTACION_SPRINT4.md`](CRITERIOS_ACEPTACION_SPRINT4.md) |
+| Matriz historia ↔ repositorios del Sprint 4 | [`backlog/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) |
+| Criterios de aceptación del Sprint 4 | [`backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](CRITERIOS_ACEPTACION_SPRINT4.md) |
 | Políticas DevOps y versionamiento de despliegue | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) |

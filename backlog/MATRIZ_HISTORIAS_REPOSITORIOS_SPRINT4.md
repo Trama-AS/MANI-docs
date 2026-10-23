@@ -40,5 +40,5 @@ Repositorios: **Front** = MANI-Frontend · **GW** = MANI-API-Gateway (incluye `d
 1. **SCRUM-1072** queda en Core por la decisión D1 de SCRUM-1232: Core crea la solicitud y Dispatch la orquesta (SAD §7.4).
 2. **SCRUM-1068**: el título menciona «Availability Service», que ya no existe; la cobertura y la disponibilidad son dominio de Core (ADR-0028).
 3. **SCRUM-858, 862 y 1066**: los repositorios marcados como «posible» no se confirmaron; se precisan al implementar.
-4. **ADR-0030**: los PRs de SCRUM-856, 861, 1073 y 1074 debían corregirse para no cruzar la frontera de datos por SQL ni crear tablas sin RLS. Su seguimiento está en `product/CRITERIOS_ACEPTACION_SPRINT4.md` §5.
+4. **ADR-0030**: los PRs de SCRUM-856, 861, 1073 y 1074 debían corregirse para no cruzar la frontera de datos por SQL ni crear tablas sin RLS. Su seguimiento está en `backlog/CRITERIOS_ACEPTACION_SPRINT4.md` §5.
 5. **Carga:** Nicolás León es responsable de 12 de las 17 historias.

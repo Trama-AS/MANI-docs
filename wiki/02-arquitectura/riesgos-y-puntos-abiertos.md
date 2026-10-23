@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §23 · [`architecture/SDD.md`](../../architecture/SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §25 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §3, §4.1 y §4.2.
+**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §23 · [`architecture/SDD.md`](../../architecture/SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §25 · [`backlog/BACKLOG_MANI.md`](../../backlog/BACKLOG_MANI.md) §3, §4.1 y §4.2.
 
 Esta página existe para que nadie —persona o asistente— «resuelva» en un PR algo que el equipo todavía no decidió.
 

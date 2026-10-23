@@ -12,7 +12,7 @@ Fuentes: [`ADR-0029`](../adr/ADR-0029-comunicacion-asincrona-kafka.md),
 [`SAD`](SAD.md) §7.4 y §12, [`SDD`](SDD.md) §2.1,
 [`ModeloDatos`](ModeloDatos.md) §6.3 y §7,
 [`COMUNICACION_SERVICIOS_GATEWAY`](COMUNICACION_SERVICIOS_GATEWAY.md),
-[`DOCUMENTO_INFRAESTRUCTURA_V3`](../product/DOCUMENTO_INFRAESTRUCTURA_V3.md).
+[`DOCUMENTO_INFRAESTRUCTURA_V3`](../governance/DOCUMENTO_INFRAESTRUCTURA_V3.md).
 
 ---
 
@@ -98,7 +98,7 @@ exigible por el motor: ningún rol de servicio tiene `SELECT` sobre un esquema a
 ## 4. Despliegue
 
 La topología, el inventario de máquinas, el perímetro NGINX y el runbook están en
-[`DOCUMENTO_INFRAESTRUCTURA_V3`](../product/DOCUMENTO_INFRAESTRUCTURA_V3.md) §3 a §9. Aquí solo la
+[`DOCUMENTO_INFRAESTRUCTURA_V3`](../governance/DOCUMENTO_INFRAESTRUCTURA_V3.md) §3 a §9. Aquí solo la
 trazabilidad de qué artefacto responde por cada pieza de integración:
 
 | Pieza de integración | Dónde vive | Documento |

@@ -198,8 +198,8 @@ Reglas comunes a todas las secciones:
 
 **Fuente única.** Los criterios y los casos de esta historia viven en PR Trama-AS/MANI-docs#13:
 
-- `product/CRITERIOS_ACEPTACION_US-02.1.1.md`: escenarios A1 a A4 (camino funcional) y B1 a B6 (los seis casos cross-tenant), §4.5 (herramienta por caso), §5 y §6.
-- `product/PLAN_REGRESION_US-02.1.1-M4.md`: casos `rgA1P` a `rgB6`, juego de línea base y juego Gateway, §6 de paridad.
+- `backlog/CRITERIOS_ACEPTACION_US-02.1.1.md`: escenarios A1 a A4 (camino funcional) y B1 a B6 (los seis casos cross-tenant), §4.5 (herramienta por caso), §5 y §6.
+- `qa/PLAN_REGRESION_US-02.1.1-M4.md`: casos `rgA1P` a `rgB6`, juego de línea base y juego Gateway, §6 de paridad.
 
 Este plan no reescribe esos casos. Solo agrega lo que falta para DOC-38:
 
@@ -258,7 +258,7 @@ Este plan no reescribe esos casos. Solo agrega lo que falta para DOC-38:
 
 ### 6.3 US-02.1.3-M2: aprobar o rechazar el registro de aliado (SCRUM-1066)
 
-**No ejecutable en el Sprint 3.** SCRUM-1066 no tiene sprint asignado y `product/BACKLOG_MANI.md` §3.4 la deja para Incremento 2 "por capacidad, no por dependencia técnica". La sección queda completa para que la regresión esté lista cuando entre.
+**No ejecutable en el Sprint 3.** SCRUM-1066 no tiene sprint asignado y `backlog/BACKLOG_MANI.md` §3.4 la deja para Incremento 2 "por capacidad, no por dependencia técnica". La sección queda completa para que la regresión esté lista cuando entre.
 
 | Campo | Contenido |
 |---|---|
@@ -369,7 +369,7 @@ Notas:
 
 ## 8. Herramienta por nivel
 
-Coherente con `product/BACKLOG_MANI.md` §4.1 y con el punto 8 del SDD (PR #14).
+Coherente con `backlog/BACKLOG_MANI.md` §4.1 y con el punto 8 del SDD (PR #14).
 
 | Nivel | Herramienta | Ticket | Responsable | Estado de Jira | Uso en este plan |
 |---|---|---|---|---|---|
@@ -423,7 +423,7 @@ Corte: 6 de octubre de 2026. Se actualiza solo lo que cambie antes del cierre (7
 
 ## 11. Puntos abiertos y responsables
 
-Los identificadores PA-01 a PA-17 son los de `product/CRITERIOS_ACEPTACION_US-02.1.1.md` (PR #13). Los nuevos empiezan en PA-18.
+Los identificadores PA-01 a PA-17 son los de `backlog/CRITERIOS_ACEPTACION_US-02.1.1.md` (PR #13). Los nuevos empiezan en PA-18.
 
 | ID | Punto | Afecta a | Responsable |
 |---|---|---|---|
@@ -444,7 +444,7 @@ Los identificadores PA-01 a PA-17 son los de `product/CRITERIOS_ACEPTACION_US-02
 | PA-21 | Creación del primer sitio del cliente en "la primera zona activa" sin filtro de tenant | US-02.2.1 | Nicolás León |
 | PA-22 | Duplicado de empresa: la función vieja hace *upsert*; CA-4 pide 409 | US0212-N2 | Nicolás León |
 | PA-23 | `Inf_test-002` salió del árbol en la reestructuración (`cc28e0c`, 2026-09-30), aunque DD_V2, SAD_V3 y SDD_V1 lo citan. Decidir si se restaura junto a `Inf_test-001` | Sección 3.4 | Santiago, Sara Albarracín |
-| PA-24 | `product/BACKLOG_MANI.md` §3.5 y la wiki (SP-05 abierto) contradicen ADR-0022 | Trazabilidad | María Camila Beltrán |
+| PA-24 | `backlog/BACKLOG_MANI.md` §3.5 y la wiki (SP-05 abierto) contradicen ADR-0022 | Trazabilidad | María Camila Beltrán |
 | PA-25 | Destino del documento: la carpeta `quality/` que indica el ticket no existe | Publicación | Sara Albarracín |
 | PA-26 | Las rutas de negocio de Rules y Dispatch responden 404 a través del Gateway: `proxy_pass` recorta `/api/v1/rules/` y `/api/v1/dispatch/`, y los controladores de Java y .NET esperan la ruta completa (CX-13). Solo responde el `/health` | CX-13, Incremento 2, QAS-06 | Daniel Ávila (Gateway) y responsables de `MANI-Java` y `MANI-.NET` |
 | PA-27 | Trazabilidad del correlation ID: el encabezado `X-Correlation-ID` sale duplicado en las respuestas de Core (lo agregan NGINX y Core), y el log de acceso del Gateway usa `$http_x_correlation_id`, por lo que el identificador que genera NGINX queda vacío en su log (RNF-04) | CX-07, CX-08 | Daniel Ávila |

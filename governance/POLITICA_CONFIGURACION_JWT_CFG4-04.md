@@ -190,7 +190,7 @@ RESUMEN: 8/8 PRUEBAS EXITOSAS
 | `MANI-APIGateway` | `nginx.conf` | Corrección de directivas `proxy_pass` en `/api/v1/rules/` y `/api/v1/dispatch/` para preservar prefijos de ruta canónicos. | Daniel Ávila (DevOps) |
 | `MANI-APIGateway` | GitHub Actions / Docker | Sincronización en ramas `main`, `release` y `develop` con reconstrucción y publicación de imágenes en GHCR. | Daniel Ávila (DevOps) |
 | `MANI-docs` | `adr/ADR-0031-...` | Registro de la decisión de arquitectura sobre política JWT y validación perimetral. | Daniel Ávila (DevOps) |
-| `MANI-docs` | `product/POLITICA_CONFIGURACION_JWT_CFG4-04.md` | Documento formal de política, configuración por ambiente y evidencias de prueba. | Daniel Ávila (DevOps) / Santiago |
+| `MANI-docs` | `governance/POLITICA_CONFIGURACION_JWT_CFG4-04.md` | Documento formal de política, configuración por ambiente y evidencias de prueba. | Daniel Ávila (DevOps) / Santiago |
 | QA & DEV VMs | `/opt/mani/` | Despliegue de imágenes actualizadas, recarga sin downtime de NGINX y verificación de pruebas en vivo. | Daniel Ávila (DevOps) |
 
 ---

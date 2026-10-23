@@ -798,7 +798,7 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 > lo estén, aplica la misma salvedad.
 > Mientras una herramienta no esté entregada, el escenario que depende de ella se reporta como
 > **no medible**, nunca como cumplido. El detalle por nivel y su estado vive en
-> [`qa/PLAN_PRUEBAS_EP-02_MIGRACION.md`](../qa/PLAN_PRUEBAS_EP-02_MIGRACION.md) §8.
+> [`product/TD.md`](../product/TD.md) §2.1.
 
 | ID | Característica ISO/IEC 25010:2023 | Subcaracterística seleccionada | Prioridad | Fuente | Estímulo | Entorno | Artefacto | Respuesta esperada | Umbral / criterio de aceptación | ¿Cómo lo mide QA? |
 |---|---|---|:---:|---|---|---|---|---|---|---|

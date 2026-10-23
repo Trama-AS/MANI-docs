@@ -107,11 +107,11 @@ evidencia y renombrar commits fusionados rompe referencias. Lo que sí se puede 
 
 | Evidencia | Artefacto | Ítem |
 |---|---|---|
-| Matriz de pruebas del Sprint 4 | `qa/MANI_Matriz_Pruebas_Sprint4.xlsx` | SCRUM-1264, PR #32 |
-| Cadena de calidad operativa (Sonar, Newman, Playwright) | `qa/GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md` | CFG4-03 |
-| Auditoría y aceptación de DEV y QA | `qa/ACTA_AUDITORIA_DEV_QA_CFG4-01.md` | CFG4-01 |
+| Matriz de pruebas del Sprint 4 | `qa/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx` | SCRUM-1264, PR #32 |
+| Cadena de calidad operativa (Sonar, Newman, Playwright) | `qa/REPORTE_QA_SPRINT4.md` §3 | CFG4-03 |
+| Auditoría y aceptación de DEV y QA | `qa/REPORTE_QA_SPRINT4.md` §2 | CFG4-01 |
 | Aislamiento cross-tenant | `product/REPORTE_QA_CFG-23c.md` | SCRUM-1105, PR #28 |
-| Paridad de las historias migradas de EP-02 | `qa/PLAN_PRUEBAS_EP-02_MIGRACION.md` | SCRUM-1094, PR #15 |
+| Paridad de las historias migradas de EP-02 | `qa/REPORTE_QA_SPRINT4.md` §6 | SCRUM-1094, PR #15 |
 | Estado de Sonar del Core | `governance/INFRAESTRUCTURA_MANI.md` | SCRUM-1116, PR #29 |
 
 **Hueco de trazabilidad.** Las tareas de QA del sprint —QA4-02 (SCRUM-1265), QA4-03 (SCRUM-1266) y

@@ -11,7 +11,7 @@
 - Tarea Padre: `CFG4-04`
 - Tareas Relacionadas: `SCRUM-1102` (Emisión y propagación JWT), `SCRUM-1103` (Core Node), `SCRUM-1104` (Rules Java), `SCRUM-1105` (Dispatch .NET)
 - Dependencia Bloqueante: Cierre requerido antes de `SCRUM-1263` (Pase a Producción Sprint 4)
-- Decisión de Arquitectura: [`ADR-0031`](../../../Entregas/adr/ADR-0031-politica-configuracion-jwt-ambientes.md)
+- Decisión de Arquitectura: [`ADR-0031`](../adr/ADR-0031-politica-configuracion-jwt-ambientes.md)
 
 ---
 

@@ -329,7 +329,7 @@ Antes de autorizar cualquier despliegue sobre el **Host PROD (`10.43.98.203`)**,
 
 | Requerimiento / Tarea | Referencia Documental | Estado Operativo | Evidencia |
 |---|---|:---:|---|
-| **Consolidar Topología Operativa (DOC4-05)** | [`SCRUM-1248`](../../../Entregas/product/BACKLOG_MANI.md) | **CUMPLIDO** | Secciones §2, §3 y §4 de este documento. |
+| **Consolidar Topología Operativa (DOC4-05)** | [`SCRUM-1248`](../product/BACKLOG_MANI.md) | **CUMPLIDO** | Secciones §2, §3 y §4 de este documento. |
 | **Inventario de Ambientes y Accesos** | `SCRUM-1296` | **CUMPLIDO** | Tabla de 5 VMs en Sección §3. |
 | **Auditoría DEV y QA** | [`CFG4-01`](ACTA_AUDITORIA_DEV_QA_CFG4-01.md) | **CUMPLIDO** | Acta de auditoría con matriz de componentes. |
 | **Configuración JWT por Ambiente** | [`CFG4-04`](POLITICA_CONFIGURACION_JWT_CFG4-04.md) / [`ADR-0031`](../../02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | **CUMPLIDO** | Flujo perimetral `auth_request` en Sección §5. |

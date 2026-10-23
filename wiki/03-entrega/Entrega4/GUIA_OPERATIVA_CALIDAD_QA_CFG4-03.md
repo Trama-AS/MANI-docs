@@ -18,7 +18,7 @@
 
 ## 1. Resumen Ejecutivo y Arquitectura
 
-En cumplimiento de las políticas de DevSecOps ([`ADR-0005`](../../../Entregas/adr/ADR-0005-devsecops.md)), aislamiento multi-tenant ([`ADR-0015`](../../../Entregas/adr/ADR-0015-pruebas-aislamiento-multitenant.md)) y nombres de ambientes ([`ADR-0028`](../../../Entregas/adr/ADR-0028-nombres-repositorios-y-ambientes.md)), se ha habilitado y dejado **100% operativa** la cadena de calidad del ambiente QA en un host dedicado:
+En cumplimiento de las políticas de DevSecOps ([`ADR-0005`](../adr/ADR-0005-devsecops.md)), aislamiento multi-tenant ([`ADR-0015`](../adr/ADR-0015-pruebas-aislamiento-multitenant.md)) y nombres de ambientes ([`ADR-0028`](../adr/ADR-0028-nombres-repositorios-y-ambientes.md)), se ha habilitado y dejado **100% operativa** la cadena de calidad del ambiente QA en un host dedicado:
 
 - **Host Servidor de Calidad:** `10.43.98.196` (`NBIG02`, Ubuntu 22.04.5 LTS, 11 GiB RAM, 49 GB disco)
 - **Host Ambiente QA Objetivo:** `10.43.100.141` (`mani-api-gateway`, Core Node, Rules Java, Dispatch .NET)

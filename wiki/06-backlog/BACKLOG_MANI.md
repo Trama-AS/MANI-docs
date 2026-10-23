@@ -586,7 +586,7 @@ Este documento fija los criterios de aceptación funcionales de las 17 historias
 
 **Mocks.** En QA, las notificaciones push y los pagos son simulados. Ningún criterio exige envíos reales a FCM/APNs ni cobros reales.
 
-**Línea de verificación por historia.** Cada historia indica quién acepta, qué subtarea de QA verifica y qué casos de la matriz de pruebas del Sprint 4 (`qa/MANI_Matriz_Pruebas_Sprint4.xlsx`, SCRUM-1264) la cubren.
+**Línea de verificación por historia.** Cada historia indica quién acepta, qué subtarea de QA verifica y qué casos de la matriz de pruebas del Sprint 4 (`qa/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx`, SCRUM-1264) la cubren.
 
 Fuentes revisadas: la descripción de cada historia en Jira (alcance, DoD y «QA - pruebas obligatorias»), la matriz de pruebas SCRUM-1264, `product/SRS.md`, `architecture/SAD.md` §7, `architecture/SDD.md` §4.2 y §8, los contratos del Gateway y ADR-0012, 0016, 0018, 0022, 0027, 0030 y 0031 con su estado vigente.
 
@@ -1244,7 +1244,7 @@ Estado verificado el 7 de octubre de 2026: ninguno de los ajustes de abajo se ha
 | Presenta | Sara Albarracín |
 | Corte de la verificación | 20 de octubre de 2026 |
 | Alcance | Organización `Trama-AS`: MANI-docs, MANI-Node, MANI-.NET, MANI-Java, MANI-Flutter, MANI-APIGateway, MANI-Landing |
-| Fuentes | `gh issue list` y `gh pr list` sobre los siete repositorios; código de `release` y `develop` de MANI-Node, MANI-APIGateway y MANI-.NET; [reporte de monitoreo QA](../../qa/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md) (SCRUM-1266) y [reporte de regresión](../../qa/REPORTE_QA_REGRESION_SCRUM-1267.md) (SCRUM-1267) |
+| Fuentes | `gh issue list` y `gh pr list` sobre los siete repositorios; código de `release` y `develop` de MANI-Node, MANI-APIGateway y MANI-.NET; [reporte de monitoreo QA](../../qa/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) (SCRUM-1266) y [reporte de regresión](../../qa/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) (SCRUM-1267) |
 | Estado | Propuesta. Ningún issue se ha creado en GitHub; los borradores de §4 esperan aprobación |
 
 > Este documento no registra hallazgos nuevos ni cambia estados históricos. Los hallazgos son los de
@@ -1359,8 +1359,8 @@ fuente de llaves por ambiente, y no se implementa antes de esa enmienda.
 
 **Evidencia existente.**
 
-- [SCRUM-1266](../../qa/REPORTE_QA_MONITOREO_QAS_SCRUM-1266.md) §5 (H-02) y §5.1 (D-02).
-- [SCRUM-1267](../../qa/REPORTE_QA_REGRESION_SCRUM-1267.md) §8 (R-10).
+- [SCRUM-1266](../../qa/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) §5 (H-02) y §5.1 (D-02).
+- [SCRUM-1267](../../qa/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) §8 (R-10).
 - `qa/monitoreo_qas/evidencia/20261020T020546Z_d02/confirmacion_d02_login_real.txt`.
 - Reproducible con `qa/monitoreo_qas/confirmar_d02.sh` desde la VM de Calidad.
 - `MANI-APIGateway` `qa/README.md:73-74`.
@@ -1539,15 +1539,24 @@ Las columnas VAL, CONS y TEC son los bloques del Sprint 5 de la hoja `17 Cobertu
 
 ### 9.4 Bloqueos que impiden verificar
 
-Mientras estos no se cierren, ninguna historia de validación puede acreditarse: el DoD del Sprint 5
-exige token real ES256 por el Gateway, y hoy ese camino devuelve 401.
+El DoD del Sprint 5 exige token real ES256 por el Gateway. Ese camino **ya funciona desde el 21 de
+octubre**, así que el bloqueo de raíz está levantado; lo que queda abajo es lo que sigue abierto.
 
-| Bloqueo | Efecto | Dónde |
-|---|---|---|
-| `validate-token` solo acepta HS256 y Supabase firma ES256 (H-02 / R-10 / SCRUM-1362) | El token real de un usuario recibe 401 en Core, Rules y Dispatch; la regresión del Sprint 4 corrió con tokens HS256 sintéticos y ninguna de las 27 historias quedó en *Aprobado* | §8.4.1 |
-| La llave HS256 previa de `MANI-QA` sigue habilitada y `INSECURE_DEV_SECRET` está versionado (S-01) | Quien tenga el secreto emite tokens para cualquier tenant y rol | §8.4.2 |
-| ADR-0031 §1 no contempla ES256 | El issue de ES256 no se implementa antes de la enmienda del ADR | §8.4.1 |
-| R-04 / SCRUM-1361: la imagen de Flutter en QA apunta a producción | Impide el recorrido E2E real aunque se corrija el token | §8.4.1 |
+> **El §8 de este documento tiene corte del 20 de octubre y la §9.2 del 22.** El reporte general de
+> QA del Sprint 4 ([`qa/REPORTE_QA_SPRINT4.md` §9](../../qa/REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint))
+> es posterior y manda sobre el estado de cada defecto. En particular, el issue de ES256 que §8.4.1
+> propone ya se implementó.
+
+| Estado | Bloqueo | Efecto | Evidencia |
+|---|---|---|---|
+| **Levantado** | `validate-token` solo aceptaba HS256 y Supabase firma ES256 (H-02 / R-10 / SCRUM-1362) | Era la causa de que ninguna de las 27 historias quedara en *Aprobado* | Corregido y verificado: MANI-Node#52 y MANI-.NET#13; login real de `admin.t1` con 200 en Core y Rules; tokens falsificados, sin `kid` o con `alg: none` con 401 |
+| **Levantado** | ADR-0031 §1 no contemplaba ES256 | Impedía implementar la validación | Enmendado en MANI-docs#59, fusionado el 21 de octubre |
+| Abierto | La llave HS256 previa de `MANI-QA` sigue habilitada y `INSECURE_DEV_SECRET` está versionado (S-01) | Quien tenga el secreto emite tokens para cualquier tenant y rol | §8.4.2; ya se puede ejecutar porque ES256 está desplegado |
+| Abierto | R-09 / BUG-SEC-05: Core y Dispatch conectan como `postgres` con BYPASSRLS | El aislamiento por RLS no defiende contra el propio servicio | Reporte de QA §9 |
+| Abierto | R-06 / BUG-SEC-06: 15 políticas `tenant_isolation_*` con `TO public` | Igual que el anterior, en la capa de políticas | Reporte de QA §9 |
+| Mitigado | R-04 / SCRUM-1361: la imagen de Flutter en QA se construye con `.env.example` | Impide el E2E real; en QA se sortea montando `flutter.env.qa` a mano, pero falta corregir MANI-Flutter | Reporte de QA §9 |
+| Abierto | R-08 / BUG-QA-08: la promoción a `release` no dejó QA operativo; compose y despliegue sin versionar | Hace que cada corrida dependa de ajustes manuales | Reporte de QA §9 |
+| Abierto | R-11 / BUG-DISP-01: los errores de Dispatch no traen `code` (criterio T5, PE5) | Rompe el formato de error único de §6.2 | Reporte de QA §9 |
 
 ### 9.5 Pendientes consolidados
 

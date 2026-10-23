@@ -17,7 +17,7 @@ evolucionando en `main`. Ya divergieron:
 | `SAD_V3.md` | [`architecture/SAD.md`](../02-arquitectura/SAD.md) |
 | `SDD_V1.md` | [`architecture/SDD.md`](../02-arquitectura/SDD.md) |
 | `DD_V2.md` | [`architecture/ModeloDatos.md`](../02-arquitectura/ModeloDatos.md) |
-| `Backlog_V3.md` | [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) |
+| `Backlog_V3.md` | [`product/BACKLOG_MANI.md`](../product/BACKLOG_MANI.md) |
 | `Documento_Infraestructura_V1.md` | [`governance/INFRAESTRUCTURA_MANI.md`](../07-gobernanza/INFRAESTRUCTURA_MANI.md) |
 | `Documento_Herramientas_Politicas_Lineamientos_V3.md` | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../07-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
 

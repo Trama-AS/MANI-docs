@@ -203,7 +203,7 @@ el reparto de servicios (Gateway / Despacho / Reglas / Core) están en el SDD V1
 
 ### 6.1 Despacho (broadcast + asignación atómica) — RF-12..RF-14, RNF-05
 
-![Secuencia — Despacho](../../../Entregas/Entrega4/<img/flujos_despacho-solicitud_v1.png>)
+![Secuencia — Despacho](<img/flujos_despacho-solicitud_v1.png>)
 
 Broadcast a **todos** los aliados válidos a la vez; asignación con un único `UPDATE`
 condicional; el cliente del aliado espera la respuesta del servidor antes de mostrar
@@ -211,14 +211,14 @@ condicional; el cliente del aliado espera la respuesta del servidor antes de mos
 
 ### 6.2 Cotización con ajuste — RF-15..RF-17
 
-![Secuencia — Cotización](../../../Entregas/Entrega4/<img/flujos_cotizacion-ajuste_v1.png>)
+![Secuencia — Cotización](<img/flujos_cotizacion-ajuste_v1.png>)
 
 Cada ajuste crea una **nueva versión** de `cotizacion`; el historial queda para auditoría
 (RNF-04).
 
 ### 6.3 Resolución de tenant y autenticación — RNF-01
 
-![Secuencia — Autenticación](../../../Entregas/Entrega4/<img/flujos_autenticacion-tenant_v1.png>)
+![Secuencia — Autenticación](<img/flujos_autenticacion-tenant_v1.png>)
 
 El `tenant_id` existe para el backend solo dentro del JWT verificado
 (`app_metadata.tenant_id`). `X-Tenant-Slug` solo antes del JWT. El claim lo inyecta

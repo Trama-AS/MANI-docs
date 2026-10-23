@@ -281,13 +281,9 @@ MANI-Docs/
 ├── adr/
 │   └── ADR-00XX-*.md
 ├── qa/                      planes, reportes y evidencia de calidad
-│   ├── PLAN_PRUEBAS_EP-02_MIGRACION.md
-│   ├── REPORTE_QA_*.md
-│   ├── GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md
-│   ├── ACTA_AUDITORIA_DEV_QA_CFG4-01.md
-│   ├── MANI_Matriz_*_Sprint4.xlsx
+│   ├── REPORTE_QA_SPRINT4.md    reporte general de QA del Sprint 4
 │   ├── monitoreo_qas/
-│   ├── regresion_sprint4/
+│   ├── regresion_sprint4/       plan, matrices y evidencia de la regresión
 │   └── td_v2/
 ├── governance/              gobierno, infraestructura y politicas
 │   ├── GOBIERNO_DEL_EQUIPO.md

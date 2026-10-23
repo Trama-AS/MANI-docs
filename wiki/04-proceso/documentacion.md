@@ -27,7 +27,7 @@ De `README.md` §16 y ADR-0001:
 
 - Ninguna decisión arquitectónica es oficial sólo por aparecer en una conversación o propuesta.
 - Los cambios arquitectónicos relevantes se formalizan mediante **ADR**.
-- Los ADR históricos **no se eliminan**; una decisión que cambia deja el anterior en `Superseded`.
+- Una decisión que cambia deja el anterior en `Superseded`. Cuando su contenido se absorbe en el ADR que lo reemplaza, el archivo **se retira** y el retiro se lista en [Decisiones ADR](../02-arquitectura/decisiones-adr.md). Los números no se reutilizan.
 - Los requerimientos se mantienen **separados** de las decisiones de implementación.
 - **No se duplican decisiones completas** entre SRS, SAD, SDD, ADR, políticas e infraestructura: se enlaza.
 - Aprobar documentación es decisión del **PO** ([Roles y decisiones](roles-y-decisiones.md)).

@@ -1,6 +1,6 @@
 # ADR-0022 — La lógica de negocio vive en los servicios y se retira de Flutter y de las funciones PL/pgSQL
 
-- **Estado:** Propuesto
+- **Estado:** Aceptado
 - **Decisión de:** arquitectura de servicios / transición arquitectónica
 - **Origen:** Spike SP-05, revisado en la daily del 2026-10-05
 - **Autor:** María Camila Beltrán Carreño
@@ -8,6 +8,7 @@
 - **Fecha:** 2026-10-05
 - **Jira:** DOC-26 (SCRUM-1075)
 - **Relacionado con:** ADR-0003, ADR-0012, ADR-0015, ADR-0016, ADR-0019
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ## Contexto
 

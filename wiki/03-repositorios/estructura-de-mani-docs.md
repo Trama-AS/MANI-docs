@@ -19,7 +19,7 @@ MANI-Docs/
 │   ├── ModeloDatos.md             conceptual, lógico, físico, DDL, diccionario y DW
 │   ├── workspace.dsl              modelo C4 en Structurizr DSL (fuente de los C4)
 │   └── TECH_RADAR.md              tecnologías adoptadas, en evaluación y descartadas
-├── adr/                           ADR-0001 … ADR-0021
+├── adr/                           25 ADR vigentes, ADR-0001 a ADR-0032
 ├── governance/
 │   ├── GOBIERNO_DEL_EQUIPO.md            roles, autoridad, ceremonias, DoR/DoD, métricas
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md  ramas, PR, CI/CD, pruebas, seguridad, secretos

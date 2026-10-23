@@ -46,4 +46,4 @@ Revisar si la organización adopta un repositorio documental único con control 
 ## Trazabilidad
 
 - SDD: documentación y gobierno.
-- Sustituye funcionalmente a ADR-0007.
+- Sustituye funcionalmente a ADR-0007, «Documentación técnica en repositorio», que establecía `/docs` como fuente oficial. El archivo se retiró el 2026-10-23 al consolidar el registro de decisiones; su contenido era una lápida sin decisión propia.

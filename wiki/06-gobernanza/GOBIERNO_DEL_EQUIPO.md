@@ -215,8 +215,10 @@ Reglas:
 5. el redactor del ADR debe ser distinto del proponente cuando sea viable;
 6. el disenso se documenta;
 7. toda decisión arquitectónica produce un ADR;
-8. los ADR históricos no se eliminan;
-9. si una decisión cambia, el ADR anterior pasa a `Superseded`.
+8. un ADR cuyo contenido quedó absorbido por otro **se retira del registro** para que el repositorio se lea mejor, siempre que: su decisión viva íntegra en el ADR que la absorbe, ese ADR lo declare en su cabecera, el retiro quede listado en [Decisiones ADR](../02-arquitectura/decisiones-adr.md) y su número no se reutilice. Un ADR vigente, uno `Rechazado` o uno cuya decisión no esté recogida en otra parte no se retira;
+9. si una decisión cambia, el ADR anterior pasa a `Superseded` y se mantiene hasta que su contenido se absorba, momento en el que aplica la regla 8.
+
+> **Enmienda del 2026-10-23.** Las reglas 8 y 9 decían «los ADR históricos no se eliminan» y dejaban el anterior en `Superseded` sin más. Se cambiaron porque el registro había acumulado seis ADR `Superseded` de diez a catorce líneas que no decidían nada y solo nombraban a su sustituto, lo que obligaba a abrir un archivo para descubrir que no había que leerlo. Decidido por la Scrum Master (Sara Albarracín) en la consolidación documental; pendiente de ratificación por la Mesa.
 
 ---
 

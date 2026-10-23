@@ -384,7 +384,7 @@ En el Sprint 3 solo existen dos servicios nuevos: **MANI-API-Gateway** (NGINX) y
 - **Queda en Incremento 2** la que necesita Rules Service, Dispatch Service o Core Service. Donde hay una parte
   que Core sí sostiene hoy, la historia se **parte** (`-M2` ahora, `-M6` después) en vez de arrastrarse completa.
 - `SCRUM-863` es el único caso que migra completo al Incremento 2: su valor es la exclusión concurrente en el
-  servicio de despacho (riesgo *Doble asignacion* del SAD §23, ADR-0021), y no tiene porción que Core Service pueda sostener.
+  servicio de despacho (riesgo *Doble asignacion* del SAD §23, ADR-0016), y no tiene porción que Core Service pueda sostener.
 - `SCRUM-848` sale del Sprint 3 **por capacidad, no por dependencia técnica**: Gateway y Core ya la soportan,
   así que es la primera candidata a volver si se libera holgura.
 
@@ -830,7 +830,7 @@ Autoridad de decisión (`governance/GOBIERNO_DEL_EQUIPO.md`, sección 2.3): el P
 | `AGENTS.md` y `CLAUDE.md` de `MANI-Flutter` (`develop`), `MANI-Node`, `MANI-APIGateway`, `MANI-Java` y `MANI-.NET` | Leídos en su rama vigente | `MANI-docs` no tiene esos archivos. Fijan lo siguiente: el Gateway reenvía el JWT sin validarlo (PA-16); el error del Core es `{ error, code?, correlationId }`; el servicio de reglas se encarga de las reglas por tenant (RF-02, PA-03); Flutter hace PR a `develop` o `release`; ninguno menciona Availability ni un repo de infraestructura |
 | Jira | Leído en línea el 6 de octubre, sin escrituras | SCRUM-1076, 1126 a 1131, 1062, 1184 a 1188, 1061, 1065, 1099, 1075, 1083, 1102 a 1104 y 1112 |
 
-No se citan ADR-0023 a ADR-0026: la wiki indica que no están en el repositorio. ADR-0022 se cita desde su rama sin fusionar y se señala como Propuesto.
+Nota de la época: no se citaban ADR-0023 a ADR-0026 porque no estaban en el repositorio, y ADR-0022 se citaba desde su rama sin fusionar. Hoy ADR-0022, ADR-0024 y ADR-0025 están vigentes y Aceptados; ADR-0023 quedó absorbido por ADR-0024 y ADR-0026 nunca se emitió.
 
 Base de código al 7 de octubre de 2026, tras `git fetch --all --prune`: `MANI-docs` `origin/main` `12dd5ff`; **`MANI-Flutter` rama `develop` `25c2a76`** (la rama vigente; `main` y `release` están atrasadas); `MANI-Node` `develop` `f84dab7` (10 commits sobre `main`, que sigue revertida a `07069d3`); `MANI-APIGateway` rama `CFG-16` `b1b5048` (`main` `e312793`); `MANI-Java` `ae5d6ce` y `MANI-.NET` `e2e8370`, en `main`. `MANI-Infrastructure` ya no existe (borrado por DevOps).
 

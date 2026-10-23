@@ -2,7 +2,7 @@
 
 [← 03 · Entrega](../../Entregas/README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §7–§12 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §9–§12 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §4–§10 · [`adr/ADR-0004`](../02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md) · [`adr/ADR-0023`](../02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md).
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §7–§12 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §9–§12 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §4–§10 · [`adr/ADR-0004`](../02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md) · [`adr/ADR-0028`](../02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md).
 
 ## Secuencia oficial
 

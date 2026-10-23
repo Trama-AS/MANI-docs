@@ -4,7 +4,7 @@
 - **Fecha:** 2026-09-21
 - **Sprint:** 2
 - **Responsable:** Santiago Hernandez — QA Tester
-- **ADR relacionado:** ADR-0021 (Mecanismo de exclusion concurrente en el despacho de solicitudes, SP-04.1.2) — estado Propuesto
+- **ADR relacionado:** ADR-0016, despacho broadcast y exclusion concurrente. Esta PoC se escribio contra el antiguo ADR-0021, que ADR-0016 absorbio y que se retiro el 2026-10-23; las menciones a ADR-0021 en este informe se refieren al mecanismo que hoy define ADR-0016
 - **Origen:** Sprint 2 Planning, hoja "2. DevOps y QA"
 
 ## 1. Pregunta que responde la PoC

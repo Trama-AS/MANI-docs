@@ -369,7 +369,7 @@ Estas decisiones deberán actualizar el documento de Infraestructura y las polí
 
 - Ninguna decisión arquitectónica se considera oficial únicamente por aparecer en una conversación o propuesta.
 - Los cambios arquitectónicos relevantes se formalizan mediante ADR.
-- Los ADR históricos no se eliminan; cuando una decisión cambia se marca como `Superseded`.
+- Cuando una decisión cambia, el ADR anterior se marca `Superseded`; una vez su contenido queda absorbido por el ADR que la reemplaza, el archivo se retira y el retiro se lista en `wiki/02-arquitectura/decisiones-adr.md`. Los números no se reutilizan.
 - Los requerimientos se mantienen separados de las decisiones de implementación.
 - No se duplican decisiones completas entre SRS, SAD, SDD, ADR, políticas e infraestructura.
 

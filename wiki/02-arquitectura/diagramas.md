@@ -144,6 +144,6 @@ El DHL muestra acceso directo de Flutter a Supabase para disponibilidades. **Eso
 
 ## Política
 
-ADR-0008: los diagramas deben ser localizables, versionables y coherentes con la documentación arquitectónica vigente. Las herramientas concretas son parte del Tech Radar y pueden cambiar sin nueva decisión ([ADR-0020](adr/ADR-0020-herramientas-visuales.md), `Superseded`).
+ADR-0008: los diagramas deben ser localizables, versionables y coherentes con la documentación arquitectónica vigente. Las herramientas concretas son parte del [Tech Radar](TECH_RADAR.md) y pueden cambiar sin nueva decisión (el antiguo ADR-0020 se retiró el 2026-10-23 y quedó absorbido por ADR-0008).
 
 Otros diagramas del proyecto: el DER lógico y el modelo dimensional viven en [`architecture/ModeloDatos.md`](ModeloDatos.md) §5 y §9–§10.

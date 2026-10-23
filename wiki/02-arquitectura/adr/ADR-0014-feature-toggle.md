@@ -1,6 +1,6 @@
 # ADR-0014 — Feature Toggle
 
-- **Estado:** Rejected
+- **Estado:** Rechazado
 - **Decisión de:** gestión de funcionalidades
 - **Relacionado con:** RNF-02, REST-05
 

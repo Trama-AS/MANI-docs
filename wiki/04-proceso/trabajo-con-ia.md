@@ -2,7 +2,7 @@
 
 [← 05 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §18 · [`adr/ADR-0009`](../02-arquitectura/adr/ADR-0009-politica-ia.md) (`Superseded`, conservado por trazabilidad) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §1.
+**Fuente:** [`POLITICAS_DEVOPS_HERRAMIENTAS.md` §18](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md#18-política-de-uso-de-ia) (el antiguo ADR-0009 se retiró el 2026-10-23: no era una decisión de arquitectura del producto) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §1.
 
 ## Política vigente
 

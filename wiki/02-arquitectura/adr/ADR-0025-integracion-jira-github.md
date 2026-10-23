@@ -1,12 +1,13 @@
 # ADR-0025 — Integración Jira–GitHub con GitHub for Atlassian y convención `[SCRUM-<id>]`
 
-- **Estado:** Propuesto
+- **Estado:** Aceptado
 - **Decisión de:** herramientas de gestión y trazabilidad
 - **Relacionado con:** ADR-0002, ADR-0003, ADR-0004, CFG-39 (SCRUM-1114)
 - **Autor:** María Camila Beltrán Carreño
 - **Revisor:** Nicolás León (implementó CFG-39)
 - **Fecha:** 2026-10-07
 - **Jira:** DOC-36 (SCRUM-1091)
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ## Contexto
 

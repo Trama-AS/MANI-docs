@@ -1,6 +1,6 @@
 # ADR-0031 — Política de configuración, validación perimetral y propagación de JWT por ambiente
 
-- **Estado:** Aprobado
+- **Estado:** Aceptado
 - **Decisión de:** Seguridad, Infraestructura, Autenticación y Autorización Multi-Tenant
 - **Autor:** Daniel Ávila (DevOps) / Santiago (Validación Conjunta)
 - **Fecha:** 2026-10-17

@@ -1,9 +1,10 @@
 # ADR-0028 — Nombres de los repositorios y de los ambientes
 
-- **Estado:** Propuesto
+- **Estado:** Aceptado
 - **Decisión de:** estructura de repositorios y nomenclatura de ambientes
 - **Supersede parcialmente:** ADR-0004 y su enmienda del 2026-10-07, en la lista de repositorios
-- **Relacionado con:** ADR-0004, ADR-0019, ADR-0023, PROY-07, PROY-08
+- **Relacionado con:** ADR-0004, ADR-0019, ADR-0024, PROY-07, PROY-08
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ---
 

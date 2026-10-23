@@ -1,6 +1,6 @@
 # ADR-0032 — Identidad en base de datos cuando el llamador es un servicio
 
-- **Estado:** Propuesto (revisión de arquitectura aprobada en PR #39; pendiente de acta de Mesa de Arquitectura, CFG-23a.4)
+- **Estado:** Aceptado (revisión de arquitectura aprobada en PR #39; pendiente de acta de Mesa de Arquitectura, CFG-23a.4)
 - **Decisión de:** persistencia y seguridad multi-tenant
 - **Autor:** Juan Sebastián Álvarez Rodríguez
 - **Revisor:** Sara Albarracín Niño (revisión aprobada en `MANI-docs` PR #39, conforme a ADR-0003)
@@ -9,6 +9,7 @@
 - **Relacionado con:** ADR-0012, ADR-0015, ADR-0016, ADR-0018, ADR-0022 (KI-05), ADR-0029, ADR-0030, ADR-0031
 - **Defectos que cierra junto con CFG-23b/23c:** SCRUM-1334 (BUG-SEC-02)
 - **Evidencia:** [inventario CFG-23a.1](../CFG-23a/01-inventario-rls.md), [diseño CFG-23a.3](../CFG-23a/02-diseno-modelo-identidad.md), [PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ---
 

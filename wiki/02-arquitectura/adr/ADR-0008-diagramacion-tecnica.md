@@ -3,6 +3,7 @@
 - **Estado:** Aceptado
 - **Decisión de:** documentación técnica
 - **Relacionado con:** ADR-0001
+- **Absorbe:** ADR-0020, «Herramientas de documentación visual». La política de organización de diagramas es la de este ADR; las herramientas concretas (Figma, Draw.io, Excalidraw, Canva) son parte de [`TECH_RADAR.md`](../TECH_RADAR.md) y pueden cambiar sin constituir una decisión arquitectónica nueva. El archivo se retiró el 2026-10-23 al consolidar el registro de decisiones; su contenido era una lápida sin decisión propia.
 
 ## Contexto
 

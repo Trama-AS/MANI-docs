@@ -1,9 +1,11 @@
 # ADR-0016 — Despacho broadcast y exclusión concurrente
 
-- **Estado:** Propuesto
+- **Estado:** Aceptado
 - **Decisión de:** despacho y concurrencia
 - **Relacionado con:** RF-14, RNF-03, RNF-05
-- **Absorbe:** ADR-0021
+- **Absorbe:** ADR-0021, «Exclusión concurrente en despacho». El archivo se retiró el 2026-10-23 al consolidar el registro de decisiones; su contenido era una lápida sin decisión propia.
+- **Evidencia:** PoC-001, exclusión concurrente en la aceptación (`07-calidad/PoC/PoC-001-exclusion-concurrente-aceptacion.md`): con 50 aceptaciones simultáneas, 1 asignación, 0 dobles, un 200 y 49 respuestas 409, y el control negativo produjo 10 asignaciones en 136 ms. La cola de reintento ante caída de base de datos sigue siendo deuda técnica declarada.
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ## Contexto
 

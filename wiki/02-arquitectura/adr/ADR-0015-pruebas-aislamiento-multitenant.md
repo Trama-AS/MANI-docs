@@ -1,8 +1,9 @@
 # ADR-0015 — Pruebas automatizadas de aislamiento multi-tenant
 
-- **Estado:** Propuesto
+- **Estado:** Aceptado
 - **Decisión de:** QA y seguridad
 - **Relacionado con:** RNF-01, ADR-0005, ADR-0012, ADR-0018
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ## Contexto
 

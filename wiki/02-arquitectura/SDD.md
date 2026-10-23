@@ -241,7 +241,7 @@ leer sin abrir las imágenes.
 > | `Availability Service` como contenedor propio | no existe: la disponibilidad es un dominio del Core Service |
 > | grupos `MANI-Core-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet` | `MANI-Core-Service`, `MANI-Rules-Service`, `MANI-Dispatch-Service` |
 > | `Core Services`, en plural | `Core Service` |
-> | `dinamico-aceptacion` cita ADR-0021 | ADR-0021 está `Superseded` por ADR-0016 |
+> | `dinamico-aceptacion` cita ADR-0021 | ADR-0021 se retiró el 2026-10-23; la decisión vigente es ADR-0016, que lo absorbe |
 >
 > **Además, una exportación sigue cortada por el borde derecho**, con nodos partidos a media
 > palabra: `dinamico-aceptacion`, que mide exactamente 4096 px de ancho.

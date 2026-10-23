@@ -57,7 +57,7 @@ Para decisiones técnicas costosas de revertir. Reglas (`GOBIERNO_DEL_EQUIPO.md`
 5. el redactor del ADR distinto del proponente cuando sea viable;
 6. el disenso se documenta;
 7. toda decisión produce un **ADR**;
-8. los ADR históricos no se eliminan;
+8. un ADR absorbido por otro se retira del registro, si su decisión vive íntegra en el que lo absorbe y el retiro queda listado en [Decisiones ADR](../02-arquitectura/decisiones-adr.md); los números no se reutilizan;
 9. una decisión que cambia deja el ADR anterior en `Superseded`.
 
 Ver [Decisiones ADR](../02-arquitectura/decisiones-adr.md) para el índice y los estados.

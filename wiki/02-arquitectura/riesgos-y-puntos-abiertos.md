@@ -50,8 +50,13 @@ Detectados al navegar este repositorio. **No alteran ninguna decisión**; se lis
 
 | Hueco | Detalle |
 |---|---|
-| `docs/governance/POLITICA_USO_IA.md` | Citado por ADR-0009 como su sustituto; no existe. La política vigente es Políticas DevOps §18 |
-| ADR-0022..ADR-0026 | Referenciados por `DOC-27` como recuperables; no están en `adr/` |
 | `architecture_context.txt` | `DOC-25` pide actualizarlo; no está en este repositorio |
+| `ADR-0026` | `DOC-27` lo referencia como recuperable. Nunca se emitió y su número no se reutiliza ([Decisiones ADR](decisiones-adr.md#numeración)) |
+| `ADR-0023` | `DOC-27` lo referencia. Se retiró el 2026-10-23; su análisis regulatorio vive íntegro en [ADR-0024](adr/ADR-0024-modelo-custodia-pagos.md) |
 
 Cerrar cualquiera de estos huecos es trabajo de EP-10 en Jira, no una edición improvisada.
+
+Dos huecos que esta página listaba y que ya están cerrados, por si alguien los busca:
+
+- `docs/governance/POLITICA_USO_IA.md` nunca existió. Lo citaba ADR-0009 como su sustituto; ese ADR se retiró el 2026-10-23 y la política vigente es [`POLITICAS_DEVOPS_HERRAMIENTAS.md` §18](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md#18-política-de-uso-de-ia).
+- `ADR-0022` a `ADR-0025` sí están en [`adr/`](adr/) y los cuatro son `Aceptado`. La afirmación anterior de que faltaban era de cuando vivían en ramas sin fusionar.

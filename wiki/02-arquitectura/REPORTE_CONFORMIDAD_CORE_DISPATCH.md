@@ -160,7 +160,7 @@ busque.
 | ID | Decisión | Por qué bloquea |
 |---|---|---|
 | P-1 | Ratificar **ADR-0030** (hoy **Propuesto**) | El código de `release` ya lo cumple (frontera por HTTP, DDL solo en Core). Está implementado contra una decisión no aprobada: o se ratifica o hay que revertir código fusionado. |
-| P-2 | Ratificar **ADR-0016** (hoy **Propuesto**; absorbe **ADR-0021**, que figura **Superseded**) | Es el fundamento de la aceptación atómica ya implementada y de los permisos de `0007`. |
+| P-2 | Ratificar **ADR-0016** (absorbe el antiguo ADR-0021, retirado el 2026-10-23) | Es el fundamento de la aceptación atómica ya implementada y de los permisos de `0007`. |
 | P-3 | Ratificar **ADR-0022** (hoy **Propuesto**) y **corregir su reparto** | Su §Decisión asigna «solicitudes» a Dispatch, en contra de SAD §7.4 y del código. Mientras no se corrija, D-1 no se puede cerrar. |
 | P-4 | Resolver **P1 de SAD §7.4** (dueño del estado de la solicitud tras la asignación) y, con él, la ubicación de `solicitud` en ModeloDatos §6.1/§13 | Determina si el `UPDATE` de Dispatch es escritura en dominio propio o cruzada, y por tanto si D-2/D-3 se arreglan en Dispatch o moviendo la operación a Core. |
 | P-5 | Ratificar **ADR-0032** y fijar con qué rol se conecta Dispatch | Sin esto, D-2 no tiene criterio de aceptación: el arreglo cambia según si el rol es `mani_dispatch_svc` o `service_role`. |

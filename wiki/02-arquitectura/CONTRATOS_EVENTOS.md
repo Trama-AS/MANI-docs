@@ -134,7 +134,7 @@ Todo evento persistido en `servicio.outbox` o `despacho.outbox` y publicado por 
 - **Productor:** Dispatch Service (`despacho.outbox`)
 - **Columna `id_agregado` en outbox:** `data.id_asignacion`
 - **Columna `clave_particion` en outbox:** `data.id_solicitud`
-- **Requisitos relacionados:** RF-14, RNF-05, ADR-0016, ADR-0021
+- **Requisitos relacionados:** RF-14, RNF-05, ADR-0016
 
 #### Contrato de `data`
 

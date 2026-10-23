@@ -1,8 +1,9 @@
 # ADR-0017 — Mensajería en tiempo real y notificaciones push
 
-- **Estado:** Propuesto
+- **Estado:** Aceptado
 - **Decisión de:** comunicación
 - **Relacionado con:** RF-20, RF-21, ADR-0012
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ## Contexto
 

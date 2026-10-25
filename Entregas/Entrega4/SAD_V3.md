@@ -966,10 +966,10 @@ la decisión se sostiene solo en criterio de la Mesa.
 |---|---|---|---|
 | TO-01 | Ninguna | — | SP-TO-01 |
 | TO-02 | Ninguna | — | SP-TO-02 |
-| TO-03 | **Empírica** | [PoC-001](../PoC/PoC-001-exclusion-concurrente-aceptacion.md) (SCRUM-926, 2026-09-21): 1 asignación de 50 aceptaciones simultáneas, 0 dobles, contra un control negativo que bajo idéntica carga produjo 10 asignaciones en 136 ms | SP-TO-03 — solo el residual: saturación sostenida y caída de base |
+| TO-03 | **Empírica** | [PoC-001](../../wiki/07-calidad/PoC/PoC-001-exclusion-concurrente-aceptacion.md) (SCRUM-926, 2026-09-21): 1 asignación de 50 aceptaciones simultáneas, 0 dobles, contra un control negativo que bajo idéntica carga produjo 10 asignaciones en 136 ms | SP-TO-03 — solo el residual: saturación sostenida y caída de base |
 | TO-04 | Ninguna | — | SP-TO-04 |
 | TO-05 | Ninguna | — | SP-TO-05 |
-| TO-06 | **Adversa** | [PoC-001 §H-02](../PoC/PoC-001-exclusion-concurrente-aceptacion.md): `tenant_isolation_solicitud` tiene `roles = {public}` y no restringe el rol, contra lo que exige `DD-MANI.md` §5.4 | SP-TO-06 |
+| TO-06 | **Adversa** | [PoC-001 §H-02](../../wiki/07-calidad/PoC/PoC-001-exclusion-concurrente-aceptacion.md): `tenant_isolation_solicitud` tiene `roles = {public}` y no restringe el rol, contra lo que exige `DD-MANI.md` §5.4 | SP-TO-06 |
 | TO-07 | Ninguna | — | SP-TO-07 |
 | TO-08 | Ninguna | — | SP-TO-05 (misma decisión que TO-05, ADR-0015) |
 | TO-09 | Documental | ADR-0019 (§Consecuencias): la latencia HTTP/REST y la trazabilidad distribuida se declaran como consecuencia negativa asumida | SP-TO-09 |

@@ -13,13 +13,13 @@ evolucionando en `main`. Ya divergieron:
 
 | Copia en `Entregas/Entrega4/` | Documento vivo |
 |---|---|
-| `SRS_MANI_V3.md` | [`product/SRS.md`](../product/SRS.md) |
-| `SAD_V3.md` | [`architecture/SAD.md`](../architecture/SAD.md) |
-| `SDD_V1.md` | [`architecture/SDD.md`](../architecture/SDD.md) |
-| `DD_V2.md` | [`architecture/ModeloDatos.md`](../architecture/ModeloDatos.md) |
+| `SRS_MANI_V3.md` | [`product/SRS.md`](../wiki/01-producto/SRS.md) |
+| `SAD_V3.md` | [`architecture/SAD.md`](../wiki/02-arquitectura/SAD.md) |
+| `SDD_V1.md` | [`architecture/SDD.md`](../wiki/02-arquitectura/SDD.md) |
+| `DD_V2.md` | [`architecture/ModeloDatos.md`](../wiki/02-arquitectura/ModeloDatos.md) |
 | `Backlog_V3.md` | [`product/BACKLOG_MANI.md`](../product/BACKLOG_MANI.md) |
-| `Documento_Infraestructura_V1.md` | [`governance/INFRAESTRUCTURA_MANI.md`](../governance/INFRAESTRUCTURA_MANI.md) |
-| `Documento_Herramientas_Politicas_Lineamientos_V3.md` | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
+| `Documento_Infraestructura_V1.md` | [`governance/INFRAESTRUCTURA_MANI.md`](../wiki/06-gobernanza/INFRAESTRUCTURA_MANI.md) |
+| `Documento_Herramientas_Politicas_Lineamientos_V3.md` | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../wiki/06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
 
 ## La trampa de la numeración de ADR
 

@@ -2,7 +2,7 @@
 
 [← 01 · Producto](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`product/SRS.md`](../../product/SRS.md) §2.3 · [`architecture/SAD.md`](../../architecture/SAD.md) §11.
+**Fuente:** [`product/SRS.md`](SRS.md) §2.3 · [`architecture/SAD.md`](../02-arquitectura/SAD.md) §11.
 
 ## Actores
 
@@ -31,7 +31,7 @@ Reglas del ciclo que no son negociables en implementación:
 
 - El **cierre sólo ocurre con ambas calificaciones** presentes (RF-19, SAD §11).
 - La aceptación concurrente se resuelve de forma determinista: la primera aceptación válida se confirma con actualización condicional atómica y las posteriores reciben `409 Conflict` (SAD §7.2, RNF-05).
-- La elegibilidad es por **categoría y coincidencia exacta de zona**, sin proximidad ni radio (REST-01, RNF-09, [ADR-0011](../../adr/ADR-0011-cobertura-geografica.md)).
+- La elegibilidad es por **categoría y coincidencia exacta de zona**, sin proximidad ni radio (REST-01, RNF-09, [ADR-0011](../02-arquitectura/adr/ADR-0011-cobertura-geografica.md)).
 - El orden del listado de aliados lo define la **regla configurada por el tenant** (RF-13), evaluada por el Rules Service.
 
 ## Interfaces externas

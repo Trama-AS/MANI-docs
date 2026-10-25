@@ -1,0 +1,18 @@
+Revisiones desplegadas en QA (10.43.100.141) y cabeza de release en GitHub, 2026-10-21T17:04:05Z
+/mani-api-gateway rev=f0428170a02433e8859368d4db968728e1191009 iniciado=2026-10-21T14:57:41.773239057Z
+/mani-core-service rev=8ad4a35fd55ecffc4f44e4755550f3ef746df6f6 iniciado=2026-10-21T14:57:41.000626845Z
+/mani-rules-service rev=e90f32bc7e279627376bcedc3d2942b9ed6945b2 iniciado=2026-10-21T14:57:37.211650463Z
+/mani-dispatch-service rev=0998a3d2f066f2964462547e1c85a9dff07c108a iniciado=2026-10-21T14:57:37.72522999Z
+/mani-flutter-web rev=8e606e48015dc820cd7572b79e124dabd908064c iniciado=2026-10-21T16:56:08.394125834Z
+/mani-landing-web rev=a82b94e70cf744c5c298aaddd7859f6296164d83 iniciado=2026-10-21T14:57:39.978676288Z
+MANI-APIGateway release=f0428170a02433e8859368d4db968728e1191009 develop_contenido_en_release=adelante=0 archivos_distintos=0
+MANI-Node release=8ad4a35fd55ecffc4f44e4755550f3ef746df6f6 develop_contenido_en_release=adelante=0 archivos_distintos=0
+MANI-Java release=e90f32bc7e279627376bcedc3d2942b9ed6945b2 develop_contenido_en_release=adelante=0 archivos_distintos=0
+MANI-.NET release=0998a3d2f066f2964462547e1c85a9dff07c108a develop_contenido_en_release=adelante=0 archivos_distintos=0
+MANI-Flutter release=8e606e48015dc820cd7572b79e124dabd908064c develop_contenido_en_release=adelante=0 archivos_distintos=0
+MANI-Landing release=a82b94e70cf744c5c298aaddd7859f6296164d83 develop_contenido_en_release=adelante=0 archivos_distintos=0
+
+Configuracion servida por Flutter Web en /assets/.env (anon key omitida):
+SUPABASE_URL=https://hpsxdotaizzclkeufzct.supabase.co
+SUPABASE_ANON_KEY=<omitido>
+API_GATEWAY_URL=http://10.43.100.141

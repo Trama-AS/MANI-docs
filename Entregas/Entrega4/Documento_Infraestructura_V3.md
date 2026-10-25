@@ -12,7 +12,7 @@
 | **Ticket Jira Principal** | `DOC4-05` (SCRUM-1248) |
 | **Subtareas Vinculadas** | `SCRUM-1296` (Consolidar topología operativa, bases y pipelines) y `SCRUM-1297` (Publicar guía de despliegue y recuperación) |
 | **Responsables** | Daniel Ávila (DevOps Lead), Nicolás León (DevOps Secundario), Santiago (QA & Security Lead), Sara Albarracín (Scrum Master) |
-| **Fuentes y Tareas Previas** | [`CFG4-01`](./ACTA_AUDITORIA_DEV_QA_CFG4-01.md), [`CFG4-04`](./POLITICA_CONFIGURACION_JWT_CFG4-04.md), [`CFG4-03`](./GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), [`CFG-26`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md), [`CFG4-02`](./ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md), [`ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md), [`ADR-0005`](../../adr/ADR-0005-devsecops.md), [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md), [`ADR-0015`](../../adr/ADR-0015-pruebas-aislamiento-multitenant.md), [`ADR-0018`](../../adr/ADR-0018-identificacion-tenant.md), [`ADR-0028`](../../adr/ADR-0028-nombres-repositorios-y-ambientes.md), [`ADR-0030`](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md), [`ADR-0031`](../../adr/ADR-0031-politica-configuracion-jwt-ambientes.md) |
+| **Fuentes y Tareas Previas** | [`CFG4-01`](ACTA_AUDITORIA_DEV_QA_CFG4-01.md), [`CFG4-04`](POLITICA_CONFIGURACION_JWT_CFG4-04.md), [`CFG4-03`](GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), [`CFG-26`](PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md), [`CFG4-02`](ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md), [`ADR-0004`](../../wiki/02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md), [`ADR-0005`](../../wiki/02-arquitectura/adr/ADR-0005-devsecops.md), [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md), [`ADR-0015`](../../wiki/02-arquitectura/adr/ADR-0015-pruebas-aislamiento-multitenant.md), [`ADR-0018`](../../wiki/02-arquitectura/adr/ADR-0018-identificacion-tenant.md), [`ADR-0028`](../../wiki/02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md), [`ADR-0030`](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md), [`ADR-0031`](../../wiki/02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md) |
 
 ---
 
@@ -22,7 +22,7 @@
 | :---: | :---: | :--- | :---: | :---: |
 | 1.0 | 2026-09-23 | Versión inicial de Entrega 2. Topología teórica preliminar y propuesta de segregación. | Daniel Ávila | Superada |
 | 2.0 | 2026-10-07 | Versión de transición arquitectónica (Sprint 3). Adopción de modelo multi-repo y Gateway NGINX. | Daniel Ávila | Superada |
-| **3.0** | **2026-10-17** | **Versión consolidada y operativa del Sprint 4.** Formalización de 5 VMs dedicadas (DEV, QA, PROD, Calidad y Backups). Consolidación de base de datos Supabase con 8 migraciones y 25 políticas RLS ([ADR-0012](../../adr/ADR-0012-persistencia-multitenant.md), [ADR-0030](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)). Perímetro de validación JWT ([ADR-0031](../../adr/ADR-0031-politica-configuracion-jwt-ambientes.md)). Cadena de calidad automatizada con SonarQube, Newman y Playwright ([`CFG4-03`](./GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md)). Runbook de despliegue y contingencia probado. | **Daniel Ávila** | **Vigente / Aprobada** |
+| **3.0** | **2026-10-17** | **Versión consolidada y operativa del Sprint 4.** Formalización de 5 VMs dedicadas (DEV, QA, PROD, Calidad y Backups). Consolidación de base de datos Supabase con 8 migraciones y 25 políticas RLS ([ADR-0012](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md), [ADR-0030](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)). Perímetro de validación JWT ([ADR-0031](../../wiki/02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md)). Cadena de calidad automatizada con SonarQube, Newman y Playwright ([`CFG4-03`](GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md)). Runbook de despliegue y contingencia probado. | **Daniel Ávila** | **Vigente / Aprobada** |
 
 ---
 
@@ -59,9 +59,9 @@ El presente documento constituye la **Vista Física oficial del modelo 4+1** par
 
 1. **Segregación Estricta de Ambientes:** Existen tres ambientes lógicos de aplicación (**DEV → QA → PROD**) desplegados sobre infraestructura virtual aislada, más dos servidores dedicados de soporte (**Calidad CI/CD** y **Bases de Datos & Backups**).
 2. **Inmutabilidad de Artefactos OCI:** Las imágenes Docker se compilan una única vez por commit/tag en GitHub Actions, se publican en GitHub Packages (GHCR) y se despliegan mediante digest y etiquetas semánticas (`:develop`, `:staging`, `:latest`).
-3. **Persistencia Compartida por Ambiente con RLS ([ADR-0012](../../adr/ADR-0012-persistencia-multitenant.md)):** Se utiliza una base PostgreSQL administrada por ambiente (Supabase PROD y Supabase QA), con aislamiento lógico enforced a nivel de motor mediante Row Level Security.
-4. **Propiedad Institucional del Esquema en Core Node ([ADR-0030](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)):** `MANI-Node` gobierna la evolución DDL de la base compartida. Ningún servicio realiza queries SQL cruzadas; las dependencias se consumen vía HTTP interno.
-5. **Perímetro de Seguridad Fail-Closed ([ADR-0031](../../adr/ADR-0031-politica-configuracion-jwt-ambientes.md)):** NGINX intercepta toda petición externa, valida perimetralmente la firma del token JWT y el claim `tenant_id` contra Core Node, e inyecta encabezados de confianza hacia upstream.
+3. **Persistencia Compartida por Ambiente con RLS ([ADR-0012](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md)):** Se utiliza una base PostgreSQL administrada por ambiente (Supabase PROD y Supabase QA), con aislamiento lógico enforced a nivel de motor mediante Row Level Security.
+4. **Propiedad Institucional del Esquema en Core Node ([ADR-0030](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)):** `MANI-Node` gobierna la evolución DDL de la base compartida. Ningún servicio realiza queries SQL cruzadas; las dependencias se consumen vía HTTP interno.
+5. **Perímetro de Seguridad Fail-Closed ([ADR-0031](../../wiki/02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md)):** NGINX intercepta toda petición externa, valida perimetralmente la firma del token JWT y el claim `tenant_id` contra Core Node, e inyecta encabezados de confianza hacia upstream.
 6. **Desacople Documental:** Los respaldos de base de datos, volcados SQL y scripts de contingencia se custodian en un host dedicado, manteniendo el repositorio `MANI-docs` estrictamente para documentación versionada.
 
 ---
@@ -73,7 +73,7 @@ La infraestructura física está compuesta por **cinco máquinas virtuales dedic
 | Host / VM | Dirección IP | Propósito Operativo | Rama Git / Tag OCI | Puertos Expuestos | Acceso / Credenciales |
 |---|---|---|---|---|---|
 | **Host DEV** | `10.43.98.232` | Ambiente de Desarrollo Integrado | `develop` / `:develop` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `11DarkGray*1` |
-| **Host QA** | `10.43.100.141` | Ambiente de Staging / Certificación QA | `release` / `:staging` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `*+BlancoBlan` |
+| **Host QA** | `10.43.100.141` | Ambiente de Staging / Certificación QA | `release` / `:staging` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `santi2583953` |
 | **Host PROD** | `10.43.98.203` | Ambiente Productivo MVP | `main` / `:latest` | `80` (Gateway), `3001` (Landing), `8080` (Web) | `estudiante` / `Turquesa+681` |
 | **Host Calidad** | `10.43.98.196` | SonarQube Server, Newman & Playwright Runners | N/A (Herramientas CI) | `9000` (SonarQube) | `estudiante` / `Nieve+4416Sn` |
 | **Host Backups** | `10.43.98.197` | Custodia de Volcados Lógicos y Rollback | N/A (Storage DB) | `22` (SSH / SFTP seguro) | `estudiante` / `Verdefuerte+` |
@@ -156,7 +156,7 @@ flowchart TB
 
 ## 5. Perímetro de Seguridad, NGINX Gateway y Autenticación JWT
 
-En cumplimiento de [`ADR-0018`](../../adr/ADR-0018-identificacion-tenant.md) y [`ADR-0031`](../../adr/ADR-0031-politica-configuracion-jwt-ambientes.md), el sistema implementa una **arquitectura perimetral fail-closed**:
+En cumplimiento de [`ADR-0018`](../../wiki/02-arquitectura/adr/ADR-0018-identificacion-tenant.md) y [`ADR-0031`](../../wiki/02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md), el sistema implementa una **arquitectura perimetral fail-closed**:
 
 ### 5.1 Mecanismo de Validación Perimetral
 1. **Emisión de Tokens:** Supabase Auth (GoTrue) emite tokens JWT firmados criptográficamente (algoritmo asimétrico RS256 en ambientes modernos / HS256 con secret de entorno). El token incluye en `app_metadata` los claims:
@@ -173,7 +173,7 @@ En cumplimiento de [`ADR-0018`](../../adr/ADR-0018-identificacion-tenant.md) y [
 
 ## 6. Consolidación de Persistencia PostgreSQL Supabase
 
-En atención a [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md), [`ADR-0030`](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) y las ejecuciones de [`CFG-26`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md) y [`CFG4-02`](./ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md):
+En atención a [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md), [`ADR-0030`](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) y las ejecuciones de [`CFG-26`](PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md) y [`CFG4-02`](ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md):
 
 ### 6.1 Instancias de Base de Datos
 - **PROD:** `MANI` (`tjxueukivwxsgipltqwb`, `us-east-2`, Supabase Cloud).
@@ -199,7 +199,7 @@ Ambas bases de datos registran en `public.schema_migrations` exactamente las **8
 
 ## 7. Cadena de Calidad Automatizada: SonarQube, Newman y Playwright
 
-En concordancia con [`CFG4-03`](./GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), el **Host de Calidad (`10.43.98.196`)** concentra las tres herramientas de certificación operativa:
+En concordancia con [`CFG4-03`](GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), el **Host de Calidad (`10.43.98.196`)** concentra las tres herramientas de certificación operativa:
 
 ### 7.1 SonarQube Community 10.7
 - **Acceso:** `http://10.43.98.196:9000` (Administración de Quality Gates, Cobertura y Deuda Técnica).
@@ -221,7 +221,7 @@ En concordancia con [`CFG4-03`](./GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md), el **Ho
 
 ## 8. Pipeline CI/CD y Estrategia de Promoción GHCR
 
-El flujo de entrega continua opera sobre GitHub Actions y GitHub Packages (GHCR) bajo la política de ramificación GitFlow simplificado ([`ADR-0004`](../../adr/ADR-0004-cicd-multirepo-ambientes.md)):
+El flujo de entrega continua opera sobre GitHub Actions y GitHub Packages (GHCR) bajo la política de ramificación GitFlow simplificado ([`ADR-0004`](../../wiki/02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md)):
 
 ```mermaid
 flowchart LR
@@ -331,10 +331,10 @@ Antes de autorizar cualquier despliegue sobre el **Host PROD (`10.43.98.203`)**,
 |---|---|:---:|---|
 | **Consolidar Topología Operativa (DOC4-05)** | [`SCRUM-1248`](../product/BACKLOG_MANI.md) | **CUMPLIDO** | Secciones §2, §3 y §4 de este documento. |
 | **Inventario de Ambientes y Accesos** | `SCRUM-1296` | **CUMPLIDO** | Tabla de 5 VMs en Sección §3. |
-| **Auditoría DEV y QA** | [`CFG4-01`](./ACTA_AUDITORIA_DEV_QA_CFG4-01.md) | **CUMPLIDO** | Acta de auditoría con matriz de componentes. |
-| **Configuración JWT por Ambiente** | [`CFG4-04`](./POLITICA_CONFIGURACION_JWT_CFG4-04.md) / [`ADR-0031`](../../adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | **CUMPLIDO** | Flujo perimetral `auth_request` en Sección §5. |
-| **Cadena de Calidad QA** | [`CFG4-03`](./GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md) | **CUMPLIDO** | SonarQube, Newman y Playwright en Sección §7. |
-| **Alineación y Consolidación DB** | [`CFG-26`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md) / [`CFG4-02`](./ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md) | **CUMPLIDO** | Paridad de 8 migraciones y 25 RLS en Sección §6. |
+| **Auditoría DEV y QA** | [`CFG4-01`](ACTA_AUDITORIA_DEV_QA_CFG4-01.md) | **CUMPLIDO** | Acta de auditoría con matriz de componentes. |
+| **Configuración JWT por Ambiente** | [`CFG4-04`](POLITICA_CONFIGURACION_JWT_CFG4-04.md) / [`ADR-0031`](../../wiki/02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | **CUMPLIDO** | Flujo perimetral `auth_request` en Sección §5. |
+| **Cadena de Calidad QA** | [`CFG4-03`](GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md) | **CUMPLIDO** | SonarQube, Newman y Playwright en Sección §7. |
+| **Alineación y Consolidación DB** | [`CFG-26`](PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md) / [`CFG4-02`](ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md) | **CUMPLIDO** | Paridad de 8 migraciones y 25 RLS en Sección §6. |
 | **Guía de Despliegue y Recuperación** | `SCRUM-1297` | **CUMPLIDO** | Runbook operativo y rollback en Secciones §9 y §10. |
 
 Con la publicación de este documento, la tarea **DOC4-05 (SCRUM-1248)** queda formalmente **completada y entregada para el Sprint 4 de MANI**.

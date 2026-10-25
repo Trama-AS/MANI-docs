@@ -2,11 +2,11 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/ModeloDatos.md`](../../architecture/ModeloDatos.md) · [`architecture/SAD.md`](../../architecture/SAD.md) §14 y §15 · [`architecture/SDD.md`](../../architecture/SDD.md) §12.3 y §18 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §15.
+**Fuente:** [`architecture/ModeloDatos.md`](ModeloDatos.md) · [`architecture/SAD.md`](SAD.md) §14 y §15 · [`architecture/SDD.md`](SDD.md) §12.3 y §18 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §15.
 
 ## Dónde está cada cosa
 
-El detalle vive en [`architecture/ModeloDatos.md`](../../architecture/ModeloDatos.md). Secciones útiles para ubicarse:
+El detalle vive en [`architecture/ModeloDatos.md`](ModeloDatos.md). Secciones útiles para ubicarse:
 
 | Necesitas | Sección del documento |
 |---|---|
@@ -25,7 +25,7 @@ La persistencia es PostgreSQL sobre Supabase, separada por esquemas que correspo
 
 Regla operativa: **un servicio no escribe tablas privadas de otro dominio** (SAD §4.1, SDD §14, umbral de mantenibilidad del SDD §7.5). Si un caso de uso necesita datos de otro dominio, se pide por la API de su dueño.
 
-El dueño de cada esquema está en [`ModeloDatos.md`](../../architecture/ModeloDatos.md) §13, y la cobertura de cada requisito funcional a nivel de tabla en §14.
+El dueño de cada esquema está en [`ModeloDatos.md`](ModeloDatos.md) §13, y la cobertura de cada requisito funcional a nivel de tabla en §14.
 
 ## Capacidades de Supabase utilizadas
 
@@ -36,7 +36,7 @@ PostgreSQL · RLS · Auth · Storage · Realtime (SAD §14). Realtime transporta
 - La definición de esquema y las políticas de seguridad deben ser **equivalentes entre ambientes** (Políticas DevOps §2.7).
 - Toda migración requiere estrategia de compatibilidad y rollback antes de promover a producción (SDD §19.5, §12.3).
 - Un cambio de datos en un PR obliga a revisar migraciones, RLS y compatibilidad (Políticas DevOps §6.1).
-- Quién ejecuta las migraciones en cada ambiente está definido en [`INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §15; cerrarlo para todos los ambientes es parte de la [definición de llegada](../01-producto/criterios-de-exito.md).
+- Quién ejecuta las migraciones en cada ambiente está definido en [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §15; cerrarlo para todos los ambientes es parte de la [definición de llegada](../01-producto/criterios-de-exito.md).
 
 ## Analítica separada del OLTP
 

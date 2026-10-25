@@ -9,10 +9,10 @@
 - **Fecha:** 17 de Octubre, 2026.
 - **Alcance Exclusivo:** INVENTARIO, COMPARACIÓN, ESTRATEGIA DE BACKUPS Y PLAN DE ROLLBACK. *(La ejecución física se ejecuta en CFG4-02 / SCRUM-1298 y SCRUM-1299)*.
 - **ADRs Vinculantes:**
-  - [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md): Persistencia multi-tenant mediante esquemas compartidos y Row Level Security (RLS).
-  - [`ADR-0015`](../../adr/ADR-0015-pruebas-aislamiento-multitenant.md): Pruebas de aislamiento multi-tenant.
-  - [`ADR-0018`](../../adr/ADR-0018-identificacion-tenant.md): Identificación de tenant vía claims verificados en token JWT.
-  - [`ADR-0030`](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md): Propiedad del esquema en Core Node (`MANI-Node`) y frontera de datos entre microservicios vía HTTP sin queries SQL cruzadas.
+  - [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md): Persistencia multi-tenant mediante esquemas compartidos y Row Level Security (RLS).
+  - [`ADR-0015`](../../wiki/02-arquitectura/adr/ADR-0015-pruebas-aislamiento-multitenant.md): Pruebas de aislamiento multi-tenant.
+  - [`ADR-0018`](../../wiki/02-arquitectura/adr/ADR-0018-identificacion-tenant.md): Identificación de tenant vía claims verificados en token JWT.
+  - [`ADR-0030`](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md): Propiedad del esquema en Core Node (`MANI-Node`) y frontera de datos entre microservicios vía HTTP sin queries SQL cruzadas.
 
 ---
 
@@ -112,7 +112,7 @@ flowchart LR
 
 ### 2.4 Comparación de Políticas de Seguridad Row Level Security (RLS)
 
-- **En QA:** Cumple [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md) y [`ADR-0015`](../../adr/ADR-0015-pruebas-aislamiento-multitenant.md). Dispone de **22 políticas RLS**:
+- **En QA:** Cumple [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md) y [`ADR-0015`](../../wiki/02-arquitectura/adr/ADR-0015-pruebas-aislamiento-multitenant.md). Dispone de **22 políticas RLS**:
   - `tenant_isolation_<tabla>` en `aliado`, `aliado_categoria`, `calificacion`, `categoria_servicio`, `cliente`, `cobertura_aliado`, `cotizacion`, `documento_kyc`, `evento_servicio`, `mensaje`, `notificacion`, `sitio`, `solicitud`, `tarifa_referencia`, `usuario`. Expresión canónica:
     ```sql
     USING (tenant_id = (((auth.jwt() -> 'app_metadata'::text) ->> 'tenant_id'::text))::uuid)
@@ -174,7 +174,7 @@ Para evitar cualquier conflicto de orden DDL, se aplica la siguiente secuencia:
    - Valida constraints `ck_categoria_estado` y `ck_categoria_flujo`.
    - Registra `'007'` en `schema_migrations`.
 5. **Paso 5: Sincronizar Políticas RLS Multi-Tenant:**
-   - Desplegar las políticas `tenant_isolation_*` en las tablas pendientes para alcanzar paridad absoluta con QA y cumplir con [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md).
+   - Desplegar las políticas `tenant_isolation_*` en las tablas pendientes para alcanzar paridad absoluta con QA y cumplir con [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md).
 6. **Paso 6: Aplicar `008_add_aliado_ausencia.sql`:**
    - Instala `btree_gist`, crea `aliado_ausencia` y su RLS.
    - Registra `'008'` en `schema_migrations`.

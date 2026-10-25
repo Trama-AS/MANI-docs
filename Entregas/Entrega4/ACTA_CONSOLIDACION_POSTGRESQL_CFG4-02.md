@@ -14,14 +14,14 @@
   - **Servidor de Calidad CI/CD:** Host Calidad `10.43.98.196` (SonarQube Community, Newman y Playwright).
   - **Servidor Dedicado de Backups y Bases de Datos:** Host `10.43.98.197` (Ubuntu 22.04 LTS).
 - **Decisiones Arquitectónicas Vinculantes:**
-  - [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md): Persistencia multi-tenant mediante esquemas compartidos y políticas Row Level Security (RLS).
-  - [`ADR-0030`](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md): Propiedad institucional del esquema en Core Node (`MANI-Node`) y consumo entre microservicios vía HTTP sin queries SQL cruzadas.
+  - [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md): Persistencia multi-tenant mediante esquemas compartidos y políticas Row Level Security (RLS).
+  - [`ADR-0030`](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md): Propiedad institucional del esquema en Core Node (`MANI-Node`) y consumo entre microservicios vía HTTP sin queries SQL cruzadas.
 
 ---
 
 ## 1. Resumen Ejecutivo de la Consolidación
 
-Conforme al plan aprobado en [`PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md`](./PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md), el equipo de DevOps ejecutó con éxito la consolidación, alineación y verificación física de la base de datos PostgreSQL compartida por ambiente.
+Conforme al plan aprobado en [`PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md`](PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md), el equipo de DevOps ejecutó con éxito la consolidación, alineación y verificación física de la base de datos PostgreSQL compartida por ambiente.
 
 Se lograron los siguientes hitos operativos:
 1. **Paridad Total de Migraciones:** Tanto PROD como QA cuentan ahora con las **8 migraciones versionadas completas (`001` a `008`)**, resolviendo la omisión histórica en PROD de las migraciones `004`, `005`, `007` y aplicando la migración `008` (US-02.1.6 / SCRUM-855 — Ausencias del aliado) en ambos entornos.
@@ -189,7 +189,7 @@ Running 6 tests using 1 worker
 
 | Criterio de Aceptación | Resultado | Evidencia |
 |---|:---:|---|
-| **Una base objetivo por ambiente para los 3 servicios** | **CUMPLIDO** | PROD usa `tjxueukivwxsgipltqwb` y QA usa `hpsxdotaizzclkeufzct` según [`ADR-0012`](../../adr/ADR-0012-persistencia-multitenant.md) y [`ADR-0030`](../../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md). |
+| **Una base objetivo por ambiente para los 3 servicios** | **CUMPLIDO** | PROD usa `tjxueukivwxsgipltqwb` y QA usa `hpsxdotaizzclkeufzct` según [`ADR-0012`](../../wiki/02-arquitectura/adr/ADR-0012-persistencia-multitenant.md) y [`ADR-0030`](../../wiki/02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md). |
 | **Backups previos y reversibilidad comprobada** | **CUMPLIDO** | Respaldos custodiados en servidor dedicado `10.43.98.197:/opt/database-backups/mani/`. |
 | **Migraciones versionadas completas (001-008)** | **CUMPLIDO** | Ambas bases registran versiones 001 a 008 en `schema_migrations`. |
 | **RLS activo y multi-tenant verificado** | **CUMPLIDO** | 25 políticas en PROD y 23 en QA con filtrado por `tenant_id`. |

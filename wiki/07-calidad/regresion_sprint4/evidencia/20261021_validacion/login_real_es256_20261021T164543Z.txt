@@ -1,0 +1,16 @@
+Login real con Supabase Auth de MANI-QA y llamada por el Gateway de QA (SCRUM-1362, R-10)
+Script: qa/monitoreo_qas/confirmar_d02.sh (MANI-docs). La anon key y la contrasena se ingresan con entrada oculta y el token no se imprime.
+Ejecutado por Santiago Hernandez en la VM de QA; salida copiada de la terminal sin cambios.
+
+fecha_utc=2026-10-21T16:45:43Z host=NBIG438 usuario=admin.t1@qa.mani.test
+1 login MANI-QA: HTTP=200 token_obtenido=si
+2 token: alg=ES256 kid=a069a215 iss=https://hpsxdotaizzclkeufzct.supabase.co/auth/v1 app_metadata.tenant_id=10000000-0000-4000-8000-000000000011 user_role=admin_tenant
+3 GET /api/v1/core/profiles/me por el Gateway con el token real: HTTP=200 cuerpo={"message":"Perfil de usuario autenticado","correlationId":"qa1266-d02-1792601144","profile":{"id":"30000000-0000-4000-8000-000000000011","tenantId":"10000000-0000-4000-8000-000000000011","role":"ADMI
+3 POST /api/v1/rules/evaluate-rate por el Gateway con el token real: HTTP=200 cuerpo={"surcharge":0.0,"service":"MANI-Rules-Java","finalPrice":35000.0,"correlationId":"qa1266-d02-1792601145","basePrice":35000.0,"ruleApplied":"TARIFA-ESTANDAR","status":"APPLIED"}
+3 POST /api/v1/dispatch/match por el Gateway con el token real: HTTP=400 cuerpo={"error":"El parámetro ZonaId es obligatorio para calcular cobertura (ADR-0011). (Parameter 'ZonaId')","status":400,"correlationId":"qa1266-d02-1792601145","timestamp":"2026-10-21T16:45:46.1910349Z"}
+fin
+
+Lectura: Core y Rules aceptan el token ES256 real (200). Dispatch tambien lo acepta: el 400 es la validacion del cuerpo
+vacio que envia el script (falta zonaId); con un token rechazado la respuesta seria 401, como ocurre con los tokens
+ES256 falsificados en la misma ruta (es256_negativos_20261021.txt). El 20 de octubre, antes de MANI-Node#52 y
+MANI-.NET#13, las tres rutas respondian 401 con un login real (SCRUM-1266, confirmacion_d02_login_real.txt).

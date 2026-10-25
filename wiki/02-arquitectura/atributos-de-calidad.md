@@ -2,10 +2,10 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SDD.md`](../../architecture/SDD.md) §7 y §8 (ISO/IEC 25010:2023) · [`architecture/SAD.md`](../../architecture/SAD.md) §20.
+**Fuente:** [`architecture/SDD.md`](SDD.md) §7 y §8 (ISO/IEC 25010:2023) · [`architecture/SAD.md`](SAD.md) §20.
 
 > **Esta página no contiene umbrales.** Los umbrales de calidad del proyecto viven en **un solo
-> lugar**: [`SDD.md`](../../architecture/SDD.md) §7, y los escenarios con los que QA los verifica en
+> lugar**: [`SDD.md`](SDD.md) §7, y los escenarios con los que QA los verifica en
 > §8. Antes esta página los repetía, y la copia se desincronizó: llegó a decir `p95 ≤ 1 s` mientras
 > el SDD decía `p95 ≤ 500 ms`.
 >
@@ -15,10 +15,10 @@
 
 | Pregunta | Dónde se responde |
 |---|---|
-| ¿Qué atributo es prioritario y por qué? | [`SAD.md`](../../architecture/SAD.md) §20 |
-| ¿Qué decisión de arquitectura obliga esa prioridad? | [`SAD.md`](../../architecture/SAD.md) §20.1 |
-| ¿Con qué umbral se verifica? | [`SDD.md`](../../architecture/SDD.md) §7 |
-| ¿Con qué escenario lo comprueba QA? | [`SDD.md`](../../architecture/SDD.md) §8 |
+| ¿Qué atributo es prioritario y por qué? | [`SAD.md`](SAD.md) §20 |
+| ¿Qué decisión de arquitectura obliga esa prioridad? | [`SAD.md`](SAD.md) §20.1 |
+| ¿Con qué umbral se verifica? | [`SDD.md`](SDD.md) §7 |
+| ¿Con qué escenario lo comprueba QA? | [`SDD.md`](SDD.md) §8 |
 
 ## Prioridades
 
@@ -33,7 +33,7 @@ producción. P3 se verifica, pero su impacto arquitectónico es menor para el al
 
 ## Escenarios de calidad
 
-[`SDD.md`](../../architecture/SDD.md) §8 define **nueve** escenarios, uno por característica de
+[`SDD.md`](SDD.md) §8 define **nueve** escenarios, uno por característica de
 ISO/IEC 25010:2023, cada uno con fuente, estímulo, entorno, respuesta esperada, umbral y cómo lo
 mide QA:
 
@@ -50,7 +50,7 @@ mide QA:
 | `QAS-09` | Protección / safety | que una falla de terceros no deje transacciones ambiguas |
 
 Una historia que toque uno de esos temas debe demostrar su escenario, no solo sus criterios
-funcionales ([DoR y DoD](../05-proceso/dor-y-dod.md)).
+funcionales ([DoR y DoD](../04-proceso/dor-y-dod.md)).
 
 Cuando un escenario y un criterio de la sección §7 del SDD difieran, **prevalece el más
 restrictivo** (SDD §8).

@@ -1,0 +1,6 @@
+Tokens ES256 falsificados contra QA (SCRUM-1362), 2026-10-21T17:04:16Z
+Metodo: tokens firmados con una clave P-256 propia (no la de Supabase), claims validos de cliente t1; se esperan 401.
+es256_firma_ajena_kid_real           /api/v1/core/profiles/me -> 401 | /api/v1/dispatch/match -> 401
+es256_firma_ajena_kid_inexistente    /api/v1/core/profiles/me -> 401 | /api/v1/dispatch/match -> 401
+es256_sin_kid                        /api/v1/core/profiles/me -> 401 | /api/v1/dispatch/match -> 401
+alg_none                             /api/v1/core/profiles/me -> 401 | /api/v1/dispatch/match -> 401

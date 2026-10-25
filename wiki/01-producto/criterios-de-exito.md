@@ -2,13 +2,13 @@
 
 [← 01 · Producto](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SDD.md`](../../architecture/SDD.md) §19 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §9 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../../governance/GOBIERNO_DEL_EQUIPO.md) §9–§11.
+**Fuente:** [`architecture/SDD.md`](../02-arquitectura/SDD.md) §19 · [`backlog/BACKLOG_MANI.md`](../05-backlog/BACKLOG_MANI.md) §9 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §9–§11.
 
 Hay tres niveles de «terminado» y no se confunden entre sí.
 
 ## 1. Una historia está terminada
 
-Cumple el [DoD del equipo](../05-proceso/dor-y-dod.md): criterios de aceptación verificados, PR integrado y revisado, CI en verde, QA ejecutado, documentación afectada actualizada y trazabilidad registrada.
+Cumple el [DoD del equipo](../04-proceso/dor-y-dod.md): criterios de aceptación verificados, PR integrado y revisado, CI en verde, QA ejecutado, documentación afectada actualizada y trazabilidad registrada.
 
 ## 2. Una versión puede promoverse a producción
 

@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) · [`architecture/SDD.md`](../../architecture/SDD.md) · [`adr/`](../../adr/) · [`architecture/TECH_RADAR.md`](../../architecture/TECH_RADAR.md).
+**Fuente:** [`architecture/SAD.md`](SAD.md) · [`architecture/SDD.md`](SDD.md) · [`adr/`](adr/) · [`architecture/TECH_RADAR.md`](TECH_RADAR.md).
 
 | Página | Tema |
 |---|---|
@@ -14,5 +14,24 @@
 | [Decisiones ADR](decisiones-adr.md) | Índice de ADR con estado |
 | [Riesgos y puntos abiertos](riesgos-y-puntos-abiertos.md) | Architectural killers y lo que falta decidir |
 | [Diagramas](diagramas.md) | Qué diagramas existen y dónde |
+
+## Documentos y carpetas de esta carpeta
+
+Las páginas de arriba ordenan y navegan; esto es la fuente.
+
+| Documento | De qué responde |
+|---|---|
+| [`SAD.md`](SAD.md) | Arquitectura del sistema: estilo, contenedores, vistas, atributos de calidad, riesgos |
+| [`SDD.md`](SDD.md) | Diseño detallado, vistas C4, escenarios QAS y vista de despliegue |
+| [`ModeloDatos.md`](ModeloDatos.md) | Modelo de datos, propiedad de esquema y políticas RLS |
+| [`SECUENCIAS.md`](SECUENCIAS.md) | Secuencias de los flujos principales |
+| [`COMUNICACION_SERVICIOS_GATEWAY.md`](COMUNICACION_SERVICIOS_GATEWAY.md) | Reglas de comunicación entre servicios y por el Gateway |
+| [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) | Esquemas y versionado de los eventos |
+| [`TRAZABILIDAD_INTEGRACION.md`](TRAZABILIDAD_INTEGRACION.md) | Trazabilidad de la integración entre servicios |
+| [`REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](REPORTE_CONFORMIDAD_CORE_DISPATCH.md) | Conformidad técnica de Core y Dispatch con la arquitectura vigente |
+| [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas |
+| [`adr/`](adr/) | Decisiones arquitectónicas. Una vigente está `Aceptado`; una sustituida, `Superseded` |
+| [`diagrams/`](diagrams/) | Fuentes y PNG de los diagramas C4, de despliegue, de datos y de flujos |
+| [`CFG-23a/`](CFG-23a/) | Inventario de RLS y diseño del modelo de identidad de servicio |
 
 **Arquitectura objetivo:** SOA distribuida + API Gateway + enfoque políglota + multi-tenancy.

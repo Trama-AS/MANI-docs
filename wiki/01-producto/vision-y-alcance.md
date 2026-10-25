@@ -2,7 +2,7 @@
 
 [← 01 · Producto](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`product/SRS.md`](../../product/SRS.md) §1 y §2 · [`README.md`](../../README.md) §1–§3.
+**Fuente:** [`product/SRS.md`](SRS.md) §1 y §2 · [`README.md`](../../README.md) §1–§3.
 
 ## Problema
 
@@ -30,7 +30,7 @@ Según SRS §1.2, el MVP **no** incluye:
 - geolocalización en tiempo real del aliado;
 - cálculo de proximidad o distancia entre aliado y sitio.
 
-Una historia que pida alguno de estos puntos no se implementa en el MVP: se registra su disposición según el [backlog de transición](../06-backlog/transicion-v4.md).
+Una historia que pida alguno de estos puntos no se implementa en el MVP: se registra su disposición según el [registro de la transición](../05-backlog/BACKLOG_MANI.md#10-registro-de-la-transición-v4).
 
 ## Principios del producto
 

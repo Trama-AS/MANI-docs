@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §4.1 · [`architecture/SDD.md`](../../architecture/SDD.md) §4.2 y §14 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../../governance/POLITICAS_DEVOPS_HERRAMIENTAS.md) §2.
+**Fuente:** [`architecture/SAD.md`](SAD.md) §4.1 · [`architecture/SDD.md`](SDD.md) §4.2 y §14 · [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §2.
 
 Página de consulta rápida antes de escribir código o revisar un PR. Todo lo de aquí sale de los documentos citados.
 
@@ -40,13 +40,13 @@ Servicio           → credenciales hard-coded
 DEV/QA             → base de datos PROD
 ```
 
-**No hay desviaciones admitidas.** La «excepción transitoria de disponibilidades» que figuraba aquí quedó retirada: la consulta de elegibilidad entra por el Gateway al Core Service como cualquier otra lectura de negocio. El cliente alcanza Supabase solo por Auth y Realtime ([ADR-0022](../../adr/ADR-0022-logica-de-negocio-en-servicios.md), [ADR-0027](../../adr/ADR-0027-alcance-supabase-cliente-flutter.md), [SAD §8.3](../../architecture/SAD.md)).
+**No hay desviaciones admitidas.** La «excepción transitoria de disponibilidades» que figuraba aquí quedó retirada: la consulta de elegibilidad entra por el Gateway al Core Service como cualquier otra lectura de negocio. El cliente alcanza Supabase solo por Auth y Realtime ([ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md), [ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md), [SAD §8.3](SAD.md)).
 
 ## Reglas complementarias
 
 - Las integraciones externas se encapsulan mediante adaptadores (SDD §4.2).
 - El Data Warehouse no participa en transacciones operacionales (SDD §4.2).
-- **No se implementan diferencias por tenant mediante forks del producto** (Políticas DevOps §2.10); tampoco mediante feature toggles como requisito arquitectónico ([ADR-0014](../../adr/ADR-0014-feature-toggle.md), `Rejected`).
+- **No se implementan diferencias por tenant mediante forks del producto** (Políticas DevOps §2.10); tampoco mediante feature toggles como requisito arquitectónico ([ADR-0014](adr/ADR-0014-feature-toggle.md), `Rejected`).
 - Los umbrales funcionales provienen del SRS/SAD/SDD y no se inventan en otros documentos (Políticas DevOps §13.5).
 
 ## Verificación en revisión de PR

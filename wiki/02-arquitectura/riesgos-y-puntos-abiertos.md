@@ -2,7 +2,7 @@
 
 [← 02 · Arquitectura](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`architecture/SAD.md`](../../architecture/SAD.md) §23 · [`architecture/SDD.md`](../../architecture/SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../../governance/INFRAESTRUCTURA_MANI.md) §25 · [`product/BACKLOG_MANI.md`](../../product/BACKLOG_MANI.md) §3, §4.1 y §4.2.
+**Fuente:** [`architecture/SAD.md`](SAD.md) §23 · [`architecture/SDD.md`](SDD.md) §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §25 · [`backlog/BACKLOG_MANI.md`](../05-backlog/BACKLOG_MANI.md) §3, §4.1 y §4.2.
 
 Esta página existe para que nadie —persona o asistente— «resuelva» en un PR algo que el equipo todavía no decidió.
 
@@ -30,7 +30,7 @@ Los riesgos se nombran, no se numeran: el SAD §23 es la fuente y cada uno trae 
 | `INFRA-01` | Hosting de Kubernetes | `INFRAESTRUCTURA_MANI.md` §25 |
 | `INFRA-02` | Topología final del clúster | `INFRAESTRUCTURA_MANI.md` §25 |
 
-**Ya decidido — `SP-05`.** Si los servicios reescriben la lógica PL/pgSQL o la invocan. **Resuelto en la daily del 2026-10-05: la lógica se reescribe en los servicios.** Registrado en [`adr/ADR-0022`](../../adr/ADR-0022-logica-de-negocio-en-servicios.md) (tarea `DOC-26`, cerrada). El ADR está en estado **Propuesto**: pasarlo a Aceptado requiere sesión formal de la Mesa (Gobierno §2.6). Ya no bloquea ninguna estimación.
+**Ya decidido — `SP-05`.** Si los servicios reescriben la lógica PL/pgSQL o la invocan. **Resuelto en la daily del 2026-10-05: la lógica se reescribe en los servicios.** Registrado en [`adr/ADR-0022`](adr/ADR-0022-logica-de-negocio-en-servicios.md) (tarea `DOC-26`, cerrada). El ADR está en estado **Propuesto**: pasarlo a Aceptado requiere sesión formal de la Mesa (Gobierno §2.6). Ya no bloquea ninguna estimación.
 
 Hasta que exista decisión sobre Kubernetes (Políticas DevOps §12): no se inventan nodos, no se fija proveedor, no se documenta capacidad como definitiva, y Docker Compose sobre VMs sigue siendo el mecanismo operativo. **No se asume AKS ni Azure.**
 
@@ -40,7 +40,7 @@ Backlog V4 §4.2 los señala como los tres no contemplados antes y de mayor ries
 
 - **`CFG-23a`, `CFG-23b` y `CFG-23c`** — las políticas RLS derivan tenant y usuario de `auth.uid()` porque hoy el llamador es el cliente. Con un servicio `service-role` como llamador, **dejan de aislar**. Es el punto que puede tumbar RNF-01.
 - **`CFG-36`** — el artefacto web publicado hoy incluye la `SUPABASE_ANON_KEY`: cualquiera puede llamar a PostgREST directamente y sólo RLS lo contiene. Hay que sacarla del bundle y rotarla.
-- **`CFG-38`** — había 13 ramas vivas con trabajo sin fusionar en `MANI-Frontend`. **Mitigado el 2026-10-07**: todas quedaron fusionadas en `develop` o reemplazadas por un PR posterior, y `develop` es la base única ([detalle](../04-repositorios/multirepo.md#reconciliación-de-ramas-de-mani-flutter-cfg-38)).
+- **`CFG-38`** — había 13 ramas vivas con trabajo sin fusionar en `MANI-Frontend`. **Mitigado el 2026-10-07**: todas quedaron fusionadas en `develop` o reemplazadas por un PR posterior, y `develop` es la base única ([detalle](../03-repositorios/multirepo.md#reconciliación-de-ramas-de-mani-flutter-cfg-38)).
 
 Además, `US-04.1.4` concentra el mayor riesgo de regresión funcional: la exclusión concurrente la garantiza hoy la transacción de PostgreSQL y hay que decidir dónde vive la atomicidad y revalidar el PoC-001.
 
@@ -50,8 +50,13 @@ Detectados al navegar este repositorio. **No alteran ninguna decisión**; se lis
 
 | Hueco | Detalle |
 |---|---|
-| `docs/governance/POLITICA_USO_IA.md` | Citado por ADR-0009 como su sustituto; no existe. La política vigente es Políticas DevOps §18 |
-| ADR-0026 | Número nunca emitido y no reutilizable; `ADR-0022` a `ADR-0025` sí están en `adr/` |
 | `architecture_context.txt` | `DOC-25` pide actualizarlo; no está en este repositorio |
+| `ADR-0026` | `DOC-27` lo referencia como recuperable. Nunca se emitió y su número no se reutiliza ([Decisiones ADR](decisiones-adr.md#numeración)) |
+| `ADR-0023` | `DOC-27` lo referencia. Se retiró el 2026-10-23; su análisis regulatorio vive íntegro en [ADR-0024](adr/ADR-0024-modelo-custodia-pagos.md) |
 
 Cerrar cualquiera de estos huecos es trabajo de EP-10 en Jira, no una edición improvisada.
+
+Dos huecos que esta página listaba y que ya están cerrados, por si alguien los busca:
+
+- `docs/governance/POLITICA_USO_IA.md` nunca existió. Lo citaba ADR-0009 como su sustituto; ese ADR se retiró el 2026-10-23 y la política vigente es [`POLITICAS_DEVOPS_HERRAMIENTAS.md` §18](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md#18-política-de-uso-de-ia).
+- `ADR-0022` a `ADR-0025` sí están en [`adr/`](adr/) y los cuatro son `Aceptado`. La afirmación anterior de que faltaban era de cuando vivían en ramas sin fusionar.

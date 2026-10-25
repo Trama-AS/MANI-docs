@@ -210,7 +210,7 @@ Estructura objetivo:
 | `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
 | `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Son **siete repositorios** y seis desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
+Son **siete repositorios** y seis desplegables ([ADR-0028](wiki/02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
 No existe `MANI-Availability` ni `MANI-Infra`.
 
 Cada unidad desplegable mantiene de forma independiente:
@@ -263,21 +263,36 @@ La documentación del proyecto se divide por responsabilidad para evitar duplici
 MANI-Docs/
 ├── README.md
 ├── CONTRIBUTING.md
-├── product/
+├── product/                 requisitos y deuda tecnica
 │   ├── SRS.md
-│   └── BACKLOG_MANI.md
+│   └── TD.md
+├── backlog/                 backlog, criterios de aceptacion y seguimiento del sprint
+│   ├── BACKLOG_MANI.md
+│   ├── CRITERIOS_ACEPTACION_*.md
+│   ├── MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md
+│   └── SPRINT4_*.md
 ├── architecture/
 │   ├── SAD.md
 │   ├── SDD.md
 │   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
-│   └── TECH_RADAR.md
+│   ├── TECH_RADAR.md
+│   └── REPORTE_CONFORMIDAD_CORE_DISPATCH.md
 ├── adr/
 │   └── ADR-00XX-*.md
-├── governance/
+├── qa/                      planes, reportes y evidencia de calidad
+│   ├── REPORTE_QA_SPRINT4.md    reporte general de QA del Sprint 4
+│   ├── monitoreo_qas/
+│   ├── regresion_sprint4/       plan, matrices y evidencia de la regresión
+│   └── td_v2/
+├── governance/              gobierno, infraestructura y politicas
 │   ├── GOBIERNO_DEL_EQUIPO.md
 │   ├── POLITICAS_DEVOPS_HERRAMIENTAS.md
-│   └── INFRAESTRUCTURA_MANI.md
+│   ├── INFRAESTRUCTURA_MANI.md
+│   ├── DOCUMENTO_INFRAESTRUCTURA_V3.md
+│   ├── POLITICA_CONFIGURACION_JWT_CFG4-04.md
+│   ├── PLAN_ALINEACION_SUPABASE_PROD_QA_CFG-26.md
+│   └── ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md
 ├── diagrams/                 estructura de ADR-0008
 │   ├── c4/
 │   │   ├── workspace.dsl    modelo Structurizr, fuente de las vistas C4
@@ -298,15 +313,17 @@ MANI-Docs/
 
 | Tema | Documento |
 |---|---|
-| Requerimientos | [`product/SRS.md`](product/SRS.md) |
-| Backlog | [`product/BACKLOG_MANI.md`](product/BACKLOG_MANI.md) |
-| Arquitectura | [`architecture/SAD.md`](architecture/SAD.md) |
-| Diseño detallado y vistas C4 | [`architecture/SDD.md`](architecture/SDD.md) |
-| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](architecture/SECUENCIAS.md) |
-| Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](architecture/ModeloDatos.md) |
-| Decisiones arquitectónicas | [`adr/`](adr/) |
-| Modelo C4 | [`diagrams/c4/workspace.dsl`](diagrams/c4/workspace.dsl) |
-| Tecnologías vigentes | [`architecture/TECH_RADAR.md`](architecture/TECH_RADAR.md) |
+| Requerimientos | [`product/SRS.md`](wiki/01-producto/SRS.md) |
+| Backlog | [`backlog/BACKLOG_MANI.md`](wiki/05-backlog/BACKLOG_MANI.md) |
+| Arquitectura | [`architecture/SAD.md`](wiki/02-arquitectura/SAD.md) |
+| Diseño detallado y vistas C4 | [`architecture/SDD.md`](wiki/02-arquitectura/SDD.md) |
+| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](wiki/02-arquitectura/SECUENCIAS.md) |
+| Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](wiki/02-arquitectura/ModeloDatos.md) |
+| Decisiones arquitectónicas | [`adr/`](wiki/02-arquitectura/adr/) |
+| Modelo C4 | [`diagrams/c4/workspace.dsl`](wiki/02-arquitectura/diagrams/c4/workspace.dsl) |
+| Tecnologías vigentes | [`architecture/TECH_RADAR.md`](wiki/02-arquitectura/TECH_RADAR.md) |
+| Calidad: planes, reportes y evidencia | [`qa/`](wiki/07-calidad) |
+| Conformidad técnica Core-Dispatch | [`architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](wiki/02-arquitectura/REPORTE_CONFORMIDAD_CORE_DISPATCH.md) |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
 | Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |
@@ -352,7 +369,7 @@ Estas decisiones deberán actualizar el documento de Infraestructura y las polí
 
 - Ninguna decisión arquitectónica se considera oficial únicamente por aparecer en una conversación o propuesta.
 - Los cambios arquitectónicos relevantes se formalizan mediante ADR.
-- Los ADR históricos no se eliminan; cuando una decisión cambia se marca como `Superseded`.
+- Cuando una decisión cambia, el ADR anterior se marca `Superseded`; una vez su contenido queda absorbido por el ADR que la reemplaza, el archivo se retira y el retiro se lista en `wiki/02-arquitectura/decisiones-adr.md`. Los números no se reutilizan.
 - Los requerimientos se mantienen separados de las decisiones de implementación.
 - No se duplican decisiones completas entre SRS, SAD, SDD, ADR, políticas e infraestructura.
 

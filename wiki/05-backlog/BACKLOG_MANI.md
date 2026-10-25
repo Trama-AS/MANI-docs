@@ -1631,7 +1631,7 @@ No se creó una épica de migración aparte.
 
 - **Cobertura:** catálogo jerárquico de zonas y coincidencia exacta. Sin radio ni proximidad. El trabajo existente se reutiliza adaptándolo.
 - **Ranking:** no es «priorizar por comisión»; es ranking **configurable por tenant**, donde la comisión puede ser uno de varios criterios.
-- **Geolocalización en vivo:** sale del MVP. Se conserva en histórico y no consume capacidad (hoy es M-07.4 en el libro de módulos, fuera del MVP por SRS §1.2).
+- **Geolocalización en vivo:** salía del MVP en la transición V4. **Revertido el 24 de octubre de 2026:** entró al Sprint 5 como RF-37 y como `HU-M07-04`, por decisión de la Scrum Master y pendiente de confirmación del PO. El cálculo de proximidad sigue fuera.
 - **Calificaciones:** las dos historias convergen en RF-19; sin ambas calificaciones no hay cierre.
 - **Pagos, escrow y disputas:** pagos y liquidación quedan en el segundo incremento. Escrow, liberación automática y reglas de disputa **no se asumen como alcance aprobado** sin decisión funcional o regulatoria.
 

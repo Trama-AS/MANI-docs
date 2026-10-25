@@ -73,11 +73,19 @@ Quienes no programamos llevamos un módulo cada uno, de validación y verificaci
 | Corrección + validación | 14 | A medias o con defecto abierto |
 | Front contra mock | 14 | Notificaciones (M-09) y pagos (M-11): el front tiene que existir completo, sin integración real con el proveedor |
 | Terminar + validación | 3 | En curso |
-| Fuera de alcance | 6 | Rastreo en vivo (SRS §1.2), 2.º incremento de M-12 y los dos refactores |
+| Fuera de alcance | 4 | 2.º incremento de M-12 y la división del front |
 
-La visualización en mapa (`HU-M04-07`) entra sí o sí.
+Entran sí o sí la visualización en mapa (`HU-M04-07`) y el rastreo del aliado en vivo (`HU-M07-04`).
 
-**Total del sprint: 105 ítems y 485 story points** — 82 historias por funcionalidad, 21 tareas técnicas y las 2 de gestión.
+### Dos decisiones del 24 de octubre que hay que conocer
+
+**El rastreo en vivo entró al MVP y por eso existe `RF-37`.** Estaba excluido en `SRS.md` §1.2 y §7.1 registraba que SCRUM-871 no se relacionaba con ningún requisito. Sin un RF no tendría criterio de aceptación, así que ni el PO podría aceptarlo ni QA cerrarlo. Lo decidió la Scrum Master al priorizar el sprint, **sin sesión de refinamiento registrada**, y queda pendiente de confirmación del PO, que es quien decide el alcance (`GOBIERNO_DEL_EQUIPO.md` §2.3). El cálculo de proximidad sigue fuera: RF-37 no cambia la declaración de cobertura, que sigue siendo por zonas (RNF-09, REST-01). La ubicación continua es dato personal bajo la Ley 1581 de 2012, así que el requisito exige permiso expreso del aliado, ventana limitada a la ejecución y retención configurable por tenant.
+
+**`HU-M13-05`, dividir el Core por dominios, es prerrequisito del sprint.** Va los primeros días, junto a las tareas TEC de ambiente, y nadie construye sobre Core hasta que esté fusionada. El motivo está en la hoja `01 Indice modulos`: los 13 módulos listan Core entre sus servicios, así que sin dividirlo siete personas editan el mismo servicio Node y el reparto por módulo reparte la responsabilidad pero no los archivos. `SAD.md` §7.3 ya permite esta división interna y prohíbe lo contrario, un servicio por cada CRUD.
+
+Dividir el front (`HU-M13-04`) se queda fuera: el choque ahí es menor porque cada módulo tiende a su propia pantalla. Se asume el conflicto en `lib/features`.
+
+**Total del sprint: 107 ítems y 501 story points** — 84 historias por funcionalidad, 21 tareas técnicas y las 2 de gestión.
 
 De las 18, doce ya estaban cubiertas por un ítem del Sprint 5 pero sin trazar en la columna `Historia`. Seis necesitaron historia nueva:
 

@@ -38,6 +38,31 @@ Las §6 y §7 son el texto normativo; las hojas 18 a 20 del libro son la misma c
 | `19 Criterios por historia S4` | Una fila por criterio: historia, RF, responsable, enunciado, quién acepta, qué subtarea de QA verifica y qué casos de la matriz lo cubren | 69, sobre 17 historias |
 | `20 Criterios US-02.1.1` | Escenarios A1 a A4 y B1 a B6 con sus pasos, más las 7 condiciones de aceptación | 16 escenarios |
 
+## Cobertura cerrada: toda funcionalidad con su historia
+
+Revisión del 24 de octubre de 2026. Las 88 funcionalidades de las hojas M-01 a M-13 tienen ahora una historia asignada; 18 no la tenían.
+
+| Hoja | Contenido | Filas |
+|---|---|---|
+| `21 Cierre de cobertura` | Las 18 funcionalidades que estaban sin historia, con la que las cubre y qué exige esa historia | 18 |
+| `22 Gestion del sprint` | `SM-01` facilitación del sprint y `PO-01` validación del producto y aceptación del incremento | 2 |
+| `23 Subtareas de QA` | Una subtarea por historia: Santiago revisa la evidencia y es quien la mueve a Done | 91 |
+
+De las 18, doce ya estaban cubiertas por un ítem del Sprint 5 pero sin trazar en la columna `Historia`. Seis necesitaron historia nueva:
+
+| Nueva | Tipo | Por qué |
+|---|---|---|
+| `CONS-46` | Construcción desde cero | RF-01 es crítico y hoy solo existe `GET /core/tenants`: no hay forma de crear un tenant por la aplicación |
+| `VAL-19` | Validación | El perfil del aliado que consumen Dispatch y Rules existe en código y nunca se validó como contrato |
+| `VAL-20` | Validación | El catálogo es pre-auth en nginx; hay que comprobar el aislamiento con token y que sin token no filtre nada |
+| `VAL-21` | Validación | El contexto de solicitud que Dispatch pide a Core está implementado y sin validar contra T1 y T2 |
+| `VAL-22` | Validación | RNF-03 exige resistir reintentos sin duplicar, y la guarda de idempotencia del broadcast se congela tras un corte parcial |
+| `TEC-21` | Seguridad | Core y Dispatch conectan con `BYPASSRLS`: ninguna política RLS se evalúa, así que el aislamiento de RNF-01 descansa solo en el código |
+
+**Trazabilidad de requisitos completa.** Se corrigieron 16 etiquetas: RF-29 a RF-36, RNF-06, RNF-07, RNF-11, REST-03 y REST-05 no aparecían en ninguna fila aunque su funcionalidad sí existía. Los 36 RF, los 11 RNF y las 5 REST del SRS están trazados a una funcionalidad y a una historia.
+
+**Ninguna historia pasa a Done por sí misma.** Cada una lleva su subtarea `QA-<id>`: Santiago revisa la evidencia contra los criterios y es quien cierra, porque QA decide el DoD (`GOBIERNO_DEL_EQUIPO.md` §2.3). Esto cierra el hueco del Sprint 4, donde tres historias no tenían subtarea de QA (pendiente PE4 de §6.5).
+
 > El estado real de cada capacidad y de cada defecto lo manda [07-calidad](../07-calidad/README.md), no el tablero de Jira. La §9 del backlog aplica esa regla: «cerrado» no es «verificado».
 
 ## Regla principal

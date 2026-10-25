@@ -126,3 +126,29 @@ Backlog V4 §3: la arquitectura anterior **no es un backend que haya que mover d
 Supabase, Auth, RLS y aislamiento multi-tenant · registro y aprobación de aliados · registro de cliente · categorías · creación de solicitud · exclusión concurrente · las PoC de despacho, identidad y Storage/KYC · pipelines, GHCR, secretos y promoción de ambientes · seeds multi-tenant · documentación y diagramas consolidados.
 
 Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa en Rules (Java), Dispatch (.NET) y Core Service (Node.js), y el cliente deja de invocarla ([ADR-0022](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md)).
+
+## Importar el Sprint 5 a Jira
+
+[`IMPORTAR_JIRA_SPRINT5.csv`](IMPORTAR_JIRA_SPRINT5.csv) — 215 filas listas para el importador externo de Jira: 86 historias, 22 tareas y 107 subtareas de QA, con asignación, puntos, prioridad, épica, etiquetas y fecha de vencimiento. 506 story points.
+
+**Se generó como CSV porque el conector de Atlassian no está instalado en `maniservices.atlassian.net`.** La autenticación funciona, pero toda llamada a Jira y a Confluence responde `403 The app is not installed on this instance`. Es una instalación del lado del sitio, no un problema de sesión: hasta que un administrador habilite la app, la carga se hace con este CSV.
+
+### Calendario
+
+| Hito | Fecha | Qué pasa |
+|---|---|---|
+| Inicio | lunes 26-oct-2026 | Arranca el sprint |
+| Prerrequisitos | martes 27-oct | `TEC-09`, `TEC-10`, `TEC-11`, `TEC-16` y `HU-M13-05`. Sin token real ES256, sin QA sembrada y sin el Core dividido, nada de lo demás vale |
+| Cierre de desarrollo | viernes 30-oct | Último día hábil para fusionar código |
+| Corte formal | domingo 1-nov | Los cuatro días antes del fin que pediste. Cae en domingo, así que el corte operativo es el viernes 30 |
+| Validación del PO y preparación de DevOps | 2-nov a 4-nov | `PO-01` recorre el producto y acepta o rechaza el incremento |
+| Fin de sprint y despliegue | jueves 5-nov | `DEPLOY-S5` a producción, solo si `PO-01` declaró aceptado |
+
+**Las fechas de inicio y fin del sprint se fijan en el tablero al crear el sprint**, no vienen en el CSV: el CSV solo trae la fecha de vencimiento de cada ítem y el nombre `Sprint 5`.
+
+### Al importar
+
+- El importador mapea la persona por **nombre mostrado**. Los nombres del CSV son Nicolás León, José Nicolás Álvarez, Juan Sebastián Álvarez, Daniel Ávila, Santiago Hernández, Camila Beltrán y Sara Albarracín, sin el rol entre paréntesis. Si en Jira figuran distinto, se mapean en el paso de usuarios.
+- Las subtareas se enlazan por la columna `Parent`, que repite el resumen exacto del padre. Importa el archivo completo de una vez: si separas padres y subtareas en dos cargas, el enlace se pierde.
+- La columna `Identificador interno` (`HU-M01-01`, `TEC-09`, `QA-HU-M01-01`) es la del libro de módulos y no un campo de Jira. Sirve para reconciliar después; si tu importador no la acepta, descártala.
+- **Ya existen issues en Jira para parte de estas funcionalidades** (SCRUM-846, 847, 850, 851, 852, 854, 856 y otras, según la columna `Clave Jira` de las hojas M-01 a M-13). Revísalas antes de importar para no duplicar: lo que ya existe se actualiza a mano, no se vuelve a crear.

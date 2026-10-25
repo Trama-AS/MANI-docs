@@ -46,7 +46,38 @@ Revisión del 24 de octubre de 2026. Las 88 funcionalidades de las hojas M-01 a 
 |---|---|---|
 | `21 Cierre de cobertura` | Las 18 funcionalidades que estaban sin historia, con la que las cubre y qué exige esa historia | 18 |
 | `22 Gestion del sprint` | `SM-01` facilitación del sprint y `PO-01` validación del producto y aceptación del incremento | 2 |
-| `23 Subtareas de QA` | Una subtarea por historia: Santiago revisa la evidencia y es quien la mueve a Done | 91 |
+| `24 Sprint 5 por modulo` | **El backlog del sprint.** Una historia por funcionalidad, con quién la ejecuta, quién la valida y su subtarea de QA | 88 |
+
+### Reparto del Sprint 5
+
+Por módulo completo, no por tarea: cada quien es dueño de sus módulos de punta a punta, y las dependencias que quedan son de ambiente, concentradas en el bloque TEC. Así entre desarrolladores no hay tareas que se bloqueen.
+
+| Persona | Rol | Módulos | Ejecuta | Valida y acepta |
+|---|---|---|---:|---:|
+| Nicolás León | Desarrollo | M-09, M-11 | 19 HU · 95 SP | 14 HU |
+| Juan Sebastián Álvarez | Desarrollo | M-08, M-10, M-12 | 17 HU · 85 SP | 14 HU |
+| José Nicolás Álvarez | Desarrollo | M-06, M-07, M-13 | 16 HU · 80 SP | 11 HU |
+| Daniel Ávila | No programa | M-01, M-02 | 14 HU · 58 SP | 20 HU |
+| Santiago Hernández | QA, no programa | M-05 | 8 HU · 32 SP | 10 HU |
+| Camila Beltrán | PO, no programa | M-03 | 4 HU · 16 SP | 6 HU |
+| Sara Albarracín | SM, no programa | M-04 | 4 HU · 16 SP | 7 HU |
+
+Quienes no programamos llevamos un módulo cada uno, de validación y verificación. Daniel se ofreció a llevar dos, M-01 y M-02.
+
+**Trece historias de esos cinco módulos exigen código.** Las ejecuta un desarrollador y el dueño del módulo las valida y acepta: son las únicas filas donde las dos columnas de persona no coinciden, y van resaltadas en la hoja.
+
+| Tipo de trabajo | HU | Qué significa |
+|---|---:|---|
+| Construcción desde 0 | 37 | No existe |
+| Validación de lo implementado | 14 | Figura hecho y nunca se probó contra lo pedido |
+| Corrección + validación | 14 | A medias o con defecto abierto |
+| Front contra mock | 14 | Notificaciones (M-09) y pagos (M-11): el front tiene que existir completo, sin integración real con el proveedor |
+| Terminar + validación | 3 | En curso |
+| Fuera de alcance | 6 | Rastreo en vivo (SRS §1.2), 2.º incremento de M-12 y los dos refactores |
+
+La visualización en mapa (`HU-M04-07`) entra sí o sí.
+
+**Total del sprint: 105 ítems y 485 story points** — 82 historias por funcionalidad, 21 tareas técnicas y las 2 de gestión.
 
 De las 18, doce ya estaban cubiertas por un ítem del Sprint 5 pero sin trazar en la columna `Historia`. Seis necesitaron historia nueva:
 

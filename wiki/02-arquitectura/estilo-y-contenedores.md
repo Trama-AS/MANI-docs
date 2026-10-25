@@ -6,7 +6,7 @@
 
 ## Decisiones de línea base
 
-Fijadas en SDD §2.2 para que ADR, diagramas y despliegue no se contradigan:
+Fijadas en SDD §2.1 para que ADR, diagramas y despliegue no se contradigan:
 
 | Tema | Decisión |
 |---|---|

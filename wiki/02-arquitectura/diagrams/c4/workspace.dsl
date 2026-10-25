@@ -75,7 +75,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             // Java decide. El motor de reglas es lo único que vive aquí: no es un backend general.
             group "MANI-Rules-Java — decide" {
 
-                rules = container "Rules Service" "Reglas configurables por tenant, ranking de aliados, elegibilidad, requisitos KYC y validación contra tarifario (RF-02, RF-13, RF-16, RF-22). Lee la configuración de persistencia, no del código." "Java" {
+                rules = container "Rules Service" "Reglas configurables por tenant, ranking de aliados, requisitos KYC y validación contra tarifario (RF-02, RF-13, RF-16, RF-22). La elegibilidad la resuelve Core; Rules aporta el orden (SAD §4.2.1). Lee la configuración de persistencia, no del código." "Java" {
                     rulesApi = component "Rules REST Controller" "Expone la evaluación de reglas y el ranking." "Java"
                     rulesApp = component "Rules Application Service" "Orquesta evaluación y ranking." "Java"
                     rulesFactory = component "Rule Strategy Factory" "Resuelve la estrategia según el tipo de regla." "Java"
@@ -132,9 +132,9 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
 
                 auth = container "Supabase Auth" "Autenticación de usuarios y emisión del JWT firmado del que se obtiene el tenant_id (ADR-0018)." "Supabase"
 
-                dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de elegibilidad y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de ranking y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
                 dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. Incluye despacho.outbox: el evento AliadoAsignado se escribe en la misma transacción que confirma la asignación (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Incluye servicio.outbox para SolicitudCreada y CotizacionAceptada (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Quién crea la solicitud es punto abierto: la implementación fusionada la crea en Core (ARQ-03, MANI-Node#44) y SAD §4.2.1 la asigna a Dispatch. Incluye servicio.outbox para SolicitudCreada y CotizacionAceptada (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
 
                 storage = container "Supabase Storage" "Documentos KYC y multimedia en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
                 realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
@@ -192,7 +192,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         // infraestructura, timeout, reintento solo si la operación es idempotente y falla
         // cerrado — 503 al llamador, sin degradar a lógica local ni a un valor por omisión.
         core -> rules "Evalúa las reglas de la categoría del tenant. Implementado en RulesServiceHttpClient: timeout 3 s, un reintento, 503 si Rules no responde" "HTTPS / JSON"
-        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). PENDIENTE: hoy Dispatch la resuelve con SQL contra tablas de Core, desviación registrada en ADR-0030" "HTTPS / JSON"
+        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). DESVIACIÓN VIGENTE al 2026-10-20: en develop Dispatch no usa esta API, consulta PostgreSQL directamente con PostgresAllyRepository contra tablas de Core (MANI-.NET#3, SCRUM-861, fusionado), y resuelve requestId contra solicitud. En main y en la imagen desplegada en QA devuelve candidatos fijos (DispatchController.cs:33-39). Frontera de datos propuesta en ADR-0030, en estado Propuesto" "HTTPS / JSON"
         dispatch -> rules "Consulta el orden del listado de candidatos (ranking)" "HTTPS / JSON"
 
         // Producción de eventos hacia el bus diferido: el servicio escribe en su outbox dentro de
@@ -471,6 +471,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
             aliado -> flutter "Carga los documentos requeridos por el tenant"
             flutter -> gateway "Envía los documentos"
             gateway -> core "Enruta tras validar el token"
+            core -> rules "Consulta qué documentos exige este tenant (RF-02, RNF-10). DISEÑO: la configuración de requisitos KYC no está implementada"
             core -> storage "Guarda el documento en el bucket privado, aislado por tenant y aliado"
             core -> dbCore "Registra el documento y deja al aliado en verificación"
             adminTenant -> flutter "Revisa la documentación y aprueba o rechaza al aliado (RF-06)"

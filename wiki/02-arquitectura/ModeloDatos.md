@@ -846,6 +846,13 @@ ejecución y calificación pertenecen al Core Service, que es quien implementa e
 (SAD §7). Sin esta separación, `cotizacion` quedaba en un esquema de Dispatch mientras el SAD
 asignaba el caso de uso a Core.
 
+> **Diseño, no implementación.** Verificado el 2026-10-20 contra el DDL de
+> `MANI-Flutter/database/` en `main`: no existe ninguna tabla outbox, y tampoco los seis esquemas de
+> §6.1 — todas las tablas viven en `public`. Las migraciones posteriores que `MANI-Node` incorpora en
+> `develop` (0007, 0013) no se inspeccionaron, así que esta verificación no las cubre. Estas dos tablas describen el patrón que fija
+> [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md) §3, cuya adopción está diferida al
+> Sprint 5. No se presentan como existentes.
+
 **El outbox vive en el esquema de quien produce el evento.** `servicio.outbox` y
 `despacho.outbox` son dos tablas con la misma forma y no una tabla compartida. El evento se escribe
 en la misma transacción que cambia el estado del negocio, y un outbox común exigiría escritura

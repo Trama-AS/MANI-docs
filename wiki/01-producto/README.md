@@ -13,11 +13,12 @@
 
 ## Documentos de esta carpeta
 
-Las páginas de arriba ordenan y navegan; estos dos documentos son la fuente.
+Las páginas de arriba ordenan y navegan; estos documentos son la fuente.
 
 | Documento | De qué responde |
 |---|---|
 | [`SRS.md`](SRS.md) | Requisitos funcionales, no funcionales y restricciones. Es la fuente de qué debe hacer el sistema |
 | [`TD.md`](TD.md) | Estrategia de pruebas: niveles, herramientas, gates y datos. El resultado de ejecutarla vive en [07-calidad](../07-calidad/README.md) |
+| [`reespecificacion-cobertura-US-02.1.4-R1.md`](reespecificacion-cobertura-US-02.1.4-R1.md) | Reespecificación de la cobertura del aliado por catálogo jerárquico hasta barrio (SCRUM-1067) |
 
 El SRS define **qué** debe hacer el sistema. Cómo se construye está en [02-arquitectura](../02-arquitectura/README.md); cómo se trabaja, en [04-proceso](../04-proceso/README.md); qué se probó y con qué resultado, en [07-calidad](../07-calidad/README.md).

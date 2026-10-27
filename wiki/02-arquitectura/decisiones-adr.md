@@ -62,6 +62,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0031](adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | Configuración, validación perimetral y propagación de JWT por ambiente — *enmendado el 2026-10-21 para aceptar ES256 verificado con el JWKS de Supabase* | RNF-01 |
 | [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) | Identidad de servicio en base de datos | RNF-01 |
 | [ADR-0033](adr/ADR-0033-productor-del-evento-solicitud-creada.md) | Productor del evento `SolicitudCreada`: Dispatch, no Core — `Propuesto`; reemplazaría [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 en esa fila si la Mesa lo aprueba | RF-12 |
+| [ADR-0034](adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones — `Propuesto` | RF-20, RF-24 |
 
 ## Índice — descartado
 

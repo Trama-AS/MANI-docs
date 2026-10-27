@@ -13,7 +13,7 @@
 
 ## 1. Qué cambia
 
-**Antes (SCRUM-849):** la historia original admitía la selección libre de la cobertura en un mapa (así la describe el backlog, §3.3). Eso contradice REST-01 y RNF-09: la cobertura se declara por zonas de un catálogo administrativo, no por radio, coordenadas ni geometría propia (ADR-0011, alternativas 1 y 2 descartadas).
+**Antes (SCRUM-849):** la historia original admitía la selección libre de la cobertura en un mapa (así la describe `BACKLOG_MANI.md` §3.5). Eso contradice REST-01 y RNF-09: la cobertura se declara por zonas de un catálogo administrativo, no por radio, coordenadas ni geometría propia (ADR-0011, alternativas 1 y 2 descartadas).
 
 **Ahora:** la cobertura de un aliado es un **conjunto de zonas activas del catálogo jerárquico** `ciudad → localidad/comuna → barrio`, con **barrio como el nivel más fino** que se puede seleccionar en el MVP del Sprint 5.
 

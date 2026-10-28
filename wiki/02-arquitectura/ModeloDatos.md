@@ -859,6 +859,12 @@ en la misma transacción que cambia el estado del negocio, y un outbox común ex
 cruzada entre esquemas, que §13 prohíbe. Core produce `SolicitudCreada`, `CotizacionAceptada` y
 `ServicioFinalizado`; Dispatch produce `AliadoAsignado` ([ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md), [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md)).
 
+> **Pendiente por la decisión 6A (26 oct 2026).** Core es el único que escribe el estado de la solicitud, así
+> que `AliadoAsignado` pasa a `servicio.outbox` y la asignación es `solicitud.aliado_id` en Core
+> ([`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) §2, SAD §7.4). Este modelo todavía muestra `despacho.asignacion` y el
+> `CHECK` de `despacho.outbox` con `AliadoAsignado`; se ajustan si la Mesa aprueba
+> [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md).
+
 > **Punto abierto de DOC4-04, con la propiedad ya resuelta.** `solicitud` está listada bajo
 > `despacho`, pero Core es su único escritor: SAD §7.4 le asigna la creación (RF-12, decisión del
 > 17-oct-2026) y la **decisión 6A del 26-oct-2026** le asigna además el estado después de la

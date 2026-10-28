@@ -27,9 +27,9 @@ También sirve pegar el bloque en <https://www.plantuml.com/plantuml> o en la ex
 
 ## 1. Solicitud y conformación del listado de aliados
 
-**Requisitos:** RF-12 (creación y coordinación de la solicitud), RF-13 (orden del listado según la regla del tenant).
+**Requisitos:** RF-12 (creación y coordinación de la solicitud), RF-13 (orden del listado según la regla del tenant), RNF-03 (idempotencia).
 
-Lo que el diagrama debe dejar claro: **quien orquesta es Despacho**. Pregunta elegibilidad al dominio de disponibilidad en Core y el orden a Reglas. Ni el cliente Flutter ni el Gateway deciden nada.
+Lo que el diagrama debe dejar claro: **Core crea la solicitud y Dispatch orquesta el reparto** (SAD §7.4, decisión del 17 oct y decisión 6A del 26 oct de 2026). Dispatch pregunta la elegibilidad a Core y el orden a Reglas, y le pide a Core que guarde una oferta por aliado. Ni el cliente Flutter ni el Gateway deciden nada.
 
 ```plantuml
 @startuml seq-solicitud
@@ -50,37 +50,50 @@ skinparam sequence {
 actor "Cliente" as Cliente
 participant "Aplicación cliente\n[Flutter]" as App
 participant "API Gateway\n[NGINX]" as GW
-participant "Dispatch Service\n[.NET] — asigna" as Dispatch
 participant "Core Service\n[Node.js] — opera" as Core
+participant "Dispatch Service\n[.NET] — asigna" as Dispatch
 participant "Rules Service\n[Java] — decide" as Rules
-database "Supabase Dispatch\n[PostgreSQL + RLS]" as DbDispatch
+database "Supabase\n[PostgreSQL + RLS]" as Db
 
 Cliente -> App: registra la solicitud de servicio
-App -> GW: POST /api/v1/dispatch/solicitudes\nAuthorization: Bearer <JWT>
+App -> GW: POST /api/v1/core/solicitudes\nIdempotency-Key: k-1
 activate GW
 GW -> GW: valida el token y aplica rate limiting
-GW -> Dispatch: enruta la solicitud
+GW -> Core: enruta la solicitud
 deactivate GW
-activate Dispatch
+activate Core
+Core -> Db: INSERT solicitud (PENDIENTE)\nla misma clave con otros datos: 409 MANI-SOL-409K
+Core --> App: 201 Created — solicitud guardada
+deactivate Core
 
-Dispatch -> Core: aliados elegibles por categoría y zona (RF-12)\n(Availability Component)
+App -> GW: POST /api/v1/dispatch/requests/orchestrate\n{ requestId }
+GW -> Dispatch: enruta tras validar el token
+activate Dispatch
+Dispatch -> Core: contexto de la solicitud (interna)
+Dispatch -> Db: lee quién la rechazó (solicitud_rechazo)
+Dispatch -> Core: aliados elegibles por categoría y zona,\nexcluyendo a los que rechazaron (excludeAllyIds, interna)
 activate Core
 Core --> Dispatch: candidatos elegibles
 deactivate Core
 
 Dispatch -> Rules: ordena el listado según la regla del tenant (RF-13)
 activate Rules
-Rules --> Dispatch: candidatos ordenados
+Rules --> Dispatch: candidatos ordenados, o sin orden (NO_DISPONIBLE)
 deactivate Rules
 
-Dispatch -> DbDispatch: persiste la solicitud y los candidatos notificados
-Dispatch --> App: 201 Created — solicitud en difusión
+Dispatch -> Core: POST /notifications por aliado (interna)
+activate Core
+Core -> Db: una oferta OFERTA_DESPACHO por aliado y solicitud\n(índice único, migración 0019)
+Core --> Dispatch: oferta guardada (o ya existía)
+deactivate Core
+Dispatch --> App: 200 — DISPATCHED
 deactivate Dispatch
-App --> Cliente: confirmación
+App --> Cliente: solicitud publicada; si el aviso falla,\nse ofrece «Avisar a los aliados»
 
-note over Dispatch, Rules
+note over Core, Dispatch
   El tenant_id sale del JWT (ADR-0018): ningún
   paso lo recibe como parámetro del cliente.
+  Solo se orquesta una solicitud PENDIENTE (409 MANI-DSP-409E).
 end note
 
 @enduml
@@ -92,11 +105,11 @@ end note
 
 **Requisitos:** RF-14 (aceptar o rechazar sin dobles asignaciones), RNF-03 (idempotencia), RNF-05 (exclusión concurrente).
 
-Este es el flujo que hay que saber defender. La garantía **no** está en la aplicación ni en el número de réplicas: está en una actualización condicional atómica sobre el estado de la asignación. La primera aceptación afecta una fila y gana; la segunda no afecta ninguna y recibe `409 Conflict`.
+Este es el flujo que hay que saber defender. La garantía **no** está en la aplicación ni en el número de réplicas: está en una actualización condicional atómica sobre el estado de la solicitud. **Dispatch decide quién acepta y Core escribe** (decisión 6A, SAD §7.4): Dispatch comprueba al aliado y le entrega a Core un comando idempotente; Core bloquea la fila y la primera aceptación gana. La segunda recibe `409 Conflict` sin saber quién ganó.
 
 ```plantuml
 @startuml seq-aceptacion
-title Aceptación concurrente — RF-14, RNF-03, RNF-05
+title Aceptación concurrente — RF-14, RNF-03, RNF-05 (decisión 6A)
 
 skinparam backgroundColor #ffffff
 skinparam shadowing false
@@ -113,50 +126,50 @@ skinparam sequence {
 actor "Aliado A" as A
 actor "Aliado B" as B
 participant "API Gateway\n[NGINX]" as GW
-participant "Dispatch Application Service\n[.NET]" as App
-participant "Assignment Coordinator\n[.NET]" as Coord
-participant "Concurrency Guard\n[.NET]" as Guard
-participant "Audit Component\n[.NET]" as Audit
-database "Supabase Dispatch\n[PostgreSQL + RLS]" as Db
+participant "Dispatch Service\n[.NET] — decide" as Dispatch
+participant "Core Service\n[Node.js] — escribe" as Core
+database "Supabase\n[PostgreSQL + RLS]" as Db
 
 == Las dos aceptaciones entran a la vez ==
 
-A -> GW: POST /aceptar\nIdempotency-Key: k-A
-B -> GW: POST /aceptar\nIdempotency-Key: k-B
-GW -> App: aceptación de A
-GW -> App: aceptación de B
+A -> GW: POST /api/v1/dispatch/requests/{id}/accept\nIdempotency-Key: k-A
+B -> GW: POST /api/v1/dispatch/requests/{id}/accept\nIdempotency-Key: k-B
+GW -> Dispatch: aceptación de A
+GW -> Dispatch: aceptación de B
 
-App -> Coord: coordina la asignación
-Coord -> Guard: delega la exclusión concurrente
+Dispatch -> Core: ¿el aliado está verificado? (GET /allies/me, interna)\nsi no: 403 MANI-SOL-403V
+Dispatch -> Db: ¿ya la rechazó? (solicitud_rechazo)\nsi la rechazó: 409 MANI-DSP-409R, sin pedir la asignación
+Dispatch -> Core: POST /solicitudes/{id}/asignacion (interna)\nJWT de A, Idempotency-Key, X-Correlation-ID
+Dispatch -> Core: POST /solicitudes/{id}/asignacion (interna)\nJWT de B, Idempotency-Key, X-Correlation-ID
 
 == La base decide, no la aplicación ==
 
-Guard -> Db: UPDATE asignacion\nSET aliado = A, estado = 'asignada'\nWHERE id = :id AND estado = 'pendiente'
+Core -> Db: SELECT … FOR UPDATE (A toma el bloqueo)
+Core -> Db: UPDATE solicitud SET aliado_id = A, estado = 'ASIGNADA'\nWHERE id = :id AND estado = 'PENDIENTE' AND aliado_id IS NULL
 activate Db
-Db --> Guard: 1 fila afectada
+Db --> Core: 1 fila afectada
 deactivate Db
+Core -> Db: evento SOLICITUD_ASIGNADA y aviso al cliente,\nen la misma transacción
 
-Guard -> Db: UPDATE asignacion\nSET aliado = B, estado = 'asignada'\nWHERE id = :id AND estado = 'pendiente'
-activate Db
-Db --> Guard: 0 filas afectadas
-deactivate Db
+Core -> Db: SELECT … FOR UPDATE (B espera y lee la fila ya asignada)
+Db --> Core: aliado_id = A
 
-alt filas afectadas = 1  →  gana A
-    Guard --> App: asignación confirmada
-    App -> Audit: registra el cambio de estado (RNF-04)
-    App --> GW: 200 OK
+alt gana A
+    Core --> Dispatch: 200, asignada: true
+    Dispatch --> GW: 200 — ASSIGNED
     GW --> A: servicio asignado
-else filas afectadas = 0  →  B llegó tarde
-    Guard --> App: la asignación ya estaba tomada
-    App -> Audit: registra el intento rechazado (RNF-04)
-    App --> GW: 409 Conflict
+else B llegó tarde
+    Core --> Dispatch: 409 MANI-SOL-409, sin el id del ganador
+    Dispatch --> GW: 409
     GW --> B: la solicitud ya fue aceptada por otro aliado
 end
 
-note over Guard, Db
-  El predicado "estado = 'pendiente'" es la garantía.
-  Reintentar con la misma Idempotency-Key devuelve el
-  mismo resultado y no crea una segunda asignación (RNF-03).
+note over Core, Db
+  El bloqueo de fila más el predicado sobre estado y aliado_id
+  son la garantía (ADR-0016). Si A repite el comando, Core
+  responde 200 con asignada: false y no repite el evento (RNF-03).
+  Dispatch no puede escribir solicitud: la migración 0019
+  le revoca el UPDATE (ADR-0035, propuesto).
 end note
 
 @enduml
@@ -369,8 +382,8 @@ deactivate Core
 
 | Secuencia | Vista dinámica en el DSL | Servicios | Requisitos |
 |---|---|---|---|
-| 1. Solicitud | `dinamico-solicitud` | Dispatch · Core · Rules | RF-12, RF-13 |
-| 2. Aceptación concurrente | `dinamico-aceptacion` | Dispatch | RF-14, RNF-03, RNF-05 |
+| 1. Solicitud | `dinamico-solicitud` | Core · Dispatch · Rules | RF-12, RF-13, RNF-03 |
+| 2. Aceptación concurrente | `dinamico-aceptacion` | Dispatch · Core | RF-14, RNF-03, RNF-05 |
 | 3. Cotización | `dinamico-cotizacion` | Core · Rules | RF-15, RF-16, RF-22 |
 | 4. KYC | `dinamico-kyc` | Core · Rules · Storage | RF-05, RF-06 |
 | 5. Mensajería | `dinamico-mensajeria` | Core · Realtime · FCM/APNs | RF-20, RF-21 |

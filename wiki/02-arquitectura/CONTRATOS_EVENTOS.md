@@ -25,9 +25,11 @@ Cada evento tiene **un único servicio productor**, que coincide con el dueño d
 | Evento (`event_type`) | Versión vigente | Productor único | Tabla Outbox | Tópico Kafka objetivo | Clave de partición (`clave_particion`) | Disparador de negocio | Consumidores previstos |
 | :--- | :---: | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`SolicitudCreada`** | `1` | Core Service | `servicio.outbox` | `mani.servicio.solicitud-creada.v1` | `id_solicitud` | La solicitud queda persistida en estado `CREADA` y lista para evaluación de elegibilidad y reparto (RF-12). | Dispatch Service (orquestación de reparto), Data Warehouse (`dw.fact_solicitud`). |
-| **`AliadoAsignado`** | `1` | Dispatch Service | `despacho.outbox` | `mani.despacho.aliado-asignado.v1` | `id_solicitud` | La actualización condicional atómica de `ADR-0016` confirma que un único aliado aceptó la solicitud (`ACEPTADA`, RF-14, RNF-05). | Core Service (apertura de conversación RF-20 y notificación al cliente/aliado vía `ADR-0017`), Data Warehouse (`dw.fact_asignacion`). |
+| **`AliadoAsignado`** | `1` | Core Service (decisión 6A) | `servicio.outbox` | `mani.servicio.aliado-asignado.v1` | `id_solicitud` | El comando de asignación que Dispatch entrega a Core gana la actualización condicional atómica de `ADR-0016` y la solicitud queda `ASIGNADA` (RF-14, RNF-05). | Data Warehouse (`dw.fact_asignacion`). Core no lo consume: el aviso al cliente y el evento de la línea de tiempo se escriben en la misma transacción. |
 | **`CotizacionAceptada`** | `1` | Core Service | `servicio.outbox` | `mani.servicio.cotizacion-aceptada.v1` | `id_solicitud` | El cliente acepta una cotización previamente contrastada contra el tarifario del tenant (`ACEPTADA`, RF-15, RF-16, RF-17). | Dispatch Service (sincronización de estado operativo), Data Warehouse (`dw.fact_cotizacion`). |
 | **`ServicioFinalizado`** | `1` | Core Service | `servicio.outbox` | `mani.servicio.servicio-finalizado.v1` | `id_solicitud` | La ejecución del servicio concluye y la solicitud transita a `FINALIZADA` (RF-18), habilitando la calificación bidireccional (RF-19). | Core Service (apertura de ventana de calificación `US-04.4.1` y cierre diferido de conversación RF-21), Data Warehouse (`dw.fact_solicitud`). |
+
+> **Cambio por la decisión 6A (26 oct 2026).** `AliadoAsignado` lo producía Dispatch desde `despacho.outbox`. Desde la decisión 6A, Core es el único que escribe el estado de la solicitud (SAD §7.4), así que el evento lo emite Core, en la misma transacción del `UPDATE`, desde `servicio.outbox`, y el tópico pasa al espacio de Core. No hay consumidores que migrar: en `develop` (28 oct) ni Core ni Dispatch escriben todavía un outbox. Lo formaliza [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) (propuesto), que también propone ajustar la fila de `AliadoAsignado` en ADR-0029 §1.
 
 ### 2.1 Orden causal por solicitud y clave de partición
 
@@ -59,7 +61,7 @@ Todo evento persistido en `servicio.outbox` o `despacho.outbox` y publicado por 
 | Campo en el sobre JSON | Tipo JSON / Formato | Columna en `*.outbox` | Tipo SQL | Regla de integridad y propósito |
 | :--- | :--- | :--- | :--- | :--- |
 | `event_id` | `string` (`uuid` v4) | `id_evento` | `UUID PK` | Identificador único global del evento. Es la clave obligatoria de deduplicación en los consumidores idempotentes (`ARQ-08`). |
-| `event_type` | `string` (`enum`) | `tipo_evento` | `VARCHAR(60) CHECK` | Restringido por `CHECK` según el esquema productor: `('SolicitudCreada','CotizacionAceptada','ServicioFinalizado')` en `servicio.outbox` y `('AliadoAsignado')` en `despacho.outbox`. |
+| `event_type` | `string` (`enum`) | `tipo_evento` | `VARCHAR(60) CHECK` | Restringido por `CHECK` según el esquema productor: `('SolicitudCreada','CotizacionAceptada','ServicioFinalizado')` en `servicio.outbox`, que con la decisión 6A agrega `'AliadoAsignado'`. `despacho.outbox` queda sin eventos de este catálogo. |
 | `event_version` | `integer` (`>= 1`) | `version_evento` | `SMALLINT NOT NULL` | Versión mayor del esquema de `data`. Inicia en `1` y solo se incrementa ante cambios incompatibles (§5). |
 | `occurred_at` | `string` (`date-time` UTC) | `fecha_ocurrencia` | `TIMESTAMPTZ NOT NULL` | Instante exacto de la transacción de negocio en base de datos, **no** el instante en que el relay publica en Kafka (`fecha_publicacion`). |
 | `tenant_id` | `string` (`uuid`) | `id_tenant` | `UUID NOT NULL FK` | Obligatorio (`RNF-01`). Todo consumidor valida y aplica contexto de tenant a partir de este campo; está prohibido inferir el tenant inspeccionando `data`. |
@@ -131,24 +133,24 @@ Todo evento persistido en `servicio.outbox` o `despacho.outbox` y publicado por 
 
 ### 4.2 `AliadoAsignado` (`event_version: 1`)
 
-- **Productor:** Dispatch Service (`despacho.outbox`)
+- **Productor:** Core Service (`servicio.outbox`), por la decisión 6A
 - **Columna `id_agregado` en outbox:** `data.id_asignacion`
 - **Columna `clave_particion` en outbox:** `data.id_solicitud`
-- **Requisitos relacionados:** RF-14, RNF-05, ADR-0016
+- **Requisitos relacionados:** RF-14, RNF-05, ADR-0016, ADR-0035 (propuesto)
 
 #### Contrato de `data`
 
 | Campo | Tipo | Requerido | Restricciones / Dominio | Descripción |
 | :--- | :--- | :---: | :--- | :--- |
-| `id_asignacion` | `string` (`uuid`) | Sí | PK de `despacho.asignacion` | Identificador único del registro de asignación ganador. |
+| `id_asignacion` | `string` (`uuid`) | Sí | PK del `evento_servicio` `SOLICITUD_ASIGNADA` en Core | Identificador único del registro de la asignación ganadora. Core no tiene una tabla de asignaciones aparte: la asignación es `solicitud.aliado_id` más ese evento. |
 | `id_solicitud` | `string` (`uuid`) | Sí | `== partition_key` | Solicitud asignada. |
 | `id_aliado` | `string` (`uuid`) | Sí | FK lógica a `core.aliado` | Aliado que ganó la aceptación concurrente atómica (`ADR-0016`). |
 | `id_categoria` | `string` (`uuid`) | Sí | FK lógica a `core.categoria` | Categoría de la solicitud asignada (requerida por `dw.fact_asignacion`). |
 | `id_zona` | `string` (`uuid`) | Sí | FK lógica a `core.zona` | Zona de la solicitud asignada (requerida por `dw.fact_asignacion`). |
-| `estado_asignacion` | `string` (`enum`) | Sí | Constante `'ACEPTADA'` | Estado confirmado en `despacho.asignacion`. |
-| `estado_solicitud` | `string` (`enum`) | Sí | `'ASIGNADA'` \| `'ACEPTADA'` | Nuevo estado operacional de la solicitud tras la asignación. |
-| `fecha_asignacion` | `string` (`date-time`) | Sí | ISO-8601 UTC | Momento en que se ofreció/registró la asignación inicial. |
-| `fecha_respuesta` | `string` (`date-time`) | Sí | ISO-8601 UTC (`>= fecha_asignacion`) | Momento exacto de confirmación del aliado ganador. |
+| `estado_asignacion` | `string` (`enum`) | Sí | Constante `'ACEPTADA'` | El aliado aceptó la oferta y Core registró la asignación. |
+| `estado_solicitud` | `string` (`enum`) | Sí | `'ASIGNADA'` | Estado de la solicitud tras la asignación, escrito por Core. |
+| `fecha_asignacion` | `string` (`date-time`) | Sí | ISO-8601 UTC | Momento en que Core guardó la oferta (`OFERTA_DESPACHO`) para ese aliado. |
+| `fecha_respuesta` | `string` (`date-time`) | Sí | ISO-8601 UTC (`>= fecha_asignacion`) | Momento en que Core confirmó la asignación del aliado ganador. |
 | `segundos_respuesta` | `integer` | Sí | `>= 0` | Tiempo de respuesta en segundos (`dw.fact_asignacion.segundos_respuesta`). |
 
 #### Ejemplo canónico (`AliadoAsignado v1`)
@@ -325,9 +327,9 @@ Dado que el ecosistema MANI es multi-repositorio (`MANI-Node`, `MANI-Java`, `MAN
 | Garantía | Regla exigible sobre el contrato | Referencia |
 | :--- | :--- | :--- |
 | **Aislamiento multi-tenant** | Ningún evento es válido sin `tenant_id` (`UUID`). El consumidor ejecuta `withTenantContext(event.tenant_id, ...)` (`ADR-0032`) antes de tocar persistencia. | RNF-01, ADR-0012, ADR-0029 §2, ADR-0032 |
-| **Exclusión concurrente y no duplicación de negocio** | `AliadoAsignado` se inserta en `despacho.outbox` en la misma transacción que gana el `UPDATE` condicional de `ADR-0016`. Si el relay reintenta y entrega dos veces el mismo mensaje, el consumidor deduplica por `event_id`. | RNF-05, ADR-0016, ADR-0029 §3 |
+| **Exclusión concurrente y no duplicación de negocio** | `AliadoAsignado` se inserta en `servicio.outbox` en la misma transacción en que Core gana el `UPDATE` condicional de `ADR-0016` (decisión 6A); un reintento del mismo aliado no inserta otro. Si el relay reintenta y entrega dos veces el mismo mensaje, el consumidor deduplica por `event_id`. | RNF-05, ADR-0016, ADR-0029 §3 |
 | **Trazabilidad extremo a extremo** | `correlation_id` es obligatorio y preserva el `X-Correlation-ID` de la petición HTTP que disparó el cambio de estado. | RNF-07, ADR-0006 |
-| **Integridad del esquema Outbox** | `servicio.outbox` admite exclusivamente `('SolicitudCreada','CotizacionAceptada','ServicioFinalizado')` y `despacho.outbox` admite exclusivamente `('AliadoAsignado')`. | ModeloDatos.md §7 y §8 |
+| **Integridad del esquema Outbox** | `servicio.outbox` admite exclusivamente `('SolicitudCreada','AliadoAsignado','CotizacionAceptada','ServicioFinalizado')`. `despacho.outbox` no publica eventos de este catálogo desde la decisión 6A. | ModeloDatos.md §7 y §8 |
 
 ### 6.1 Verificación ejecutable
 

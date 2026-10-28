@@ -63,6 +63,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) | Identidad de servicio en base de datos | RNF-01 |
 | [ADR-0033](adr/ADR-0033-productor-del-evento-solicitud-creada.md) | Productor del evento `SolicitudCreada`: Dispatch, no Core — `Propuesto`; reemplazaría [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 en esa fila si la Mesa lo aprueba | RF-12 |
 | [ADR-0034](adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones — `Propuesto` | RF-20, RF-24 |
+| [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) | Frontera de la asignación: Dispatch decide y Core escribe (decisión 6A) — `Propuesto`; reemplazaría la fila de `AliadoAsignado` en [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 si la Mesa lo aprueba | RF-14, RNF-03, RNF-05 |
 
 ## Índice — descartado
 
@@ -101,7 +102,7 @@ Los números **no son contiguos y no se reutilizan**. Tres huecos:
 |---|---|
 | `0007`, `0009`, `0010`, `0020`, `0021`, `0023` | Retirados el 2026-10-23, ver arriba |
 | `0026` | Nunca se emitió |
-| — | El siguiente ADR que se emita es `ADR-0034` |
+| — | El siguiente ADR que se emita es `ADR-0036` |
 
 Dos avisos para no equivocarse al leer:
 

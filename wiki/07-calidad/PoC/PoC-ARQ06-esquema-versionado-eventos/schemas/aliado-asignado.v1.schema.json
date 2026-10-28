@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mani.trama.co/schemas/events/aliado-asignado.v1.schema.json",
   "title": "AliadoAsignadoDataV1",
-  "description": "Esquema de carga util data para AliadoAsignado v1 (productor: Dispatch Service, outbox: despacho.outbox)",
+  "description": "Esquema de carga util data para AliadoAsignado v1 (productor: Core Service, outbox: servicio.outbox; decisión 6A)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -29,7 +29,7 @@
     },
     "estado_solicitud": {
       "type": "string",
-      "enum": ["ASIGNADA", "ACEPTADA"]
+      "enum": ["ASIGNADA"]
     },
     "fecha_asignacion": { "type": "string", "format": "date-time" },
     "fecha_respuesta": { "type": "string", "format": "date-time" },

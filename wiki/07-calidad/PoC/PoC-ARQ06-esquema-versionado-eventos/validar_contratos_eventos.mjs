@@ -33,7 +33,7 @@ const ISO_UTC_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
 
 const OUTBOX_ROUTING = {
   SolicitudCreada: { producer: 'Core Service', outbox: 'servicio.outbox', aggregateField: 'id_solicitud' },
-  AliadoAsignado: { producer: 'Dispatch Service', outbox: 'despacho.outbox', aggregateField: 'id_asignacion' },
+  AliadoAsignado: { producer: 'Core Service', outbox: 'servicio.outbox', aggregateField: 'id_asignacion' },
   CotizacionAceptada: { producer: 'Core Service', outbox: 'servicio.outbox', aggregateField: 'id_cotizacion' },
   ServicioFinalizado: { producer: 'Core Service', outbox: 'servicio.outbox', aggregateField: 'id_solicitud' },
 };

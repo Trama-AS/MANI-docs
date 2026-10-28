@@ -361,7 +361,7 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 ```text
 Cliente → Gateway → Core: crea la solicitud
 Dispatch → Core: aliados elegibles (categoría + zona + disponibilidad)
-Dispatch → Rules: orden del listado según la regla del tenant
+Dispatch → Rules: orden del listado según la regla del tenant (sin regla aplicada: NO_DISPONIBLE)
 Dispatch: broadcast de la oferta y decisión de quién acepta
 Dispatch → Core: comando de asignación idempotente; Core persiste (409 a las posteriores)
 Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-16)
@@ -383,11 +383,25 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 | Concurrencia | Core bloquea la fila de la solicitud (`FOR UPDATE`) y repite el predicado `estado = 'PENDIENTE' AND aliado_id IS NULL` en el `UPDATE`, que hace de versión de la fila (ADR-0016). El primero gana. |
 | `correlationId` | Se propaga desde el Gateway y se devuelve en la respuesta. Cada intento queda en un registro JSON con el resultado: `ASIGNADA`, `REINTENTO` o `RECHAZADA` (QS-12). |
 | Conflicto (409) | `MANI-SOL-409` si la solicitud ya tiene aliado; `MANI-SOL-409E` si su estado no admite asignación. |
-| Rechazo (403) | `MANI-SOL-403` rol no permitido, `MANI-SOL-403V` aliado sin verificar, `MANI-SOL-403O` sin oferta para esa solicitud, `MANI-SOL-403E` no atiende la categoría o la zona. |
+| Rechazo (403) | `MANI-SOL-403` rol no permitido o cuenta del aliado inactiva, `MANI-SOL-403V` aliado sin verificar, `MANI-SOL-403O` sin oferta para esa solicitud, `MANI-SOL-403E` no atiende la categoría o la zona. |
 | No encontrada (404) | `MANI-SOL-404`, sin distinguir si la solicitud no existe o es de otro tenant. |
 | Dependencia no disponible (503) | Core responde 503 cuando falta la dependencia y **no sustituye el resultado por lógica local** (criterio T2). El acceso falla cerrado. |
 
-La implementación de este contrato corresponde a SCRUM-1403 (HU-M05-07), con SCRUM-1402 y SCRUM-1404; la frontera en base de datos la aplica la migración `0019_frontera_asignacion_6a.sql` de MANI-Node, que revoca `UPDATE` sobre `solicitud` al rol de Dispatch y retira la política que permitía la escritura directa. Esta sección **documenta** ese contrato: no lo implementa ni lo da por desplegado.
+La implementación de este contrato corresponde a SCRUM-1403 (HU-M05-07), con SCRUM-1402 y SCRUM-1404; la frontera en base de datos la aplica la migración `0019_frontera_asignacion_6a.sql` de MANI-Node, que revoca `UPDATE` sobre `solicitud` al rol de Dispatch y retira la política que permitía la escritura directa.
+
+**Estado de la implementación (28 oct 2026).** El contrato está fusionado en `develop` de los cuatro repositorios: MANI-Node#80 (comando, bandeja de Core y migración `0019`), MANI-.NET#16 (Dispatch deja de escribir `solicitud`), MANI-APIGateway#41 (bloqueo de la ruta interna y `core-internal.yaml` 0.2.0) y MANI-Flutter#76 (la app acepta, rechaza y lista por el Gateway). Fusionado en `develop` no significa desplegado: la certificación en el ambiente QA sigue pendiente (TEC-16, SCRUM-1463). La propuesta de ADR que formaliza la decisión es [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md).
+
+#### Lo que queda del lado de Dispatch
+
+| Aspecto | Definición |
+|---|---|
+| Rechazos | Son del dominio de Dispatch (`solicitud_rechazo`). Rechazar es idempotente; el motivo es del catálogo o nulo (`422 MANI-SOL-422M`). Un aliado que ya rechazó y luego intenta aceptar recibe `409 MANI-DSP-409R`, sin llegar a Core. |
+| Elegibles sin los que rechazaron | Dispatch envía a Core los aliados que rechazaron en `excludeAllyIds`, y Core los quita antes de paginar. Core no lee `solicitud_rechazo`. |
+| Orquestación | Solo con la solicitud `PENDIENTE` (`409 MANI-DSP-409E`). Core guarda una sola oferta por aliado y solicitud (índice único de la migración `0019`), así que repetir la orquestación no duplica ofertas. |
+| Bandeja del aliado | `GET /api/v1/dispatch/offers/me` lee la bandeja de Core (`GET /allies/me/offers`, interna) y quita lo que el aliado rechazó. Sin la dirección de solicitudes ajenas. |
+| Falla cerrada | Si Core no responde o responde algo inesperado, Dispatch responde `503 CORE_SERVICE_UNAVAILABLE` y no da nada por asignado. |
+
+Contratos: `core-internal.yaml` y `dispatch.yaml` en MANI-APIGateway. El orden de los elegibles por Rules (RF-13) está en borrador en `dispatch.yaml` 0.2.0 (SCRUM-1401 / SCRUM-1462): sin una evaluación real de Rules, Dispatch responde `ranking.estado = NO_DISPONIBLE` y nunca presenta un puntaje simulado como orden real.
 
 ### Pendientes
 
@@ -398,6 +412,8 @@ P1 se cerró con la decisión 6A del 26 de octubre de 2026; queda registrada arr
 | P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
 | P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |
+
+**Sobre P4, para decidir.** Lo implementado en el Bloque 2 de M-05 (MANI-Node#80 y MANI-.NET#16) ya toma una forma: Dispatch decide a quién ofrecer y le pide a Core la oferta con `POST /notifications` (interna); Core persiste la notificación `OFERTA_DESPACHO`, una por aliado y solicitud, y es quien entrega el push. Si el equipo lo confirma, P4 se cierra con «Core emite el push; Dispatch lo solicita».
 
 
 ## 7.5 Inventario funcional por servicio

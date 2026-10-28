@@ -36,7 +36,7 @@
 
 RF-24 cobro en línea con operador certificado · RF-25 liquidación con comisión configurable · RF-26 quejas · RF-27 consola de comercialización · RF-28 métricas operativas y estado de tenants.
 
-No entran al MVP. Ver [Visión y alcance](vision-y-alcance.md) y la disposición de las historias legacy en el [registro de la transición](../05-backlog/BACKLOG_MANI.md#10-registro-de-la-transición-v4).
+No entran al MVP. **Excepción del 24-oct-2026:** la geolocalización en tiempo real del aliado entró como RF-37, pendiente de confirmación del PO. Ver [Visión y alcance](vision-y-alcance.md) y la disposición de las historias legacy en el [registro de la transición](../05-backlog/BACKLOG_MANI.md#10-registro-de-la-transición-v4).
 
 ## Requerimientos no funcionales
 

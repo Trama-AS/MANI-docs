@@ -9,6 +9,7 @@
 - **Jira:** DOC-26 (SCRUM-1075)
 - **Relacionado con:** ADR-0003, ADR-0012, ADR-0015, ADR-0016, ADR-0019
 - **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
+- **Modificado por:** TEC-01 (SCRUM-1448, 2026-10-27): la decisión 6A de la Scrum Master del 26-oct-2026 mueve a Core la escritura del estado de la solicitud; se corrigen las dos menciones que atribuían a Dispatch las solicitudes y la actualización condicional atómica.
 
 ## Contexto
 
@@ -28,11 +29,11 @@ Las historias cerradas con la arquitectura anterior se rehacen como subtareas de
 **La lógica de negocio vive en los servicios. La lógica que hoy está en el cliente Flutter y en las funciones PL/pgSQL de Supabase se migra al servicio dueño de cada capacidad. Supabase queda como plataforma de persistencia.**
 
 Reglas que se derivan:
-- Cada servicio implementa la lógica de su dominio según la responsabilidad asignada en el SAD (§7): Core Service (tenants, identidad, aliados y KYC, clientes, categorías, cotización, ejecución, calificación, mensajería), Rules Service (reglas por tenant, ranking, tarifario), Dispatch Service (solicitudes, aceptación, idempotencia y exclusión concurrente) y Core Service (cobertura y elegibilidad).
+- Cada servicio implementa la lógica de su dominio según la responsabilidad asignada en el SAD (§7): Core Service (tenants, identidad, aliados y KYC, clientes, categorías, cotización, ejecución, calificación, mensajería), Rules Service (reglas por tenant, ranking, tarifario), Dispatch Service (elegibilidad, oferta y decisión de aceptación/rechazo, con la idempotencia de sus propias ofertas; **no escribe el estado de la solicitud**, decisión 6A) y Core Service (cobertura y elegibilidad).
 - Flutter conserva solo presentación e interacción y se comunica únicamente con el Gateway; no vuelve a llamar a Supabase directamente, salvo Supabase Auth para obtener el token.
 - Supabase aporta PostgreSQL, Auth, Storage y Realtime. RLS se mantiene como defensa adicional, no como sustituto de la autorización de los servicios (ADR-0012).
 - Las funciones PL/pgSQL existentes dejan de ser invocadas a medida que su lógica se migra. No se editan: se retiran con una migración nueva una vez la regresión en QA confirme el reemplazo.
-- La exclusión concurrente del despacho se sigue resolviendo con una actualización condicional atómica en PostgreSQL (ADR-0016), emitida por Dispatch, no por una función PL/pgSQL.
+- La exclusión concurrente del despacho se sigue resolviendo con una actualización condicional atómica en PostgreSQL (ADR-0016), no por una función PL/pgSQL. **La emite Core**, que es el dueño del estado de la solicitud: Dispatch decide quién acepta y entrega el resultado a Core por contrato idempotente (decisión 6A del 26-oct-2026, SAD §7.4).
 
 ## Justificación
 

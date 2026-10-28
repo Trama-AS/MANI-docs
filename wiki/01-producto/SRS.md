@@ -48,8 +48,15 @@ Se contempla posteriormente:
 - pasarela de pago;
 - facturación electrónica;
 - consola de comercialización;
-- geolocalización en tiempo real del aliado;
 - cálculo de proximidad o distancia entre aliado y sitio.
+
+> **Cambio del 24 de octubre de 2026.** La geolocalización en tiempo real del aliado estaba en esta
+> lista y **sale de ella**: entra al MVP como **RF-37**, por decisión de la Scrum Master (Sara
+> Albarracín) al priorizar el Sprint 5. **No hay sesión de refinamiento registrada** y el requisito
+> queda pendiente de confirmación del Product Owner, que es quien decide el alcance
+> (`GOBIERNO_DEL_EQUIPO.md` §2.3). El cálculo de proximidad o distancia **sigue fuera**: RF-37 muestra
+> dónde está el aliado durante la ejecución y no cambia cómo se declara la cobertura, que sigue siendo
+> por zonas de un catálogo jerárquico (RNF-09, REST-01).
 
 ### Entrada comercial pública
 
@@ -267,6 +274,7 @@ Los identificadores no se renumeran: los requisitos RF-29 a RF-36 se incorporaro
 | **RF-34** | Permitir al aliado solicitar, durante la ejecución, un ajuste a la cotización por imprevistos, que el cliente debe aprobar o rechazar. | Media | RF-17, RF-18 |
 | **RF-35** | Permitir al aliado registrar evidencias de la ejecución sin conexión y sincronizarlas al recuperarla, conservando la fecha y hora de captura. | Media | RF-18 |
 | **RF-36** | Permitir a clientes y aliados consultar el historial de los servicios en los que han participado. | Media | RF-19 |
+| **RF-37** | Permitir al cliente ver en el mapa la ubicación del aliado mientras el servicio está en ejecución. El aliado concede el permiso de forma expresa, la ubicación solo se comparte entre el inicio y el fin de la ejecución y solo con el cliente de esa solicitud, y el rastro se retiene el tiempo que el tenant configure. No habilita cálculo de proximidad ni cambia la declaración de cobertura, que sigue siendo por zonas (RNF-09, REST-01). | Media | RF-18, RF-29 |
 
 ## 4.5 Comunicación y notificaciones
 
@@ -407,7 +415,9 @@ Cada requisito funcional se relaciona con las historias de Jira que lo implement
 Observaciones:
 
 - RF-01, RF-03 y RF-04 no tienen una historia propia en Jira; su implementación aparece solo en historias de migración (por ejemplo SCRUM-1061). Se debe crear o identificar la historia correspondiente.
-- SCRUM-871 (rastreo del aliado en vivo) no se relaciona con ningún requisito: la geolocalización en tiempo real está fuera del alcance del MVP (§1.2). Se asignó al Incremento 2 y se formaliza en el Backlog V5 (SCRUM-1245).
+- SCRUM-871 (rastreo del aliado en vivo) **ya tiene requisito: RF-37**, creado el 24 de octubre de 2026 al traerlo al Sprint 5. Antes no se relacionaba con ninguno porque la geolocalización en tiempo real estaba excluida en §1.2. La historia es `HU-M07-04` en la hoja «24 Sprint 5 por modulo» del libro de módulos.
+- **RF-37 está pendiente de confirmación del Product Owner.** Lo decidió la Scrum Master al priorizar el sprint, sin sesión de refinamiento registrada. Si el PO lo revierte, la historia sale del sprint y el requisito se retira.
+- La ubicación continua es dato personal bajo la Ley 1581 de 2012, el mismo marco que obligó a ADR-0024 en pagos. RF-37 exige permiso expreso del aliado, ventana limitada a la ejecución y retención configurable por tenant; el tratamiento concreto se define al refinar la historia.
 
 
 ## 7.2 Estado funcional por capacidad

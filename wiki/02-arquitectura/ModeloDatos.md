@@ -859,12 +859,18 @@ en la misma transacción que cambia el estado del negocio, y un outbox común ex
 cruzada entre esquemas, que §13 prohíbe. Core produce `SolicitudCreada`, `CotizacionAceptada` y
 `ServicioFinalizado`; Dispatch produce `AliadoAsignado` ([ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md), [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md)).
 
-> **Punto abierto de DOC4-04.** `solicitud` está listada bajo `despacho`, pero SAD §7.4 —cerrado en
-> SCRUM-1232— asigna a Core la creación de la solicitud (RF-12) y dice que Dispatch no la crea. Si
-> Core escribe esa fila, la escritura exclusiva de §13 no se sostiene con la tabla en `despacho`.
-> Este documento **no reubica la tabla**: la decisión afecta DDL aplicado y corresponde al dueño de
-> la serie de migraciones (ADR-0030 §1). Mientras se resuelva, `SolicitudCreada` se escribe en
-> `servicio.outbox`, que es esquema de Core.
+> **Punto abierto de DOC4-04, con la propiedad ya resuelta.** `solicitud` está listada bajo
+> `despacho`, pero Core es su único escritor: SAD §7.4 le asigna la creación (RF-12, decisión del
+> 17-oct-2026) y la **decisión 6A del 26-oct-2026** le asigna además el estado después de la
+> asignación. La escritura exclusiva de §13 no se sostiene con la tabla en `despacho`.
+>
+> Lo que ya no está en duda es **quién escribe**: Core. La migración
+> `0019_frontera_asignacion_6a.sql` de MANI-Node lo hace efectivo en la base, revocando `UPDATE`
+> sobre `solicitud` al rol de Dispatch, que conserva `SELECT` para `assignments/me`.
+>
+> Lo que sigue abierto es **dónde vive la tabla**: este documento **no la reubica**, porque mover un
+> esquema afecta DDL ya aplicado y corresponde al dueño de la serie de migraciones (ADR-0030 §1).
+> Mientras se resuelva, `SolicitudCreada` se escribe en `servicio.outbox`, que es esquema de Core.
 
 **La disponibilidad no tiene esquema propio.** `core.disponibilidad` está junto a
 `core.aliado_cobertura` y `core.aliado_categoria` porque las tres describen al mismo aliado: qué

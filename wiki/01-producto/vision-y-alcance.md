@@ -27,8 +27,9 @@ Según SRS §1.2, el MVP **no** incluye:
 - pasarela de pago;
 - facturación electrónica;
 - consola de comercialización;
-- geolocalización en tiempo real del aliado;
 - cálculo de proximidad o distancia entre aliado y sitio.
+
+La geolocalización en tiempo real del aliado salió de esta lista el 24 de octubre de 2026 y entró al MVP como **RF-37**, pendiente de confirmación del PO. El cálculo de proximidad sigue fuera.
 
 Una historia que pida alguno de estos puntos no se implementa en el MVP: se registra su disposición según el [registro de la transición](../05-backlog/BACKLOG_MANI.md#10-registro-de-la-transición-v4).
 
@@ -43,7 +44,7 @@ Del [`README.md`](../../README.md) §3 y los RNF del SRS:
 | Trazabilidad reconstruible del ciclo del servicio | RNF-04, RF-18 |
 | Idempotencia de operaciones críticas | RNF-03 |
 | Concurrencia controlada: exactamente una asignación válida | RNF-05, RF-14 |
-| Cobertura por zonas, sin geolocalización en vivo ni radio | RNF-09, REST-01 |
+| Cobertura por zonas, sin radio ni proximidad | RNF-09, REST-01 |
 | Seguridad en profundidad en más de una capa | RNF-01 |
 
 ## Definiciones

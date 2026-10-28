@@ -30,6 +30,7 @@ Las páginas de arriba ordenan y navegan; esto es la fuente.
 | [`TRAZABILIDAD_INTEGRACION.md`](TRAZABILIDAD_INTEGRACION.md) | Trazabilidad de la integración entre servicios |
 | [`REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](REPORTE_CONFORMIDAD_CORE_DISPATCH.md) | Conformidad técnica de Core y Dispatch con la arquitectura vigente |
 | [`MATRIZ_DECISION_6A.md`](MATRIZ_DECISION_6A.md) | Decisión 6A (propiedad del estado del servicio): dónde quedó escrita, su contrato y la historia responsable de cada parte |
+| [`EXPEDIENTE_MESA_TEC-12.md`](EXPEDIENTE_MESA_TEC-12.md) | Material para que la Mesa ratifique o revierta ADR-0030 y ADR-0016, con la evidencia de que el código ya los cumple |
 | [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas |
 | [`adr/`](adr/) | Decisiones arquitectónicas. Una vigente está `Aceptado`; una sustituida, `Superseded` |
 | [`diagrams/`](diagrams/) | Fuentes y PNG de los diagramas C4, de despliegue, de datos y de flujos |

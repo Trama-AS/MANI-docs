@@ -37,7 +37,7 @@ ADR-0022 §Decisión y ModeloDatos §13.
 |---|---|---|---|
 | Crear y persistir la solicitud (RF-12) | Core (SAD §7.4 «Dispatch… no crea la solicitud») | Core: `POST /solicitudes`, PR Node #44 | **Conforme** al SAD §7.4; **contradice** SAD §7.2 y ADR-0022 (ver D-1) |
 | Elegibilidad por categoría, zona, disponibilidad | Core (SAD §7.3, §7.4) | Core: `GET /api/v1/allies/eligible` (`src/routes/core.routes.js:49`, `PgElegibilidadRepository`) | **Conforme** |
-| Consumo de elegibilidad por Dispatch | HTTP, nunca SQL (ADR-0030 §2) | `Infrastructure/Core/CoreAllyClient.cs` implementa `IAllyRepository`; **no existe `PostgresAllyRepository`** en develop/release | **Conforme** en código; ADR-0030 sigue **Propuesto** (ver P-1) |
+| Consumo de elegibilidad por Dispatch | HTTP, nunca SQL (ADR-0030 §2) | `Infrastructure/Core/CoreAllyClient.cs` implementa `IAllyRepository`; **no existe `PostgresAllyRepository`** en develop/release | **Conforme** en código; ADR-0030 está `Aceptado` desde el 2026-10-23, pero sin sesión de Mesa (ver P-1) |
 | Contexto de la solicitud (zona, categoría, estado) | Core | `GET /api/v1/solicitudes/:id/context` ↔ `CoreAllyClient.GetSolicitudContextAsync` | **Conforme** |
 | Perfil del aliado autenticado | Core | `GET /api/v1/allies/me` ↔ `CoreAllyClient.GetAllyProfileAsync` | **Conforme** (no estaba en el cuerpo del PR #43; existe en código) |
 | Orden del listado (ranking, RF-13) | Rules (SAD §7.4, ADR-0030 §2) | **Nada**: cero referencias a Rules en el código de Dispatch | **No implementado** (D-5) |
@@ -159,8 +159,8 @@ busque.
 
 | ID | Decisión | Por qué bloquea |
 |---|---|---|
-| P-1 | Ratificar **ADR-0030** (hoy **Propuesto**) | El código de `release` ya lo cumple (frontera por HTTP, DDL solo en Core). Está implementado contra una decisión no aprobada: o se ratifica o hay que revertir código fusionado. |
-| P-2 | Ratificar **ADR-0016** (absorbe el antiguo ADR-0021, retirado el 2026-10-23) | Es el fundamento de la aceptación atómica ya implementada y de los permisos de `0007`. |
+| P-1 | Ratificar **ADR-0030** en Mesa. Pasó a `Aceptado` el 2026-10-23 por decisión de la Scrum Master, **sin sesión de Mesa registrada**, que el propio ADR señala como pendiente. | El código de `release` ya lo cumple (frontera por HTTP, DDL solo en Core). Está implementado contra una decisión que no pasó por Mesa: o se ratifica o hay que revertir código fusionado. Expediente en [`EXPEDIENTE_MESA_TEC-12.md`](EXPEDIENTE_MESA_TEC-12.md); tarea TEC-12 (SCRUM-1459). |
+| P-2 | Ratificar **ADR-0016** en Mesa (absorbe el antiguo ADR-0021, retirado el 2026-10-23). Pasó a `Aceptado` el 2026-10-23 por decisión de la Scrum Master, **sin sesión de Mesa registrada**. | Es el fundamento de la aceptación atómica ya implementada y de los permisos de `0007`. Expediente en [`EXPEDIENTE_MESA_TEC-12.md`](EXPEDIENTE_MESA_TEC-12.md); tarea TEC-12 (SCRUM-1459). |
 | P-3 | Ratificar **ADR-0022** (hoy **Propuesto**) y **corregir su reparto** | Su §Decisión asigna «solicitudes» a Dispatch, en contra de SAD §7.4 y del código. Mientras no se corrija, D-1 no se puede cerrar. |
 | P-4 | Resolver **P1 de SAD §7.4** (dueño del estado de la solicitud tras la asignación) y, con él, la ubicación de `solicitud` en ModeloDatos §6.1/§13 | Determina si el `UPDATE` de Dispatch es escritura en dominio propio o cruzada, y por tanto si D-2/D-3 se arreglan en Dispatch o moviendo la operación a Core. |
 | P-5 | Ratificar **ADR-0032** y fijar con qué rol se conecta Dispatch | Sin esto, D-2 no tiene criterio de aceptación: el arreglo cambia según si el rol es `mani_dispatch_svc` o `service_role`. |

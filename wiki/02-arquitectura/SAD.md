@@ -302,6 +302,43 @@ Responsable de:
 
 En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente. La **disponibilidad es uno de esos dominios internos**, no un servicio desplegable aparte: vive en el bloque Node junto al catálogo y la comunicación, y es lo que Despacho consulta antes de conformar el listado de candidatos.
 
+### 7.3.1 Dominios internos de Core
+
+Inventario de SCRUM-1447 (HU-M13-05, RNF-02, [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md)), verificado sobre MANI-Node `develop` `ed5b0fc` (27 oct 2026). Core sigue siendo **un solo servicio desplegable**: cada dominio es un límite interno, con su archivo de rutas (`src/routes/core/<dominio>.routes.js`) y su carpeta de casos de uso (`src/application/useCases/<dominio>/`), no un servicio por CRUD. El detalle (rutas, tablas, persistencia, verificación y hallazgos completos) está en `MANI-Node/docs/arquitectura/MODULOS_CORE.md`.
+
+| Dominio | Requisitos | Rutas principales (`/api/v1/core/…`) | Datos de Core que escribe |
+|---|---|---|---|
+| Identidad y registro | RF-03, RF-05, RF-08 | `/auth/*` | `usuario`, `aliado`, `cliente`, `documento_kyc`, `consentimiento_usuario` |
+| Tenants | RF-01 | `GET /tenants` (solo `PLATFORM_ADMIN`) | `tenant` (lectura) |
+| Perfiles | RF-11, RF-30 | `/profiles/me*` | `usuario`, `aliado_categoria` |
+| Disponibilidad | RF-29 | `/profiles/me/unavailability*` | `aliado_ausencia` |
+| Verificación KYC | RF-06 | `/aliados/verificacion`, `/aliados/:id/*` | `aliado`, `documento_kyc` |
+| Catálogo | RF-07, RF-10 | `/catalog*` (categorías y zonas) | `categoria_servicio`; reglas de categoría en Rules por HTTP |
+| Clientes y sitios | RF-08, RF-09 | `/clients/*`, `/sites/:id/*` | `cliente`, `sitio` |
+| Legal | RF-31 | `/legal/*` | `consentimiento_usuario` |
+| Solicitudes | RF-12, RF-32 | `POST /solicitudes`, `/solicitudes/me*`, `POST /solicitudes/:id/asignacion` (interna) | `solicitud`, `solicitud_foto` |
+| Integración con Dispatch | RF-12 (elegibilidad) | `/allies/eligible`, `/allies/me*`, `/solicitudes/:id/context` | ninguno: son lecturas para Dispatch |
+| Notificaciones | RF-20 (avisos) | `/profiles/me/inbox`, `/notifications` | `notificacion` |
+| Cotización | RF-15, RF-17 | `/solicitudes/:id/cotizaciones`, `/cotizaciones/:id/*` | `cotizacion`, `solicitud`, `evento_servicio` |
+| Ejecución del servicio | RF-18 | `/solicitudes/:id/{iniciar,finalizar,ejecucion,eventos*}` | `solicitud`, `evento_servicio`; evidencia en Storage |
+| Mensajería | RF-20, RF-21 | `/solicitudes/:id/mensajes` | mensajes del servicio |
+| Pagos (sandbox) | RF-24 (simulado, sin dinero real) | `/pagos*` | pagos del sandbox |
+
+**Límites que se cumplen** (prueba de regresión `tests/integration/routes/routeInventory.test.js`, CI y SonarQube en verde):
+
+- Core llama a Dispatch y a Rules solo por HTTP ([ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)); no lee tablas de Dispatch.
+- El tenant, el usuario y el rol salen del JWT verificado, no del cuerpo ni de cabeceras.
+- Los casos de uso no se importan entre sí: comparten repositorios inyectados desde `container.js`. No hay dependencias circulares.
+- La modularización no cambió ninguna ruta pública, ningún middleware de autenticación o rol ni ningún contrato OpenAPI: las 157 rutas de antes siguen registradas igual.
+
+**Pendientes de los dominios**, cada uno con su historia y su regresión:
+
+- Cinco repositorios `pg` de clientes, sitios y aliado todavía consultan sin `runInTenantContext` ([ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md)); su aislamiento depende del filtro `tenant_id` de cada consulta. Los repositorios de Supabase usan la *service-role key* y no pasan por RLS.
+- Tres accesos distintos a `cliente` y `sitio` (Supabase, `pg` y cliente empresa) que hay que unificar en un puerto por tabla.
+- `useCases/dispatch/` mezcla elegibilidad, contexto de solicitud y notificaciones; las notificaciones deben pasar a `useCases/notifications/`.
+- `container.js` arma todos los dominios en un solo constructor; el paso siguiente es una composición por dominio.
+- Falta confirmar con DevOps con qué rol se conecta `DATABASE_URL`: si no hereda `mani_core_svc`, RLS no filtra.
+
 ## 7.4 Límites entre servicios
 
 Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM-1233), contratos HTTP (SCRUM-1234) y mensajería (SCRUM-1235) partan de la misma base. No reasigna requisitos: hace explícito qué datos es dueño cada servicio y qué no hace. Aplica el principio 7 de §4.1: ningún servicio escribe en datos privados de otro dominio.
@@ -328,6 +365,8 @@ Cliente → Gateway → Core: crea la solicitud
 Dispatch → Core: aliados elegibles (categoría + zona + disponibilidad)
 Dispatch → Rules: orden del listado según la regla del tenant
 Dispatch: broadcast y aceptación atómica (409 a las posteriores)
+Dispatch → Core: registra la asignación (comando idempotente, decisión 6A)
+Core: estado de la solicitud desde la asignación (cotización, ejecución, cierre)
 Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-16)
 ```
 
@@ -335,11 +374,18 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 
 **Quién crea la solicitud (RF-12): Core.** Decisión del 17 de octubre de 2026, acordada entre la Product Owner y la Scrum Master, y registrada en SCRUM-1232 y SCRUM-1234. Core crea y persiste la solicitud; Dispatch orquesta el reparto a partir de ella. El backlog ya era consistente con esto (SCRUM-1072 ubica la creación en Core Node separada de la orquestación, y SCRUM-1073 deja la orquestación en Dispatch .NET); lo desactualizado era §7.2, cuya corrección se ejecuta en DOC4-03 (SCRUM-1246).
 
+**Quién es dueño del estado después de la asignación: Core (decisión 6A).** Decisión de la Scrum Master del 26 de octubre de 2026, registrada en SCRUM-865, 867, 868 y 869; cierra el pendiente P1.
+
+- Core es el único dueño y el único que escribe el estado de la solicitud después de la asignación: cotización, aceptación o rechazo, ejecución y cierre.
+- Dispatch conserva la elegibilidad, el broadcast, las ofertas y la decisión de asignación. Comunica la asignación a Core con un comando idempotente (`POST /solicitudes/{id}/asignacion`, interno, contrato en `core-internal.yaml`) y no actualiza tablas de Core: la migración 0019 de Core le quita a `mani_dispatch_svc` el `UPDATE` sobre `solicitud`.
+- Core valida el actor, el tenant y la transición antes de persistir. Un reintento o un duplicado no crea una segunda asignación ni una segunda transición; el conflicto responde 409 sin revelar al aliado que ganó.
+- Implementación: MANI-.NET#16 y MANI-Node#80 (SCRUM-1403) para la asignación; SCRUM-865 a 870 para cotización y ejecución en Core.
+
 ### Pendientes
 
 | ID | Qué falta definir | Responsable | Fecha límite | Impacto mientras siga abierto |
 |---|---|---|---|---|
-| P1 | Quién es dueño del estado de la solicitud después de la asignación (cotización → ejecución → cierre): Dispatch o Core. | Juan Sebastián con los equipos de Dispatch y Core | 20 oct 2026 | Bloquea el modelo de persistencia de la solicitud (SCRUM-1233). |
+| P1 | ~~Quién es dueño del estado de la solicitud después de la asignación.~~ **Cerrado el 26 oct 2026: Core** (decisión 6A, ver «Decidido»). | — | — | — |
 | P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
 | P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |

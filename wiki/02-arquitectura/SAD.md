@@ -300,6 +300,43 @@ Responsable de:
 
 En módulos de alta complejidad puede dividirse internamente por dominios sin convertir cada operación CRUD en un servicio independiente. La **disponibilidad es uno de esos dominios internos**, no un servicio desplegable aparte: vive en el bloque Node junto al catálogo y la comunicación, y es lo que Despacho consulta antes de conformar el listado de candidatos.
 
+### 7.3.1 Dominios internos de Core
+
+Inventario de SCRUM-1447 (HU-M13-05, RNF-02, [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md)), verificado sobre MANI-Node `develop` `ed5b0fc` (27 oct 2026). Core sigue siendo **un solo servicio desplegable**: cada dominio es un límite interno, con su archivo de rutas (`src/routes/core/<dominio>.routes.js`) y su carpeta de casos de uso (`src/application/useCases/<dominio>/`), no un servicio por CRUD. El detalle (rutas, tablas, persistencia, verificación y hallazgos completos) está en `MANI-Node/docs/arquitectura/MODULOS_CORE.md`.
+
+| Dominio | Requisitos | Rutas principales (`/api/v1/core/…`) | Datos de Core que escribe |
+|---|---|---|---|
+| Identidad y registro | RF-03, RF-05, RF-08 | `/auth/*` | `usuario`, `aliado`, `cliente`, `documento_kyc`, `consentimiento_usuario` |
+| Tenants | RF-01 | `GET /tenants` (solo `PLATFORM_ADMIN`) | `tenant` (lectura) |
+| Perfiles | RF-11, RF-30 | `/profiles/me*` | `usuario`, `aliado_categoria` |
+| Disponibilidad | RF-29 | `/profiles/me/unavailability*` | `aliado_ausencia` |
+| Verificación KYC | RF-06 | `/aliados/verificacion`, `/aliados/:id/*` | `aliado`, `documento_kyc` |
+| Catálogo | RF-07, RF-10 | `/catalog*` (categorías y zonas) | `categoria_servicio`; reglas de categoría en Rules por HTTP |
+| Clientes y sitios | RF-08, RF-09 | `/clients/*`, `/sites/:id/*` | `cliente`, `sitio` |
+| Legal | RF-31 | `/legal/*` | `consentimiento_usuario` |
+| Solicitudes | RF-12, RF-32 | `POST /solicitudes`, `/solicitudes/me*`, `POST /solicitudes/:id/asignacion` (interna) | `solicitud`, `solicitud_foto` |
+| Integración con Dispatch | RF-12 (elegibilidad) | `/allies/eligible`, `/allies/me*`, `/solicitudes/:id/context` | ninguno: son lecturas para Dispatch |
+| Notificaciones | RF-20 (avisos) | `/profiles/me/inbox`, `/notifications` | `notificacion` |
+| Cotización | RF-15, RF-17 | `/solicitudes/:id/cotizaciones`, `/cotizaciones/:id/*` | `cotizacion`, `solicitud`, `evento_servicio` |
+| Ejecución del servicio | RF-18 | `/solicitudes/:id/{iniciar,finalizar,ejecucion,eventos*}` | `solicitud`, `evento_servicio`; evidencia en Storage |
+| Mensajería | RF-20, RF-21 | `/solicitudes/:id/mensajes` | mensajes del servicio |
+| Pagos (sandbox) | RF-24 (simulado, sin dinero real) | `/pagos*` | pagos del sandbox |
+
+**Límites que se cumplen** (prueba de regresión `tests/integration/routes/routeInventory.test.js`, CI y SonarQube en verde):
+
+- Core llama a Dispatch y a Rules solo por HTTP ([ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)); no lee tablas de Dispatch.
+- El tenant, el usuario y el rol salen del JWT verificado, no del cuerpo ni de cabeceras.
+- Los casos de uso no se importan entre sí: comparten repositorios inyectados desde `container.js`. No hay dependencias circulares.
+- La modularización no cambió ninguna ruta pública, ningún middleware de autenticación o rol ni ningún contrato OpenAPI: las 157 rutas de antes siguen registradas igual.
+
+**Pendientes de los dominios**, cada uno con su historia y su regresión:
+
+- Cinco repositorios `pg` de clientes, sitios y aliado todavía consultan sin `runInTenantContext` ([ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md)); su aislamiento depende del filtro `tenant_id` de cada consulta. Los repositorios de Supabase usan la *service-role key* y no pasan por RLS.
+- Tres accesos distintos a `cliente` y `sitio` (Supabase, `pg` y cliente empresa) que hay que unificar en un puerto por tabla.
+- `useCases/dispatch/` mezcla elegibilidad, contexto de solicitud y notificaciones; las notificaciones deben pasar a `useCases/notifications/`.
+- `container.js` arma todos los dominios en un solo constructor; el paso siguiente es una composición por dominio.
+- Falta confirmar con DevOps con qué rol se conecta `DATABASE_URL`: si no hereda `mani_core_svc`, RLS no filtra.
+
 ## 7.4 Límites entre servicios
 
 Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM-1233), contratos HTTP (SCRUM-1234) y mensajería (SCRUM-1235) partan de la misma base. No reasigna requisitos: hace explícito qué datos es dueño cada servicio y qué no hace. Aplica el principio 7 de §4.1: ningún servicio escribe en datos privados de otro dominio.

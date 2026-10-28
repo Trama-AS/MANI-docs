@@ -275,14 +275,12 @@ No almacena reglas fijas por tenant en código. Obtiene configuración desde per
 
 Responsable de:
 
-- RF-12: creación y coordinación operacional de solicitudes;
-- RF-14: aceptación/rechazo;
-- RNF-03: idempotencia;
-- RNF-05: exclusión concurrente;
-- control de estados de asignación;
+- RF-12: coordinación operacional del despacho de solicitudes que **crea Core** (§7.4, decisión del 17 oct 2026);
+- RF-14: elegibilidad, oferta a los aliados y decisión de aceptación/rechazo;
+- RNF-03: idempotencia de sus propias ofertas;
 - auditoría transaccional del despacho.
 
-La primera aceptación válida se confirma mediante actualización condicional atómica. Las aceptaciones posteriores obtienen `409 Conflict`.
+**Dispatch no escribe el estado de la solicitud.** Por la decisión 6A del 26 de octubre de 2026 (§7.4), cuando un aliado acepta, Dispatch entrega el resultado a Core con un comando idempotente y Core es quien persiste la asignación. La exclusión concurrente de RNF-05 sigue resolviéndose con una actualización condicional atómica en PostgreSQL (ADR-0016), pero la emite Core, no Dispatch: la primera aceptación válida gana y las posteriores obtienen `409 Conflict`.
 
 ## 7.3 Core Service — Node.js
 
@@ -311,14 +309,14 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 | Servicio | Es dueño de |
 |---|---|
 | Rules — Java | Reglas configurables por tenant, regla de ranking y tarifario de referencia (RF-02 en lo que es regla, RF-13, RF-22). |
-| Dispatch — .NET | Orquestación del despacho, broadcast, aceptaciones/rechazos, estados de asignación y auditoría transaccional del despacho (RF-14). No crea la solicitud. |
-| Core — Node.js | Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cobertura y disponibilidad, creación de la solicitud (RF-12), cotizaciones, eventos de ejecución, calificaciones, mensajería y reportes (RF-01, RF-03..RF-11, RF-12 consulta de elegibilidad, RF-15, RF-17..RF-21, RF-23). |
+| Dispatch — .NET | Orquestación del despacho, broadcast, elegibilidad, ofertas, la decisión de aceptación/rechazo y la auditoría transaccional del despacho (RF-14). No crea la solicitud ni escribe su estado (decisión 6A). |
+| Core — Node.js | Tenants, identidad, aliados y KYC, clientes y sitios, categorías, cobertura y disponibilidad, creación de la solicitud (RF-12), **el estado canónico del servicio desde la creación y después de la asignación** (decisión 6A), cotizaciones, eventos de ejecución, calificaciones, mensajería y reportes (RF-01, RF-03..RF-11, RF-12 consulta de elegibilidad, RF-15, RF-17..RF-21, RF-23). |
 
 ### Lo que cada servicio no hace
 
 - **Rules** no persiste solicitudes ni asignaciones, no envía notificaciones y no tiene reglas por tenant fijas en código: evalúa y responde.
-- **Dispatch** no decide la elegibilidad por categoría, zona o disponibilidad (la consulta a Core) ni calcula el orden del listado (lo consulta a Rules). No gestiona cotización, ejecución ni calificación.
-- **Core** no orquesta el despacho ni confirma asignaciones, y no evalúa reglas ni valida contra el tarifario (lo consulta a Rules).
+- **Dispatch** no decide la elegibilidad por categoría, zona o disponibilidad (la consulta a Core) ni calcula el orden del listado (lo consulta a Rules). No gestiona cotización, ejecución ni calificación. **No escribe `solicitud` ni ninguna tabla de estado del dominio de Core** (decisión 6A): entrega el resultado de la asignación por contrato.
+- **Core** no orquesta el despacho, no decide a quién se le ofrece una solicitud ni a quién se le asigna, y no evalúa reglas ni valida contra el tarifario (lo consulta a Rules). Sí **persiste** la asignación que Dispatch decide, porque es el dueño del estado (decisión 6A).
 - **Landing** (`MANI-Landing`, no es un servicio) no consulta datos ni Supabase, no llama al Gateway ni a ningún servicio y no participa del flujo transaccional. Su catálogo y sus tarifas base son contenido estático, y el rango del estimador es una referencia que no es una cotización ni se persiste. Su única relación con el resto es la redirección del navegador a `/login` del cliente web, con la categoría o el aliado elegidos como parámetros de consulta. Registro: [ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md); detalle: `MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`.
 
 ### Flujo de RF-12 a RF-16
@@ -327,7 +325,8 @@ Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM
 Cliente → Gateway → Core: crea la solicitud
 Dispatch → Core: aliados elegibles (categoría + zona + disponibilidad)
 Dispatch → Rules: orden del listado según la regla del tenant
-Dispatch: broadcast y aceptación atómica (409 a las posteriores)
+Dispatch: broadcast de la oferta y decisión de quién acepta
+Dispatch → Core: comando de asignación idempotente; Core persiste (409 a las posteriores)
 Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-16)
 ```
 
@@ -335,11 +334,30 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 
 **Quién crea la solicitud (RF-12): Core.** Decisión del 17 de octubre de 2026, acordada entre la Product Owner y la Scrum Master, y registrada en SCRUM-1232 y SCRUM-1234. Core crea y persiste la solicitud; Dispatch orquesta el reparto a partir de ella. El backlog ya era consistente con esto (SCRUM-1072 ubica la creación en Core Node separada de la orquestación, y SCRUM-1073 deja la orquestación en Dispatch .NET); lo desactualizado era §7.2, cuya corrección se ejecuta en DOC4-03 (SCRUM-1246).
 
+**Quién es dueño del estado del servicio después de la asignación: Core (decisión 6A).** Decisión de la Scrum Master del 26 de octubre de 2026, que cierra el pendiente P1. Core Node es el **único propietario y escritor** del estado canónico del servicio, desde la creación y también después de la asignación. Dispatch .NET conserva la elegibilidad, la oferta y la decisión de asignación, y comunica el resultado a Core mediante un contrato idempotente. Queda **prohibida la escritura directa por Dispatch** de las tablas de estado del dominio de Core.
+
+#### Contrato de asignación Dispatch → Core
+
+| Aspecto | Definición |
+|---|---|
+| Operación | `POST /api/v1/core/solicitudes/{id}/asignacion` |
+| Actor y tenant | Dispatch reenvía el JWT del aliado que aceptó. El aliado, el tenant y el rol salen de la sesión verificada, nunca del cuerpo, que va vacío. Un rol distinto de aliado se rechaza. |
+| Idempotencia | El mismo aliado puede repetir el comando sin efecto adicional: la respuesta devuelve `asignada: false` y el estado ya persistido. Se acepta `Idempotency-Key` para trazar el intento. |
+| Concurrencia | Core bloquea la fila de la solicitud (`FOR UPDATE`) y repite el predicado `estado = 'PENDIENTE' AND aliado_id IS NULL` en el `UPDATE`, que hace de versión de la fila (ADR-0016). El primero gana. |
+| `correlationId` | Se propaga desde el Gateway y se devuelve en la respuesta. Cada intento queda en un registro JSON con el resultado: `ASIGNADA`, `REINTENTO` o `RECHAZADA` (QS-12). |
+| Conflicto (409) | `MANI-SOL-409` si la solicitud ya tiene aliado; `MANI-SOL-409E` si su estado no admite asignación. |
+| Rechazo (403) | `MANI-SOL-403` rol no permitido, `MANI-SOL-403V` aliado sin verificar, `MANI-SOL-403O` sin oferta para esa solicitud, `MANI-SOL-403E` no atiende la categoría o la zona. |
+| No encontrada (404) | `MANI-SOL-404`, sin distinguir si la solicitud no existe o es de otro tenant. |
+| Dependencia no disponible (503) | Core responde 503 cuando falta la dependencia y **no sustituye el resultado por lógica local** (criterio T2). El acceso falla cerrado. |
+
+La implementación de este contrato corresponde a SCRUM-1403 (HU-M05-07), con SCRUM-1402 y SCRUM-1404; la frontera en base de datos la aplica la migración `0019_frontera_asignacion_6a.sql` de MANI-Node, que revoca `UPDATE` sobre `solicitud` al rol de Dispatch y retira la política que permitía la escritura directa. Esta sección **documenta** ese contrato: no lo implementa ni lo da por desplegado.
+
 ### Pendientes
+
+P1 se cerró con la decisión 6A del 26 de octubre de 2026; queda registrada arriba, en «Decidido».
 
 | ID | Qué falta definir | Responsable | Fecha límite | Impacto mientras siga abierto |
 |---|---|---|---|---|
-| P1 | Quién es dueño del estado de la solicitud después de la asignación (cotización → ejecución → cierre): Dispatch o Core. | Juan Sebastián con los equipos de Dispatch y Core | 20 oct 2026 | Bloquea el modelo de persistencia de la solicitud (SCRUM-1233). |
 | P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
 | P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |

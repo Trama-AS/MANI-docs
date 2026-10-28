@@ -46,7 +46,46 @@ Revisión del 24 de octubre de 2026. Las 88 funcionalidades de las hojas M-01 a 
 |---|---|---|
 | `21 Cierre de cobertura` | Las 18 funcionalidades que estaban sin historia, con la que las cubre y qué exige esa historia | 18 |
 | `22 Gestion del sprint` | `SM-01` facilitación del sprint y `PO-01` validación del producto y aceptación del incremento | 2 |
-| `23 Subtareas de QA` | Una subtarea por historia: Santiago revisa la evidencia y es quien la mueve a Done | 91 |
+| `24 Sprint 5 por modulo` | **El backlog del sprint.** Una historia por funcionalidad, con quién la ejecuta, quién la valida y su subtarea de QA | 88 |
+
+### Reparto del Sprint 5
+
+Por módulo completo, no por tarea: cada quien es dueño de sus módulos de punta a punta, y las dependencias que quedan son de ambiente, concentradas en el bloque TEC. Así entre desarrolladores no hay tareas que se bloqueen.
+
+| Persona | Rol | Módulos | Ejecuta | Valida y acepta |
+|---|---|---|---:|---:|
+| Nicolás León | Desarrollo | M-09, M-11 | 19 HU · 95 SP | 14 HU |
+| Juan Sebastián Álvarez | Desarrollo | M-08, M-10, M-12 | 17 HU · 85 SP | 14 HU |
+| José Nicolás Álvarez | Desarrollo | M-06, M-07, M-13 | 16 HU · 80 SP | 11 HU |
+| Daniel Ávila | No programa | M-01, M-02 | 14 HU · 58 SP | 20 HU |
+| Santiago Hernández | QA, no programa | M-05 | 8 HU · 32 SP | 10 HU |
+| Camila Beltrán | PO, no programa | M-03 | 4 HU · 16 SP | 6 HU |
+| Sara Albarracín | SM, no programa | M-04 | 4 HU · 16 SP | 7 HU |
+
+Quienes no programamos llevamos un módulo cada uno, de validación y verificación. Daniel se ofreció a llevar dos, M-01 y M-02.
+
+**Trece historias de esos cinco módulos exigen código.** Las ejecuta un desarrollador y el dueño del módulo las valida y acepta: son las únicas filas donde las dos columnas de persona no coinciden, y van resaltadas en la hoja.
+
+| Tipo de trabajo | HU | Qué significa |
+|---|---:|---|
+| Construcción desde 0 | 37 | No existe |
+| Validación de lo implementado | 14 | Figura hecho y nunca se probó contra lo pedido |
+| Corrección + validación | 14 | A medias o con defecto abierto |
+| Front contra mock | 14 | Notificaciones (M-09) y pagos (M-11): el front tiene que existir completo, sin integración real con el proveedor |
+| Terminar + validación | 3 | En curso |
+| Fuera de alcance | 4 | 2.º incremento de M-12 y la división del front |
+
+Entran sí o sí la visualización en mapa (`HU-M04-07`) y el rastreo del aliado en vivo (`HU-M07-04`).
+
+### Dos decisiones del 24 de octubre que hay que conocer
+
+**El rastreo en vivo entró al MVP y por eso existe `RF-37`.** Estaba excluido en `SRS.md` §1.2 y §7.1 registraba que SCRUM-871 no se relacionaba con ningún requisito. Sin un RF no tendría criterio de aceptación, así que ni el PO podría aceptarlo ni QA cerrarlo. Lo decidió la Scrum Master al priorizar el sprint, **sin sesión de refinamiento registrada**, y queda pendiente de confirmación del PO, que es quien decide el alcance (`GOBIERNO_DEL_EQUIPO.md` §2.3). El cálculo de proximidad sigue fuera: RF-37 no cambia la declaración de cobertura, que sigue siendo por zonas (RNF-09, REST-01). La ubicación continua es dato personal bajo la Ley 1581 de 2012, así que el requisito exige permiso expreso del aliado, ventana limitada a la ejecución y retención configurable por tenant.
+
+**`HU-M13-05`, dividir el Core por dominios, es prerrequisito del sprint.** Va los primeros días, junto a las tareas TEC de ambiente, y nadie construye sobre Core hasta que esté fusionada. El motivo está en la hoja `01 Indice modulos`: los 13 módulos listan Core entre sus servicios, así que sin dividirlo siete personas editan el mismo servicio Node y el reparto por módulo reparte la responsabilidad pero no los archivos. `SAD.md` §7.3 ya permite esta división interna y prohíbe lo contrario, un servicio por cada CRUD.
+
+Dividir el front (`HU-M13-04`) se queda fuera: el choque ahí es menor porque cada módulo tiende a su propia pantalla. Se asume el conflicto en `lib/features`.
+
+**Total del sprint: 107 ítems y 501 story points** — 84 historias por funcionalidad, 21 tareas técnicas y las 2 de gestión.
 
 De las 18, doce ya estaban cubiertas por un ítem del Sprint 5 pero sin trazar en la columna `Historia`. Seis necesitaron historia nueva:
 
@@ -87,3 +126,36 @@ Backlog V4 §3: la arquitectura anterior **no es un backend que haya que mover d
 Supabase, Auth, RLS y aislamiento multi-tenant · registro y aprobación de aliados · registro de cliente · categorías · creación de solicitud · exclusión concurrente · las PoC de despacho, identidad y Storage/KYC · pipelines, GHCR, secretos y promoción de ambientes · seeds multi-tenant · documentación y diagramas consolidados.
 
 Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa en Rules (Java), Dispatch (.NET) y Core Service (Node.js), y el cliente deja de invocarla ([ADR-0022](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md)).
+
+## Importar el Sprint 5 a Jira
+
+**Ya hecho: el CSV se retiró.** `IMPORTAR_JIRA_SPRINT5.csv` traía 215 filas para el importador
+externo de Jira (86 historias, 22 tareas y 107 subtareas de QA, 506 story points). El Sprint 5 ya
+está cargado en el tablero, así que el archivo cumplió su función y se borró para no dejar una
+fuente paralela al tablero, que es la que manda.
+
+**Por qué existió.** El conector de Atlassian no estaba instalado en `maniservices.atlassian.net`:
+la autenticación funcionaba, pero toda llamada a Jira y a Confluence respondía
+`403 The app is not installed on this instance`. Era una instalación del lado del sitio, no un
+problema de sesión, así que la carga se hizo con el CSV. El síntoma sigue apareciendo en algunos
+conectores, de modo que conviene no perder el dato.
+
+### Calendario
+
+| Hito | Fecha | Qué pasa |
+|---|---|---|
+| Inicio | lunes 26-oct-2026 | Arranca el sprint |
+| Prerrequisitos | martes 27-oct | `TEC-09`, `TEC-10`, `TEC-11`, `TEC-16` y `HU-M13-05`. Sin token real ES256, sin QA sembrada y sin el Core dividido, nada de lo demás vale |
+| Cierre de desarrollo | viernes 30-oct | Último día hábil para fusionar código |
+| Corte formal | domingo 1-nov | Los cuatro días antes del fin que pediste. Cae en domingo, así que el corte operativo es el viernes 30 |
+| Validación del PO y preparación de DevOps | 2-nov a 4-nov | `PO-01` recorre el producto y acepta o rechaza el incremento |
+| Fin de sprint y despliegue | jueves 5-nov | `DEPLOY-S5` a producción, solo si `PO-01` declaró aceptado |
+
+**Las fechas de inicio y fin del sprint se fijan en el tablero al crear el sprint**, no vienen en el CSV: el CSV solo trae la fecha de vencimiento de cada ítem y el nombre `Sprint 5`.
+
+### Al importar
+
+- El importador mapea la persona por **nombre mostrado**. Los nombres del CSV son Nicolás León, José Nicolás Álvarez, Juan Sebastián Álvarez, Daniel Ávila, Santiago Hernández, Camila Beltrán y Sara Albarracín, sin el rol entre paréntesis. Si en Jira figuran distinto, se mapean en el paso de usuarios.
+- Las subtareas se enlazan por la columna `Parent`, que repite el resumen exacto del padre. Importa el archivo completo de una vez: si separas padres y subtareas en dos cargas, el enlace se pierde.
+- La columna `Identificador interno` (`HU-M01-01`, `TEC-09`, `QA-HU-M01-01`) es la del libro de módulos y no un campo de Jira. Sirve para reconciliar después; si tu importador no la acepta, descártala.
+- **Ya existen issues en Jira para parte de estas funcionalidades** (SCRUM-846, 847, 850, 851, 852, 854, 856 y otras, según la columna `Clave Jira` de las hojas M-01 a M-13). Revísalas antes de importar para no duplicar: lo que ya existe se actualiza a mano, no se vuelve a crear.

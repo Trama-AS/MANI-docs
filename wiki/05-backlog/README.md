@@ -129,9 +129,16 @@ Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa 
 
 ## Importar el Sprint 5 a Jira
 
-[`IMPORTAR_JIRA_SPRINT5.csv`](IMPORTAR_JIRA_SPRINT5.csv) — 215 filas listas para el importador externo de Jira: 86 historias, 22 tareas y 107 subtareas de QA, con asignación, puntos, prioridad, épica, etiquetas y fecha de vencimiento. 506 story points.
+**Ya hecho: el CSV se retiró.** `IMPORTAR_JIRA_SPRINT5.csv` traía 215 filas para el importador
+externo de Jira (86 historias, 22 tareas y 107 subtareas de QA, 506 story points). El Sprint 5 ya
+está cargado en el tablero, así que el archivo cumplió su función y se borró para no dejar una
+fuente paralela al tablero, que es la que manda.
 
-**Se generó como CSV porque el conector de Atlassian no está instalado en `maniservices.atlassian.net`.** La autenticación funciona, pero toda llamada a Jira y a Confluence responde `403 The app is not installed on this instance`. Es una instalación del lado del sitio, no un problema de sesión: hasta que un administrador habilite la app, la carga se hace con este CSV.
+**Por qué existió.** El conector de Atlassian no estaba instalado en `maniservices.atlassian.net`:
+la autenticación funcionaba, pero toda llamada a Jira y a Confluence respondía
+`403 The app is not installed on this instance`. Era una instalación del lado del sitio, no un
+problema de sesión, así que la carga se hizo con el CSV. El síntoma sigue apareciendo en algunos
+conectores, de modo que conviene no perder el dato.
 
 ### Calendario
 

@@ -36,7 +36,11 @@ Del MVP **falta el ciclo del servicio después de la asignación** (cotización,
 
 ### 0.2 Objetivo del Sprint 5
 
-> Cerrar de punta a punta el ciclo del servicio del MVP —de la solicitud aceptada a la cotización, la ejecución, la calificación y el cierre—, con tarifario de referencia y notificaciones, cada historia verificada por QA con evidencia y sin deuda técnica abierta.
+> Terminar el desarrollo del producto comprometido y demostrar, por video desde el front, en QA y a través del Gateway con token real ES256, que cada funcionalidad cumple lo pedido. Es el último sprint de desarrollo: lo que no entra no se construye.
+
+**Redacción unificada el 25 de octubre de 2026.** Este objetivo decía antes «cerrar de punta a punta el ciclo del servicio del MVP… cada historia verificada por QA con evidencia y sin deuda técnica abierta», y no mencionaba el video. El libro de módulos decía «validación por video y cierre funcional» y el sprint de Jira una tercera cosa. Las tres fuentes decían objetivos distintos del mismo sprint, lo que reportó José Nicolás Álvarez. Ahora dicen esto mismo, literal: la hoja `12 Backlog S5 resumen` del libro, el objetivo del sprint 71 en Jira y esta sección.
+
+Lo que no cambió: el alcance sigue siendo cerrar el ciclo del servicio del MVP —solicitud, cotización, ejecución, calificación y cierre— con tarifario y notificaciones. Lo que se precisó es **cómo se acredita**: por video desde el front, no por estado en el tablero.
 
 ### 0.3 Prioridades del Sprint 5
 
@@ -1558,7 +1562,24 @@ octubre**, así que el bloqueo de raíz está levantado; lo que queda abajo es l
 | Abierto | R-08 / BUG-QA-08: la promoción a `release` no dejó QA operativo; compose y despliegue sin versionar | Hace que cada corrida dependa de ajustes manuales | Reporte de QA §9 |
 | Abierto | R-11 / BUG-DISP-01: los errores de Dispatch no traen `code` (criterio T5, PE5) | Rompe el formato de error único de §6.2 | Reporte de QA §9 |
 
-### 9.5 Pendientes consolidados
+### 9.5 Incremento no entregado: lo que no se construye y por qué
+
+Registro exigido por [`GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §10 para un incremento que no se entrega: causa, impacto, estado y decisión de replanificación. Se escribe aquí porque **el Sprint 5 es el último de desarrollo**: lo que no entra en él no se construye, y los issues correspondientes se borraron de Jira el 24 de octubre de 2026 por decisión de la Scrum Master, para no dejar trabajo muerto en el tablero.
+
+| Issue borrado | Historia | Requisito | Causa | Impacto | Decisión |
+|---|---|---|---|---|---|
+| `SCRUM-864` | US-04.1.5 Priorizar por comisión ofrecida | RF-13 | **Superada, no descartada.** §10.4 decidió que el ranking no es «priorizar por comisión» sino configurable por tenant, donde la comisión puede ser uno de varios criterios | Ninguno: la capacidad se construye en `HU-M05-05`, dentro del sprint | Se retira el issue; el requisito queda cubierto |
+| `SCRUM-897` | US-08.1.3 Resolución de disputa financiera | RF-26 | Segundo incremento. Depende del modelo de pagos, que en el Sprint 5 solo entra como mock | **RF-26 queda cubierto a medias:** se construyen el registro y la gestión de quejas (`HU-M12-01` y `HU-M12-02`), no la resolución de disputa financiera | No se entrega. Si el producto continúa, se recrea con el alcance de pagos resuelto |
+| `SCRUM-898` | US-08.2.1 Publicar contenido en redes conectadas | RF-27 | Segundo incremento. Comercialización, fuera del MVP de `SRS.md` §1.2 | **RF-27 queda sin entregar.** La consola de comercialización no se construye | No se entrega |
+| `SCRUM-899` | US-08.2.2 Registrar campañas y ver su desempeño | RF-27 | Igual que el anterior | Igual que el anterior | No se entrega |
+
+**Lo que esto significa para la trazabilidad.** RF-27 pierde sus dos únicas historias y queda sin cobertura; RF-26 queda cubierto solo en la parte de quejas. Ambos siguen en el SRS como requisitos del segundo incremento: no se retiran del documento, porque el requisito existe aunque no se construya. La diferencia entre «requisito sin construir» y «requisito que ya no existe» es la que permite sustentar la decisión.
+
+**Por qué se borraron en vez de cerrarse.** El workflow del proyecto SCRUM solo tiene `To Do`, `In Progress`, `In Review`, `Done` y `blocked`: **no existe un estado `Won't Do`**. Un issue que no se va a construir solo podía quedarse en `To Do` indefinidamente, apareciendo como trabajo pendiente en todos los filtros del tablero. El borrado en Jira es permanente, y por eso el registro vive en esta tabla.
+
+---
+
+### 9.6 Pendientes consolidados
 
 Los PE vienen de §6.5, los PA de §7.8 y las decisiones D de §8.5. Se listan juntos porque varios se
 bloquean entre sí.

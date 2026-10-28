@@ -44,19 +44,21 @@ Lo que no cambió: el alcance sigue siendo cerrar el ciclo del servicio del MVP 
 
 ### 0.3 Prioridades del Sprint 5
 
+> **Alineación con el tablero, 2026-10-26** ([SCRUM-1469](https://maniservices.atlassian.net/browse/SCRUM-1469), SM-01). Esta sección se escribió el 2026-10-20, antes del Planning. El Planning del 25-oct comprometió en Jira más de lo que aquí figuraba y asignó responsables. Las tablas de abajo se ajustaron a lo que está en el sprint en Jira: responsables de las P0, la [P1 que no entró](#p1-fuera-del-tablero) y la tabla «Entran al Sprint 5 por el Planning», que reemplaza a la antigua «No entran en el Sprint 5». Los **estados** siguen siendo los del 2026-10-20; el estado vigente es el de Jira. El detalle de las historias de validación, construcción y técnicas (VAL, CONS, TEC) está en el libro de módulos (`MANI_MODULOS_SERVICIOS_Y_BACKLOG_S5.xlsx`, hojas 13 a 15).
+
 **P0 — Cierre del flujo principal.** Sin ellas no existe el producto prometido. Se comprometen completas.
 
 | Clave | Historia | Estado | RF | Repo principal | Otros repos | Responsable |
 |---|---|---|---|---|---|---|
-| [SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) + [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068) | Catálogo jerárquico de zonas y zona de cobertura | Por hacer / Bloqueada | RF-07 | Core | Front, GW | Nicolás León |
-| [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885) | Cargar tabla de tarifas por categoría | Por hacer | RF-22 | Rules | Core, Front, GW | Por asignar |
-| [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | Cotización con mano de obra y materiales | Por hacer | RF-15 | Core | Rules, Front, GW | Por asignar |
-| [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | Cliente acepta, rechaza o ajusta la cotización | Por hacer | RF-17 | Core | Front, GW | Por asignar |
-| [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868) | Marcar inicio y fin de la ejecución | Por hacer | RF-18 | Core | Front, GW | Por asignar |
-| [SCRUM-869](https://maniservices.atlassian.net/browse/SCRUM-869) | Registrar eventos durante la ejecución | Por hacer | RF-18 | Core | Front, GW | Por asignar |
+| [SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067) + [SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068) | Catálogo jerárquico de zonas y zona de cobertura | Por hacer / Bloqueada | RF-07 | Core | Front, GW | José Nicolás Álvarez ([SCRUM-1067](https://maniservices.atlassian.net/browse/SCRUM-1067)) · Nicolás León ([SCRUM-1068](https://maniservices.atlassian.net/browse/SCRUM-1068)) |
+| [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885) | Cargar tabla de tarifas por categoría | Por hacer | RF-22 | Rules | Core, Front, GW | Juan Sebastián Álvarez |
+| [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | Cotización con mano de obra y materiales | Por hacer | RF-15 | Core | Rules, Front, GW | José Nicolás Álvarez |
+| [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | Cliente acepta, rechaza o ajusta la cotización | Por hacer | RF-17 | Core | Front, GW | José Nicolás Álvarez |
+| [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868) | Marcar inicio y fin de la ejecución | Por hacer | RF-18 | Core | Front, GW | José Nicolás Álvarez |
+| [SCRUM-869](https://maniservices.atlassian.net/browse/SCRUM-869) | Registrar eventos durante la ejecución | Por hacer | RF-18 | Core | Front, GW | José Nicolás Álvarez |
 | [SCRUM-874](https://maniservices.atlassian.net/browse/SCRUM-874) | Cliente califica al aliado | Bloqueada | RF-19 | Core | Front, GW | Juan Sebastián Álvarez |
-| [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) | Aliado califica al cliente | Bloqueada | RF-19 | Core | Front, GW | José Nicolás Álvarez |
-| [SCRUM-884](https://maniservices.atlassian.net/browse/SCRUM-884) | Notificaciones push del ciclo del servicio | Por hacer | RF-21 | Core | Front, GW | Por asignar |
+| [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) | Aliado califica al cliente | Bloqueada | RF-19 | Core | Front, GW | Juan Sebastián Álvarez |
+| [SCRUM-884](https://maniservices.atlassian.net/browse/SCRUM-884) | Notificaciones push del ciclo del servicio | Por hacer | RF-21 | Core | Front, GW | Nicolás León |
 
 **P1 — Completan el MVP prometido.** Entran después de las P0. Si alguna no termina, se declara en la Review con su razón; no se cierra a medias.
 
@@ -71,16 +73,23 @@ Lo que no cambió: el alcance sigue siendo cerrar el ciclo del servicio del MVP 
 | [SCRUM-864](https://maniservices.atlassian.net/browse/SCRUM-864) | Priorizar por comisión ofrecida | Por hacer | RF-13 | Rules | Disp, GW |
 | Nueva | Recuperar contraseña | Sin historia | RF-04 | GW (Supabase Auth) | Front |
 
-**No entran en el Sprint 5.**
+<a id="p1-fuera-del-tablero"></a>Al 2026-10-26, [SCRUM-864](https://maniservices.atlassian.net/browse/SCRUM-864) **no está en el Sprint 5** en Jira; las demás P1 sí. En el libro, la priorización por comisión es CONS-19 (depende de CONS-18). Pendiente que la SM confirme si entra o se declara fuera en la Review.
 
-| Grupo | Historias | Razón |
-|---|---|---|
-| Backlog secundario (PO-02, §2.1) | [SCRUM-872](https://maniservices.atlassian.net/browse/SCRUM-872), [SCRUM-873](https://maniservices.atlassian.net/browse/SCRUM-873), [SCRUM-876](https://maniservices.atlassian.net/browse/SCRUM-876), [SCRUM-877](https://maniservices.atlassian.net/browse/SCRUM-877), [SCRUM-878](https://maniservices.atlassian.net/browse/SCRUM-878), [SCRUM-879](https://maniservices.atlassian.net/browse/SCRUM-879), [SCRUM-880](https://maniservices.atlassian.net/browse/SCRUM-880) | Siguen fuera del compromiso del MVP. El SRS V5 les dio requisito (RF-32 a RF-36, prioridad Media) para que queden trazables; su implementación va después del MVP. [SCRUM-878](https://maniservices.atlassian.net/browse/SCRUM-878) sigue a [SCRUM-877](https://maniservices.atlassian.net/browse/SCRUM-877). |
-| Incremento 2 | [SCRUM-871](https://maniservices.atlassian.net/browse/SCRUM-871) y [SCRUM-888](https://maniservices.atlassian.net/browse/SCRUM-888) a [SCRUM-901](https://maniservices.atlassian.net/browse/SCRUM-901) | [SCRUM-871](https://maniservices.atlassian.net/browse/SCRUM-871) (rastreo en vivo) se asignó al Incremento 2 el 17-oct (decisión SM/PO); pagos, quejas, comercialización y métricas ya estaban ahí (§2.1). |
-| Depende de quejas | [SCRUM-883](https://maniservices.atlassian.net/browse/SCRUM-883) | Consultar la conversación para atender una queja requiere quejas (RF-26), que son del Incremento 2. |
-| Sin historia | RF-01 Gestión de tenants | El alta de tenants existe desde la configuración inicial; la administración de tenants ([SCRUM-901](https://maniservices.atlassian.net/browse/SCRUM-901)) es del Incremento 2. |
+**Entran al Sprint 5 por el Planning del 25-oct (antes fuera).** Hasta el 2026-10-20 esta tabla se llamaba «No entran en el Sprint 5». El Planning metió al sprint estas historias, con responsable en Jira; se conservan aquí la clasificación y la razón original para que la decisión quede trazable.
 
-**Carga.** Las P0 nuevas suman 47 SP más la migración de zonas, y las P1, 42 SP. La asignación se decide en el Planning; en el Sprint 4, Nicolás León tuvo 12 de las 17 historias, así que conviene repartir las nuevas.
+| Grupo (clasificación del 20-oct) | Historias en el Sprint 5 | Responsable en Jira | Observación |
+|---|---|---|---|
+| Backlog secundario (PO-02, §2.1) | [SCRUM-872](https://maniservices.atlassian.net/browse/SCRUM-872), [SCRUM-873](https://maniservices.atlassian.net/browse/SCRUM-873) | José Nicolás Álvarez | RF-34 y RF-35, prioridad Media en el SRS. |
+| Backlog secundario (PO-02, §2.1) | [SCRUM-876](https://maniservices.atlassian.net/browse/SCRUM-876), [SCRUM-878](https://maniservices.atlassian.net/browse/SCRUM-878), [SCRUM-879](https://maniservices.atlassian.net/browse/SCRUM-879), [SCRUM-880](https://maniservices.atlassian.net/browse/SCRUM-880) | Juan Sebastián Álvarez | [SCRUM-878](https://maniservices.atlassian.net/browse/SCRUM-878) sigue a [SCRUM-877](https://maniservices.atlassian.net/browse/SCRUM-877). |
+| Backlog secundario (PO-02, §2.1) | [SCRUM-877](https://maniservices.atlassian.net/browse/SCRUM-877) | Santiago | — |
+| Incremento 2 | [SCRUM-871](https://maniservices.atlassian.net/browse/SCRUM-871) | José Nicolás Álvarez | **Alcance decidido por la SM el 26-oct (opción B):** el cliente consulta el estado vigente de su servicio y la zona que declaró al publicarlo, sin GPS en vivo, trayectoria ni ubicación del aliado (`SRS.md` §1.2, REST-01). No se cita RF-37, que no existe (el SRS llega hasta RF-36). |
+| Incremento 2 | [SCRUM-888](https://maniservices.atlassian.net/browse/SCRUM-888) a [SCRUM-894](https://maniservices.atlassian.net/browse/SCRUM-894) | Nicolás León | Pagos y liquidación. En el libro, el mock de la pasarela es HU-M11-01. |
+| Incremento 2 | [SCRUM-895](https://maniservices.atlassian.net/browse/SCRUM-895), [SCRUM-896](https://maniservices.atlassian.net/browse/SCRUM-896), [SCRUM-900](https://maniservices.atlassian.net/browse/SCRUM-900), [SCRUM-901](https://maniservices.atlassian.net/browse/SCRUM-901) | Juan Sebastián Álvarez | Quejas, métricas y estado de tenants. |
+| Depende de quejas | [SCRUM-883](https://maniservices.atlassian.net/browse/SCRUM-883) | Nicolás León | Su dependencia (quejas, [SCRUM-895](https://maniservices.atlassian.net/browse/SCRUM-895) y [SCRUM-896](https://maniservices.atlassian.net/browse/SCRUM-896)) también entró al sprint. |
+
+Siguen fuera del Sprint 5: [SCRUM-897](https://maniservices.atlassian.net/browse/SCRUM-897), [SCRUM-898](https://maniservices.atlassian.net/browse/SCRUM-898) y [SCRUM-899](https://maniservices.atlassian.net/browse/SCRUM-899). RF-01 (alta de tenants) tiene ahora historia en el libro (CONS-46).
+
+**Carga.** Al 2026-10-20, las P0 nuevas sumaban 47 SP más la migración de zonas, y las P1, 42 SP; la carga comprometida en el Planning es la de Jira. La asignación se decide en el Planning; en el Sprint 4, Nicolás León tuvo 12 de las 17 historias, así que conviene repartir las nuevas.
 
 ### 0.4 Dependencias
 
@@ -91,7 +100,7 @@ Lo que no cambió: el alcance sigue siendo cerrar el ciclo del servicio del MVP 
 | [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | No hay qué aceptar sin cotización. |
 | [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868), [SCRUM-869](https://maniservices.atlassian.net/browse/SCRUM-869) | [SCRUM-867](https://maniservices.atlassian.net/browse/SCRUM-867) | La ejecución empieza con la cotización aceptada. |
 | [SCRUM-874](https://maniservices.atlassian.net/browse/SCRUM-874), [SCRUM-875](https://maniservices.atlassian.net/browse/SCRUM-875) | [SCRUM-868](https://maniservices.atlassian.net/browse/SCRUM-868) | Se califica al terminar la ejecución; el servicio no cierra hasta que ambas partes califiquen (RF-19). |
-| [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866), [SCRUM-886](https://maniservices.atlassian.net/browse/SCRUM-886) | [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885), [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865) | Se compara la cotización contra el tarifario. |
+| [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866), [SCRUM-886](https://maniservices.atlassian.net/browse/SCRUM-886) | [SCRUM-885](https://maniservices.atlassian.net/browse/SCRUM-885), [SCRUM-865](https://maniservices.atlassian.net/browse/SCRUM-865), [SCRUM-1462](https://maniservices.atlassian.net/browse/SCRUM-1462) | Se compara la cotización contra el tarifario. [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866) también depende de [SCRUM-1462](https://maniservices.atlassian.net/browse/SCRUM-1462), que implementa el motor real de Rules; la 866 solo consume sus resultados para mostrar la alerta (SM, 26-oct). No depende de [SCRUM-1240](https://maniservices.atlassian.net/browse/SCRUM-1240): sigue en el Sprint 5 con el alcance de contratos y estándares transversales de integración con proveedores, mientras [SCRUM-1428](https://maniservices.atlassian.net/browse/SCRUM-1428) implementa el mock de notificaciones y [SCRUM-1432](https://maniservices.atlassian.net/browse/SCRUM-1432) el de pagos. Tampoco depende de crear el repositorio de Rules: MANI-Java existe y está en `main` desde el 21-oct con reglas de categoría reales ([SCRUM-1070](https://maniservices.atlassian.net/browse/SCRUM-1070)), y el Gateway enruta `/api/v1/rules/` en `main` y `develop`. Lo que falta es el tarifario: `/evaluate-rate` y `/rank-allies` responden datos simulados (`RulesController.java`). D-5 es otro hueco: Dispatch no consulta a Rules para ordenar el listado. |
 | [SCRUM-887](https://maniservices.atlassian.net/browse/SCRUM-887) | [SCRUM-866](https://maniservices.atlassian.net/browse/SCRUM-866) | El reporte agrupa las cotizaciones fuera de rango. |
 | [SCRUM-882](https://maniservices.atlassian.net/browse/SCRUM-882) | [SCRUM-881](https://maniservices.atlassian.net/browse/SCRUM-881) | Notifica mensajes nuevos. |
 | [SCRUM-884](https://maniservices.atlassian.net/browse/SCRUM-884), [SCRUM-882](https://maniservices.atlassian.net/browse/SCRUM-882) | ADR-0030 | Las notificaciones push las emite Core; en QA son simuladas. |

@@ -30,6 +30,7 @@ Las páginas de arriba ordenan y navegan; esto es la fuente.
 | [`TRAZABILIDAD_INTEGRACION.md`](TRAZABILIDAD_INTEGRACION.md) | Trazabilidad de la integración entre servicios |
 | [`REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](REPORTE_CONFORMIDAD_CORE_DISPATCH.md) | Conformidad técnica de Core y Dispatch con la arquitectura vigente |
 | [`MATRIZ_DECISION_6A.md`](MATRIZ_DECISION_6A.md) | Decisión 6A (propiedad del estado del servicio): dónde quedó escrita, su contrato y la historia responsable de cada parte |
+| [`CUMPLIMIENTO_ADR0027_FLUTTER.md`](CUMPLIMIENTO_ADR0027_FLUTTER.md) | Accesos directos a Supabase que quedan en Flutter, historia responsable de cada uno y búsqueda que acredita ADR-0027 |
 | [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas |
 | [`adr/`](adr/) | Decisiones arquitectónicas. Una vigente está `Aceptado`; una sustituida, `Superseded` |
 | [`diagrams/`](diagrams/) | Fuentes y PNG de los diagramas C4, de despliegue, de datos y de flujos |

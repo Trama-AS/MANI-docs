@@ -75,11 +75,14 @@ Se eliminó de raíz el bloque permisivo `jwt.decode` en `MANI-Node/src/routes/a
 ### 4. Corrección de Enrutamiento en NGINX Gateway
 En `MANI-APIGateway/nginx.conf`, se eliminó la barra inclinada final (`/`) en las directivas `proxy_pass http://rules_service;` y `proxy_pass http://dispatch_service;`. Esto previene que NGINX elimine el prefijo canónico `/api/v1/rules/` o `/api/v1/dispatch/`, permitiendo que los controladores de Spring Boot (`@PostMapping("/api/v1/rules/evaluate-rate")`) y ASP.NET Core (`[Route("api/v1/dispatch")]`) reciban sus rutas completas intactas.
 
-### 5. Segregación Criptográfica de Secretos por Ambiente
-Los secretos JWT están físicamente desacoplados por máquina virtual y ambiente:
-- **DEV (`10.43.98.232`):** `mani-jwt-secret-dev-sprint4-auth-validation-key` (ubicado en `/opt/mani/.env.dev`)
-- **QA (`10.43.100.141`):** `mani-jwt-secret-qa-sprint4-auth-validation-key` (ubicado en `/opt/mani/.env.qa`)
-- **PROD (`10.43.98.203`):** Secreto de producción rotativo configurado en `/opt/mani/.env.prod`.
+### 5. Segregación Criptográfica de Secretos por Ambiente y Retiro de HS256
+Los secretos JWT están desacoplados por máquina virtual y ambiente sin valores literales expuestos en la documentación ni en el repositorio:
+- **DEV (`10.43.98.232`):** Inyectado vía variable de entorno `SUPABASE_JWT_SECRET` en `/opt/mani/.env.dev` con permisos `chmod 600`.
+- **QA (`10.43.100.141`):** Inyectado vía variable de entorno `SUPABASE_JWT_SECRET` en `/opt/mani/.env.qa` con permisos `chmod 600`, apuntando al JWKS del proyecto Supabase de QA (`hpsxdotaizzclkeufzct`).
+- **PROD (`10.43.98.203`):** Secreto de producción rotativo configurado en `/opt/mani/.env.prod`, administrado de forma aislada.
+
+> **Política de Retiro de HS256 (TEC-10 / SCRUM-1457):**  
+> La compatibilidad transitoria con tokens firmados simétricamente con `HS256` tiene como fecha límite oficial de retiro el **2026-11-15 (Cierre del Sprint 5)**. A partir de esa fecha, todos los clientes y servicios deberán autenticarse exclusivamente mediante tokens asimétricos `ES256` validados contra el JWKS del respectivo entorno.
 
 ---
 

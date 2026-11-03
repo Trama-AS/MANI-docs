@@ -154,6 +154,7 @@ Estado medido por [SCRUM-1266](../07-calidad/REPORTE_QA_SPRINT4.md#7-monitoreo-d
 | R-03 | [SCRUM-1360](https://maniservices.atlassian.net/browse/SCRUM-1360) | La verificación KYC respondía 500 por `documento_kyc.created_at` | Corregido y verificado | MANI-Node#49; 1066-01 y 1066-02 en 200 |
 | R-10 | [SCRUM-1362](https://maniservices.atlassian.net/browse/SCRUM-1362) | `validate-token` solo aceptaba HS256 y Supabase emite ES256 | Corregido y verificado | MANI-Node#52 y MANI-.NET#13; login real con 200 y tokens falsificados con 401. ADR-0031 en MANI-docs#59, abierto |
 | R-04 | [SCRUM-1361](https://maniservices.atlassian.net/browse/SCRUM-1361) | Flutter de QA construido con `.env.example` | Mitigado en QA; corrección del repositorio pendiente | Montaje manual de `flutter.env.qa`; FW-02 y FW-03 aprueban |
+| R-04 (TEC-14) | TEC-14 | Observabilidad mínima de autenticación (/metrics y alertas de 401 / claims incompletos) | Corregido y verificado | MANI-Node y MANI-APIGateway; /metrics expuesto y reglas auth-alerts.yml |
 | R-06, R-07, R-09 | Propuestos | RLS no ejercido en QA | Abiertos | Reverificados sin cambios el 21 de octubre |
 | R-08 | Propuesto | Compose y despliegue de QA sin versionar | Abierto | Se le sumó el montaje de R-04 |
 | R-11 | Propuesto | Las respuestas de error de Dispatch no tienen `code` (criterio T5) | Abierto | 862-02 y 1074-04 sin cambio |

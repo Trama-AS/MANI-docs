@@ -95,5 +95,5 @@ SCRUM-1428 del proveedor push simulado.
 
 ## Pendiente para aprobar
 
-Sesión de Mesa de Arquitectura según ADR-0003 §2 y `GOBIERNO_DEL_EQUIPO.md` §5. Hasta entonces este ADR queda en
+Sesión de Mesa de Arquitectura según ADR-0003, apartado «Decisión» y `GOBIERNO_DEL_EQUIPO.md` §5. Hasta entonces este ADR queda en
 `Propuesto`.

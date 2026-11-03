@@ -58,8 +58,8 @@ Tres cosas que aparecieron al preparar este expediente y que conviene resolver e
    distintos cuando aplique», y ese ADR no declara ninguno de los dos. ADR-0030 declara autor
    (Sara Albarracín) pero no revisor. Para una decisión estructural, conviene que el revisor sea
    alguien distinto de quien la ratificó.
-2. **La cita «ADR-0003 §2» no existe.** Las notas de ratificación de ADR-0016, ADR-0022 y ADR-0030
-   dicen que la sesión de Mesa la exige «ADR-0003 §2», pero ADR-0003 no tiene secciones numeradas.
+2. **La cita «ADR-0003, apartado «Decisión»» no existe.** Las notas de ratificación de ADR-0016, ADR-0022 y ADR-0030
+   dicen que la sesión de Mesa la exige «ADR-0003, apartado «Decisión»», pero ADR-0003 no tiene secciones numeradas.
    El requisito sí está en su decisión («las decisiones técnicas costosas de revertir se discuten en
    la Mesa de Arquitectura»); lo que falta es citarlo bien.
 3. **El reporte de conformidad quedó desactualizado.** Sus hallazgos P-1 y P-2 describen ADR-0030 y

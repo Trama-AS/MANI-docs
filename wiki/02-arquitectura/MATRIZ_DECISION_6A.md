@@ -57,5 +57,5 @@ repositorio donde se verifica.
 | Qué | Por qué no se cierra aquí | A quién corresponde |
 |---|---|---|
 | Ubicación física de la tabla `solicitud` (hoy bajo `despacho`) | Mover el esquema afecta DDL ya aplicado | Dueño de la serie de migraciones (ADR-0030 §1) |
-| Ratificación en Mesa de ADR-0022 y ADR-0030 | Se ratificaron sin sesión de Mesa registrada, que ADR-0003 §2 exige | Mesa de Arquitectura, vía TEC-12 (SCRUM-1459) |
+| Ratificación en Mesa de ADR-0022 y ADR-0030 | Se ratificaron sin sesión de Mesa registrada, que el apartado «Decisión» de ADR-0003 exige | Mesa de Arquitectura, vía TEC-12 (SCRUM-1459) |
 | Evidencia de QA de la frontera en un ambiente desplegado | Esta tarea es documental; lo verificado hasta ahora es código y migración | QA, con la subtarea de TEC-01 |

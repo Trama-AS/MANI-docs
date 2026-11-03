@@ -74,7 +74,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 
 ### Los diez ADR que estaban en `Propuesto` pasaron a `Aceptado`
 
-Fueron ADR-0013, 0015, 0016, 0017, 0022, 0025, 0028, 0029, 0030 y 0032. La ratificación la decidió la Scrum Master (Sara Albarracín) en la consolidación documental, **sin sesión de Mesa de Arquitectura registrada**, que es lo que ADR-0003 §2 exige para una decisión estructural. Cada ADR lo declara en su cabecera, en el campo `Ratificación`, para que la Mesa pueda confirmarlo o revertirlo.
+Fueron ADR-0013, 0015, 0016, 0017, 0022, 0025, 0028, 0029, 0030 y 0032. La ratificación la decidió la Scrum Master (Sara Albarracín) en la consolidación documental, **sin sesión de Mesa de Arquitectura registrada**, que es lo que el apartado «Decisión» de ADR-0003 exige para una decisión estructural. Cada ADR lo declara en su cabecera, en el campo `Ratificación`, para que la Mesa pueda confirmarlo o revertirlo.
 
 Esto importa porque varios ya se usaban como si fueran vinculantes: ADR-0030 es la fuente de los criterios transversales T1, T2 y T3 del [backlog §6.2](../05-backlog/BACKLOG_MANI.md#62-criterios-transversales), y ADR-0022 gobierna la migración completa de la lógica de negocio.
 

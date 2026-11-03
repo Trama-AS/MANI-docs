@@ -61,7 +61,6 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) | Propiedad del esquema y frontera de datos entre servicios | RNF-01 |
 | [ADR-0031](adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | Configuración, validación perimetral y propagación de JWT por ambiente — *enmendado el 2026-10-21 para aceptar ES256 verificado con el JWKS de Supabase* | RNF-01 |
 | [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) | Identidad de servicio en base de datos | RNF-01 |
-| [ADR-0033](adr/ADR-0033-productor-del-evento-solicitud-creada.md) | Productor del evento `SolicitudCreada`: Dispatch, no Core — `Propuesto`; reemplazaría [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 en esa fila si la Mesa lo aprueba | RF-12 |
 | [ADR-0034](adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones — `Propuesto` | RF-20, RF-24 |
 
 ## Índice — descartado
@@ -95,12 +94,13 @@ Los retiros cumplen la regla 8: cada decisión vive íntegra en el ADR que la ab
 
 ## Numeración
 
-Los números **no son contiguos y no se reutilizan**. Tres huecos:
+Los números **no son contiguos y no se reutilizan**. Cuatro huecos:
 
 | Hueco | Por qué |
 |---|---|
 | `0007`, `0009`, `0010`, `0020`, `0021`, `0023` | Retirados el 2026-10-23, ver arriba |
 | `0026` | Nunca se emitió |
+| `0033` | Retirado el 2026-11-02 sin llegar a Mesa. Proponía a Dispatch como productor de `SolicitudCreada`, sobre la premisa de que Dispatch persiste la solicitud. La decisión del 17-oct-2026 (Core crea la solicitud, SAD §7.2) y la decisión 6A del 26-oct (Core es el único escritor de su estado) dejaron esa premisa sin base, y el propio documento lo declaraba en su cierre. La fila de `SolicitudCreada` de ADR-0029 §1 —Core como productor— sigue vigente y nunca fue reemplazada. El texto queda en el histórico de git. |
 | — | El siguiente ADR que se emita es `ADR-0034` |
 
 Dos avisos para no equivocarse al leer:

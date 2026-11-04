@@ -851,6 +851,32 @@ Esta sección operacionaliza la priorización definida en la sección 7 mediante
 
 Los escenarios anteriores complementan los umbrales específicos definidos en las subsecciones 7.2 a 7.10. Cuando exista diferencia entre un escenario de esta tabla y un criterio más restrictivo definido para una subcaracterística en la sección 7, **prevalece el criterio más restrictivo**.
 
+## 8.1 Desglose de QAS-01 — los seis casos cross-tenant
+
+Los seis casos que QAS-01 exige, en la forma acordada en CFG-23a.3 (SCRUM-1197). Datos: tenants T1 y T2 del seed de QA (`seed_qa_multitenant.sql`), con un usuario por rol en cada uno (CFG-23c-1).
+
+**Cada caso tiene dos verificaciones.** La del servicio, a través del Gateway, es la que exige QAS-01. La del motor exige que, con el rol de servicio y el contexto de T1, el recurso de T2 no aparezca **aunque la consulta no filtre por tenant**; esa segunda es el criterio de cierre de SCRUM-1334 y la única que demuestra que RLS opera. Mientras los servicios conecten con `BYPASSRLS` ([`ModeloDatos.md`](ModeloDatos.md) §6.4), la verificación del motor solo pasa después del paso 5 del despliegue de §6.5.
+
+| # | Escenario | Respuesta esperada del servicio (vía Gateway) | Resultado esperado en el motor (`mani_*_svc`, contexto T1) |
+|---|---|---|---|
+| 1 | **Lectura de otro tenant.** Token de T1 pide por id un recurso de T2 | `404`, sin distinguir «no existe» de «no es tuyo» | `SELECT … WHERE id = <T2>` → 0 filas |
+| 2 | **Listado de recursos ajenos.** Token de T1 lista una colección | `200` solo con recursos de T1 | `SELECT` sin `WHERE tenant_id` → solo filas de T1 |
+| 3 | **Escritura en otro tenant.** Token de T1 crea con `tenantId` de T2 en el cuerpo, o edita un id de T2 | `403 TENANT_MISMATCH` o `404`; nada persistido en T2 | `INSERT` con `tenant_id` T2 → `42501`; `UPDATE` que mude una fila a T2 → `42501`; `UPDATE` de fila de T2 → 0 filas |
+| 4 | **Borrado ajeno.** Token de T1 desactiva o borra un id de T2 | `404`; el recurso de T2 intacto | `DELETE … WHERE id = <T2>` → 0 filas; un `DELETE` sin `WHERE` solo alcanza T1 |
+| 5 | **Token expirado o alterado.** Firma inválida, `exp` vencido o sin `tenant_id` | `401` en el Gateway (ADR-0031); el servicio no recibe la petición | sin `set_context` o con claim corrupto → 0 filas y escritura rechazada; `set_context` sin tenant → `MANI-RLS-400` |
+| 6 | **Documentos KYC de otro aliado o tenant.** El aliado A de T1 pide el KYC del aliado B y uno de T2; el admin de T1 pide los de T2; acceso a un objeto de Storage bajo ruta `{T2}/{user_id}/…` | `403` o `404` para A sobre B y sobre T2; el admin de T1 ve solo los de T1; Storage deniega toda lectura o escritura sobre `{T2}/…` con contexto T1 | A ve solo su `documento_kyc` y no puede dar de alta a nombre de B; el admin de T1 ve los de T1 y ninguno de T2; `kyc_isolation` rechaza las rutas con prefijo `{T2}/…` |
+
+Cuatro propiedades más que CFG-23c debe incluir, porque protegen el mecanismo y no un endpoint:
+
+| # | Propiedad | Resultado esperado |
+|---|---|---|
+| P1 | El contexto no se hereda entre transacciones de la misma conexión del pool | la siguiente transacción sin `set_context` ve 0 filas |
+| P3 | Frontera de datos (ADR-0030) | `mani_dispatch_svc` recibe `permission denied` en `notificacion` y en `aliado` |
+| P4 | Rol en la aceptación (H-02 / KI-13) | un `cliente` no puede aceptar; un `aliado` de T1 no acepta una solicitud de T2 |
+| P5 | Un cliente no fabrica contexto | `authenticated` y `anon` no pueden ejecutar `app.set_context` |
+
+Evidencia exigida por caso (Políticas DevOps §13.4): reporte de Newman con la versión del servicio y la fecha, salida SQL de la verificación del motor con el `X-Correlation-ID` de la petición, y ausencia de datos de T2 en ambas.
+
 ---
 
 # 9. Vista de despliegue

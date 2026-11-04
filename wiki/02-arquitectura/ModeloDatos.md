@@ -969,6 +969,232 @@ Los seis roles se crean como migración versionada en la serie de Core, no a man
 toda tabla con tenant y sigue siendo defensa en profundidad, no la única barrera (ADR-0012,
 ADR-0018).
 
+## 6.4 Estado real de RLS hoy
+
+§6.2 y §6.3 describen el modelo al que hay que llegar. Esta sección describe lo que el esquema hace
+**hoy**, inventariado en CFG-23a.1 (SCRUM-1195) sobre `MANI-APIGateway` `main` @ `9874e93`, las
+migraciones `0001`–`0004` de `MANI-Node` y el código de acceso a datos de Core y Dispatch, al corte
+del 2026-10-17. Es un inventario del repositorio: el catálogo de QA no coincide con él, y la
+consulta del final de esta sección es la que lo confirma contra el motor.
+
+### Ningún servicio pasa por RLS
+
+El enunciado de CFG-23a —«RLS deja de filtrar por `auth.uid()` cuando el llamador es un servicio»—
+se queda corto. Con las credenciales actuales las políticas **no se evalúan en absoluto**, porque
+`service_role` y `postgres` tienen `BYPASSRLS`:
+
+| Camino de datos | Credencial | ¿Se evalúa RLS? |
+|---|---|---|
+| Core, repositorios Supabase (`usuario`, `aliado`, `aliado_categoria`, `categoria_servicio`, `tenant`, `documento_kyc`) | `SUPABASE_SERVICE_ROLE_KEY` → `service_role` | **No** (`BYPASSRLS`) |
+| Core, transacción de categorías del aliado y Core por `pg` | `DATABASE_URL` → `postgres` | **No** |
+| Core, documentos KYC en Storage | `service_role` | **No**: `kyc_isolation` no aplica |
+| Dispatch, elegibilidad y aceptación (Npgsql) | `DATABASE_URL` → `postgres` | **No** |
+| Rules | sin acceso a base de datos (ADR-0022) | No aplica |
+| Flutter legado por PostgREST (en retiro, CFG-35/36) | `anon` + JWT → `authenticated` | **Sí**: es el único camino donde RLS opera hoy |
+
+La migración `008` lo dice literalmente: «Core Node escribe con la service role (que salta RLS)».
+Mientras esto siga así, la autorización por tenant **en código** es la única defensa del tráfico de
+servicios, que es lo que ADR-0022 registró como KI-05. Verificado en PostgreSQL 16 con los mismos
+roles y funciones que Supabase: `service_role` con claims del tenant T1 lee las filas de T1 y de T2
+([PoC CFG-23a](../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md), caso L1).
+
+### Qué hacen las políticas vigentes
+
+Quince políticas en el repositorio, una más que solo existe en QA (`tenant_isolation_solicitud`, sin
+versionar, DD V2 §8.1) y dos en PR (`documento_legal`, `consentimiento_usuario`, SCRUM-856).
+
+- **Once resuelven al usuario con `auth.uid()`** y **no comparan `tenant_id`**: el aislamiento es
+  implícito («es mi fila»). Basta para el usuario final; no ofrece nada a un llamador que actúa en
+  nombre de un tenant.
+- **Solo dos vigentes toman el tenant del claim** —`kyc_isolation` del bucket `kyc-documentos` y la
+  de `aliado_ausencia`—, que es el patrón al que hay que llegar.
+- **Ninguna restringe `TO`** salvo las de Storage: las demás valen para `public`, incluido `anon`.
+- Ninguna tabla tiene `FORCE ROW LEVEL SECURITY`, así que el dueño (`postgres`) las salta aunque
+  perdiera `BYPASSRLS`.
+
+### Tablas sin RLS
+
+Veinte tablas de negocio, todas con `tenant_id` salvo `tenant` y `zona`. Con los *default
+privileges* de Supabase (`GRANT ALL` sobre `public` a `anon` y `authenticated`), **una tabla sin RLS
+es legible y escribible por PostgREST con la clave anónima**.
+
+| Estado | Tablas |
+|---|---|
+| RLS con políticas (7) | `tenant`, `categoria_servicio`, `usuario`, `aliado`, `aliado_categoria`, `documento_kyc`, `aliado_ausencia` |
+| RLS sin políticas, deniega a todo rol sin `BYPASSRLS` (2) | `solicitud_rechazo`, `solicitud_foto` |
+| **Sin RLS en el repositorio (11)** | `zona`, `cliente`, `sitio`, `tarifa_referencia`, `cobertura_aliado`, `solicitud`\*, `cotizacion`, `mensaje`, `evento_servicio`, `calificacion`, `notificacion` |
+
+\* `solicitud` sí tiene RLS en QA, por la política no versionada.
+
+### Funciones `SECURITY DEFINER` que derivan identidad de `auth.uid()`
+
+`SECURITY DEFINER` omite RLS por diseño: estas funciones filtran por su cuenta tomando tenant y
+usuario de `auth.uid()` contra `usuario`. Son la lógica PL/pgSQL que ADR-0022 manda retirar a medida
+que las historias `-M2` la reemplazan. **Los servicios no las invocan**; siguen concedidas a
+`authenticated`, es decir, al camino Flutter legado: `registrar_aliado_persona_natural` (init/04),
+las de verificación de aliados (`002`), de categorías (`003`, `004`), de solicitudes del aliado
+(`005`) y del cliente (`006`).
+
+### Tres exposiciones que no estaban registradas
+
+No dependen del modelo de identidad y **pueden cerrarse antes de CFG-23b**, con defectos propios:
+
+1. **`documento_kyc` está abierta.** Sus dos políticas tienen predicado `true`, así que con la
+   `SUPABASE_ANON_KEY` del bundle (CFG-36) cualquiera lee e inserta filas de cualquier tenant,
+   rutas de Storage incluidas, que son datos de habeas data. Comprobado en la PoC, caso L2. Es la
+   exposición más grave del inventario.
+2. **`registrar_aliado_persona_natural` está concedida a `anon`** y recibe `p_tenant_id` y
+   `p_usuario_id` como parámetros: permite a cualquiera con la clave anónima crear usuarios y
+   aliados en cualquier tenant. Contradice la regla anti-spoofing de las propias migraciones
+   («ninguna función recibe `tenant_id`»).
+3. **Las once tablas sin RLS** quedan expuestas a la clave anónima por los *default privileges*.
+
+Conciliación con SCRUM-1334 (BUG-SEC-02), que debe actualizarse con estos datos: las «28 políticas
+con `auth.uid()`» son 28 **ocurrencias** —11 en políticas, 10 en funciones `SECURITY DEFINER` y 7 en
+comentarios—; y «0 políticas toman el tenant del claim» es inexacto, porque hay 2 vigentes, 1 en QA
+y 2 en PR. La búsqueda de SCRUM-1334 falló porque buscaba `request.jwt.claims` y `current_setting`,
+mientras estas políticas leen el claim con `auth.jwt()`, que lee ese mismo GUC.
+
+### Consulta de confirmación contra el motor
+
+Solo lectura, no expone valores. Se corre en el SQL Editor del ambiente y su resultado se adjunta a
+CFG-23b; hasta entonces, lo de arriba es el estado del repositorio, no el del motor.
+
+```sql
+-- 1. Políticas reales
+SELECT schemaname, tablename, policyname, cmd, roles, qual, with_check
+FROM pg_policies WHERE schemaname IN ('public', 'storage') ORDER BY 1, 2, 3;
+
+-- 2. RLS por tabla
+SELECT c.relname, c.relrowsecurity AS rls, c.relforcerowsecurity AS force_rls
+FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relkind = 'r' ORDER BY 1;
+
+-- 3. Roles con los que conectan los servicios
+SELECT rolname, rolbypassrls, rolsuper FROM pg_roles
+WHERE rolname IN ('postgres', 'service_role', 'authenticated', 'anon') ORDER BY 1;
+
+-- 4. Tablas sin RLS a las que anon puede escribir
+SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relkind = 'r' AND NOT c.relrowsecurity
+  AND has_table_privilege('anon', c.oid, 'INSERT') ORDER BY 1;
+
+-- 5. Funciones SECURITY DEFINER ejecutables por anon
+SELECT p.proname FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public' AND p.prosecdef AND has_function_privilege('anon', p.oid, 'EXECUTE');
+```
+
+## 6.5 Modelo de identidad en el motor — diseño objetivo
+
+Decidido en [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) y diseñado en
+CFG-23a.3 (SCRUM-1197). **No está aplicado todavía**: lo versiona CFG-23b (SCRUM-1104) y lo acredita
+CFG-23c (SCRUM-1105). Mientras los servicios conecten con `BYPASSRLS`, nada de esta sección cambia
+el comportamiento descrito en §6.4. La definición ejecutable de referencia es
+[`01-modelo.sql` de la PoC](../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md).
+
+Cada servicio se conecta con **su propio rol sin `BYPASSRLS`** y, como primera sentencia de cada
+transacción, fija la identidad ya verificada con `app.set_context(tenant, usuario, rol)`. Las
+políticas leen tenant, usuario y rol **solo** de ese contexto, mediante `app.tenant_id()`,
+`app.user_id()` y `app.user_role()`, que es el mismo `request.jwt.claims` que PostgREST establece.
+Resultado: una política única para servicios y para PostgREST, falla cerrada cuando falta el
+contexto, y la frontera de datos de ADR-0030 impuesta por `GRANT`.
+
+### Componentes en el motor
+
+| Componente | Definición | Notas |
+|---|---|---|
+| `mani_core_svc`, `mani_dispatch_svc` | `NOLOGIN NOBYPASSRLS` en migración (`LOGIN` lo asigna operaciones fuera de git, ADR-0031 §5); no dueños, no miembros de `authenticated` | contraseña por ambiente en `/opt/mani/.env.{dev,qa,prod}`. Rules no tiene rol en este incremento: sus *overrides* por tenant viven en la configuración del servicio, y `mani_rules_svc` (§6.3) solo se crearía si el tarifario pasa a persistirse desde Rules |
+| `GRANT USAGE ON SCHEMA auth` + `EXECUTE` sobre `auth.uid()` y `auth.jwt()` | a ambos roles | sin esto toda consulta falla con `permission denied for schema auth`, hallazgo de la PoC |
+| Esquema `app` | `REVOKE ALL FROM PUBLIC`; `USAGE` a `authenticated` y a los roles de servicio | no se expone en PostgREST |
+| `app.tenant_id()`, `app.user_id()`, `app.user_role()` | `STABLE`, `search_path = ''`, leen `auth.jwt()` y `auth.uid()` | devuelven `NULL` ante claim ausente o malformado, sin error |
+| `app.set_context(uuid, uuid, text)` | `set_config('request.jwt.claims', …, true)`; rechaza tenant `NULL` con `MANI-RLS-400` | `EXECUTE` solo a los roles de servicio: un cliente no puede fabricar contexto |
+
+### Qué contexto fija cada tipo de flujo
+
+| Flujo | `set_context(tenant, usuario, rol)` | Ejemplo |
+|---|---|---|
+| Autenticado vía Gateway | `X-Tenant-Id`, `X-User-Id`, `X-User-Role` | CRUD de categorías del Backoffice |
+| Interno servicio → servicio | los mismos encabezados que reenvía el llamador (ADR-0030 §2) | Dispatch pide a Core la elegibilidad |
+| Lectura pre-auth | tenant resuelto desde `X-Tenant-Slug`, usuario `NULL`, rol `anonimo` | `GET /catalog` del registro |
+| Registro pre-auth | tenant desde `X-Tenant-Slug`, usuario recién creado en Supabase Auth, rol registrado | registro de aliado: `createUser` → `set_context` → insertar `usuario`, `aliado`, `documento_kyc` |
+| Asíncrono (ADR-0029) | tenant y usuario del evento, rol `servicio` | consumidor de notificaciones |
+
+Resolver el slug obliga a leer `tenant` **antes** de tener contexto; por eso `tenant` conserva una
+política de lectura `USING (true)` que expone solo `slug`, `nombre` y `estado` (ADR-0018).
+
+### Políticas objetivo por tabla
+
+Propiedad por dominio según ADR-0022 y ADR-0030. «Patrón T» =
+`USING (tenant_id = app.tenant_id()) WITH CHECK (tenant_id = app.tenant_id())`, siempre con `ENABLE`
++ `FORCE` y `TO` explícito. `authenticated` se mantiene en el `TO` de las tablas que el camino
+PostgREST legado aún toque.
+
+| Tabla | Dueño | `mani_core_svc` | `mani_dispatch_svc` | Política |
+|---|---|---|---|---|
+| `tenant` | Core | SELECT | SELECT | lectura `USING (true)` (directorio público de slugs, ADR-0018); escritura solo `postgres` |
+| `zona` | Core | SELECT | SELECT | sin `tenant_id` (geografía global): lectura `USING (true)`, escritura solo `postgres` |
+| `usuario` | Core | CRUD | — | Patrón T. Las filas con `tenant_id NULL` quedan invisibles: falla cerrada |
+| `categoria_servicio` | Core | CRUD | — | Patrón T. **Reemplaza** la lectura pública `USING (true)` de hoy |
+| `aliado`, `cliente`, `sitio`, `aliado_categoria`, `aliado_ausencia`, `cobertura_aliado` | Core | CRUD | — | Patrón T. Dispatch obtiene la elegibilidad de Core por HTTP (ADR-0030) |
+| `documento_kyc` | Core | SELECT, INSERT | — | tenant **y** (aliado propio **o** `admin_tenant`); alta solo para el propio aliado. **Reemplaza** las dos políticas `true` de §6.4 |
+| `cotizacion`, `evento_servicio`, `calificacion`, `mensaje`, `notificacion` | Core | CRUD | — | Patrón T, más propiedad por autor donde la historia lo exija |
+| `documento_legal`, `consentimiento_usuario` | Core | SELECT, INSERT | — | las de `MANI-Node` 0004, migradas a `app.*` y con `TO` explícito |
+| `solicitud` | Core es el único escritor de su estado (decisión 6A) | SELECT, INSERT, UPDATE | SELECT | lectura Patrón T; alta con rol `cliente`. La aceptación la emite Core: la migración `0019_frontera_asignacion_6a.sql` revocó el `UPDATE` de Dispatch y retiró `solicitud_aceptar_aliado`. Reemplaza `tenant_isolation_solicitud` |
+| `solicitud_rechazo` | Dispatch | — | SELECT, INSERT | Patrón T **y** aliado propio |
+| `solicitud_foto` | Core | SELECT, INSERT | — | Patrón T |
+| `tarifa_referencia` | **por decidir (pregunta M2 de Mesa)** | CRUD (propuesto) | — | Rules evalúa en memoria sin base (ADR-0022) y Core persiste y consulta por HTTP (ADR-0030 §2). Si se persiste en `reglas`, aplica `mani_rules_svc` (§6.3) |
+
+Storage mantiene `kyc_isolation`, que ya toma el tenant del claim. Las políticas del bucket
+`solicitudes`, que hoy solo comparan `auth.uid()`, pasan a exigir también la carpeta del tenant.
+Core escribe en Storage con `service_role` (ADR-0032 §6): la ruta `{tenant_id}/{user_id}/…` se arma
+desde el contexto, **nunca** desde la petición.
+
+### Cómo lo integra cada servicio
+
+Una sola puerta de acceso a datos por servicio; un acceso fuera de ella es un defecto de revisión.
+Core (Node, `pg`) envuelve toda operación en un `withTenantContext` que abre la transacción, invoca
+`app.set_context(tenantId, userId, role)`, ejecuta el trabajo y hace `COMMIT` o `ROLLBACK`. Los
+repositorios que hoy usan `.from()` con `service_role` migran a `pg` con ese helper; como paso
+intermedio, ADR-0032 admite crear el cliente supabase-js con el `Authorization` del usuario, camino
+que **no** sirve en pre-auth ni en procesos asíncronos. Dispatch (.NET, Npgsql) abre la transacción,
+ejecuta `SELECT app.set_context(@t, @u, @r)` con los encabezados del Gateway y deja dentro de esa
+misma transacción el `UPDATE` condicional que le corresponda.
+
+Tres reglas que CFG-23b vuelve verificables en CI:
+
+1. ningún `set_config(…, false)` ni `SET` sin `LOCAL` en código de servicio;
+2. ningún `.from()` ni `.rpc()` con el cliente `service_role`;
+3. el `DATABASE_URL` de cada servicio apunta a su rol, nunca a `postgres`.
+
+### Despliegue por pasos y reversa
+
+Cada paso se despliega sin romper el anterior, porque las políticas no cambian nada mientras los
+servicios sigan con `BYPASSRLS`:
+
+| Paso | Qué | Efecto visible |
+|---|---|---|
+| 1 | Cerrar las exposiciones de §6.4 (ADR-0032 §8): revocar `anon` de `registrar_aliado_persona_natural` y `registrar_aliado_empresa`, eliminar las políticas `true` de `documento_kyc` y habilitar RLS en las 11 tablas. Entregado en `MANI-Node` PR #28 (SCRUM-1334) | ninguno para servicios ni para Flutter, que solo usa 3 RPC `SECURITY DEFINER` |
+| 2 | Esquema `app`, helpers, `set_context`, roles `NOLOGIN` y `GRANT` sobre `auth` | ninguno |
+| 3 | `FORCE RLS`, las políticas de esta sección y los `GRANT` por rol | ninguno mientras haya `BYPASSRLS` |
+| 4 | `withTenantContext` en todos los repositorios de Core, y transacción con `set_context` en Dispatch | ninguno: con `postgres`, `set_context` es inocuo |
+| 5 | Operaciones asigna `LOGIN PASSWORD` a los dos roles fuera de git (ADR-0031 §5) y cambia el `DATABASE_URL` de cada servicio a su rol en QA | **aquí RLS empieza a operar**; se corre CFG-23c |
+| 6 | Lo mismo en PROD, tras aprobar CFG-23c | — |
+
+**Reversa:** devolver el `DATABASE_URL` a la credencial anterior en el paso 5 restaura el
+comportamiento previo sin tocar datos. Las migraciones 1 a 3 no se revierten, porque no afectan a
+quien tiene `BYPASSRLS`. La numeración final la fija CFG-23b contra la serie vigente al abrir el PR.
+
+### Riesgos del cambio
+
+| Riesgo | Mitigación |
+|---|---|
+| Un repositorio accede fuera de `withTenantContext` y, con el rol nuevo, ve 0 filas | falla cerrada: aparece como defecto funcional en QA, no como fuga; lo atrapan las reglas de CI de arriba |
+| Latencia por la sentencia extra en cada transacción | medirla en la ruta de QAS-03 después del paso 5 |
+| Storage sigue escribiéndose con `service_role` | la ruta se construye desde el contexto, y el caso cross-tenant 6 incluye el objeto de Storage |
+| Funciones `SECURITY DEFINER` heredadas omiten RLS | no se conceden a los roles de servicio y se retiran según ADR-0022 |
+| Drift entre el repositorio y QA, como `tenant_isolation_solicitud` | correr la consulta de confirmación de §6.4 en QA antes del paso 1 |
+| Usuarios con `tenant_id NULL`, por ejemplo un superadmin, quedan invisibles para los servicios | intencional; un caso multi-tenant de ese tipo exige un ADR propio |
+
 ---
 
 # 7. DDL operacional — PostgreSQL sobre Supabase

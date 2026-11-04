@@ -78,6 +78,29 @@ Fueron ADR-0013, 0015, 0016, 0017, 0022, 0025, 0028, 0029, 0030 y 0032. La ratif
 
 Esto importa porque varios ya se usaban como si fueran vinculantes: ADR-0030 es la fuente de los criterios transversales T1, T2 y T3 del [backlog §6.2](../../05-backlog/BACKLOG_MANI.md#62-criterios-transversales), y ADR-0022 gobierna la migración completa de la lógica de negocio.
 
+#### Qué tiene que decidir la Mesa — material de TEC-12
+
+TEC-12 (SCRUM-1459) reunió lo que la Mesa necesita para **confirmar o revertir** ADR-0030 y ADR-0016, las dos más comprometidas porque el código fusionado ya las cumple. La ratificación es un acto de la Mesa: esto es el material, no la ratificación. Registrado como pendiente P7 en [`SAD.md`](../SAD.md) §7.4.
+
+La alternativa a ratificar **no** es «no aceptar en abstracto», es revertir código que está en `develop` y en `release`:
+
+| Si la Mesa | Entonces |
+|---|---|
+| Ratifica | Se retira de los dos ADR la nota de «sin sesión de Mesa» y se cierra TEC-12. Nada cambia en código |
+| Revierte ADR-0030 | Hay que rehacer la frontera de datos de Dispatch, que hoy consume la elegibilidad por HTTP y no tiene acceso SQL al dominio de Core |
+| Revierte ADR-0016 | Hay que rehacer la aceptación atómica y revisar los permisos que dependen de ella, incluida la frontera de la decisión 6A |
+
+Evidencia de que el código ya los cumple, verificada contra `origin/develop` el 2026-10-27 leyendo el código, no las historias:
+
+- **ADR-0030.** Dispatch consume la elegibilidad por HTTP: `Infrastructure/Core/CoreAllyClient.cs` implementa `Application/Interfaces/IAllyRepository.cs` y **no existe `PostgresAllyRepository`**. Los únicos `UPDATE solicitud` de `MANI-.NET` están en fixtures de prueba. La frontera está aplicada en el motor: `MANI-Node/db/migrations/0019_frontera_asignacion_6a.sql` revoca el `UPDATE` sobre `solicitud` al rol de Dispatch y retira la política de escritura directa, dejándole solo `SELECT` para `assignments/me`. Y toda la serie `db/migrations/` vive en `MANI-Node`, que es el dueño que nombra ADR-0030 §1.
+- **ADR-0016.** `PgSolicitudAsignacionRepository` de `MANI-Node` bloquea la fila con `FOR UPDATE` y repite el predicado `estado = 'PENDIENTE' AND aliado_id IS NULL` en el `UPDATE`, que hace de versión de la fila; las aceptaciones posteriores reciben `MANI-SOL-409` o `MANI-SOL-409E`. Hay medición, no solo diseño: PoC-001 (`07-calidad/PoC/PoC-001-exclusion-concurrente-aceptacion.md`) obtuvo 1 asignación y 0 dobles sobre 50 aceptaciones simultáneas —un 200 y 49 respuestas 409— mientras el control negativo produjo 10 asignaciones en 136 ms.
+
+Dos cosas que conviene corregir en la misma sesión: **ADR-0016 no declara autor ni revisor**, y **ADR-0030 declara autor (Sara Albarracín) pero no revisor**, cuando ADR-0003 pide autor y revisor distintos donde aplique; para una decisión estructural, el revisor debería ser alguien distinto de quien la ratificó. Y una que ratificar no borra: **ADR-0016 declara como deuda técnica la cola de reintento ante caída de la base de datos**, que conviene registrar como tal en el acta para que no se lea como cerrada.
+
+Para cerrar TEC-12 faltan: la sesión de Mesa que confirme o revierta las dos decisiones; retirar de ambos ADR la nota de «sin sesión de Mesa registrada» si se confirman; declarar autor y revisor en ADR-0016 y revisor en ADR-0030; y el cierre con la subtarea QA-TEC-12 (Santiago). Mientras la sesión no ocurra, **TEC-12 no está cumplido**, porque su criterio de aceptación es que las dos decisiones se ratifiquen o que se revierta el código que ya las cumple.
+
+ADR-0032 está en la misma situación y lleva su propio material de Mesa, con las preguntas M1 a M8, en el apartado «Pendiente de Mesa» de [ADR-0032](../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md).
+
 ### Los seis ADR `Superseded` se retiraron del repositorio
 
 | Retirado | Tema | Dónde quedó su contenido |

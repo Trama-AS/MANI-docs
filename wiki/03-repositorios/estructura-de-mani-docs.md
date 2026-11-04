@@ -26,7 +26,6 @@ MANI-Docs/
     │   ├── TECH_RADAR.md          tecnologías adoptadas, en evaluación y descartadas
     │   ├── guia/                  páginas de lectura que ordenan los documentos
     │   ├── adr/                   26 ADR, ADR-0001 a ADR-0034 con huecos
-    │   ├── expedientes/           evidencia fechada de una tarea o de una Mesa
     │   └── diagrams/              estructura de ADR-0008
     │       ├── c4/                workspace.dsl + contexto/ contenedores/ componentes/ codigo/
     │       ├── datos/             ModeloDatos.png
@@ -56,7 +55,8 @@ Las cuatro capas de `02-arquitectura/` y la regla de qué va en cada una están 
 | Una vista C4 o un cambio de componentes | `wiki/02-arquitectura/diagrams/c4/workspace.dsl` y la sección correspondiente del SDD |
 | Un cambio de arquitectura de alto nivel | `wiki/02-arquitectura/SAD.md` (+ actualizar el DHL si cambia el dibujo) |
 | Tablas, DDL, diccionario o modelo dimensional | `wiki/02-arquitectura/ModeloDatos.md` |
-| La evidencia fechada de una tarea, una auditoría o una Mesa | `wiki/02-arquitectura/expedientes/`, con su identificador Jira en el nombre |
+| Una auditoría, un inventario o el material de una Mesa | A la sección del documento o del ADR que responde por ese tema, con la fecha de corte escrita. En `02-arquitectura` no se crean documentos aparte para esto ([README](../02-arquitectura/README.md)) |
+| La ejecución de una prueba, un reporte de QA o una evidencia de sprint | `wiki/07-calidad/` |
 | Una regla de proceso del equipo | `wiki/06-gobernanza/GOBIERNO_DEL_EQUIPO.md` |
 | Una regla de ramas, PR, CI/CD, pruebas o secretos | `wiki/06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md` |
 | Ambientes, Supabase, red o backups | `wiki/06-gobernanza/INFRAESTRUCTURA_MANI.md` |

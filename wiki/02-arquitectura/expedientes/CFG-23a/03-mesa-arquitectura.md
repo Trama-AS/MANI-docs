@@ -2,7 +2,7 @@
 
 - **Jira:** SCRUM-1198 (subtarea de CFG-23a, SCRUM-1103)
 - **Presenta:** Juan Sebastián Álvarez Rodríguez
-- **Decisión a tomar:** aprobar, modificar o rechazar [ADR-0032](../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md)
+- **Decisión a tomar:** aprobar, modificar o rechazar [ADR-0032](../../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md)
 - **Duración sugerida:** 30 min (estimación de la subtarea)
 - **Desbloquea:** CFG-23b (SCRUM-1104) y CFG-23c (SCRUM-1105)
 
@@ -25,7 +25,7 @@ Del [inventario](01-inventario-rls.md):
    - 11 tablas no tienen RLS.
 3. **El repositorio y QA divergen.** `tenant_isolation_solicitud` existe solo en QA.
 
-Demostración en vivo opcional (1 min): `02-casos.sql` de la [PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md), líneas L1 y L2.
+Demostración en vivo opcional (1 min): `02-casos.sql` de la [PoC](../../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md), líneas L1 y L2.
 
 ## 3. Alternativas (8 min)
 

@@ -1,8 +1,8 @@
 # Cumplimiento de ADR-0027 en MANI-Flutter: inventario de accesos directos a Supabase
 
-[← 02 · Arquitectura](README.md) · [Índice](../Home.md)
+[← 02 · Arquitectura](../README.md) · [Índice](../../Home.md)
 
-**Fuente:** [ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md) (solo `supabase.auth` en el cliente) · [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md) (lógica de negocio en servicios, no en PL/pgSQL) · criterio transversal **T6** del libro de módulos del Sprint 5. Tarea: **SCRUM-1619** (ARQ-ADR0027).
+**Fuente:** [ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md) (solo `supabase.auth` en el cliente) · [ADR-0022](../adr/ADR-0022-logica-de-negocio-en-servicios.md) (lógica de negocio en servicios, no en PL/pgSQL) · criterio transversal **T6** del libro de módulos del Sprint 5. Tarea: **SCRUM-1619** (ARQ-ADR0027).
 
 Fecha de examen: 2026-10-28. Solo lectura: este documento no cambia código. Responde a los criterios C1 (inventario), C2 (historia responsable de cada archivo) y C3 (búsqueda de verificación) de la tarea, y deja preparado el registro de C4 (desviación aceptada).
 

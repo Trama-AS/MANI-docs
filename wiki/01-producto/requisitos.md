@@ -54,7 +54,7 @@ No entran al MVP. **Excepción del 24-oct-2026:** la geolocalización en tiempo 
 | RNF-10 | Documentos KYC, tiempos y comisiones configurables por tenant | Alta |
 | RNF-11 | Modelo de pagos centralizado con operador certificado | Media |
 
-Los umbrales que verifican estos RNF están en [Atributos de calidad](../02-arquitectura/atributos-de-calidad.md).
+Los umbrales que verifican estos RNF están en [Atributos de calidad](../02-arquitectura/guia/atributos-de-calidad.md).
 
 ## Restricciones
 

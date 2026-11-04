@@ -211,7 +211,7 @@ El estado real de cada gate se registra aparte, no en el dibujo:
 
 # 5. Vista de contexto — C4 Nivel 1
 
-[![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](diagrams/c4/contexto/alto-nivel-arquitectura.png)](../diagrams/c4/contexto/alto-nivel-arquitectura.png)
+[![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](diagrams/c4/contexto/alto-nivel-arquitectura.png)](diagrams/c4/contexto/alto-nivel-arquitectura.png)
 
 > **Figura 1 — Diagrama de alto nivel (DHL).** Archivo: [`diagrams/c4/contexto/alto-nivel-arquitectura.png`](diagrams/c4/contexto/alto-nivel-arquitectura.png).
 > La vista C4 formal correspondiente es `contexto` en [`workspace.dsl`](diagrams/c4/workspace.dsl), documentada en SDD §4.1.
@@ -231,7 +231,7 @@ Sistemas externos
 
 # 6. Vista de contenedores — C4 Nivel 2
 
-[![Vista de contenedores de MANI: cliente, Gateway, los tres servicios de negocio, Supabase e integraciones](diagrams/c4/contenedores/contenedores.png)](../diagrams/c4/contenedores/contenedores.png)
+[![Vista de contenedores de MANI: cliente, Gateway, los tres servicios de negocio, Supabase e integraciones](diagrams/c4/contenedores/contenedores.png)](diagrams/c4/contenedores/contenedores.png)
 
 > **Figura 2 — Contenedores.** Generada desde la vista `contenedores` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/contenedores/contenedores.png`](diagrams/c4/contenedores/contenedores.png), documentada en SDD §4.2. **Clic para abrirla a tamaño completo.**
 >
@@ -398,6 +398,11 @@ P1 se cerró con la decisión 6A del 26 de octubre de 2026; queda registrada arr
 | P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
 | P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
 | P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |
+| P5 | Ubicación física de la tabla `solicitud`, hoy bajo el esquema `despacho` aunque Core es su único dueño y escritor. Mover el esquema afecta DDL ya aplicado. Declarado en [`ModeloDatos.md`](ModeloDatos.md) §6.1. | Dueño de la serie de migraciones ([ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §1) | — | La propiedad del dato no cambia; lo que queda inconsistente es el esquema que lo aloja. |
+| P6 | Los seis roles de base de datos y sus `GRANT` están especificados en [`ModeloDatos.md`](ModeloDatos.md) §6.3, pero falta emitirlos como migración de la serie de Core y verificarlos en DEV y QA. | Equipo de Core | — | Mientras no se apliquen, la frontera de datos descansa en el acuerdo y no en el motor. |
+| P7 | Ratificación en Mesa de Arquitectura de ADR-0016, ADR-0022 y ADR-0030, que pasaron a `Aceptado` sin sesión registrada. Material en [`expedientes/EXPEDIENTE_MESA_TEC-12.md`](expedientes/EXPEDIENTE_MESA_TEC-12.md). | Mesa de Arquitectura, vía TEC-12 (SCRUM-1459) | — | El código fusionado ya cumple las tres; revertirlas obligaría a rehacer la frontera de datos y la aceptación atómica. |
+| P8 | Consumidores de los cuatro eventos de negocio: la columna de consumidores previstos refleja el diseño, no un compromiso. | ARQ-08 (SCRUM-1239), diferida al Sprint 5 | — | Depende de que exista el broker (ARQ-05); hasta entonces §12.2 solo compromete la escritura al outbox. |
+| P9 | Evidencia de QA de la frontera de la decisión 6A en un ambiente desplegado. Lo verificado hasta ahora es código y migración. | QA, con la subtarea de TEC-01 (SCRUM-1448) | — | La decisión está documentada e implementada, pero no acreditada en DEV ni en QA. |
 
 
 ## 7.5 Inventario funcional por servicio
@@ -527,14 +532,14 @@ versionadas viven en [`diagrams/MOCKUPS/`](diagrams/MOCKUPS/). Las dos figuras s
 interfaz materializa los controles de esta sección: la carga de documentos KYC definidos por el tenant y una
 bandeja de verificación limitada a la empresa del administrador.
 
-[![Figura 8.1 — Registro de aliado persona natural](diagrams/MOCKUPS/registro-aliado-persona-natural.png)](../diagrams/MOCKUPS/registro-aliado-persona-natural.png)
+[![Figura 8.1 — Registro de aliado persona natural](diagrams/MOCKUPS/registro-aliado-persona-natural.png)](diagrams/MOCKUPS/registro-aliado-persona-natural.png)
 
 **Figura 8.1 — Registro de aliado (persona natural).** Selector de tipo de aliado, datos de identificación y
 sección de documentos requeridos, cuya lista la configura cada tenant (RF-02, RNF-10). Ilustra `US-02.1.1`
 Registro aliado persona natural (`SCRUM-846`), migrada en `US-02.1.1-M2` (`SCRUM-1065`); la variante de empresa
 corresponde a `US-02.1.2` (`SCRUM-847`). Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
 
-[![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](diagrams/MOCKUPS/backoffice-verificacion-aliados.png)](../diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
+[![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](diagrams/MOCKUPS/backoffice-verificacion-aliados.png)](diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
 
 **Figura 8.2 — Bandeja de verificación del Backoffice.** El administrador ve solo los aliados pendientes de su
 tenant, consulta sus documentos y aprueba o rechaza; el rechazo exige un motivo. Ilustra `US-02.1.3`
@@ -751,7 +756,7 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 
 # 16. Vista de despliegue
 
-[![Vista de alto nivel de la infraestructura de MANI por ambiente](diagrams/despliegue/infraestructura.png)](../diagrams/despliegue/infraestructura.png)
+[![Vista de alto nivel de la infraestructura de MANI por ambiente](diagrams/despliegue/infraestructura.png)](diagrams/despliegue/infraestructura.png)
 
 > **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/despliegue/infraestructura.png`](diagrams/despliegue/infraestructura.png).
 > La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](diagrams/c4/workspace.dsl), documentada en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
@@ -870,6 +875,47 @@ La instrumentación cubre:
 - Dispatch Service;
 - Core Service;
 - infraestructura Kubernetes.
+
+## 19.1 Métricas expuestas
+
+Cada servicio publica sus métricas en el endpoint canónico `/metrics`, en formato Prometheus
+(`text/plain; version=0.0.4; charset=utf-8`). Core las expone en `/metrics` y `/api/v1/metrics`; el
+Gateway en `/metrics` y `/api/v1/core/metrics`, como ruta pública sin token para los scrapers
+internos.
+
+| Métrica | Tipo | Etiquetas | Qué permite medir |
+|---|---|---|---|
+| `http_requests_total` | Counter | `method`, `route`, `status_code` | Tasa de 401, 403 y 5xx por ruta normalizada |
+| `http_request_duration_seconds` | Histogram | `method`, `route`, `status_code` | Latencia por petición, contra los umbrales de [`SDD.md`](SDD.md) §7.4 |
+| `auth_validations_total` | Counter | `result`, `reason` | Validaciones de JWT, discriminando el claim que falta |
+
+`auth_validations_total` distingue el motivo, que es lo que hace útil la métrica para el
+aislamiento multi-tenant (RNF-01): `result="success"` con `reason="ok"` cuando el token trae los
+claims obligatorios, y `result="failure"` con `reason` igual a `missing_tenant_claim` (sin
+`app_metadata.tenant_id`), `missing_user_role` (sin `sub` o sin `app_metadata.user_role`),
+`missing_authorization_header`, `malformed_authorization_header` (sin prefijo `Bearer`),
+`invalid_signature`, `token_expired` o `invalid_token`. Los dos primeros motivos identifican un
+token que intenta evadir el Custom Access Token Hook de Supabase, no un error del usuario.
+
+## 19.2 Alertas de autenticación
+
+Reglas Prometheus de `monitoring/alerts/auth-alerts.yml`, presentes en `MANI-Node` y en
+`MANI-APIGateway`. Cubren el riesgo **R-4** (falta de telemetría del perímetro de autenticación) y
+se emiten etiquetadas con `hallazgo: R-4` para poder trazarlas:
+
+| Alerta | Dispara cuando | Durante | Severidad |
+|---|---|---|---|
+| `HighAuth401Rate` | la proporción de respuestas 401 sobre el total supera el 5 % en 5 min | 2 min | `warning` |
+| `IncompleteClaimsAttemptsDetected` | aparece cualquier validación fallida con `reason=~"missing_.*"` | 1 min | `critical` |
+
+El umbral de 401 es una tasa, no un contador: busca fuerza bruta o expiración masiva, no un fallo
+aislado. La segunda alerta no tiene umbral porque un solo token sin `tenant_id` o sin `user_role`
+ya es un intento de evadir el aislamiento.
+
+Esta sección documenta el contrato de observabilidad; la evidencia de que está implementado y
+verificado (TEC-14) son las pruebas `tests/integration/routes/metrics.routes.test.js` de
+`MANI-Node`, el guion `tests/gateway/ruta-publica-metrics.sh` del Gateway y su ejecución en
+`.github/workflows/ci.yml`.
 
 ---
 

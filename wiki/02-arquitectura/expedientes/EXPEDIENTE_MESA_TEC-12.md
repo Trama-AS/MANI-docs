@@ -11,8 +11,8 @@ para que esa sesión dure lo que debe durar.
 
 | ADR | Decide | Estado hoy |
 |---|---|---|
-| [ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) | Propiedad del esquema de base de datos y frontera de datos entre servicios: la frontera se cruza por HTTP y el DDL vive en Core | `Aceptado` desde el 2026-10-23, **sin sesión de Mesa** |
-| [ADR-0016](adr/ADR-0016-despacho-concurrencia.md) | Despacho broadcast y exclusión concurrente: una sola asignación válida mediante actualización condicional atómica | `Aceptado` desde el 2026-10-23, **sin sesión de Mesa** |
+| [ADR-0030](../adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) | Propiedad del esquema de base de datos y frontera de datos entre servicios: la frontera se cruza por HTTP y el DDL vive en Core | `Aceptado` desde el 2026-10-23, **sin sesión de Mesa** |
+| [ADR-0016](../adr/ADR-0016-despacho-concurrencia.md) | Despacho broadcast y exclusión concurrente: una sola asignación válida mediante actualización condicional atómica | `Aceptado` desde el 2026-10-23, **sin sesión de Mesa** |
 
 Las dos pasaron de `Propuesto` a `Aceptado` por decisión de la Scrum Master en la consolidación
 documental del 23 de octubre de 2026. **Las dos lo dicen en su propia nota de ratificación** y piden

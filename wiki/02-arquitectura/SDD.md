@@ -206,7 +206,7 @@ El Nivel 4 (Code) se mantiene en §4.4: Structurizr describe contenedores y comp
 ## 4.0 Inventario de diagramas
 
 **Las doce vistas del proyecto están definidas en [`workspace.dsl`](diagrams/c4/workspace.dsl)
-y exportadas a [`diagrams/c4/`](diagrams/c4/), [`diagrams/despliegue/`](diagrams/despliegue/) y [`diagrams/flujos/dinamicos/`](../../diagrams/flujos/dinamicos) según [ADR-0008](adr/ADR-0008-diagramacion-tecnica.md).** El DSL es la fuente: un diagrama no se
+y exportadas a [`diagrams/c4/`](diagrams/c4/), [`diagrams/despliegue/`](diagrams/despliegue/) y [`diagrams/flujos/dinamicos/`](diagrams/flujos/dinamicos) según [ADR-0008](adr/ADR-0008-diagramacion-tecnica.md).** El DSL es la fuente: un diagrama no se
 edita en la imagen, se cambia en el modelo y se vuelve a exportar. Si una vista no aparece en esta
 tabla, no es oficial.
 
@@ -218,11 +218,11 @@ tabla, no es oficial.
 | 4 | `componentes-rules` | C4 Nivel 3 | Dentro del Rules Service: controlador, servicio de aplicación, las estrategias por tipo de regla, el puerto y su adaptador | [`componentes-rules.png`](diagrams/c4/componentes/componentes-rules.png) | §4.3.1 |
 | 5 | `componentes-dispatch` | C4 Nivel 3 | Dentro del Dispatch Service: selector de candidatos, coordinador de asignación, **concurrency guard** y auditoría | [`componentes-dispatch.png`](diagrams/c4/componentes/componentes-dispatch.png) | §4.3.2 |
 | 6 | `componentes-core` | C4 Nivel 3 | Dentro del Core Service: identidad y tenants, KYC, catálogo, cobertura y disponibilidad, ciclo del servicio, comunicaciones, reportes y adaptadores externos | [`componentes-core.png`](diagrams/c4/componentes/componentes-core.png) | §4.3.3 |
-| 7 | `dinamico-solicitud` | Dinámica | El orden en que se crea una solicitud: el despacho pide elegibilidad al Core y el orden del listado al Rules Service | [`dinamico-solicitud.png`](../../diagrams/flujos/dinamicos/dinamico-solicitud.png) | §4.6.1 |
-| 8 | `dinamico-aceptacion` | Dinámica | Dos aliados aceptan a la vez y la actualización condicional atómica deja pasar solo al primero; el segundo recibe `409` | [`dinamico-aceptacion.png`](../../diagrams/flujos/dinamicos/dinamico-aceptacion.png) | §4.6.2 |
-| 9 | `dinamico-cotizacion` | Dinámica | El Core persiste la cotización y el Rules Service la contrasta contra el tarifario de referencia | [`dinamico-cotizacion.png`](../../diagrams/flujos/dinamicos/dinamico-cotizacion.png) | §4.6.3 |
-| 10 | `dinamico-kyc` | Dinámica | Los documentos del aliado llegan al bucket privado y el administrador del tenant aprueba o rechaza | [`dinamico-kyc.png`](../../diagrams/flujos/dinamicos/dinamico-kyc.png) | §4.6.4 |
-| 11 | `dinamico-mensajeria` | Dinámica | El mensaje se persiste primero, Realtime lo transporta al participante conectado y el push cubre al desconectado | [`dinamico-mensajeria.png`](../../diagrams/flujos/dinamicos/dinamico-mensajeria.png) | §4.6.5 |
+| 7 | `dinamico-solicitud` | Dinámica | El orden en que se crea una solicitud: el despacho pide elegibilidad al Core y el orden del listado al Rules Service | [`dinamico-solicitud.png`](diagrams/flujos/dinamicos/dinamico-solicitud.png) | §4.6.1 |
+| 8 | `dinamico-aceptacion` | Dinámica | Dos aliados aceptan a la vez y la actualización condicional atómica deja pasar solo al primero; el segundo recibe `409` | [`dinamico-aceptacion.png`](diagrams/flujos/dinamicos/dinamico-aceptacion.png) | §4.6.2 |
+| 9 | `dinamico-cotizacion` | Dinámica | El Core persiste la cotización y el Rules Service la contrasta contra el tarifario de referencia | [`dinamico-cotizacion.png`](diagrams/flujos/dinamicos/dinamico-cotizacion.png) | §4.6.3 |
+| 10 | `dinamico-kyc` | Dinámica | Los documentos del aliado llegan al bucket privado y el administrador del tenant aprueba o rechaza | [`dinamico-kyc.png`](diagrams/flujos/dinamicos/dinamico-kyc.png) | §4.6.4 |
+| 11 | `dinamico-mensajeria` | Dinámica | El mensaje se persiste primero, Realtime lo transporta al participante conectado y el push cubre al desconectado | [`dinamico-mensajeria.png`](diagrams/flujos/dinamicos/dinamico-mensajeria.png) | §4.6.5 |
 | 12 | `despliegue-prod` | Despliegue | Dónde se ejecuta cada contenedor en producción, de dónde sale su imagen y quién lo vigila | [`despliegue-prod.png`](diagrams/despliegue/despliegue-prod.png) | §9 |
 
 Dos aclaraciones sobre el alcance de la tabla:
@@ -304,7 +304,7 @@ estar sin regenerar.
 
 **Objetivo:** mostrar MANI como un sistema y sus relaciones con personas y sistemas externos.
 
-[![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](diagrams/c4/contexto/contexto.png)](../diagrams/c4/contexto/contexto.png)
+[![C4 Nivel 1 — Contexto del sistema: MANI, sus actores y los sistemas externos](diagrams/c4/contexto/contexto.png)](diagrams/c4/contexto/contexto.png)
 
 > **Figura 1 — Contexto del sistema (C4 Nivel 1).** Generada desde la vista `contexto` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/contexto/contexto.png`](diagrams/c4/contexto/contexto.png).
 
@@ -334,7 +334,7 @@ Visitante (sin sesión) → conoce los servicios y estima un precio en la landin
 
 **Objetivo:** mostrar las unidades desplegables y almacenes principales.
 
-[![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](diagrams/c4/contenedores/contenedores.png)](../diagrams/c4/contenedores/contenedores.png)
+[![C4 Nivel 2 — Contenedores: unidades desplegables, Supabase, integraciones y analítica](diagrams/c4/contenedores/contenedores.png)](diagrams/c4/contenedores/contenedores.png)
 
 > **Figura 2 — Contenedores (C4 Nivel 2).** Generada desde la vista `contenedores` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/contenedores/contenedores.png`](diagrams/c4/contenedores/contenedores.png).
 
@@ -374,7 +374,7 @@ Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el ord
 
 ### 4.3.1 Rules Service — Java
 
-[![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](diagrams/c4/componentes/componentes-rules.png)](../diagrams/c4/componentes/componentes-rules.png)
+[![C4 Nivel 3 — Rules Service (Java): controller, application service, estrategias, puerto y adaptador](diagrams/c4/componentes/componentes-rules.png)](diagrams/c4/componentes/componentes-rules.png)
 
 > **Figura 3 — Rules Service, Java (C4 Nivel 3).** Generada desde la vista `componentes-rules` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/componentes/componentes-rules.png`](diagrams/c4/componentes/componentes-rules.png).
 
@@ -395,7 +395,7 @@ Responsabilidades:
 
 ### 4.3.2 Dispatch Service — .NET
 
-[![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](diagrams/c4/componentes/componentes-dispatch.png)](../diagrams/c4/componentes/componentes-dispatch.png)
+[![C4 Nivel 3 — Dispatch Service (.NET): selector de candidatos, coordinador de asignación, concurrency guard y auditoría](diagrams/c4/componentes/componentes-dispatch.png)](diagrams/c4/componentes/componentes-dispatch.png)
 
 > **Figura 4 — Dispatch Service, .NET (C4 Nivel 3).** Generada desde la vista `componentes-dispatch` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/componentes/componentes-dispatch.png`](diagrams/c4/componentes/componentes-dispatch.png).
 
@@ -419,7 +419,7 @@ Responsabilidades:
 
 ### 4.3.3 Core Service — Node.js
 
-[![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](diagrams/c4/componentes/componentes-core.png)](../diagrams/c4/componentes/componentes-core.png)
+[![C4 Nivel 3 — Core Service (Node.js): usuarios y tenants, KYC, catálogo, notificación, reportes y adaptadores externos](diagrams/c4/componentes/componentes-core.png)](diagrams/c4/componentes/componentes-core.png)
 
 > **Figura 5 — Core Service, Node.js (C4 Nivel 3).** Generada desde la vista `componentes-core` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/componentes/componentes-core.png`](diagrams/c4/componentes/componentes-core.png).
 
@@ -505,7 +505,7 @@ DB / External Adapters
 
 **Objetivo:** mostrar el mapa de sistemas alrededor de MANI. Es una pregunta distinta de la del Nivel 1: el contexto mira hacia fuera *desde* MANI, el panorama mira el conjunto y deja ver que MANI es el único sistema propio y que todo lo demás es proveedor o plataforma de destino.
 
-[![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](diagrams/c4/contexto/panorama.png)](../diagrams/c4/contexto/panorama.png)
+[![System Landscape — panorama de sistemas: MANI como único sistema propio, sus actores y las plataformas externas](diagrams/c4/contexto/panorama.png)](diagrams/c4/contexto/panorama.png)
 
 > **Figura 6 — Panorama de sistemas (System Landscape).** Generada desde la vista `panorama` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/contexto/panorama.png`](diagrams/c4/contexto/panorama.png).
 
@@ -538,9 +538,9 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 ### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
 
-[![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](../../../diagrams/flujos/dinamicos/dinamico-solicitud.png)](../diagrams/flujos/dinamicos/dinamico-solicitud.png)
+[![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](diagrams/flujos/dinamicos/dinamico-solicitud.png)](diagrams/flujos/dinamicos/dinamico-solicitud.png)
 
-> **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/flujos/dinamicos/dinamico-solicitud.png`](../../diagrams/flujos/dinamicos/dinamico-solicitud.png).
+> **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/flujos/dinamicos/dinamico-solicitud.png`](diagrams/flujos/dinamicos/dinamico-solicitud.png).
 
 ```text
 1. Cliente            → Flutter          registra la solicitud
@@ -555,9 +555,9 @@ Quien orquesta es el despacho: pregunta elegibilidad al dominio de disponibilida
 
 ### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
 
-[![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](../../../diagrams/flujos/dinamicos/dinamico-aceptacion.png)](../diagrams/flujos/dinamicos/dinamico-aceptacion.png)
+[![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](diagrams/flujos/dinamicos/dinamico-aceptacion.png)](diagrams/flujos/dinamicos/dinamico-aceptacion.png)
 
-> **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/flujos/dinamicos/dinamico-aceptacion.png`](../../diagrams/flujos/dinamicos/dinamico-aceptacion.png).
+> **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/flujos/dinamicos/dinamico-aceptacion.png`](diagrams/flujos/dinamicos/dinamico-aceptacion.png).
 
 Vista a nivel de componentes del Servicio de Despacho. Dos aliados aceptan la misma solicitud al mismo tiempo:
 
@@ -576,9 +576,9 @@ La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y re
 
 ### 4.6.3 Cotización y tarifario — `dinamico-cotizacion`
 
-[![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](../../../diagrams/flujos/dinamicos/dinamico-cotizacion.png)](../diagrams/flujos/dinamicos/dinamico-cotizacion.png)
+[![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](diagrams/flujos/dinamicos/dinamico-cotizacion.png)](diagrams/flujos/dinamicos/dinamico-cotizacion.png)
 
-> **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/flujos/dinamicos/dinamico-cotizacion.png`](../../diagrams/flujos/dinamicos/dinamico-cotizacion.png).
+> **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/flujos/dinamicos/dinamico-cotizacion.png`](diagrams/flujos/dinamicos/dinamico-cotizacion.png).
 
 ```text
 1. Aliado        → Flutter        cotización separando mano de obra y materiales (RF-15)
@@ -593,9 +593,9 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 
 ### 4.6.4 KYC del aliado — `dinamico-kyc`
 
-[![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](../../../diagrams/flujos/dinamicos/dinamico-kyc.png)](../diagrams/flujos/dinamicos/dinamico-kyc.png)
+[![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](diagrams/flujos/dinamicos/dinamico-kyc.png)](diagrams/flujos/dinamicos/dinamico-kyc.png)
 
-> **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/flujos/dinamicos/dinamico-kyc.png`](../../diagrams/flujos/dinamicos/dinamico-kyc.png).
+> **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/flujos/dinamicos/dinamico-kyc.png`](diagrams/flujos/dinamicos/dinamico-kyc.png).
 
 ```text
 1. Aliado                 → Flutter        carga los documentos requeridos por el tenant
@@ -625,9 +625,9 @@ tenant y la evalúa el Rules Service, igual que el ranking y el tarifario (§4.3
 
 ### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
 
-[![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](../../../diagrams/flujos/dinamicos/dinamico-mensajeria.png)](../diagrams/flujos/dinamicos/dinamico-mensajeria.png)
+[![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](diagrams/flujos/dinamicos/dinamico-mensajeria.png)](diagrams/flujos/dinamicos/dinamico-mensajeria.png)
 
-> **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/flujos/dinamicos/dinamico-mensajeria.png`](../../diagrams/flujos/dinamicos/dinamico-mensajeria.png).
+> **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/flujos/dinamicos/dinamico-mensajeria.png`](diagrams/flujos/dinamicos/dinamico-mensajeria.png).
 
 ```text
 1. Cliente   → Flutter        escribe un mensaje del servicio
@@ -857,7 +857,7 @@ Los escenarios anteriores complementan los umbrales específicos definidos en la
 
 ## 9.1 Producción
 
-[![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](diagrams/despliegue/despliegue-prod.png)](../diagrams/despliegue/despliegue-prod.png)
+[![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](diagrams/despliegue/despliegue-prod.png)](diagrams/despliegue/despliegue-prod.png)
 
 > **Figura 12 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/despliegue/despliegue-prod.png`](diagrams/despliegue/despliegue-prod.png).
 

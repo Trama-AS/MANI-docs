@@ -30,7 +30,7 @@ En la numeración vigente, `ADR-0022` es la lógica de negocio en los servicios 
 consolidación de repositorios y ambientes. **Son decisiones distintas con el mismo número.**
 
 El índice vigente, con el hueco de `ADR-0024` a `ADR-0026` explicado, está en
-[Decisiones ADR](../wiki/02-arquitectura/decisiones-adr.md).
+[Decisiones ADR](../wiki/02-arquitectura/guia/decisiones-adr.md).
 
 ## Dónde está la verdad
 

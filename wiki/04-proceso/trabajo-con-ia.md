@@ -35,7 +35,7 @@ Derivado de las reglas anteriores y de la jerarquía de fuentes, no de preferenc
 - **no decide arquitectura** ni «cierra» un punto abierto: `INFRA-01` e `INFRA-02` se resuelven en Mesa de Arquitectura y producen ADR, como se hizo con `SP-05` y `ADR-0022`;
 - **no edita un documento fuente para que coincida con el código**: una contradicción se reporta en el PR o en el issue y se resuelve en el documento correspondiente;
 - no inventa umbrales, rutas, credenciales, nombres de tabla, endpoints ni versiones: si el dato no está documentado, pregunta;
-- no introduce dependencias prohibidas ([Reglas arquitectónicas](../02-arquitectura/reglas-arquitectonicas.md));
+- no introduce dependencias prohibidas ([Reglas arquitectónicas](../02-arquitectura/guia/reglas-arquitectonicas.md));
 - no marca algo como terminado sin el [DoD](dor-y-dod.md) completo;
 - no sustituye la revisión humana: el punto 1 de la política es explícito;
 - **no se atribuye el trabajo.** No agrega `Co-Authored-By` de una herramienta, ni pies del tipo «generado con», ni emojis de robot, en ningún commit, PR, documento, archivo de código o comentario. Tampoco firma documentos como autor: el campo **Autor** de un ADR o de un documento lleva el nombre de la persona responsable. Si encuentra una atribución de ese tipo en un archivo que ya está editando, la quita.

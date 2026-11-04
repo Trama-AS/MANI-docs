@@ -2,7 +2,7 @@
 
 **Entregable:** ARQ-06 (SCRUM-1237) · **Sprint 4** · **Fecha:** 2026-10-18  
 **Responsable:** Juan Sebastián Álvarez Rodríguez  
-**Fuentes normativas:** [`ADR-0029`](adr/ADR-0029-comunicacion-asincrona-kafka.md), [`ADR-0030`](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md), [`ADR-0016`](adr/ADR-0016-despacho-concurrencia.md), [`SAD.md`](SAD.md) §7.4 y §12.2, [`SDD.md`](SDD.md) §2.1, [`ModeloDatos.md`](ModeloDatos.md) §6.3, §7 y §8, [`TRAZABILIDAD_INTEGRACION.md`](TRAZABILIDAD_INTEGRACION.md).  
+**Fuentes normativas:** [`ADR-0029`](adr/ADR-0029-comunicacion-asincrona-kafka.md), [`ADR-0030`](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md), [`ADR-0016`](adr/ADR-0016-despacho-concurrencia.md), [`SAD.md`](SAD.md) §7.4 y §12.2, [`SDD.md`](SDD.md) §2.1, [`ModeloDatos.md`](ModeloDatos.md) §6.3, §7 y §8.  
 **Artefacto de verificación ejecutable:** [`Entregas/PoC/PoC-ARQ06-esquema-versionado-eventos/`](../07-calidad/PoC/PoC-ARQ06-esquema-versionado-eventos/README.md)
 
 ---

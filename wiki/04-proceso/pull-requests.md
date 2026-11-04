@@ -49,7 +49,7 @@ Plantilla que cubre exactamente eso, sin añadir requisitos:
 - Los **cambios en datos** obligan a revisar migraciones, RLS y compatibilidad.
 - Un cambio que toque autenticación, tenant, RLS, endpoints de datos o Storage debe traer sus pruebas cross-tenant ([CI/CD y calidad](cicd-y-calidad.md)).
 
-Lista corta para el revisor, derivada de [Reglas arquitectónicas](../02-arquitectura/reglas-arquitectonicas.md):
+Lista corta para el revisor, derivada de [Reglas arquitectónicas](../02-arquitectura/guia/reglas-arquitectonicas.md):
 
 - [ ] La operación entra por el Gateway.
 - [ ] El servicio que cambia es dueño de esos datos.

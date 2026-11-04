@@ -1,6 +1,6 @@
 # Tech Radar — MANI
 
-[![Tech Radar de MANI: tecnologías adoptadas, en evaluación y descartadas](diagrams/TechRadar.png)](../diagrams/TechRadar.png)
+[![Tech Radar de MANI: tecnologías adoptadas, en evaluación y descartadas](diagrams/TechRadar.png)](diagrams/TechRadar.png)
 
 > **Figura 1 — Tech Radar.** Archivo: [`diagrams/TechRadar.png`](diagrams/TechRadar.png). Si la imagen y las listas de abajo discrepan, manda este documento.
 

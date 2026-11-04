@@ -65,7 +65,7 @@ Definido en ADR-0029 §2 y especificado formalmente en [`CONTRATOS_EVENTOS.md`](
 | ARQ-04 (SCRUM-1235) | ADR-0029 | **cerrada**, PR #36 fusionado | — |
 | ARQ-06 (SCRUM-1237) | esquema y versionado de eventos | **entregada** en [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) + JSON Schemas verificables | — |
 | ARQ-07 (SCRUM-1238) | publicación confiable | ejecutable con alcance «escribe al outbox» | ninguno |
-| ARQ-05 (SCRUM-1236) | Kafka en DEV y QA | **diferida al Sprint 5** | condicionada al cierre de CFG4-02 |
+| ARQ-05 (SCRUM-1236) | Kafka en DEV y QA | **operativo en DEV y QA** | [ARQ-05-despliegue-kafka-dev-qa.md](ARQ-05-despliegue-kafka-dev-qa.md) (KRaft, topicos canonicos, smoke test, monitoreo) |
 | ARQ-08 (SCRUM-1239) | consumidores idempotentes | **diferida al Sprint 5** | depende de ARQ-05 |
 
 ---
@@ -108,7 +108,7 @@ trazabilidad de qué artefacto responde por cada pieza de integración:
 | Persistencia compartida por ambiente | PostgreSQL/Supabase, una base por ambiente | Infraestructura V3 §6, CFG4-02 (SCRUM-1254) |
 | Cadena de calidad | SonarQube, Newman, Playwright | Infraestructura V3 §7, CFG4-03 |
 | Promoción de imágenes | GHCR, DEV → QA → PROD | Infraestructura V3 §8 |
-| **Broker de eventos** | **no desplegado** | ADR-0029; ARQ-05 difiere a Sprint 5 |
+| **Broker de eventos** | **operativo en DEV y QA** | [ARQ-05-despliegue-kafka-dev-qa.md](ARQ-05-despliegue-kafka-dev-qa.md); Apache Kafka 3.8.0 KRaft en DEV (10.43.98.232) y QA (10.43.100.141) |
 | **Relay del outbox** | **no implementado** | ADR-0029 §3; rol `mani_relay` ya especificado en `ModeloDatos` §6.3 |
 
 ---

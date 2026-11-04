@@ -40,6 +40,7 @@ Si guía y documento se contradicen, manda el documento. Si documento y ADR se c
 | [`COMUNICACION_SERVICIOS_GATEWAY.md`](COMUNICACION_SERVICIOS_GATEWAY.md) | Enrutamiento perimetral y reglas de comunicación entre servicios |
 | [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) | Esquemas y versionado de los eventos de negocio |
 | [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas |
+| [`ARQ-05-despliegue-kafka-dev-qa.md`](ARQ-05-despliegue-kafka-dev-qa.md) | Configuración y despliegue del broker Kafka en DEV y QA: tópicos canónicos, smoke test y monitoreo (SCRUM-1236) |
 
 Secciones que conviene conocer porque son las que suelen buscarse como «documento aparte»:
 

@@ -752,8 +752,11 @@ Esto evita que una reconexión implique pérdida del estado del servicio.
 
 Realtime es un transporte hacia un usuario conectado: no garantiza entrega a un consumidor
 desconectado, no reintenta y no ordena por agregado. **No es el bus de integración entre
-servicios.** Esa integración se decide en ADR-0029: bus de eventos con **Apache Kafka**, con la
-implementación **diferida al Sprint 5**. Durante el Sprint 4 la integración entre servicios es
+servicios.** Esa integración se decide en ADR-0029: bus de eventos con **Apache Kafka**. El broker ya está
+**operativo en DEV y QA** (Kafka 3.8.0 en modo KRaft, tópicos canónicos, smoke test y monitoreo:
+[`ARQ-05-despliegue-kafka-dev-qa.md`](ARQ-05-despliegue-kafka-dev-qa.md), SCRUM-1236); la
+publicación confiable desde el outbox (ARQ-07) y los consumidores idempotentes (ARQ-08) siguen
+**diferidos al Sprint 5**. Durante el Sprint 4 la integración entre servicios es
 exclusivamente HTTP sincrónico por la red interna, con falla cerrado —`503` hacia el llamador, sin
 degradar a lógica local— según el patrón que fija ADR-0030 §2.
 

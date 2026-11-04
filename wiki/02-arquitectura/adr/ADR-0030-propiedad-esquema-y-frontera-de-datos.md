@@ -7,7 +7,7 @@
 - **Jira:** ARQ-02 (SCRUM-1233) y ARQ-03 (SCRUM-1234)
 - **Relacionado con:** ADR-0012, ADR-0015, ADR-0019, ADR-0022, ADR-0029, RNF-01
 - **Enmienda:** precisa SDD §4.2 y §12.3
-- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que el apartado «Decisión» de ADR-0003 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ---
 

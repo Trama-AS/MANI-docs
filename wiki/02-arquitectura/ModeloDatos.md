@@ -1569,10 +1569,20 @@ de rango por periodo (RF-23) no recorra la tabla completa.
 | Campo | Tipo | Restricción | Descripción |
 |---|---|---|---|
 | id_zona | UUID | PK | Identificador |
-| id_tenant | UUID | FK | Tenant |
-| nombre | VARCHAR(120) | UNIQUE por tenant | Zona |
-| descripcion | VARCHAR(255) | NULL | Descripción |
-| estado | VARCHAR(20) | CHECK | Estado |
+| nivel | TEXT | NOT NULL | Nivel en la jerarquía: `CIUDAD`, `LOCALIDAD`, `BARRIO` (RF-07, SCRUM-1393). Es TEXT libre en la base: el conjunto de valores lo fija `Zone.LEVELS` en Core, no un `CHECK` |
+| nombre | TEXT | NOT NULL | Nombre de la zona |
+| zona_padre_id | UUID | FK a `zona`, NULL | Zona inmediatamente superior. NULL solo en la raíz; una fila sin padre que no sea raíz se reporta como `ZONA_SIN_PADRE` y queda fuera del árbol |
+| estado | TEXT | NOT NULL | Estado. Una zona inactiva se devuelve con `selectable: false` en lugar de ocultarse, porque un sitio histórico puede apuntar a ella |
+
+> **El catálogo de zonas es global, no por tenant.** La tabla real **no tiene `id_tenant`**: el
+> aislamiento lo da el borde, porque las rutas exigen JWT verificado y el tenant sale del claim.
+> Volverlo privado por tenant sería una migración con `tenant_id` y RLS en el mismo cambio
+> (SCRUM-1393). Esta tabla documentaba antes `id_tenant` y `descripcion`, que el DDL nunca creó;
+> queda corregida contra `database/init/01-schema.sql` y la serie viva de `MANI-Node`.
+>
+> **Pendiente para HU-M04-07 (SCRUM-1396).** La visualización cartográfica necesita coordenadas y
+> hoy no existen: ni esta tabla ni `core.sitio_servicio` tienen latitud, longitud ni geometría, y
+> la base no tiene PostGIS. Mientras no se agreguen, el mapa no se puede construir.
 
 ## `core.aliado_categoria`
 

@@ -8,7 +8,7 @@
 - **Fecha:** 2026-10-05
 - **Jira:** DOC-26 (SCRUM-1075)
 - **Relacionado con:** ADR-0003, ADR-0012, ADR-0015, ADR-0016, ADR-0019
-- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que ADR-0003 §2 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que el apartado «Decisión» de ADR-0003 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 - **Modificado por:** TEC-01 (SCRUM-1448, 2026-10-27): la decisión 6A de la Scrum Master del 26-oct-2026 mueve a Core la escritura del estado de la solicitud; se corrigen las dos menciones que atribuían a Dispatch las solicitudes y la actualización condicional atómica.
 
 ## Contexto

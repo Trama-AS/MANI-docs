@@ -26,7 +26,7 @@ Si se adopta una plataforma de orquestación, los secretos pasan a su gestor nat
 
 ## Identidad de tenant en tránsito
 
-El `tenant_id` del JWT firmado es la fuente canónica; el Gateway valida inicialmente, cada servicio valida autorización y RLS refuerza el aislamiento. `X-Tenant-Slug` sirve sólo para resolución contextual antes de autenticar y **no autoriza acceso a datos** (Políticas §16). Detalle en [Multi-tenancy y seguridad](../02-arquitectura/multitenancy-y-seguridad.md).
+El `tenant_id` del JWT firmado es la fuente canónica; el Gateway valida inicialmente, cada servicio valida autorización y RLS refuerza el aislamiento. `X-Tenant-Slug` sirve sólo para resolución contextual antes de autenticar y **no autoriza acceso a datos** (Políticas §16). Detalle en [Multi-tenancy y seguridad](../02-arquitectura/guia/multitenancy-y-seguridad.md).
 
 ## Riesgo abierto registrado
 

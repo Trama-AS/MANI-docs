@@ -1,6 +1,6 @@
 # ADR-0032 — Identidad en base de datos cuando el llamador es un servicio
 
-- **Estado:** Aceptado (revisión de arquitectura aprobada en PR #39; pendiente de acta de Mesa de Arquitectura, CFG-23a.4)
+- **Estado:** Aceptado (revisión de arquitectura aprobada en PR #39; pendiente de acta de Mesa de Arquitectura, ver «Pendiente de Mesa»)
 - **Decisión de:** persistencia y seguridad multi-tenant
 - **Autor:** Juan Sebastián Álvarez Rodríguez
 - **Revisor:** Sara Albarracín Niño (revisión aprobada en `MANI-docs` PR #39, conforme a ADR-0003)
@@ -8,7 +8,7 @@
 - **Jira:** CFG-23a (SCRUM-1103), subtarea SCRUM-1196
 - **Relacionado con:** ADR-0012, ADR-0015, ADR-0016, ADR-0018, ADR-0022 (KI-05), ADR-0029, ADR-0030, ADR-0031
 - **Defectos que cierra junto con CFG-23b/23c:** SCRUM-1334 (BUG-SEC-02)
-- **Evidencia:** [inventario CFG-23a.1](../CFG-23a/01-inventario-rls.md), [diseño CFG-23a.3](../CFG-23a/02-diseno-modelo-identidad.md), [PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)
+- **Evidencia:** inventario de RLS vigente en [`ModeloDatos.md`](../ModeloDatos.md) §6.4 (CFG-23a.1), diseño del modelo en [`ModeloDatos.md`](../ModeloDatos.md) §6.5 (CFG-23a.3), [PoC](../../07-calidad/PoC/PoC-CFG23a-identidad-servicio-rls/README.md)
 - **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que el apartado «Decisión» de ADR-0003 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ---
@@ -142,11 +142,32 @@ La PoC lo verificó en PostgreSQL 16 con roles y funciones equivalentes a Supaba
 ## Verificación
 
 - CFG-23c ejecuta en QA los seis casos de Políticas DevOps §13.4 a través del Gateway (incluyendo en el caso 6 el intento de acceso a una ruta de Storage `{T2}/…` de otro tenant) **y** una verificación en el motor: con el rol de servicio y un tenant equivocado, la consulta devuelve 0 filas, no solo un rechazo previo del servicio (criterio de cierre de SCRUM-1334).
-- La consulta del anexo A del inventario, corrida en QA, no devuelve tablas con `tenant_id` sin RLS, ni políticas `TO public` de aislamiento, ni funciones `SECURITY DEFINER` ejecutables por `anon`.
+- La consulta de confirmación de [`ModeloDatos.md`](../ModeloDatos.md) §6.4, corrida en QA, no devuelve tablas con `tenant_id` sin RLS, ni políticas `TO public` de aislamiento, ni funciones `SECURITY DEFINER` ejecutables por `anon`.
+
+## Pendiente de Mesa — preguntas y acta
+
+Este ADR tiene revisión de pares aprobada (`MANI-docs` PR #39) pero **no tiene acta de Mesa de Arquitectura**. La sesión sigue pendiente y es lo que CFG-23a.4 (SCRUM-1198) preparó. No se completan fecha ni acuerdos sin sesión celebrada (SM4-01).
+
+Evidencia que la sesión tiene en la mano: la PoC en PostgreSQL 16 con roles y funciones equivalentes a Supabase (2026-10-17) aprobó los seis casos de Políticas DevOps §13.4 (C1–C6), la falla cerrada sin contexto, con claim corrupto y en autocommit (C5), la ausencia de fuga entre transacciones del pool (P1, con control negativo que justifica prohibir el `set_config` de sesión), el `permission denied` de Dispatch sobre tablas de Core (P3) y el rechazo de un cliente que intenta aceptar solicitudes (P4). Su límite: no es Supabase real, y por eso CFG-23c repite los casos en QA.
+
+| # | Pregunta | Estado |
+|---|---|---|
+| M1 | ¿Se aprueba la alternativa 5 como mecanismo único, con la 2 solo como paso transitorio de Core? | Propuesta: sí, avalada en la revisión de arquitectura. **Lista para ratificar en sesión** |
+| M2 | `tarifa_referencia` y los *overrides* por tenant: ¿Rules persiste en la base compartida o en el propio servicio? | **Resuelta en el diseño:** en el incremento actual los *overrides* viven en la configuración de `MANI-Java` y Rules no accede a PostgreSQL (ADR-0022); Core persiste `tarifa_referencia` y consulta a Rules por HTTP (ADR-0030 §2). `mani_rules_svc` queda documentado y **no se crea** hasta que el tarifario se persista desde Rules |
+| M3 | ¿Se acepta el riesgo residual de Storage con `service_role`, con rutas construidas desde el contexto? | Propuesta: sí, precisando que el **caso 6** debe probar una ruta de Storage de **otro tenant** (`{T2}/…`), no solo de otro aliado del mismo tenant. Incorporado en §6 y en la Verificación |
+| M4 | ¿Se acepta que `tenant` siga legible sin contexto (`slug`, `nombre`, `estado`) para resolver `X-Tenant-Slug`? | Propuesta: sí, el slug ya es público por ADR-0018. **Lista para ratificar** |
+| M5 | Nombres de los roles de contexto fuera de sesión: `anonimo` (lectura pre-auth) y `servicio` (asíncrono) | **Abierta:** aprobar o renombrar en sesión |
+| M6 | ¿Las tres exposiciones de §8 se corrigen antes de CFG-23b? | **Ejecutado:** migración `0005_cerrar_exposiciones_rls.sql` y su verificación, en `MANI-Node` PR #28 bajo SCRUM-1334 |
+| M7 | Revisor del ADR, que ADR-0003 exige distinto del autor | **Resuelto:** Sara Albarracín Niño, en `MANI-docs` PR #39 |
+| M8 | Dependencia operativa del paso 5 de CFG-23b | **Resuelta:** los roles nacen `NOLOGIN` en la migración; operaciones asigna `LOGIN PASSWORD` y actualiza `DATABASE_URL` fuera de git (ADR-0031 §5) antes de activar RLS en QA |
+
+Lo que la sesión debe producir: ratificar M1, M4 y M5, registrar el disenso si lo hay, y entonces mover CFG-23b y CFG-23c fuera de *blocked* —sus pasos 1 a 4 pueden avanzar sin esperar el paso 5 operativo— y fusionar `MANI-Node` PR #28. Si se rechaza o se modifica, se registra el motivo y la alternativa elegida, y se reabre CFG-23a.2.
+
+Responsables de lo acordado: Juan Sebastián Álvarez (CFG-23b pasos 1 a 4, migraciones y `withTenantContext`), Daniel Ávila (CFG-23b paso 5, `LOGIN PASSWORD` y `DATABASE_URL` en QA y PROD) y Santiago Hernández (CFG-23c, los seis casos en QA).
 
 ## Disenso registrado
 
-Sin disenso en la revisión de arquitectura previa (PR #39 aprobado por Sara Albarracín Niño con tres observaciones incorporadas en §3, §6 y §8); pendiente de ratificación en el acta de Mesa de Arquitectura (CFG-23a.4).
+Sin disenso en la revisión de arquitectura previa (PR #39 aprobado por Sara Albarracín Niño con tres observaciones incorporadas en §3, §6 y §8); pendiente de ratificación en el acta de Mesa de Arquitectura, según el apartado anterior.
 
 ## Condición de revisión
 

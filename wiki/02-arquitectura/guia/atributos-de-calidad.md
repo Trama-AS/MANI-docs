@@ -1,11 +1,11 @@
 # Atributos de calidad
 
-[← 02 · Arquitectura](README.md) · [Índice](../Home.md)
+[← 02 · Arquitectura](../README.md) · [Índice](../../Home.md)
 
-**Fuente:** [`architecture/SDD.md`](SDD.md) §7 y §8 (ISO/IEC 25010:2023) · [`architecture/SAD.md`](SAD.md) §20.
+**Fuente:** [`architecture/SDD.md`](../SDD.md) §7 y §8 (ISO/IEC 25010:2023) · [`architecture/SAD.md`](../SAD.md) §20.
 
 > **Esta página es un índice, no la fuente de los umbrales.** Los umbrales de calidad del proyecto
-> viven en **un solo lugar**: [`SDD.md`](SDD.md) §7, y los escenarios con los que QA los verifica y
+> viven en **un solo lugar**: [`SDD.md`](../SDD.md) §7, y los escenarios con los que QA los verifica y
 > sus resultados en §8. La tabla de abajo los muestra para consulta rápida. Antes esta página los
 > repetía a mano y la copia se desincronizó: llegó a decir `p95 ≤ 1 s` mientras el SDD decía
 > `p95 ≤ 500 ms`.
@@ -16,10 +16,10 @@
 
 | Pregunta | Dónde se responde |
 |---|---|
-| ¿Qué atributo es prioritario y por qué? | [`SAD.md`](SAD.md) §20 |
-| ¿Qué decisión de arquitectura obliga esa prioridad? | [`SAD.md`](SAD.md) §20.1 |
-| ¿Con qué umbral se verifica? | [`SDD.md`](SDD.md) §7 |
-| ¿Con qué escenario lo comprueba QA, con qué herramienta y qué resultado dio? | [`SDD.md`](SDD.md) §8 |
+| ¿Qué atributo es prioritario y por qué? | [`SAD.md`](../SAD.md) §20 |
+| ¿Qué decisión de arquitectura obliga esa prioridad? | [`SAD.md`](../SAD.md) §20.1 |
+| ¿Con qué umbral se verifica? | [`SDD.md`](../SDD.md) §7 |
+| ¿Con qué escenario lo comprueba QA, con qué herramienta y qué resultado dio? | [`SDD.md`](../SDD.md) §8 |
 
 ## Prioridades
 
@@ -34,7 +34,7 @@ producción. P3 se verifica, pero su impacto arquitectónico es menor para el al
 
 ## Escenarios de calidad
 
-[`SDD.md`](SDD.md) §8 define **45 escenarios**: uno por cada una de las 40 subcaracterísticas de
+[`SDD.md`](../SDD.md) §8 define **45 escenarios**: uno por cada una de las 40 subcaracterísticas de
 ISO/IEC 25010:2023 que prioriza §7 (`QAS-01` a `QAS-40`) y cinco transversales (`QAS-41` a `QAS-45`).
 Cada uno tiene fuente, estímulo, entorno, artefacto, respuesta esperada, umbral esperado, cómo lo mide
 QA y resultado. Los identificadores `QAS-01` a `QAS-09` son los de los nueve escenarios originales y no
@@ -42,7 +42,7 @@ cambian.
 
 **Resultado** es el estado de la verificación de QA y su fecha de corte. Los estados son **Cumple**,
 **Parcial**, **No cumple**, **Bloqueado** y **No medido**; su significado está en
-[`SDD.md`](SDD.md) §8.1. **No medido** y **Bloqueado** no son "cumple".
+[`SDD.md`](../SDD.md) §8.1. **No medido** y **Bloqueado** no son "cumple".
 
 | ID | Característica | Subcaracterística | Prioridad | Umbral esperado | Resultado |
 |---|---|---|:---:|---|---|
@@ -93,7 +93,7 @@ cambian.
 | `QAS-45` | Transversal: Mantenibilidad | Quality Gate de código nuevo | P1 | 0 issues Blocker/Critical en código nuevo; duplicación de código nuevo < 3%; el pipeline falla si el Quality Gate no se cumple | Parcial · 2026-10-21 |
 
 Una historia que toque uno de esos temas debe demostrar su escenario, no solo sus criterios
-funcionales ([DoR y DoD](../04-proceso/dor-y-dod.md)).
+funcionales ([DoR y DoD](../../04-proceso/dor-y-dod.md)).
 
 Cuando un escenario y un criterio de la sección §7 del SDD difieran, **prevalece el más
 restrictivo** (SDD §8).

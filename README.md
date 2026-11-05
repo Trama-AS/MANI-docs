@@ -276,8 +276,7 @@ MANI-Docs/
 │   ├── SDD.md
 │   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
-│   ├── TECH_RADAR.md
-│   └── REPORTE_CONFORMIDAD_CORE_DISPATCH.md
+│   └── TECH_RADAR.md
 ├── adr/
 │   └── ADR-00XX-*.md
 ├── qa/                      planes, reportes y evidencia de calidad
@@ -323,7 +322,7 @@ MANI-Docs/
 | Modelo C4 | [`diagrams/c4/workspace.dsl`](wiki/02-arquitectura/diagrams/c4/workspace.dsl) |
 | Tecnologías vigentes | [`architecture/TECH_RADAR.md`](wiki/02-arquitectura/TECH_RADAR.md) |
 | Calidad: planes, reportes y evidencia | [`qa/`](wiki/07-calidad) |
-| Conformidad técnica Core-Dispatch | [`architecture/REPORTE_CONFORMIDAD_CORE_DISPATCH.md`](wiki/02-arquitectura/REPORTE_CONFORMIDAD_CORE_DISPATCH.md) |
+| Conformidad técnica Core-Dispatch | [`architecture/SAD.md`](wiki/02-arquitectura/SAD.md) §7.6 |
 | Gobierno y reglas de trabajo | `GOBIERNO_DEL_EQUIPO.md` |
 | DevOps, calidad y herramientas | `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
 | Infraestructura y ambientes | `INFRAESTRUCTURA_MANI.md` |

@@ -168,6 +168,25 @@ El token portador emitido por Supabase Auth y validado en el ecosistema MANI con
   - La primera aceptación confirmada retorna **`200 OK`**.
   - Cualquier aceptación posterior retorna de forma atómica e inmediata **`409 Conflict`**.
 
+### 4.4 Llamadas Permitidas entre Servicios y Alternativas Prohibidas
+
+Patrón único para toda llamada servicio → servicio, fijado por [`ADR-0030`](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §2:
+
+* Puerto declarado en el dominio y cliente en infraestructura.
+* `timeout` explícito; reintento **solo** en operaciones idempotentes.
+* Propagación de `X-Tenant-Id`, `X-User-Role` y `X-Correlation-ID` tomados del claim verificado, **nunca del cuerpo** de la petición.
+* **Falla cerrado:** si la dependencia no responde, `503` al llamador, sin valor por omisión ni lógica local de reemplazo (criterio transversal T2).
+
+| Llamador | Llamado | Para qué | Alternativa prohibida |
+|---|---|---|---|
+| Dispatch | Core | elegibilidad por categoría y zona | leer `core.aliado_cobertura` o `core.disponibilidad` |
+| Dispatch | Rules | orden del listado | leer `reglas.tarifario` |
+| Dispatch | Core | notificación al usuario | integrar FCM/APNs por su cuenta |
+| Core | Rules | veredicto de tarifa | escribir `reglas.*` |
+| Rules | — | devuelve el veredicto; **Core** escribe `fuera_de_rango` | escribir `servicio.cotizacion` |
+
+La frontera no es solo un acuerdo: es exigible por el motor de base de datos, porque ningún rol de servicio tiene `SELECT` sobre un esquema ajeno ([`ModeloDatos.md`](ModeloDatos.md) §6.3). El reparto de dueños de datos está en [`SAD.md`](SAD.md) §7.4.
+
 ---
 
 ## 5. Orquestación y Despliegue Local

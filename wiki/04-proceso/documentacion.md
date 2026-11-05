@@ -27,7 +27,7 @@ De `README.md` §16 y ADR-0001:
 
 - Ninguna decisión arquitectónica es oficial sólo por aparecer en una conversación o propuesta.
 - Los cambios arquitectónicos relevantes se formalizan mediante **ADR**.
-- Una decisión que cambia deja el anterior en `Superseded`. Cuando su contenido se absorbe en el ADR que lo reemplaza, el archivo **se retira** y el retiro se lista en [Decisiones ADR](../02-arquitectura/decisiones-adr.md). Los números no se reutilizan.
+- Una decisión que cambia deja el anterior en `Superseded`. Cuando su contenido se absorbe en el ADR que lo reemplaza, el archivo **se retira** y el retiro se lista en [Decisiones ADR](../02-arquitectura/guia/decisiones-adr.md). Los números no se reutilizan.
 - Los requerimientos se mantienen **separados** de las decisiones de implementación.
 - **No se duplican decisiones completas** entre SRS, SAD, SDD, ADR, políticas e infraestructura: se enlaza.
 - Aprobar documentación es decisión del **PO** ([Roles y decisiones](roles-y-decisiones.md)).
@@ -53,7 +53,7 @@ Un ADR `Superseded` conserva el motivo y la referencia a quien lo sustituye.
 
 ## Diagramas
 
-Los diagramas deben ser localizables, versionables y coherentes con la documentación vigente (ADR-0008). El modelo C4 se mantiene como **DSL versionable** y los diagramas de alto nivel como imágenes referenciadas por el SAD: ver [Diagramas](../02-arquitectura/diagramas.md).
+Los diagramas deben ser localizables, versionables y coherentes con la documentación vigente (ADR-0008). El modelo C4 se mantiene como **DSL versionable** y los diagramas de alto nivel como imágenes referenciadas por el SAD: ver [Diagramas](../02-arquitectura/guia/diagramas.md).
 
 ## Esta wiki
 

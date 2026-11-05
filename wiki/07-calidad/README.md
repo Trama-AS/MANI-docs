@@ -13,6 +13,7 @@ Esta carpeta responde a **qué se probó, cómo y con qué resultado**. La estra
 | Documento | De qué responde |
 |---|---|
 | [`REPORTE_QA_SPRINT4.md`](REPORTE_QA_SPRINT4.md) | **Reporte único de QA del Sprint 4.** Ambientes (§2), cadena de calidad (§3), calidad estática (§4), plan de pruebas (§5), paridad de EP-02 (§6), monitoreo y QAS-01 a QAS-09 (§7), regresión funcional, API, E2E y multi-tenant (§8), [defectos consolidados](REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint) (§9), DoD y gates (§10), pendientes (§11), índice de evidencia (§12) y trazabilidad (§13) |
+| [`REPORTE_QA_SPRINT5.md`](REPORTE_QA_SPRINT5.md) | **Reporte de QA del Sprint 5, corte 2.** Estado de QA, prueba manual del flujo, matriz por historia, 45 escenarios QAS y lo que falta ejecutar. |
 | [`REPORTE_SEGURIDAD_IDENTIDAD_H01_H02.md`](REPORTE_SEGURIDAD_IDENTIDAD_H01_H02.md) | Los dos hallazgos de identidad, H-01 y H-02, con su análisis de seguridad |
 | [`MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) | Qué historia toca qué repositorio (SCRUM-1256) |
 | [`SPRINT4_INDICADORES_Y_ACUERDOS.md`](SPRINT4_INDICADORES_Y_ACUERDOS.md) | Indicadores del sprint y acuerdos del equipo (SCRUM-1242) |

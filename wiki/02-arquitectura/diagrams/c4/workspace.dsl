@@ -133,8 +133,8 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
                 auth = container "Supabase Auth" "Autenticación de usuarios y emisión del JWT firmado del que se obtiene el tenant_id (ADR-0018)." "Supabase"
 
                 dbRules = container "Supabase Rules" "Reglas por tenant, tarifarios, criterios de ranking y configuración KYC. RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbDispatch = container "Supabase Dispatch" "Solicitudes en asignación, asignaciones, estados, exclusiones y auditoría de despacho. Incluye despacho.outbox: el evento AliadoAsignado se escribe en la misma transacción que confirma la asignación (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
-                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Quién crea la solicitud es punto abierto: la implementación fusionada la crea en Core (ARQ-03, MANI-Node#44) y SAD §4.2.1 la asigna a Dispatch. Incluye servicio.outbox para SolicitudCreada y CotizacionAceptada (ADR-0029 §3). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbDispatch = container "Supabase Dispatch" "Rechazos de ofertas (solicitud_rechazo), exclusiones y auditoría de despacho. No guarda el estado de la solicitud: desde la decisión 6A lo escribe Core, y el evento AliadoAsignado pasa a servicio.outbox (ADR-0035, propuesto). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
+                dbCore = container "Supabase Core" "Usuarios, tenants, aliados, KYC, clientes y sitios, categorías, solicitudes, cotizaciones, cobertura y disponibilidad, comunicación y reportes. Core crea la solicitud (SAD §7.4, decisión del 17 oct) y es el único que escribe su estado, también la asignación (decisión 6A). Incluye servicio.outbox para SolicitudCreada, AliadoAsignado y CotizacionAceptada (ADR-0029 §3, ADR-0035 propuesto). RLS por tenant." "Supabase — PostgreSQL + RLS" "Database"
 
                 storage = container "Supabase Storage" "Documentos KYC y multimedia en bucket privado con la convención tenant_id/aliado_id/documento (ADR-0013)." "Supabase"
                 realtime = container "Supabase Realtime" "Transporta eventos de mensajería mientras los participantes están conectados. No ejecuta reglas de negocio." "Supabase"
@@ -192,7 +192,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         // infraestructura, timeout, reintento solo si la operación es idempotente y falla
         // cerrado — 503 al llamador, sin degradar a lógica local ni a un valor por omisión.
         core -> rules "Evalúa las reglas de la categoría del tenant. Implementado en RulesServiceHttpClient: timeout 3 s, un reintento, 503 si Rules no responde" "HTTPS / JSON"
-        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12). DESVIACIÓN VIGENTE al 2026-10-20: en develop Dispatch no usa esta API, consulta PostgreSQL directamente con PostgresAllyRepository contra tablas de Core (MANI-.NET#3, SCRUM-861, fusionado), y resuelve requestId contra solicitud. En main y en la imagen desplegada en QA devuelve candidatos fijos (DispatchController.cs:33-39). Frontera de datos propuesta en ADR-0030, en estado Propuesto" "HTTPS / JSON"
+        dispatch -> core "Consulta la elegibilidad de aliados por categoría y zona (RF-12), el contexto de la solicitud y la bandeja del aliado, pide las ofertas y entrega el comando de asignación (decisión 6A). Rutas internas de core-internal.yaml, bloqueadas en el Gateway" "HTTPS / JSON"
         dispatch -> rules "Consulta el orden del listado de candidatos (ranking)" "HTTPS / JSON"
 
         // Producción de eventos hacia el bus diferido: el servicio escribe en su outbox dentro de
@@ -200,7 +200,7 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         core -> bus "Publica SolicitudCreada y CotizacionAceptada vía outbox (Sprint 5)" "Kafka"
         dispatch -> bus "Publica AliadoAsignado vía outbox (Sprint 5)" "Kafka"
         rules -> dbRules "Lee reglas, tarifarios y criterios de elegibilidad del tenant" "SQL"
-        dispatch -> dbDispatch "Persiste solicitudes, asignaciones, exclusiones y auditoría" "SQL"
+        dispatch -> dbDispatch "Persiste los rechazos y la auditoría del despacho; no escribe solicitud (decisión 6A, migración 0019)" "SQL"
         core -> dbCore "Persiste tenants, aliados, clientes, catálogo, cotización, cobertura y comunicación" "SQL"
 
         core -> storage "Almacena y sirve documentos KYC aislados por tenant y aliado"
@@ -429,27 +429,27 @@ workspace "MANI" "Plataforma SaaS multi-tenant de formalización y gestión de o
         // Cada paso corresponde a una relación ya declarada en el modelo: una vista dinámica
         // no puede inventar colaboraciones que la estructura no permita.
 
-        dynamic mani "dinamico-solicitud" "Solicitud y conformación del listado de aliados (RF-12, RF-13). El despacho orquesta: pregunta elegibilidad a Disponibilidades y orden a Reglas. Fuente: SAD §7.2, SDD §4.2." {
+        dynamic mani "dinamico-solicitud" "Solicitud y conformación del listado de aliados (RF-12, RF-13). Core crea la solicitud; Dispatch orquesta: pide elegibilidad a Core, el orden a Reglas y le pide a Core una oferta por aliado. Fuente: SAD §7.4 (decisión 6A), SECUENCIAS §1." {
             cliente -> flutter "Registra la solicitud de servicio"
-            flutter -> gateway "POST de la solicitud con el JWT del tenant"
-            gateway -> dispatch "Enruta tras validar el token"
-            dispatch -> core "Pide los aliados elegibles por categoría y zona (RF-12)"
+            flutter -> gateway "POST de la solicitud con el JWT del tenant y la clave de idempotencia"
+            gateway -> core "Enruta tras validar el token"
+            core -> dbCore "Persiste la solicitud PENDIENTE (409K si la clave se usó con otros datos)"
+            gateway -> dispatch "Orquesta el reparto de la solicitud creada"
+            dispatch -> dbDispatch "Lee qué aliados la rechazaron"
+            dispatch -> core "Pide los aliados elegibles por categoría y zona, sin los que rechazaron (RF-12)"
             dispatch -> rules "Pide el orden del listado según la regla del tenant (RF-13)"
-            dispatch -> dbDispatch "Persiste la solicitud y los candidatos notificados"
+            dispatch -> core "Pide una oferta por aliado elegible; Core la guarda una sola vez"
             properties {
                 "plantuml.sequenceDiagram" "true"
             }
         }
 
-        dynamic dispatch "dinamico-aceptacion" "Exclusión concurrente en la aceptación (RF-14, RNF-05). Dos aliados aceptan a la vez: la actualización condicional atómica deja pasar la primera y la segunda recibe 409 Conflict. Fuente: SAD §7.2, ADR-0016, ADR-0021." {
-            gateway -> dispatchApi "Aceptación del aliado, con clave de idempotencia (RNF-03)"
-            dispatchApi -> dispatchApp "Invoca el caso de uso de aceptación"
-            dispatchApp -> dispatchCoordinator "Coordina la asignación"
-            dispatchCoordinator -> dispatchGuard "Delega la exclusión concurrente"
-            dispatchGuard -> dispatchPort "Actualización condicional: solo si la asignación sigue libre"
-            dispatchPort -> dispatchAdapter "Implementado por"
-            dispatchAdapter -> dbDispatch "UPDATE condicionado al estado previo; la segunda aceptación no afecta filas"
-            dispatchApp -> dispatchAudit "Audita el cambio de estado y el resultado (RNF-04)"
+        dynamic mani "dinamico-aceptacion" "Exclusión concurrente en la aceptación (RF-14, RNF-05), decisión 6A. Dispatch decide quién acepta y Core escribe: con dos aliados a la vez, el UPDATE condicional sobre la fila bloqueada deja pasar la primera y la segunda recibe 409 Conflict. Fuente: SAD §7.4, ADR-0016, ADR-0035 (propuesto)." {
+            gateway -> dispatch "Aceptación del aliado, con clave de idempotencia (RNF-03)"
+            dispatch -> core "Comprueba que el aliado esté verificado"
+            dispatch -> dbDispatch "Comprueba que el aliado no la haya rechazado (409R)"
+            dispatch -> core "Comando interno de asignación con el JWT del aliado"
+            core -> dbCore "UPDATE condicional sobre la fila bloqueada; la segunda aceptación recibe 409 sin el ganador"
             properties {
                 "plantuml.sequenceDiagram" "true"
             }

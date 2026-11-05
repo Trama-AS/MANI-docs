@@ -281,7 +281,7 @@ La regresión (sección 8) prioriza 27 historias: las 24 con subtarea "QA - Vali
 | QAS-05 Escalabilidad | 0 | No medible: Kubernetes no decidido |
 | QAS-06 Interoperabilidad | 4 | No medible hasta tener la herramienta |
 | QAS-07 Corrección funcional | 5 | No medible hasta tener la herramienta |
-| QAS-08 Protección contra errores de usuario | 13 | No medible: Maestro sin ticket |
+| QAS-08 Protección contra errores de usuario | 13 | No medible: sin herramienta de interfaz entregada (se verifica con `flutter test` y Playwright) |
 | QAS-09 Safety | 5 | No medible hasta tener la herramienta |
 
 ### 5.4 Supuestos y brechas del diseño (hoja `brechas_supuestos`)
@@ -302,7 +302,7 @@ Brechas, agrupadas por tema (el detalle de B-01 a B-24 y O-01 a O-04 con respons
 | Gateway e identidad | B-03, B-04, B-07, B-08, B-19 | `validate-token` ausente en `develop`, prefijo recortado hacia Rules y Dispatch, identidad del llamador servicio sin diseñar, configuración JWT por ambiente sin cerrar, Rules sin validar JWT |
 | Eventos | B-06 | Kafka sin ADR, infraestructura ni esquema |
 | Datos de prueba | B-09, B-10 | Dos semillas incompatibles; faltan segundo cliente empresa, segundo aliado, aliado empresa, segunda categoría, solicitud en curso y versión de TyC |
-| Herramientas | B-11, B-12, B-13 | Newman y Playwright sin configurar al 16 de octubre (después se resolvió con CFG4-03); Maestro sin ticket; QAS-05 supone Kubernetes |
+| Herramientas | B-11, B-12, B-13 | Newman y Playwright sin configurar al 16 de octubre (después se resolvió con CFG4-03); herramienta de interfaz de Flutter sin definir (se resolvió con `flutter test` y Playwright); QAS-05 supone Kubernetes |
 | Ramas y repositorios | B-18, B-22 | `/catalog` sin filtro por tenant y `/tenants` sin autenticación en Core `develop`; ramas desalineadas |
 | Gestión | B-15, B-23, O-01 a O-04 | SCRUM-1063, 1066 y 1068 sin subtarea QA; TD inexistente al 16 de octubre (después se publicó TD V2); asignaciones y estimaciones por revisar; numeración de QAS desalineada en la wiki |
 
@@ -395,7 +395,7 @@ Durante la carga nominal (`docker stats` cada 10 s, sin cubrir la rampa ni el pr
 | 05 Escalabilidad | 2 a 6 réplicas sin cambio de código | — | **No medible**: Docker Compose, sin Kubernetes | Sin cambio |
 | 06 Interoperabilidad | 100 % de APIs con OpenAPI y contract tests | 1 de 12 operaciones con contrato (8,3 %) | **No cumple** ([`qas06_api_vs_contrato.md`](monitoreo_qas/qas06_api_vs_contrato.md)) | MANI-APIGateway#20 agregó al contrato la ruta pública de documentos legales; no se repitió |
 | 07 Corrección | Un 200, el resto 409, 0 dobles asignaciones | Arnés: 1×200 y 49×409 con 50 aceptaciones | **Bloqueado**: el stub guardaba la asignación en memoria | Aceptación idempotente y rechazo cross-tenant aprueban contra Dispatch real (1074-01 a 1074-04); la concurrencia no se ejecutó |
-| 08 Interacción | 100 % de acciones irreversibles con confirmación | — | **Bloqueado o no medible**: Maestro sin ticket | Sin cambio |
+| 08 Interacción | 100 % de acciones irreversibles con confirmación | — | **Bloqueado o no medible**: sin herramienta de interfaz entregada | Sin cambio |
 | 09 Safety | 0 transacciones ambiguas por fallas de terceros | — | **Bloqueado**: KYC no estaba en QA y no hay fault injection | Sin cambio |
 
 ### 7.3 Detalle de los escenarios ejecutados
@@ -787,7 +787,7 @@ PA-01 a PA-17 provienen de `backlog/CRITERIOS_ACEPTACION_US-02.1.1.md`; los dem�
 | PA-17 | Formato de error y campo de correlación | Juan Sebastián Álvarez |
 | PA-18 | El 409 por decisión concurrente no está en los criterios de SCRUM-1066 | Nicolás León, María Camila Beltrán |
 | PA-19 | CORS sin `X-Tenant-Slug` ni `Idempotency-Key` | Daniel Ávila |
-| PA-20 | Maestro sin ticket | Sara Albarracín |
+| PA-20 | Herramienta de interfaz para QAS-08 definida: `flutter test` y Playwright sobre Flutter Web (SDD §8) | Sara Albarracín |
 | PA-21 | Primer sitio del cliente creado en "la primera zona activa" sin filtro de tenant | Nicolás León |
 | PA-22 | Duplicado de empresa: *upsert* frente a 409 | Nicolás León |
 | PA-23 | Restaurar `Inf_test-002` junto a `Inf_test-001` | Santiago, Sara Albarracín |

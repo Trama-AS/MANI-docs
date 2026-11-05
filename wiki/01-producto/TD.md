@@ -35,7 +35,7 @@ Regla que aplica en todo el documento: una historia no se considera aprobada por
 | Contrato de API | Que el Gateway y los servicios cumplen el OpenAPI publicado | Newman con las colecciones de `postman/` de MANI-APIGateway | CI del Gateway, contra servicios levantados en el job |
 | Regresión funcional, API y multi-tenant en QA | Comportamiento integrado Gateway, Core, Rules y Dispatch con datos de MANI-QA y varios tenants | Newman con `qa/newman/` de MANI-APIGateway | VM de QA y gate `qa-regresion.yml` en el runner de Calidad |
 | E2E e interfaz | Recorrido de la solicitud por API, landing y configuración de Flutter Web | Playwright con `qa/playwright/` de MANI-APIGateway | VM de QA y gate `qa-regresion.yml` |
-| Escenarios de calidad | QAS-01 a QAS-09 del SDD §8 | k6, Newman e inspección | Runner de Calidad ([SCRUM-1266](https://maniservices.atlassian.net/browse/SCRUM-1266)) |
+| Escenarios de calidad | QAS-01 a QAS-45 del SDD §8 | k6, Newman e inspección | Runner de Calidad ([SCRUM-1266](https://maniservices.atlassian.net/browse/SCRUM-1266)) |
 | Defensa en la base | RLS y roles de servicio | Consultas de catálogo de solo lectura y `db/verify/` de Core | VM de QA contra MANI-QA |
 
 La configuración de la cadena de calidad está en la [guía operativa CFG4-03](../07-calidad/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03) y la del gate de regresión en `qa/README.md` de MANI-APIGateway.
@@ -209,7 +209,7 @@ El DoD lo decide QA ([GOBIERNO_DEL_EQUIPO](../06-gobernanza/GOBIERNO_DEL_EQUIPO.
 | Fuente | Relación con este documento | Observación |
 |---|---|---|
 | [Backlog V5](../05-backlog/BACKLOG_MANI.md) §0.1 y §0.6 (SCRUM-1245) | Estado real de los servicios al cierre del Sprint 4 y compromiso de terminar la regresión antes del Sprint 5 | El §0.1 marca SCRUM-1060 como "Verificado por QA" porque su subtarea está en Finalizada, pero la regresión no ejecutó ningún caso de esa historia. Las otras historias de esa columna están en Ejecutado, no en Aprobado. Corresponde a la PO decidir el ajuste |
-| [SDD](../02-arquitectura/SDD.md) §7 y §8 | Umbrales y escenarios QAS-01 a QAS-09 (sección 4.4) | La nota de estado del §8 tiene corte del 6 de octubre: dice que ninguna herramienta de QA está entregada y remite al plan de EP-02. SonarQube, Newman y Playwright ya operan; conviene actualizarla para que remita a este documento |
+| [SDD](../02-arquitectura/SDD.md) §7 y §8 | Umbrales y escenarios QAS-01 a QAS-45 (la sección 4.4 recoge QAS-01 a QAS-09) | La nota de estado del §8 se actualizó con corte del 4 de noviembre de 2026 y cada escenario lleva su resultado; la sección 4.4 sigue siendo el detalle de la medición de SCRUM-1266 |
 | [ADR-0005](../02-arquitectura/adr/ADR-0005-devsecops.md) | Gates mínimos (sección 5.2) | Cobertura de casos críticos sin cumplir |
 | [ADR-0012](../02-arquitectura/adr/ADR-0012-persistencia-multitenant.md), [ADR-0015](../02-arquitectura/adr/ADR-0015-pruebas-aislamiento-multitenant.md) y [ADR-0018](../02-arquitectura/adr/ADR-0018-identificacion-tenant.md) | Aislamiento multi-tenant e identificación del tenant (secciones 4.3 y 5.1) | RLS no ejercido en QA (R-06, R-07 y R-09) |
 | [ADR-0031](../02-arquitectura/adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | Política JWT por ambiente | La corrección de R-10 (ES256) está en `release` y el cambio del ADR está en revisión (MANI-docs#59) |

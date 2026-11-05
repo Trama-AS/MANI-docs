@@ -51,7 +51,7 @@ Secciones que conviene conocer porque son las que suelen buscarse como «documen
 | Conformidad del código con los límites entre servicios, y sus desviaciones abiertas | [`SAD.md`](SAD.md) §7.6 |
 | Qué falta para cumplir ADR-0027 en Flutter | [`SAD.md`](SAD.md) §8.3.1 |
 | Métricas y alertas de autenticación | [`SAD.md`](SAD.md) §19.1 y §19.2 |
-| Los seis casos cross-tenant que QA debe ejecutar | [`SDD.md`](SDD.md) §8.1 |
+| Los seis casos cross-tenant que QA debe ejecutar | [`SDD.md`](SDD.md) §8.12 |
 | Lo que falta ratificar en Mesa | [Decisiones ADR](guia/decisiones-adr.md) y el apartado «Pendiente de Mesa» de [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) |
 
 ## Decisiones
@@ -69,7 +69,7 @@ Seis documentos que vivían aquí como pieza aparte. Su contenido está íntegro
 | Absorbido | Dónde quedó su contenido |
 |---|---|
 | `CFG-23a/01-inventario-rls.md` | [`ModeloDatos.md`](ModeloDatos.md) §6.4, con la consulta de confirmación contra el motor |
-| `CFG-23a/02-diseno-modelo-identidad.md` | [`ModeloDatos.md`](ModeloDatos.md) §6.5 (modelo, políticas por tabla, despliegue y riesgos) y [`SDD.md`](SDD.md) §8.1 (los seis casos cross-tenant) |
+| `CFG-23a/02-diseno-modelo-identidad.md` | [`ModeloDatos.md`](ModeloDatos.md) §6.5 (modelo, políticas por tabla, despliegue y riesgos) y [`SDD.md`](SDD.md) §8.12 (los seis casos cross-tenant) |
 | `CFG-23a/03-mesa-arquitectura.md` | [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md), apartado «Pendiente de Mesa»: preguntas M1 a M8, evidencia de la PoC y acta pendiente |
 | `EXPEDIENTE_MESA_TEC-12.md` | [Decisiones ADR](guia/decisiones-adr.md), «Qué tiene que decidir la Mesa»; el pendiente es P7 de [`SAD.md`](SAD.md) §7.4 |
 | `REPORTE_CONFORMIDAD_CORE_DISPATCH.md` | [`SAD.md`](SAD.md) §7.6, con las desviaciones D-2 a D-10 y sus criterios de cierre |

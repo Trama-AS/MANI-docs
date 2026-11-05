@@ -276,8 +276,7 @@ MANI-Docs/
 │   ├── SDD.md
 │   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
-│   ├── TECH_RADAR.md
-│   └── REPORTE_CONFORMIDAD_CORE_DISPATCH.md
+│   └── TECH_RADAR.md
 ├── adr/
 │   └── ADR-00XX-*.md
 ├── qa/                      planes, reportes y evidencia de calidad

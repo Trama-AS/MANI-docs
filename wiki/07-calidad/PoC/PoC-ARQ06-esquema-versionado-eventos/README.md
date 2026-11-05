@@ -4,7 +4,7 @@ Este directorio contiene los esquemas formales **JSON Schema (Draft 2020-12)** y
 
 1. `schemas/event-envelope.v1.schema.json` — Sobre común obligatorio (`event_id`, `event_type`, `event_version`, `occurred_at`, `tenant_id`, `correlation_id`, `partition_key`, `data`).
 2. `schemas/solicitud-creada.v1.schema.json` — `SolicitudCreada` (`v1`, Core Service → `servicio.outbox`).
-3. `schemas/aliado-asignado.v1.schema.json` — `AliadoAsignado` (`v1`, Dispatch Service → `despacho.outbox`).
+3. `schemas/aliado-asignado.v1.schema.json` — `AliadoAsignado` (`v1`, Core Service → `servicio.outbox`; antes Dispatch → `despacho.outbox`, cambia por la decisión 6A).
 4. `schemas/cotizacion-aceptada.v1.schema.json` — `CotizacionAceptada` (`v1`, Core Service → `servicio.outbox`).
 5. `schemas/servicio-finalizado.v1.schema.json` — `ServicioFinalizado` (`v1`, Core Service → `servicio.outbox`).
 
@@ -25,7 +25,7 @@ node Entregas/PoC/PoC-ARQ06-esquema-versionado-eventos/validar_contratos_eventos
 | Caso | Qué verifica | Resultado esperado |
 | :--- | :--- | :--- |
 | `C1` | `SolicitudCreada v1` canónico y ruteo a `servicio.outbox` (`Core Service`) | `PASS` |
-| `C2` | `AliadoAsignado v1` canónico y ruteo a `despacho.outbox` (`Dispatch Service`) | `PASS` |
+| `C2` | `AliadoAsignado v1` canónico y ruteo a `servicio.outbox` (`Core Service`, decisión 6A) | `PASS` |
 | `C3` | `CotizacionAceptada v1` canónico y ruteo a `servicio.outbox` (`Core Service`) | `PASS` |
 | `C4` | `ServicioFinalizado v1` canónico y ruteo a `servicio.outbox` (`Core Service`) | `PASS` |
 | `C5` | Rechazo de evento sin `tenant_id` (`RNF-01`) | `PASS` (`REJECT_ENVELOPE`) |

@@ -1,0 +1,103 @@
+@startuml aceptacion-concurrente
+' C4 Nivel 4 (Code) — MANI · Dispatch Service
+' Generado a mano desde el codigo real de MANI-.NET (rama main, 2026-11-05).
+' Vista declarada en diagrams/c4/workspace.dsl como la vista de imagen "codigo-aceptacion".
+
+title C4 Nivel 4 — Codigo: aceptacion de una solicitud en Dispatch Service (.NET)
+
+skinparam dpi 160
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor #EAF1FB
+  BorderColor #3D85C6
+  ArrowColor #44546A
+}
+
+package "Controllers" {
+  class DispatchController {
+    - AcceptDispatchOfferUseCase _acceptDispatchOfferUseCase
+    - RejectDispatchOfferUseCase _rejectDispatchOfferUseCase
+    + MatchProfessionals(MatchRequestDto) : IActionResult
+    + OrchestrateDispatch(OrchestrateRequestDto) : IActionResult
+  }
+}
+
+package "Application.UseCases" {
+  class AcceptDispatchOfferUseCase {
+    - ISolicitudAssignmentRepository _assignmentRepository
+    - IAllyRepository _allyRepository
+    + ExecuteAsync(requestId, tenantId, usuarioId) : Task<AssignmentResult>
+  }
+}
+
+package "Application.Interfaces" {
+  interface ISolicitudAssignmentRepository {
+    + AcceptRequestAsync(requestId, tenantId, aliadoId) : Task<AssignmentResult>
+    + RejectRequestAsync(requestId, tenantId, aliadoId, motivo) : Task<bool>
+    + GetAssignedRequestIdsAsync(tenantId, aliadoId) : Task<IReadOnlyList<Guid>>
+  }
+  interface IAllyRepository {
+    + GetEligibleAlliesAsync(MatchCriteria) : Task
+    + GetSolicitudContextAsync(requestId, tenantId) : Task<SolicitudContext>
+    + GetAllyProfileAsync(usuarioId, tenantId) : Task<AllyProfile>
+  }
+  class AssignmentResult <<record>> {
+    + AssignmentStatus Status
+    + Guid? AssignedAllyId
+    + string? Message
+  }
+  enum AssignmentStatus {
+    Assigned
+    AlreadyAssigned
+    Conflict
+    NotFound
+    InvalidState
+  }
+  class AllyProfile <<record>> {
+    + Guid Id
+    + Guid TenantId
+    + Guid UsuarioId
+    + string EstadoVerificacion
+  }
+}
+
+package "Infrastructure" {
+  class PostgresSolicitudAssignmentRepository {
+    - string _connectionString
+    + AcceptRequestAsync(...) : Task<AssignmentResult>
+    .. exclusion concurrente ..
+    UPDATE solicitud SET aliado_id = @AliadoId
+    WHERE estado = 'PENDIENTE' AND aliado_id IS NULL
+  }
+  class CoreAllyClient {
+    - HttpClient _httpClient
+    + GetAllyProfileAsync(usuarioId, tenantId) : Task<AllyProfile>
+    - SendAsync(url, tenantId, correlationId) : Task
+  }
+}
+
+package "Domain" {
+  class CoreServiceUnavailableException {
+    + CoreServiceUnavailableException(message, inner)
+  }
+}
+
+DispatchController --> AcceptDispatchOfferUseCase : invoca
+AcceptDispatchOfferUseCase --> IAllyRepository : exige perfil VERIFICADO
+AcceptDispatchOfferUseCase --> ISolicitudAssignmentRepository : asignacion atomica
+AcceptDispatchOfferUseCase ..> AssignmentResult : devuelve
+ISolicitudAssignmentRepository <|.. PostgresSolicitudAssignmentRepository
+IAllyRepository <|.. CoreAllyClient : HTTP a Core (ADR-0030),\nnunca SQL contra tablas ajenas
+CoreAllyClient ..> AllyProfile : deserializa
+CoreAllyClient ..> CoreServiceUnavailableException : 503 si Core no responde
+AssignmentResult --> AssignmentStatus
+PostgresSolicitudAssignmentRepository ..> AssignmentResult : Assigned / AlreadyAssigned / Conflict
+
+note bottom of PostgresSolicitudAssignmentRepository
+  La garantia de no doble asignacion es del motor:
+  la segunda aceptacion no afecta filas y recibe 409.
+  No depende del numero de replicas (RNF-05, ADR-0016).
+end note
+@enduml

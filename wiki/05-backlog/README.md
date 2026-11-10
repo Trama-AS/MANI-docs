@@ -2,13 +2,77 @@
 
 [← Índice de la wiki](../Home.md)
 
+| | |
+|---|---|
+| **Versión** | 2.0 |
+| **Fecha** | 2026-11-10 |
+| **Responsable de la carpeta** | Nicolás León |
+| **Suplente** | Nicolás Álvarez (propuesto; falta confirmarlo con la Scrum Master) |
+| **Revisa este README** | Otro responsable de carpeta, distinto de quien lo escribe (ver [puntos abiertos](#puntos-abiertos)) |
+| **Historia en Jira** | [SCRUM-1695](https://maniservices.atlassian.net/browse/SCRUM-1695) (HU-WIKI-07) |
+
 **Fuente:** [`BACKLOG_MANI.md`](BACKLOG_MANI.md) · [`adr/ADR-0002`](../02-arquitectura/adr/ADR-0002-jira-github.md).
 
-> **Jira es la fuente del trabajo.** Esta carpeta no lo duplica: fija los criterios con los que se acepta y explica en qué orden se ejecuta.
+> **Jira es la fuente del trabajo.** Esta carpeta no lo duplica: fija los criterios con los que se acepta, explica en qué orden se ejecuta y deja la cadena que une cada ítem con su origen y con su prueba.
 
-Esta carpeta tiene **tres archivos y nada más**: este índice, el backlog y el libro de módulos. Todo lo que antes eran documentos o páginas sueltas es ahora una sección del backlog, y se cita por su número de sección.
+## Para qué sirve esta carpeta
 
-## Los tres archivos
+Responde cuatro preguntas: **qué hay que hacer** (backlog vigente), **con qué forma se escribe un ítem** (plantillas), **en qué orden se hace** (criterios de priorización) y **de dónde viene y cómo se prueba** (matriz de trazabilidad).
+
+## Quién agrega, prioriza y cierra un ítem
+
+| Acción | Quién | Cómo se ve en la práctica |
+|---|---|---|
+| **Agregar** | Cualquier integrante propone; QA registra los defectos que encuentra y la Scrum Master registra las tareas y decisiones pendientes | Los defectos `SCRUM-1633` a `1637` los abrió QA; las tareas del 9-nov, la SM |
+| **Priorizar** | **Product Owner**, con la Scrum Master consultada | [Criterios de priorización](criterios-de-priorizacion.md) |
+| **Facilitar** | **Scrum Master**: ceremonias, bloqueos, reglas de proceso | [Ceremonias y tiempos](../04-proceso/ceremonias-y-tiempos.md) |
+| **Estimar** | Desarrollo | Puntos de historia con Fibonacci |
+| **Cerrar** | **QA**: decide el DoD y cierra con la subtarea `QA-…`; ningún ítem pasa a Done por sí mismo | [DoR y DoD](../04-proceso/dor-y-dod.md) y [plantillas](plantillas.md) |
+
+Fuente de la autoridad: [Roles y decisiones](../04-proceso/roles-y-decisiones.md) y [`GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2.3.
+
+## Orden de lectura
+
+| # | Documento | Para qué sirve | Lo mantiene | Lo consume | Cada cuánto | Versión y fecha |
+|---|---|---|---|---|---|---|
+| 1 | `README.md` | Este índice | Responsable de la carpeta | Todo el equipo | Al cambiar la carpeta | 2.0 · 2026-11-10 |
+| 2 | [`BACKLOG_MANI.md`](BACKLOG_MANI.md) | **Backlog vigente**: cierre del Sprint 4, plan del Sprint 5, épicas e historias, criterios de aceptación y registro de la transición | Responsable de la carpeta, con la PO | PO, SM, QA y Desarrollo | Al cerrar cada sprint | V5 · 2026-10-20 (cabecera del archivo) |
+| 3 | [`epicas-y-modulos.md`](epicas-y-modulos.md) | Épicas de Jira y módulos M-01 a M-13 con su dueño | Responsable de la carpeta | PO, SM, quien busca el módulo de un ítem | Al cambiar el reparto | 1.0 · 2026-11-10 |
+| 4 | [`plantillas.md`](plantillas.md) | Plantillas de historia, tarea, defecto y criterio de aceptación | Responsable de la carpeta, con la PO | Quien redacta ítems; QA | Al cambiar DoR o DoD | 1.0 · 2026-11-10 |
+| 5 | [`criterios-de-priorizacion.md`](criterios-de-priorizacion.md) | Cómo se ordena el backlog | Responsable de la carpeta; decide la PO | PO, SM y quien planifica | En cada refinamiento | 1.0 · 2026-11-10 |
+| 6 | [`backlog-9-nov.md`](backlog-9-nov.md) | Fotografía del backlog del 9-nov: los 78 ítems con su clave de Jira y los defectos 1633 a 1637 | Responsable de la carpeta, desde Jira | PO, SM, QA y Desarrollo | En cada refinamiento y al cerrar el Sprint 6 | 1.0 · 2026-11-10 |
+| 7 | [`historico-por-version.md`](historico-por-version.md) | Qué versión del backlog rige y cómo llegó a serlo | Responsable de la carpeta | Quien consulta una versión pasada | Al publicar una versión | 1.0 · 2026-11-10 |
+| 8 | [`matriz-de-trazabilidad.md`](matriz-de-trazabilidad.md) | Ítem → módulo → requisito → QAS → ADR → prueba (parcial) | Responsable de la carpeta, con QA | QA, PO y quien audita | Al cerrar cada ítem | 1.0 · 2026-11-10 |
+| 9 | [`MANI_MODULOS_SERVICIOS_Y_BACKLOG_S5.xlsx`](MANI_MODULOS_SERVICIOS_Y_BACKLOG_S5.xlsx) | Libro de módulos, servicios, backlog del Sprint 5 y criterios en tabla filtrable | Responsable de la carpeta | PO, SM, QA y Desarrollo | Al cambiar los módulos | Sin versión propia: la de la fecha del archivo en Git |
+
+**Origen y destino de cada documento.** Cada página nueva (3 a 8) declara en su cabecera de dónde sale y a dónde alimenta, y enlaza su historia en Jira. La cadena general es:
+
+```text
+Necesidad → requisito (SRS) → atributo de calidad (QAS, SDD §8) → ADR → componente → prueba
+        ↘ historia o tarea en Jira ↗                                     ↘ evidencia en 07-calidad
+```
+
+**Obsoletos.** Lo que dejó de regir se marca, no se borra. En esta carpeta: la sección «Importar el Sprint 5 a Jira» de este README, que quedó como registro histórico, y [`BACKLOG_MANI.md`](BACKLOG_MANI.md) §10.5, que es el orden del Sprint 3 ya ejecutado.
+
+## Puntos abiertos
+
+Cosas que esta versión del README **no resuelve** y que hay que cerrar antes de darlo por completo. Las discrepancias entre documentos se registran además en la [HU-VAL-01](https://maniservices.atlassian.net/browse/SCRUM-1696).
+
+| # | Punto | Estado |
+|---|---|---|
+| 1 | **Roles contradictorios.** [Roles y decisiones](../04-proceso/roles-y-decisiones.md) lista a Nicolás León como Product Owner y a Camila Beltrán como Frontend y Scrum Master; el reparto del Sprint 5 de este README y Jira dejan a Camila Beltrán como PO | Abierto: pertenece a `04-proceso`; se eleva a HU-VAL-01 |
+| 2 | **Épica `EP-11`.** El tablero la usa (`SCRUM-1363`) y la tabla de §1 de `BACKLOG_MANI.md` no la incluye | Abierto: se completa al publicar la siguiente versión del backlog |
+| 3 | **Versiones V1 a V4.** El repositorio no guarda su número ni su fecha como documento | Abierto: ver [histórico](historico-por-version.md) |
+| 4 | **Matriz de trazabilidad.** Solo 7 de las 78 filas del 9-nov tienen la cadena respaldada | Abierto: ver [matriz](matriz-de-trazabilidad.md) |
+| 5 | **Suplente de la carpeta.** Nicolás Álvarez figura como propuesto | Pendiente de confirmar con la Scrum Master |
+| 6 | **Revisión.** Otro responsable de carpeta debe revisar y aprobar este README | Pendiente |
+| 7 | **Rama de destino.** La historia pide el cambio por PR a `develop`; el repositorio MANI-docs no tiene rama `develop` y sus PR van a `main` | Este PR va a `main`; confirmar la regla |
+| 8 | **Búsqueda de secretos.** Se hizo sobre esta carpeta (no encontró credenciales); falta la que corre el equipo en el PR | Hecha para esta carpeta |
+| 9 | **Enlaces rotos heredados.** `BACKLOG_MANI.md` y la tabla «Qué se absorbió» de este README enlazan `../07-calidad/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` y `../07-calidad/REPORTE_QA_SPRINT4.md`, que no existen en esa ruta (el reporte vive en `07-calidad/monitoreo/`; la matriz no está en el repositorio) | Abierto: se corrigen con quien mantiene `07-calidad` |
+
+---
+
+## Los archivos originales de la carpeta
 
 | Archivo | De qué responde |
 |---|---|
@@ -127,7 +191,7 @@ Supabase, Auth, RLS y aislamiento multi-tenant · registro y aprobación de alia
 
 Ese trabajo **cambia de ubicación**, no se desecha: la lógica se reimplementa en Rules (Java), Dispatch (.NET) y Core Service (Node.js), y el cliente deja de invocarla ([ADR-0022](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md)).
 
-## Importar el Sprint 5 a Jira
+## Importar el Sprint 5 a Jira (histórico: ya ejecutado)
 
 **Ya hecho: el CSV se retiró.** `IMPORTAR_JIRA_SPRINT5.csv` traía 215 filas para el importador
 externo de Jira (86 historias, 22 tareas y 107 subtareas de QA, 506 story points). El Sprint 5 ya

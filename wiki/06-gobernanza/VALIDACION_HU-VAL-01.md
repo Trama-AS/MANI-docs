@@ -8,8 +8,8 @@
 | **Origen** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) (HU-VAL-01) |
 | **Coordina** | Sara Albarracín (Scrum Master) |
 | **Consume** | PO, Arquitectura, DevOps y QA antes de la sustentación |
-| **Versión** | 1.0 |
-| **Fecha de corte** | 2026-11-10 |
+| **Versión** | 1.1 |
+| **Fecha de corte** | 2026-11-11 |
 | **Estado** | **PARCIAL.** 8 de 15 filas verificadas. 7 filas (D1, D5, D6, D7, D8, D9, D10) exigen sesión en las VMs, consulta a Supabase o prueba desde la red de la universidad, y quedan **pendientes de validar**. |
 | **Se actualiza** | Cada vez que se cierra una fila; obligatorio antes de cada sustentación. |
 
@@ -50,7 +50,32 @@ git show origin/main:lib/features/services/quotes/presentation/cotizacion_page.d
 
 **Conclusión.** El código concuerda con la decisión 891/892 (permitir el pago, liberar y liquidar) y **no** con la Idea 1 de Nicolás Álvarez (ocultar «Pagar» tras finalizar). Quien debe corregirse es el documento que recoge la Idea 1, no el código.
 
-**Reserva.** El commit `098bf38` que cita la discrepancia **no existe en ninguno de los siete clones locales** (`git cat-file -t 098bf38` falla en los seis repositorios de código y en `MANI-docs`, incluso tras `git fetch --all`). Antes de citarlo como evidencia hay que dar la referencia correcta: repositorio y SHA completo.
+**El commit citado por la discrepancia sí existe** (corregido el 2026-11-11). La búsqueda de la versión 1.0 falló porque los clones locales no tenían aún las referencias en que vive; tras `git fetch --all --prune` en los siete repositorios aparece:
+
+| Campo | Valor |
+|---|---|
+| Repositorio | `MANI-Node` |
+| SHA completo | `098bf38c3f8f77cd863ea3daa592608eaf5c74c2` |
+| Autor y fecha | Nicolas11Leon, 2026-11-05 09:57 -0500 |
+| Asunto | `[SCRUM-892][SCRUM-1378][SCRUM-1618] Libera al pagar sobre solicitud finalizada y uniforma la recuperación ante fallos del proveedor` |
+| Ramas que lo contienen | `origin/main`, `origin/develop`, `origin/release` y 12 ramas de trabajo |
+
+```
+git -C MANI-Node log -1 --format=%H 098bf38
+git -C MANI-Node show 098bf38 -- src/infrastructure/repositories/PgPaymentRepository.js
+```
+
+**Resultado.** El commit **refuerza la conclusión de esta fila, no la contradice.** Añade en `PgPaymentRepository.js:126-136` la liberación y liquidación inmediatas cuando el pago entra sobre una solicitud ya `FINALIZADA` o `CERRADA`:
+
+```js
+// SCRUM-892: si el cliente paga cuando el servicio ya terminó, la condición de cierre ya se cumplió y no habrá
+// otra transición a FINALIZADA que libere la retención: se libera y liquida aquí, en la misma transacción.
+if (sol.length > 0 && ['FINALIZADA', 'CERRADA'].includes(sol[0].estado)) {
+  await liberarYLiquidar(client, ctx, sol[0].id);
+}
+```
+
+Su propio mensaje lo declara: antes del commit la retención «quedaba RETENIDA para siempre». Es decir, el backend **no solo permite el pago tardío: lo trata como caso de negocio soportado** y lo liquida. Ocultar «Pagar» tras finalizar (Idea 1) dejaría este código sin uso. Queda en pie la pregunta P-D2: ratificar la decisión por escrito y fijar si hay plazo máximo para el pago tardío.
 
 ### D3 · Pantallas con actualización automática: dos, no tres ni cuatro
 
@@ -272,4 +297,5 @@ Las cinco filas de §4 son decisiones, no verificaciones: se cierran con la deci
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 1.1 | 2026-11-11 | D2: se localiza el commit `098bf38c3f8f77cd863ea3daa592608eaf5c74c2` en `MANI-Node` tras `git fetch --all` en los siete repositorios, se retira la reserva de la versión 1.0 y se pega el fragmento de `PgPaymentRepository.js` que libera y liquida el pago tardío. Se reconfirman D3, D13 y D15 contra Jira y `origin/main`; el recuento de filas no cambia (8 de 15). | Sara Albarracín |
 | 1.0 | 2026-11-10 | Documento inicial. 8 filas verificadas (D2, D3, D4, D11, D12, D13, D14 lado QA, D15), 7 pendientes con su comando y responsable, 5 preguntas de decisión abiertas. | Sara Albarracín |

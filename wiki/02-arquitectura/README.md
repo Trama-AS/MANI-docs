@@ -13,7 +13,7 @@
 | **Suplente** | **Pendiente de asignar.** Lo define el equipo según [`GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2.3; hasta entonces, la suplencia no está cubierta. |
 | **Quién la consume** | Desarrollo (los seis repositorios), QA (para derivar pruebas de los escenarios), DevOps (vista de despliegue) y el PO (restricciones que afectan el alcance). |
 | **Cada cuánto se actualiza** | Al cerrar cada sprint, y de inmediato cuando una Mesa de Arquitectura produce o modifica un ADR. |
-| **Última revisión de la carpeta** | 2026-11-10 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690), HU-WIKI-02) |
+| **Última revisión de la carpeta** | 2026-11-11 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690), HU-WIKI-02) |
 | **Barrido de secretos** | 2026-11-10: sin credenciales en la carpeta. Se buscaron valores, no palabras: JWT (`eyJ…`), llaves de Supabase (`sb_…`), llaves de AWS (`AKIA…`), bloques `BEGIN … PRIVATE KEY`, cadenas hexadecimales de 40+ caracteres y asignaciones del tipo `password=…`, `secret=…`, `token=…`. **0 coincidencias.** Las apariciones de «token», «secret» y `LOGIN PASSWORD` son vocabulario y referencias de política (ADR-0031 §5), no valores. |
 | **Estado del cierre de HU-WIKI-02** | **Parcial.** Ver [§7](#7-qué-falta-para-cerrar-hu-wiki-02). |
 
@@ -102,7 +102,7 @@ Ninguno de estos puntos se presenta como resuelto.
 |---|---|---|
 | **Asignación idempotente (6A)** | [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) existe en estado `Propuesto`; el contrato está en [`SAD.md`](SAD.md) §7.4 con los puntos abiertos P5 a P9, pero **la asignación idempotente no está escrita allí** | Ratificación en Mesa y corrección de `SAD.md` §7.4 ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)) |
 | **Acta A/B** | Los escenarios con opción B no están reflejados en `SDD.md` §7 y §8 | Acta firmada y reescritura ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685)) |
-| **Tenant de los clientes** | Bug abierto [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637); sin ADR | ADR del tenant de clientes ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) |
+| **Tenant de los clientes** | [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) existe en estado `Propuesto` desde el 2026-11-11: establece que lo reportado en [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) **no es un defecto sino el diseño vigente** de ADR-0012 y ADR-0018, y propone mantener un tenant por cliente en el MVP | Decisión del PO sobre las preguntas M1 a M4 del propio ADR y ratificación en Mesa; solo entonces se reclasifica SCRUM-1637 |
 | **Cifrado de credenciales y datos sensibles** | [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) `Reopened`, único ítem abierto del Sprint 5; sin ADR y con el alcance en Core sin definir | ADR de cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la pregunta P-D15 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md#4-preguntas-de-decisión-abiertas) |
 | **Observabilidad: ¿Datadog o Loki?** | [ADR-0006](adr/ADR-0006-observabilidad.md) está `Aceptado` con Datadog. Si se sustituye por Loki, el ADR hay que revisarlo, no contradecirlo desde otro documento | Revisión de ADR-0006 en Mesa |
 | **SDD §8 e Infraestructura V4 §7 sobre monitoreo** | Ambos declaran la observabilidad como futura; hay indicios de Prometheus y Grafana en QA desde el 6-nov | Fila D8 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) y luego [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) |
@@ -121,12 +121,12 @@ Cinco de las quince filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDA
 
 ## 7. Qué falta para cerrar HU-WIKI-02
 
-Hecho: orden de lectura, ficha de carpeta, finalidad y mantenedor por documento, versión y fecha, índice de ADR con estado corregido (27 fichas, no 26), barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos ya absorbidos.
+Hecho: orden de lectura, ficha de carpeta, finalidad y mantenedor por documento, versión y fecha, índice de ADR con estado al día (28 fichas al 2026-11-11), barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos ya absorbidos.
 
 Falta, y **depende de trabajo de otras tareas**:
 
 1. **Suplente de la carpeta** sin asignar (decisión del equipo).
-2. **Acta A/B y los ADR pendientes** — [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699), [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700), [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704).
+2. **Acta A/B y los ADR pendientes.** El ADR del tenant de clientes ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) ya está publicado como [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md); le falta la decisión del PO, no la redacción. Siguen sin ficha o sin ratificar: el acta A/B ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), bloqueada por [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)), el cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la asignación idempotente ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)).
 3. **SDD §8 e Infraestructura V4 §7** corregidos respecto al monitoreo — [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686), que a su vez espera la fila D8.
 4. **Trazabilidad completa por ADR** (requisito → atributo de calidad → prueba) — [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661).
 5. **Revisión y aprobación del README por otro responsable de carpeta**, exigida por los criterios comunes de las ocho HU de wiki.
@@ -167,5 +167,6 @@ Los tres primeros se retiraron de la raíz el 2026-11-10, tras comprobar secció
 
 | Fecha | Cambio |
 |---|---|
+| 2026-11-11 | Se publica [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) (pertenencia del cliente a un tenant, `Propuesto`) y se propaga al índice de decisiones (§4, 28 fichas), al pendiente de §5 y al cierre de §7: el tenant de clientes pasa de «bug sin ADR» a «ADR publicado, decisión del PO pendiente». |
 | 2026-11-10 | HU-WIKI-02 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690)): ficha de carpeta con responsable y consumidores, orden de lectura en seis pasos, finalidad y mantenedor por documento, versión y fecha, índice de ADR corregido a 27 fichas, barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos absorbidos que seguían en la raíz. Cierre parcial: ver §7. |
 | 2026-11-04 | Reorganización en tres capas y absorción de los expedientes cerrados. |

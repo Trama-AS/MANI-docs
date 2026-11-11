@@ -4,6 +4,19 @@
 
 **Arquitectura objetivo:** SOA distribuida + API Gateway + enfoque políglota + multi-tenancy.
 
+## Ficha de la carpeta
+
+| Campo | Valor |
+|---|---|
+| **Propósito** | Responder cómo es el sistema y por qué es así, de modo que cada decisión se pueda rastrear hasta el requisito que la originó y hasta la prueba que la verifica. |
+| **Responsable** | Sara Albarracín |
+| **Suplente** | **Pendiente de asignar.** Lo define el equipo según [`GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2.3; hasta entonces, la suplencia no está cubierta. |
+| **Quién la consume** | Desarrollo (los seis repositorios), QA (para derivar pruebas de los escenarios), DevOps (vista de despliegue) y el PO (restricciones que afectan el alcance). |
+| **Cada cuánto se actualiza** | Al cerrar cada sprint, y de inmediato cuando una Mesa de Arquitectura produce o modifica un ADR. |
+| **Última revisión de la carpeta** | 2026-11-10 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690), HU-WIKI-02) |
+| **Barrido de secretos** | 2026-11-10: sin credenciales en la carpeta. Se buscaron valores, no palabras: JWT (`eyJ…`), llaves de Supabase (`sb_…`), llaves de AWS (`AKIA…`), bloques `BEGIN … PRIVATE KEY`, cadenas hexadecimales de 40+ caracteres y asignaciones del tipo `password=…`, `secret=…`, `token=…`. **0 coincidencias.** Las apariciones de «token», «secret» y `LOGIN PASSWORD` son vocabulario y referencias de política (ADR-0031 §5), no valores. |
+| **Estado del cierre de HU-WIKI-02** | **Parcial.** Ver [§7](#7-qué-falta-para-cerrar-hu-wiki-02). |
+
 La carpeta tiene tres capas, y cada documento vive en una sola:
 
 | Capa | Qué es | Dónde |
@@ -16,33 +29,52 @@ Si guía y documento se contradicen, manda el documento. Si documento y ADR se c
 
 **No hay carpeta de expedientes.** Una auditoría, un inventario o el material de una Mesa no son un documento aparte: su contenido va al documento o al ADR que responde por ese tema, con su fecha de corte escrita. Lo que no sobrevive a esa pregunta —«¿de qué documento es esto una parte?»— no se guarda aquí.
 
-## Guía — empieza por aquí
+## 1. Orden de lectura
 
-| Página | Tema |
-|---|---|
-| [Estilo y contenedores](guia/estilo-y-contenedores.md) | SOA + Gateway + políglota; qué contenedor hace qué |
-| [Reglas arquitectónicas](guia/reglas-arquitectonicas.md) | Principios y dependencias permitidas/prohibidas |
-| [Multi-tenancy y seguridad](guia/multitenancy-y-seguridad.md) | Identificación de tenant, capas de control, KYC |
-| [Datos y analítica](guia/datos-y-analitica.md) | Propiedad de datos, esquemas, RLS, Data Warehouse |
-| [Atributos de calidad](guia/atributos-de-calidad.md) | Prioridades y umbrales verificables |
-| [Decisiones ADR](guia/decisiones-adr.md) | Índice de ADR con estado, reglas de Mesa, huecos y lo que falta ratificar |
-| [Riesgos y puntos abiertos](guia/riesgos-y-puntos-abiertos.md) | Architectural killers y lo que falta decidir |
-| [Diagramas](guia/diagramas.md) | Qué diagramas existen y dónde |
+Seis pasos. Quien llega nuevo los recorre en este orden; quien viene a resolver una duda concreta usa la tabla de atajos de [§3](#3-documentos--la-fuente).
 
-## Documentos — la fuente
+| # | Qué leer | Dónde | Por qué va aquí |
+|---|---|---|---|
+| 1 | **Drivers y restricciones**: qué obliga a que la arquitectura sea así | [`SAD.md`](SAD.md) §2 y §3, y [Reglas arquitectónicas](guia/reglas-arquitectonicas.md) | Sin los drivers, las decisiones de más abajo parecen arbitrarias |
+| 2 | **SAD** — arquitectura del sistema: estilo, contenedores, límites entre servicios, multi-tenancy | [`SAD.md`](SAD.md) | Fija el qué y el dónde antes del cómo |
+| 3 | **SDD** — diseño detallado, vistas C4 y el modelo 4+1 | [`SDD.md`](SDD.md) §4 | Desarrolla el SAD hasta el nivel de componente |
+| 4 | **Índice de ADR con estado** | [Decisiones ADR](guia/decisiones-adr.md) y [§4](#4-decisiones) | Una decisión vinculante manda sobre cualquier descripción |
+| 5 | **Escenarios de calidad QAS-01 a QAS-45 con su umbral vigente** | [`SDD.md`](SDD.md) §7 y §8 — **único lugar donde viven los umbrales** | Es lo que convierte un atributo de calidad en algo medible por QA |
+| 6 | **Trade-offs y puntos abiertos** | [Riesgos y puntos abiertos](guia/riesgos-y-puntos-abiertos.md) y [§5](#5-lo-que-falta-decidir) | Lo que todavía no está decidido, dicho como pendiente y no como hecho |
 
-| Documento | De qué responde |
-|---|---|
-| [`SAD.md`](SAD.md) | Arquitectura del sistema: estilo, contenedores, límites entre servicios, multi-tenancy, observabilidad, riesgos |
-| [`SDD.md`](SDD.md) | Diseño detallado, vistas C4, escenarios de calidad y vista de despliegue |
-| [`ModeloDatos.md`](ModeloDatos.md) | Modelo de datos, propiedad de esquema, permisos y políticas RLS |
-| [`SECUENCIAS.md`](SECUENCIAS.md) | Secuencias de los flujos principales |
-| [`COMUNICACION_SERVICIOS_GATEWAY.md`](COMUNICACION_SERVICIOS_GATEWAY.md) | Enrutamiento perimetral y reglas de comunicación entre servicios |
-| [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) | Esquemas y versionado de los eventos de negocio |
-| [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas |
-| [`ARQ-05-despliegue-kafka-dev-qa.md`](ARQ-05-despliegue-kafka-dev-qa.md) | Configuración y despliegue del broker Kafka en DEV y QA: tópicos canónicos, smoke test y monitoreo (SCRUM-1236) |
+## 2. Guía — páginas de lectura
 
-Secciones que conviene conocer porque son las que suelen buscarse como «documento aparte»:
+Explican y ordenan; no deciden. Las mantiene la responsable de la carpeta y se revisan al cierre de cada sprint.
+
+| Página | Tema | Qué fuente resume |
+|---|---|---|
+| [Estilo y contenedores](guia/estilo-y-contenedores.md) | SOA + Gateway + políglota; qué contenedor hace qué | `SAD.md`, ADR-0019 |
+| [Reglas arquitectónicas](guia/reglas-arquitectonicas.md) | Principios y dependencias permitidas/prohibidas | `SAD.md`, ADR-0022, ADR-0030 |
+| [Multi-tenancy y seguridad](guia/multitenancy-y-seguridad.md) | Identificación de tenant, capas de control, KYC | `ModeloDatos.md` §6, ADR-0012, ADR-0018 |
+| [Datos y analítica](guia/datos-y-analitica.md) | Propiedad de datos, esquemas, RLS, Data Warehouse | `ModeloDatos.md`, ADR-0030 |
+| [Atributos de calidad](guia/atributos-de-calidad.md) | Prioridades y umbrales verificables | `SDD.md` §7 y §8 |
+| [Decisiones ADR](guia/decisiones-adr.md) | Índice de ADR con estado, reglas de Mesa, huecos y lo que falta ratificar | `adr/`, ADR-0003 |
+| [Riesgos y puntos abiertos](guia/riesgos-y-puntos-abiertos.md) | *Architectural killers* y lo que falta decidir | `SAD.md` §7.4 y §7.6 |
+| [Diagramas](guia/diagramas.md) | Qué diagramas existen y dónde | `diagrams/`, ADR-0008 |
+
+## 3. Documentos — la fuente
+
+Los tres primeros son **documentos vivos**: no llevan número de versión, la vigente es la de `main` y su historial está en el log de git. La columna de fecha es la del último cambio en `main` al 2026-11-10.
+
+| Documento | Finalidad | Mantiene | Consume | Frecuencia | Versión y fecha |
+|---|---|---|---|---|---|
+| [`SAD.md`](SAD.md) | Arquitectura del sistema: estilo, contenedores, límites entre servicios, multi-tenancy, observabilidad, riesgos | Arquitectura | Desarrollo, DevOps, PO | Por sprint y ante cada ADR | Vivo · 2026-11-04 |
+| [`SDD.md`](SDD.md) | Diseño detallado, vistas C4, **los 45 escenarios de calidad con su umbral** y la vista de despliegue | Arquitectura | Desarrollo, QA | Por sprint y ante cada cambio de umbral | Vivo · 2026-11-05 |
+| [`ModeloDatos.md`](ModeloDatos.md) | Modelo de datos, propiedad de esquema, permisos y políticas RLS | Arquitectura con Core | Desarrollo, QA, DevOps | Por migración | Vivo · 2026-11-04 |
+| [`SECUENCIAS.md`](SECUENCIAS.md) | Secuencias de los flujos principales en PlantUML, pegables en cualquier visor | Arquitectura | Desarrollo, sustentación | Cuando cambia un flujo | Vivo · 2026-11-04 |
+| [`COMUNICACION_SERVICIOS_GATEWAY.md`](COMUNICACION_SERVICIOS_GATEWAY.md) | Enrutamiento perimetral y reglas de comunicación entre servicios | Arquitectura con DevOps | Desarrollo, DevOps | Cuando cambia una ruta o un servicio | 1.0 · 2026-10-05 |
+| [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) | Esquemas y versionado de los cuatro eventos de negocio (ARQ-06) | Juan Sebastián Álvarez | Desarrollo, QA | Cuando cambia un contrato de evento | ARQ-06 · 2026-10-18 |
+| [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas | Arquitectura | Todo el equipo | Por sprint | Vivo · 2026-11-04 |
+| [`ARQ-05-despliegue-kafka-dev-qa.md`](ARQ-05-despliegue-kafka-dev-qa.md) | Configuración y despliegue de Kafka en DEV y QA: tópicos canónicos, *smoke test* y monitoreo (SCRUM-1236) | Daniel Ávila | DevOps, Desarrollo | Cuando cambia el broker o sus tópicos | ARQ-05 · 2026-11-03 |
+
+> **Dato en disputa.** Este documento declara Kafka implementado y verificado en DEV y QA. La fila D7 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) está **pendiente de validar** porque la descripción de la VM de QA no lista el contenedor. No se cita como hecho hasta que haya evidencia.
+
+Atajos a secciones que suelen buscarse como si fueran un documento aparte:
 
 | Si buscas | Está en |
 |---|---|
@@ -52,25 +84,68 @@ Secciones que conviene conocer porque son las que suelen buscarse como «documen
 | Qué falta para cumplir ADR-0027 en Flutter | [`SAD.md`](SAD.md) §8.3.1 |
 | Métricas y alertas de autenticación | [`SAD.md`](SAD.md) §19.1 y §19.2 |
 | Los seis casos cross-tenant que QA debe ejecutar | [`SDD.md`](SDD.md) §8.12 |
-| Lo que falta ratificar en Mesa | [Decisiones ADR](guia/decisiones-adr.md) y el apartado «Pendiente de Mesa» de [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) |
+| Lo que falta ratificar en Mesa | [Decisiones ADR](guia/decisiones-adr.md) y «Pendiente de Mesa» de [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) |
 
-## Decisiones
+## 4. Decisiones
 
-[`adr/`](adr/) — 26 fichas: 24 `Aceptado` (vinculantes), 1 `Rechazado` y 1 `Propuesto`. Los números no son contiguos y no se reutilizan. El índice con estado, los retiros y los huecos están en [Decisiones ADR](guia/decisiones-adr.md).
+[`adr/`](adr/) — **27 fichas** al 2026-11-10: **24 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*) y **2 `Propuesto`** (ADR-0034 contrato común de proveedores externos, ADR-0035 frontera de asignación 6A). Dos de las aceptadas llevan matiz en su propio estado: ADR-0029 con adopción diferida al Sprint 5, y ADR-0032 aprobado en revisión de arquitectura pero **pendiente de acta de Mesa**.
 
-## Diagramas
+Los números no son contiguos y no se reutilizan. **Huecos:** 0007, 0009, 0010, 0020, 0021, 0023, 0026 y 0033. El índice completo con estado y los retiros está en [Decisiones ADR](guia/decisiones-adr.md).
+
+Un ADR de esta carpeta debe enlazar tres cosas: el **requisito** que lo origina, el **atributo de calidad** que compromete y la **prueba** que lo verifica. Los que todavía no lo hacen se cierran con [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661).
+
+## 5. Lo que falta decidir
+
+Ninguno de estos puntos se presenta como resuelto.
+
+| Pendiente | Estado hoy | Qué lo cierra |
+|---|---|---|
+| **Asignación idempotente (6A)** | [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) existe en estado `Propuesto`; el contrato está en [`SAD.md`](SAD.md) §7.4 con los puntos abiertos P5 a P9, pero **la asignación idempotente no está escrita allí** | Ratificación en Mesa y corrección de `SAD.md` §7.4 ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)) |
+| **Acta A/B** | Los escenarios con opción B no están reflejados en `SDD.md` §7 y §8 | Acta firmada y reescritura ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685)) |
+| **Tenant de los clientes** | Bug abierto [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637); sin ADR | ADR del tenant de clientes ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) |
+| **Cifrado de credenciales y datos sensibles** | [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) `Reopened`, único ítem abierto del Sprint 5; sin ADR y con el alcance en Core sin definir | ADR de cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la pregunta P-D15 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md#4-preguntas-de-decisión-abiertas) |
+| **Observabilidad: ¿Datadog o Loki?** | [ADR-0006](adr/ADR-0006-observabilidad.md) está `Aceptado` con Datadog. Si se sustituye por Loki, el ADR hay que revisarlo, no contradecirlo desde otro documento | Revisión de ADR-0006 en Mesa |
+| **SDD §8 e Infraestructura V4 §7 sobre monitoreo** | Ambos declaran la observabilidad como futura; hay indicios de Prometheus y Grafana en QA desde el 6-nov | Fila D8 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) y luego [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) |
+
+## 6. Discrepancias de HU-VAL-01 que son de esta carpeta
+
+Cinco de las quince filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) tocan documentos de 02-arquitectura. Ninguna se da por cerrada aquí: esta tabla es el enlace exigido por HU-WIKI-02.
+
+| Fila | Qué afecta en esta carpeta | Estado |
+|---|---|---|
+| D4 | RPO/RTO: `SDD.md` QAS-17 contra el informe de DevOps y la opción B | Conflicto verificado; **falta la decisión** (P-D4) |
+| D5 | Servicios por ambiente: la tabla de contenedores de `SAD.md` incluye Availability | **Pendiente de validar** (`docker ps` por host) |
+| D7 | Kafka en DEV y QA: [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) y el estado de ADR-0029 | **Pendiente de validar** |
+| D8 | Observabilidad: `SDD.md` §8 declara que no hay | **Pendiente de validar** |
+| D15 | Responsable y alcance del cifrado, que condiciona el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) | Dato de Jira verificado; **falta la decisión** (P-D15) |
+
+## 7. Qué falta para cerrar HU-WIKI-02
+
+Hecho: orden de lectura, ficha de carpeta, finalidad y mantenedor por documento, versión y fecha, índice de ADR con estado corregido (27 fichas, no 26), barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos ya absorbidos.
+
+Falta, y **depende de trabajo de otras tareas**:
+
+1. **Suplente de la carpeta** sin asignar (decisión del equipo).
+2. **Acta A/B y los ADR pendientes** — [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699), [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700), [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704).
+3. **SDD §8 e Infraestructura V4 §7** corregidos respecto al monitoreo — [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686), que a su vez espera la fila D8.
+4. **Trazabilidad completa por ADR** (requisito → atributo de calidad → prueba) — [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661).
+5. **Revisión y aprobación del README por otro responsable de carpeta**, exigida por los criterios comunes de las ocho HU de wiki.
+
+## 8. Diagramas
 
 [`diagrams/`](diagrams/) — fuentes y PNG de los diagramas C4, de despliegue, de datos y de flujos. Los C4 se editan en [`diagrams/c4/workspace.dsl`](diagrams/c4/workspace.dsl), nunca sobre la imagen (ADR-0008).
 
-## Documentos absorbidos
+## 9. Documentos absorbidos
 
-Seis documentos que vivían aquí como pieza aparte. Su contenido está íntegro en el documento que lo absorbió, que es ahora la única fuente; el texto original sigue en el historial de git.
+Nueve documentos que vivían aquí como pieza aparte. Su contenido está íntegro en el documento que lo absorbió, que es ahora la única fuente; el texto original sigue en el historial de git.
+
+Los tres primeros se retiraron de la raíz el 2026-11-10, tras comprobar sección por sección que su contenido está en el destino: el README ya los declaraba absorbidos mientras los archivos seguían presentes.
 
 | Absorbido | Dónde quedó su contenido |
 |---|---|
-| `CFG-23a/01-inventario-rls.md` | [`ModeloDatos.md`](ModeloDatos.md) §6.4, con la consulta de confirmación contra el motor |
-| `CFG-23a/02-diseno-modelo-identidad.md` | [`ModeloDatos.md`](ModeloDatos.md) §6.5 (modelo, políticas por tabla, despliegue y riesgos) y [`SDD.md`](SDD.md) §8.12 (los seis casos cross-tenant) |
-| `CFG-23a/03-mesa-arquitectura.md` | [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md), apartado «Pendiente de Mesa»: preguntas M1 a M8, evidencia de la PoC y acta pendiente |
+| `01-inventario-rls.md` (CFG-23a.1) | [`ModeloDatos.md`](ModeloDatos.md) §6.4, con la consulta de confirmación contra el motor y la conciliación con SCRUM-1334 |
+| `02-diseno-modelo-identidad.md` (CFG-23a.3) | [`ModeloDatos.md`](ModeloDatos.md) §6.5 (componentes, contexto por flujo, políticas objetivo por tabla, integración por servicio, despliegue con reversa y riesgos) y [`SDD.md`](SDD.md) §8.12 (los seis casos cross-tenant) |
+| `03-mesa-arquitectura.md` (CFG-23a.4) | [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md), «Pendiente de Mesa»: preguntas M1 a M8, alternativas, evidencia de la PoC y acta pendiente |
 | `EXPEDIENTE_MESA_TEC-12.md` | [Decisiones ADR](guia/decisiones-adr.md), «Qué tiene que decidir la Mesa»; el pendiente es P7 de [`SAD.md`](SAD.md) §7.4 |
 | `REPORTE_CONFORMIDAD_CORE_DISPATCH.md` | [`SAD.md`](SAD.md) §7.6, con las desviaciones D-2 a D-10 y sus criterios de cierre |
 | `CUMPLIMIENTO_ADR0027_FLUTTER.md` | [`SAD.md`](SAD.md) §8.3.1, con los accesos pendientes y la búsqueda que acredita el cierre |
@@ -78,10 +153,19 @@ Seis documentos que vivían aquí como pieza aparte. Su contenido está íntegro
 | `MATRIZ_DECISION_6A.md` | [`SAD.md`](SAD.md) §7.4, que ya contenía la decisión y su contrato; sus puntos abiertos son P5 a P9 |
 | `TRAZABILIDAD_INTEGRACION.md` | [`SAD.md`](SAD.md) §12.2 y §7.4, [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) y [`COMUNICACION_SERVICIOS_GATEWAY.md`](COMUNICACION_SERVICIOS_GATEWAY.md) §4.4 |
 
-## Dónde va un documento nuevo
+**Un documento obsoleto se marca, no se borra.** Lo que se retira de la raíz es un documento cuyo contenido completo vive ya en otro; queda en el historial de git y en esta tabla. Un documento que sigue siendo la única fuente de algo no se retira nunca: se marca con su fecha de corte y el motivo.
 
-1. ¿Decide algo que ataría al equipo? → un ADR en [`adr/`](adr/), por Mesa de Arquitectura (ADR-0003).
+## 10. Dónde va un documento nuevo
+
+1. ¿Decide algo que ataría al equipo? → un ADR en [`adr/`](adr/), por Mesa de Arquitectura (ADR-0003), con su requisito, su atributo de calidad y su prueba.
 2. ¿Describe cómo es el sistema, o cómo debería ser? → a la sección del documento que ya cubre el tema, con su fecha de corte si es un estado. No a un archivo nuevo.
 3. ¿Es el material de una Mesa que aún no se ha celebrado? → al ADR que se va a decidir.
 4. ¿Es la ejecución de una prueba, un reporte de QA o una evidencia de sprint? → [`wiki/07-calidad/`](../07-calidad/README.md), no aquí.
 5. ¿Solo explica para leer más fácil? → [`guia/`](guia/), citando la fuente que resume.
+
+## Historial de cambios
+
+| Fecha | Cambio |
+|---|---|
+| 2026-11-10 | HU-WIKI-02 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690)): ficha de carpeta con responsable y consumidores, orden de lectura en seis pasos, finalidad y mantenedor por documento, versión y fecha, índice de ADR corregido a 27 fichas, barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos absorbidos que seguían en la raíz. Cierre parcial: ver §7. |
+| 2026-11-04 | Reorganización en tres capas y absorción de los expedientes cerrados. |

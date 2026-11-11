@@ -88,7 +88,7 @@ Atajos a secciones que suelen buscarse como si fueran un documento aparte:
 
 ## 4. Decisiones
 
-[`adr/`](adr/) — **27 fichas** al 2026-11-10: **24 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*) y **2 `Propuesto`** (ADR-0034 contrato común de proveedores externos, ADR-0035 frontera de asignación 6A). Dos de las aceptadas llevan matiz en su propio estado: ADR-0029 con adopción diferida al Sprint 5, y ADR-0032 aprobado en revisión de arquitectura pero **pendiente de acta de Mesa**.
+[`adr/`](adr/) — **28 fichas** al 2026-11-11: **24 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*) y **3 `Propuesto`** (ADR-0034 contrato común de proveedores externos, ADR-0035 frontera de asignación 6A, [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) pertenencia del cliente a un tenant). Dos de las aceptadas llevan matiz en su propio estado: ADR-0029 con adopción diferida al Sprint 5, y ADR-0032 aprobado en revisión de arquitectura pero **pendiente de acta de Mesa**.
 
 Los números no son contiguos y no se reutilizan. **Huecos:** 0007, 0009, 0010, 0020, 0021, 0023, 0026 y 0033. El índice completo con estado y los retiros está en [Decisiones ADR](guia/decisiones-adr.md).
 

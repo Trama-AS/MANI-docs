@@ -63,7 +63,7 @@ Cosas que esta versión del README **no resuelve** y que hay que cerrar antes de
 | 1 | **Roles contradictorios.** [Roles y decisiones](../04-proceso/roles-y-decisiones.md) lista a Nicolás León como Product Owner y a Camila Beltrán como Frontend y Scrum Master; el reparto del Sprint 5 de este README y Jira dejan a Camila Beltrán como PO | Abierto: pertenece a `04-proceso`; se eleva a HU-VAL-01 |
 | 2 | **Épica `EP-11`.** El tablero la usa (`SCRUM-1363`) y la tabla de §1 de `BACKLOG_MANI.md` no la incluye | Abierto: se completa al publicar la siguiente versión del backlog |
 | 3 | **Versiones V1 a V4.** El repositorio no guarda su número ni su fecha como documento | Abierto: ver [histórico](historico-por-version.md) |
-| 4 | **Matriz de trazabilidad.** Solo 7 de las 78 filas del 9-nov tienen la cadena respaldada | Abierto: ver [matriz](matriz-de-trazabilidad.md) |
+| 4 | **Matriz de trazabilidad.** Los 78 ítems del 9-nov tienen origen y, donde la descripción los nombra, QAS (28) y ADR (9); 9 tienen prueba o evidencia. Faltan el módulo y el requisito (las descripciones no los traen) y la prueba de lo que aún no se fusiona | Abierto: ver [matriz](matriz-de-trazabilidad.md) |
 | 5 | **Suplente de la carpeta.** Nicolás Álvarez figura como propuesto | Pendiente de confirmar con la Scrum Master |
 | 6 | **Revisión.** Otro responsable de carpeta debe revisar y aprobar este README | Pendiente |
 | 7 | **Rama de destino.** La historia pide el cambio por PR a `develop`; el repositorio MANI-docs no tiene rama `develop` y sus PR van a `main` | Este PR va a `main`; confirmar la regla |

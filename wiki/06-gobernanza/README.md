@@ -20,7 +20,7 @@ Esta carpeta responde a **quién decide**, **bajo qué políticas**, **sobre qu�
 
 ## 1. Orden de lectura
 
-Cinco pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en orden; quien busca un dato concreto va directo a [§3](#3-documentos).
+Seis pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en orden; quien busca un dato concreto va directo a [§3](#3-documentos).
 
 | # | Qué leer | Dónde | Por qué va aquí |
 |---|---|---|---|
@@ -28,7 +28,8 @@ Cinco pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en or
 | 2 | **Políticas de trabajo**: ramas, PR, promoción, CI/CD, secretos, uso de IA | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Es la norma que el incumplimiento de un entregable se mide contra ella |
 | 3 | **Infraestructura vigente**: ambientes, VMs, Supabase, red, backups | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) y [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Fija sobre qué se despliega lo que se decide |
 | 4 | **Validación de discrepancias**: qué se verificó de verdad y qué sigue pendiente | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Separa lo verificado de lo afirmado, antes de llevar una cifra a la sustentación |
-| 5 | **Actas, informes de cierre y registro de bloqueos** | **Aún no existen como documento.** Ver [§4](#4-lo-que-esta-carpeta-todavía-no-tiene) | Es lo que falta para cerrar HU-WIKI-08 |
+| 5 | **Registro de bloqueos del Sprint 6** | [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Ocho bloqueos abiertos, seis de ellos en o sobre el umbral de escalamiento: es lo que explica por qué varias tareas del sprint no avanzan |
+| 6 | **Actas e informes de cierre** | **Aún no existen como documento.** Ver [§4](#4-lo-que-esta-carpeta-todavía-no-tiene) | Es lo que falta para cerrar HU-WIKI-08 |
 
 ## 2. La regla que resuelve discusiones
 
@@ -49,6 +50,7 @@ La autoridad es del **rol** y del **artefacto**, no de la persona (§2.3): el PO
 | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) | **Vista física vigente** del modelo 4+1: ambientes, VMs, registro de imágenes, Supabase, red y TLS, backups y el estado de lo verificado contra el código | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Por sprint y ante cada cambio de ambiente | V4 · 2026-11-05 · **Borrador para revisión** |
 | [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Vista física detallada: ambientes DEV, QA y PROD, VMs, Supabase, red y TLS, backups, escalabilidad y, en §27, el plan de alineación y rollback de Supabase PROD y QA | Daniel Ávila (DevOps) | DevOps, QA | Cuando cambia la infraestructura | Vivo · 2026-10-22 |
 | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Validación de las discrepancias entre documentos: estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, y las preguntas de decisión abiertas | Sara Albarracín (SM) | PO, Arquitectura, DevOps, QA | Cada vez que se cierra una fila; obligatorio antes de cada sustentación | 1.1 · 2026-11-11 · **Parcial (8 de 15 filas)** |
+| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Bloqueos del Sprint 6: ítem afectado, tipo, causa, responsable, fecha de aparición y días hábiles abierto, con el resumen por tipo y las causas recurrentes con su acción de mejora | Sara Albarracín (SM) | El equipo en cada *daily*; el informe de cierre | En cada *daily* | 1.0 · 2026-11-11 |
 | [`DOCUMENTO_INFRAESTRUCTURA_V3.md`](DOCUMENTO_INFRAESTRUCTURA_V3.md) | Vista física al cierre del Sprint 4, con evidencia empírica y runbook | Daniel Ávila (DevOps) | Consulta histórica | No se actualiza | V3 · 2026-10-17 · **Superado por V4** |
 
 > **`DOCUMENTO_INFRAESTRUCTURA_V3.md` está superado, no borrado.** La vista vigente es la V4. La V3 se conserva porque es la única que recoge el estado verificado operativamente al cierre del Sprint 4, y se cita solo como corte histórico, nunca como estado de hoy. El criterio de las HU de wiki es explícito: un documento obsoleto se marca, no se borra.
@@ -68,13 +70,12 @@ Se citan por su sección. Sus versiones originales quedan en el historial de git
 
 ## 4. Lo que esta carpeta todavía no tiene
 
-Los criterios específicos de HU-WIKI-08 piden actas, informes de cierre y registro de bloqueos. **No existen como documento todavía**, y esta tabla es el enlace exigido. Mientras un documento no exista, su fila dice «no existe», no «pendiente de revisión».
+Los criterios específicos de HU-WIKI-08 piden actas, informes de cierre y registro de bloqueos. El registro de bloqueos **ya existe** ([`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md), v1.0). Los otros tres **no existen como documento todavía**, y esta tabla es el enlace exigido. Mientras un documento no exista, su fila dice «no existe», no «pendiente de revisión».
 
 | Qué falta | Qué debe contener | Jira | Estado |
 |---|---|---|---|
 | **Acta de decisión A/B por escenario de calidad** | Cada escenario marcado como opción A o B con su motivo, un RPO/RTO único (hoy hay tres propuestas incompatibles), y firma del PO | [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684) | `To Do`. **Bloquea** [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) y [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686): sin el acta, reescribir los umbrales del SDD sería inventarlos |
 | **Informe de cierre del Sprint 6** | Resultados, lecciones aprendidas y deuda abierta | [SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708) | `To Do`. Se redacta al cierre del sprint |
-| **Registro de bloqueos** | Un bloqueo por fila: causa, responsable, fecha de apertura, fecha de cierre y tiempo de resolución | [SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709) | `To Do` |
 | **Seguimiento de los acuerdos de la planning del Sprint 6** | Acuerdo, responsable, fecha comprometida y estado | [SCRUM-1707](https://maniservices.atlassian.net/browse/SCRUM-1707) | `To Do` |
 
 **Toda acta de esta carpeta lleva**, sin excepción: fecha, asistentes, decisiones tomadas una por una, y el enlace a la tarea de Jira que la ejecuta. Las actas de aceptación las firma el PO. Un acta sin firma del PO no es un acta: es un borrador de la SM.
@@ -94,12 +95,12 @@ Revisión del 2026-11-11 sobre los seis documentos de la carpeta. Se buscaron **
 
 ## 6. Qué falta para cerrar HU-WIKI-08
 
-Hecho: ficha de carpeta con responsable, firmante y consumidores; orden de lectura en cinco pasos; finalidad, mantenedor, consumidor, frecuencia y versión por documento; incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md`, que existía en la carpeta sin estar listado; marcado de la V3 como superada; barrido de secretos con sus dos coincidencias explicadas; enlace de las discrepancias de HU-VAL-01 que son de esta carpeta ([§7](#7-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)); y declaración explícita de los cuatro documentos que todavía no existen.
+Hecho: ficha de carpeta con responsable, firmante y consumidores; orden de lectura en cinco pasos; finalidad, mantenedor, consumidor, frecuencia y versión por documento; incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md`, que existía en la carpeta sin estar listado; marcado de la V3 como superada; barrido de secretos con sus dos coincidencias explicadas; enlace de las discrepancias de HU-VAL-01 que son de esta carpeta ([§7](#7-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)); declaración explícita de los documentos que todavía no existen; y publicación del [registro de bloqueos](REGISTRO_BLOQUEOS.md) ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)) con ocho bloqueos abiertos y uno resuelto.
 
 Falta, y **depende de trabajo de otras tareas**:
 
 1. **Suplente de la carpeta** sin asignar (decisión del equipo).
-2. **Las cuatro piezas de [§4](#4-lo-que-esta-carpeta-todavía-no-tiene)**: acta A/B, informe de cierre, registro de bloqueos y seguimiento de acuerdos.
+2. **Las tres piezas que siguen faltando en [§4](#4-lo-que-esta-carpeta-todavía-no-tiene)**: acta A/B, informe de cierre y seguimiento de acuerdos. El registro de bloqueos ya está publicado; le falta la etiqueta `bloqueado` en Jira, que hoy no existe.
 3. **Las siete filas pendientes de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md)**, que exigen sesión en las VMs, consulta a Supabase de PROD o prueba de puertos desde la red de la universidad.
 4. **Revisión y aprobación del README por otro responsable de carpeta**, exigida por los criterios comunes de las ocho HU de wiki.
 5. **Promoción de `DOCUMENTO_INFRAESTRUCTURA_V4.md`** de borrador a vigente, que depende de las mismas filas del punto 3.
@@ -133,5 +134,6 @@ Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre in
 
 | Fecha | Cambio |
 |---|---|
+| 2026-11-11 | Se publica [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)) y se enlaza desde el orden de lectura, la tabla de documentos y §4. |
 | 2026-11-11 | HU-WIKI-08 ([SCRUM-1711](https://maniservices.atlassian.net/browse/SCRUM-1711)): ficha de carpeta, orden de lectura, metadatos completos por documento (finalidad, mantenedor, consumidor, frecuencia, versión y fecha), incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md` que estaba sin listar, marcado de la V3 como superada, barrido de secretos con las dos coincidencias explicadas, tabla de los cuatro documentos que aún no existen, enlace de las nueve filas de HU-VAL-01 que son de esta carpeta y reglas de ubicación de un documento nuevo. Cierre parcial: ver §6. |
 | 2026-10-22 | Absorción de la política de JWT y del plan de alineación de Supabase en sus documentos destino. |

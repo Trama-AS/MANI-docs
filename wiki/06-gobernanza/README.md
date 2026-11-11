@@ -12,6 +12,7 @@ Esta carpeta responde a **quién decide** y **bajo qué políticas y sobre qué 
 | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Políticas de ramas, PR, promoción, CI/CD, contenedores, testing, DevSecOps, secretos, observabilidad, uso de IA, versionamiento de despliegue y, en §22, la política de JWT entre ambientes |
 | [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Vista física vigente: ambientes DEV, QA y PROD, VMs, registro de imágenes, Supabase, red y TLS, backups, escalabilidad y, en §27, el plan de alineación y rollback de Supabase PROD y QA |
 | [`DOCUMENTO_INFRAESTRUCTURA_V3.md`](DOCUMENTO_INFRAESTRUCTURA_V3.md) | Vista física del modelo 4+1 al cierre del Sprint 4, con evidencia empírica y runbook |
+| [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | **Validación de las discrepancias entre documentos (HU-VAL-01, SCRUM-1696).** Estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, y las preguntas de decisión abiertas al PO y a Arquitectura. **Estado: parcial.** |
 
 ## Dos documentos que dejaron de existir aparte
 

@@ -542,11 +542,7 @@ Consecuencia de diseño: cada sistema externo entra al modelo por un adaptador, 
 
 ### 4.6.1 Solicitud y listado de aliados — `dinamico-solicitud`
 
-<<<<<<< HEAD
 [![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](diagrams/flujos/dinamicos/dinamico-solicitud.png)](diagrams/flujos/dinamicos/dinamico-solicitud.png)
-=======
-[![Vista dinámica — solicitud: el despacho consulta elegibilidad a Core y orden a Reglas](diagrams/flujos/dinamicos/dinamico-solicitud.png)](../diagrams/flujos/dinamicos/dinamico-solicitud.png)
->>>>>>> 1cd9ea5 (docs: actualizar entregas, arquitectura y documentación MANI)
 
 > **Figura 7 — Solicitud y listado de aliados.** Generada desde la vista `dinamico-solicitud`; imagen en [`diagrams/flujos/dinamicos/dinamico-solicitud.png`](diagrams/flujos/dinamicos/dinamico-solicitud.png).
 
@@ -563,11 +559,7 @@ Quien orquesta es el despacho: pregunta elegibilidad al dominio de disponibilida
 
 ### 4.6.2 Aceptación concurrente — `dinamico-aceptacion`
 
-<<<<<<< HEAD
 [![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](diagrams/flujos/dinamicos/dinamico-aceptacion.png)](diagrams/flujos/dinamicos/dinamico-aceptacion.png)
-=======
-[![Vista dinámica — aceptación concurrente: la actualización condicional atómica deja pasar la primera aceptación](diagrams/flujos/dinamicos/dinamico-aceptacion.png)](../diagrams/flujos/dinamicos/dinamico-aceptacion.png)
->>>>>>> 1cd9ea5 (docs: actualizar entregas, arquitectura y documentación MANI)
 
 > **Figura 8 — Aceptación concurrente.** Generada desde la vista `dinamico-aceptacion`; imagen en [`diagrams/flujos/dinamicos/dinamico-aceptacion.png`](diagrams/flujos/dinamicos/dinamico-aceptacion.png).
 
@@ -588,11 +580,7 @@ La primera aceptación afecta una fila y gana. La segunda no afecta ninguna y re
 
 ### 4.6.3 Cotización y tarifario — `dinamico-cotizacion`
 
-<<<<<<< HEAD
 [![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](diagrams/flujos/dinamicos/dinamico-cotizacion.png)](diagrams/flujos/dinamicos/dinamico-cotizacion.png)
-=======
-[![Vista dinámica — cotización: Core persiste la cotización y Reglas valida contra el tarifario](diagrams/flujos/dinamicos/dinamico-cotizacion.png)](../diagrams/flujos/dinamicos/dinamico-cotizacion.png)
->>>>>>> 1cd9ea5 (docs: actualizar entregas, arquitectura y documentación MANI)
 
 > **Figura 9 — Cotización y tarifario.** Generada desde la vista `dinamico-cotizacion`; imagen en [`diagrams/flujos/dinamicos/dinamico-cotizacion.png`](diagrams/flujos/dinamicos/dinamico-cotizacion.png).
 
@@ -609,11 +597,7 @@ Core es dueño de la cotización (§7.3 del SAD) y Reglas es dueño del tarifari
 
 ### 4.6.4 KYC del aliado — `dinamico-kyc`
 
-<<<<<<< HEAD
 [![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](diagrams/flujos/dinamicos/dinamico-kyc.png)](diagrams/flujos/dinamicos/dinamico-kyc.png)
-=======
-[![Vista dinámica — KYC: documentos al bucket privado y aprobación del administrador del tenant](diagrams/flujos/dinamicos/dinamico-kyc.png)](../diagrams/flujos/dinamicos/dinamico-kyc.png)
->>>>>>> 1cd9ea5 (docs: actualizar entregas, arquitectura y documentación MANI)
 
 > **Figura 10 — KYC del aliado.** Generada desde la vista `dinamico-kyc`; imagen en [`diagrams/flujos/dinamicos/dinamico-kyc.png`](diagrams/flujos/dinamicos/dinamico-kyc.png).
 
@@ -645,11 +629,7 @@ tenant y la evalúa el Rules Service, igual que el ranking y el tarifario (§4.3
 
 ### 4.6.5 Mensajería y notificación — `dinamico-mensajeria`
 
-<<<<<<< HEAD
 [![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](diagrams/flujos/dinamicos/dinamico-mensajeria.png)](diagrams/flujos/dinamicos/dinamico-mensajeria.png)
-=======
-[![Vista dinámica — mensajería: persistencia, transporte por Realtime y respaldo por push](diagrams/flujos/dinamicos/dinamico-mensajeria.png)](../diagrams/flujos/dinamicos/dinamico-mensajeria.png)
->>>>>>> 1cd9ea5 (docs: actualizar entregas, arquitectura y documentación MANI)
 
 > **Figura 11 — Mensajería y notificación.** Generada desde la vista `dinamico-mensajeria`; imagen en [`diagrams/flujos/dinamicos/dinamico-mensajeria.png`](diagrams/flujos/dinamicos/dinamico-mensajeria.png).
 

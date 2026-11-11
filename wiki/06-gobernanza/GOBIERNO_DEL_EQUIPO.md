@@ -44,6 +44,8 @@ No define arquitectura, infraestructura ni herramientas técnicas en detalle. Es
 | Daniel Ávila | DevOps | Backend |
 | Nicolás León | Product Owner | DevOps |
 
+> **Enmienda pendiente del 2026-11-11 — quién es el Product Owner.** Esta tabla asigna el rol de PO a Nicolás León, con Santiago como segundo rol. Los artefactos vigentes del backlog del 9 de noviembre designan a **Camila Beltrán** como PO de forma independiente en tres sitios: [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661) («Camila (PO) lo valida»), [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687) («PO - Decisiones pendientes de producto», asignada a ella) y [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700) («con decisión de Camila Beltrán (PO)»). Por eso la fila D12 de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) se resolvió el 2026-11-11 a favor de que **el acta de ajustes la firme Camila como PO y Sara como SM**. La tabla **no se reescribe aquí**: un cambio de rol se acuerda en equipo, no por decisión de una sola persona. Mientras no se acuerde, esta nota advierte que §2.1 está desactualizado en la fila del PO. Decidido por la Scrum Master (Sara Albarracín); pendiente de acuerdo del equipo.
+
 Todos los integrantes técnicos participan transversalmente como **Arquitectos** dentro de la Mesa de Arquitectura.
 
 Daniel Ávila actúa como **DevOps titular** para repositorios, CI/CD, release, configuración de ambientes y operación técnica. Nicolás León participa como DevOps secundario.

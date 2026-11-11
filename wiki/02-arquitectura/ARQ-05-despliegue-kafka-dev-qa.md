@@ -6,7 +6,7 @@
 2. *DevOps - Validar Kafka, conexiones y monitoreo básico* (Daniel Ávila, DevOps)  
 **Fecha:** 2026-11-03  
 **Fuentes Normativas:** [`ADR-0029`](adr/ADR-0029-comunicacion-asincrona-kafka.md), [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md), [`SAD.md`](SAD.md) §7.4, [`SDD.md`](SDD.md) §2.1.  
-**Estado:** **Implementado y Verificado en DEV y QA**
+**Estado:** **Implementado; NO verificado de forma independiente** · corte 2026-11-11. El despliegue y el *smoke test* los reporta DevOps, pero la descripción de la VM de QA no lista el contenedor de Kafka. La fila **D7** de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) está **pendiente de validar** y tiene el comando de comprobación. Hasta que haya evidencia pegada allí, este documento no acredita Kafka como verificado en ningún ambiente.
 
 ---
 

@@ -92,7 +92,7 @@ Atajos a secciones que suelen buscarse como si fueran un documento aparte:
 
 Los números no son contiguos y no se reutilizan. **Huecos:** 0007, 0009, 0010, 0020, 0021, 0023, 0026 y 0033. El índice completo con estado y los retiros está en [Decisiones ADR](guia/decisiones-adr.md).
 
-Un ADR de esta carpeta debe enlazar tres cosas: el **requisito** que lo origina, el **atributo de calidad** que compromete y la **prueba** que lo verifica. Los que todavía no lo hacen se cierran con [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661).
+Un ADR de esta carpeta debe enlazar tres cosas: el **requisito** que lo origina, el **atributo de calidad** que compromete y la **prueba** que lo verifica. El índice de [Decisiones ADR](guia/decisiones-adr.md) ya trae la columna de requisito por ADR; completar los que falten es trabajo de esta carpeta y **no** de [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661), que es otra cosa: los 22 contratos OpenAPI que faltan y sus *contract tests* en CI (127 de 127), trabajo de Juan S. Álvarez en los repositorios de código.
 
 ## 5. Lo que falta decidir
 
@@ -100,12 +100,13 @@ Ninguno de estos puntos se presenta como resuelto.
 
 | Pendiente | Estado hoy | Qué lo cierra |
 |---|---|---|
-| **Asignación idempotente (6A)** | [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) existe en estado `Propuesto`; el contrato está en [`SAD.md`](SAD.md) §7.4 con los puntos abiertos P5 a P9, pero **la asignación idempotente no está escrita allí** | Ratificación en Mesa y corrección de `SAD.md` §7.4 ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)) |
-| **Acta A/B** | Los escenarios con opción B no están reflejados en `SDD.md` §7 y §8 | Acta firmada y reescritura ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685)) |
+| **Asignación idempotente (6A)** | **Documentado y cerrado.** [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) está escrito con contexto, alternativas A/B/C y consecuencias, y [`SAD.md`](SAD.md) §7.4 lo referencia y registra la decisión 6A cerrando el pendiente P1; la asignación idempotente sí está escrita, en §7.2 y §7.4. Lo único que falta es **ratificar el ADR en Mesa**: hasta entonces queda `Propuesto` y la decisión de la SM rige el sprint | Sesión de Mesa (ADR-0003 §2). [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) ya cumple sus dos criterios |
+| **Acta A/B** | Los escenarios con opción B no están reflejados en `SDD.md` §7 y §8. [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) **está bloqueada**: depende del acta [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684), que es la que fija los umbrales nuevos de los escenarios 05, 16, 17, 18, 24, 25, 26, 40 y 43. Sin el acta no hay cifra que escribir | Firmar el acta 1684, y después 1685 |
 | **Tenant de los clientes** | [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) existe en estado `Propuesto` desde el 2026-11-11: establece que lo reportado en [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) **no es un defecto sino el diseño vigente** de ADR-0012 y ADR-0018, y propone mantener un tenant por cliente en el MVP | Decisión del PO sobre las preguntas M1 a M4 del propio ADR y ratificación en Mesa; solo entonces se reclasifica SCRUM-1637 |
-| **Cifrado de credenciales y datos sensibles** | [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) `Reopened`, único ítem abierto del Sprint 5; sin ADR y con el alcance en Core sin definir | ADR de cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la pregunta P-D15 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md#4-preguntas-de-decisión-abiertas) |
+| **Cifrado de credenciales y datos sensibles** | [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) `Reopened`, único ítem abierto del Sprint 5. La **responsabilidad** quedó decidida el 2026-11-11 (un solo responsable, P-D15a). El **mecanismo** sigue sin decidir y **no por falta de criterio técnico**: no existe un RNF de cifrado en reposo ni un QAS de confidencialidad en reposo, y sin ellos no hay umbral que QA pueda verificar | Dos artefactos del PO —un RNF y un QAS— y luego el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699). Ver [P-D15b](../06-gobernanza/VALIDACION_HU-VAL-01.md#5-lo-único-que-sigue-abierto) |
+| **Kafka: declarado verificado sin evidencia** | [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) decía «Implementado y Verificado en DEV y QA». Corregido el 2026-11-11 a «Implementado; NO verificado de forma independiente», porque la descripción de la VM de QA no lista el contenedor | Fila D7 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) |
 | **Observabilidad: ¿Datadog o Loki?** | [ADR-0006](adr/ADR-0006-observabilidad.md) está `Aceptado` con Datadog. Si se sustituye por Loki, el ADR hay que revisarlo, no contradecirlo desde otro documento | Revisión de ADR-0006 en Mesa |
-| **SDD §8 e Infraestructura V4 §7 sobre monitoreo** | Ambos declaran la observabilidad como futura; hay indicios de Prometheus y Grafana en QA desde el 6-nov | Fila D8 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) y luego [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) |
+| **SDD §8 e Infraestructura V4 §7 sobre monitoreo** | Ambos declaran la observabilidad como futura; hay indicios de Prometheus y Grafana en QA desde el 6-nov, sin verificar | Fila D8 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) y luego [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) |
 
 ## 6. Discrepancias de HU-VAL-01 que son de esta carpeta
 
@@ -123,13 +124,17 @@ Cinco de las quince filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDA
 
 Hecho: orden de lectura, ficha de carpeta, finalidad y mantenedor por documento, versión y fecha, índice de ADR con estado al día (28 fichas al 2026-11-11), barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos ya absorbidos.
 
-Falta, y **depende de trabajo de otras tareas**:
+Añadido el 2026-11-11: se resolvieron los cinco marcadores de conflicto de git que estaban commiteados en [`SDD.md`](SDD.md) §4.6, se corrigió el estado de [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) y se registraron las decisiones de HU-VAL-01 que afectan a esta carpeta ([§6](#6-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)). [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) quedó verificada como **ya cumplida**: el ADR existe y `SAD.md` §7.4 lo referencia.
 
-1. **Suplente de la carpeta** sin asignar (decisión del equipo).
+Falta, y **cada punto depende de algo que no está en esta carpeta**:
+
+1. **Suplente de la carpeta** sin asignar. Es decisión del equipo; no se inventa un nombre.
 2. **Acta A/B y los ADR pendientes.** El ADR del tenant de clientes ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) ya está publicado como [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md); le falta la decisión del PO, no la redacción. Siguen sin ficha o sin ratificar: el acta A/B ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), bloqueada por [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)), el cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la asignación idempotente ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)).
 3. **SDD §8 e Infraestructura V4 §7** corregidos respecto al monitoreo — [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686), que a su vez espera la fila D8.
-4. **Trazabilidad completa por ADR** (requisito → atributo de calidad → prueba) — [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661).
+4. **Ratificación de ADR-0035 en Mesa** (ADR-0003 §2). No la puede hacer la Scrum Master, que es la proponente del ADR.
 5. **Revisión y aprobación del README por otro responsable de carpeta**, exigida por los criterios comunes de las ocho HU de wiki.
+
+**Fuera del alcance de esta carpeta:** [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661) no es trazabilidad de ADR. Son los 22 contratos OpenAPI que faltan (127 de 127) con sus *contract tests* en CI y un vídeo de validación en QA aprobado por la PO: trabajo de Juan S. Álvarez en los repositorios de código, no documentación de esta carpeta.
 
 ## 8. Diagramas
 

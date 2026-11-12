@@ -1,6 +1,6 @@
 # ADR-0036 — Pertenencia del cliente a un tenant
 
-- **Estado:** Propuesto
+- **Estado:** **Decidido por la Scrum Master el 2026-11-12; pendiente de ratificación en Mesa.** No es `Aceptado`: ADR-0003 reserva la ratificación a la Mesa y la SM es aquí la proponente.
 - **Decisión de:** modelo de datos, identidad y aislamiento multitenant
 - **Proponente:** Sara Albarracín Niño (arquitectura)
 - **Decide:** María Camila Beltrán Carreño (Product Owner); ratifica la Mesa de Arquitectura (ADR-0003)
@@ -150,22 +150,45 @@ grep -rn "app.tenant_id()" MANI-Node/db/migrations/ | wc -l   # 64 al 2026-11-11
 
 Y el lote de aislamiento multitenant de ADR-0015 debe seguir en verde sin cambios.
 
-## Pendiente para aprobar
+## Decisiones M1 a M4
 
-Este ADR está **Propuesto**. Para pasar a `Aceptado` necesita:
+Respondidas por la Scrum Master el 2026-11-12, por delegación expresa, sobre la ficha comparativa de las cuatro opciones. Pendientes de ratificación.
 
-| # | Pregunta | Responde |
+### M1 · Un cliente pertenece a un solo tenant en el MVP — **sí**
+
+Se adopta la **opción A**. Es la única de las cuatro con coste de implementación cero y la única que no toca las **37 políticas RLS** ni las 64 comparaciones de `app.tenant_id()` sobre las que descansa el aislamiento.
+
+**Requisito que la respalda: REST-04** («el aislamiento de datos entre tenants debe ser estricto en toda funcionalidad del sistema»), con **RNF-01**. Ninguno de los dos exige que un cliente pueda pertenecer a varios tenants, de modo que la opción A no incumple nada; la opción B tampoco lo incumpliría, pero no hay requisito que la pida.
+
+**La fricción se acepta y se escribe:** una persona cliente de dos tenants necesita dos cuentas **con dos correos distintos**, porque GoTrue impone unicidad global del correo. Esto va al flujo de registro y a `SAD.md` §7.3.
+
+### M2 · SCRUM-1637 se cierra como «funciona según diseño» — **sí**
+
+Lo reportado el 5 de noviembre no es un defecto: es el diseño vigente de ADR-0012 y ADR-0018. El entregable que lo cierra es la documentación del modelo, que es este ADR. **No se toca código.**
+
+**Reserva que condiciona el cierre, y es de quien reportó.** El ticket dice literalmente «Santiago indica que esto está mal. Falta definir el comportamiento esperado», y ese comportamiento esperado **nunca se escribió**. Cerrar como «funciona según diseño» responde a la pregunta de arquitectura —el modelo es coherente y deliberado— pero **no responde a la necesidad que Santiago pudo tener en mente al reportarlo**. Por eso el cierre se propone con una condición: que quien reportó confirme que el comportamiento que esperaba es el que el modelo ya hace. Si al verlo escrito dice que esperaba otra cosa, esto deja de ser un cierre y pasa a ser la opción B con historia propia.
+
+### M3 · La cuenta única con varias membresías entra al backlog — **sí, como historia propia**
+
+No se descarta ni se implementa por partes. Entra al backlog con el alcance completo de la **opción B**: tabla `usuario_tenant`, retirar el `UNIQUE` de `cliente.usuario_id`, selector de tenant en el inicio de sesión, reemisión del token al cambiar de tenant, y migración de las cuentas duplicadas que existan. Se prioriza cuando haya una necesidad real de producto, no antes. Si se adopta, **este ADR se supersede**; no se parchea.
+
+### M4 · Dueño del flujo de selección de tenant: **Core**, si llega a hacerse
+
+La emisión del token y los claims son de Core con Supabase Auth (ADR-0018 §1 y §2). El cliente Flutter solo presenta la lista y pide la reemisión. Decidir lo contrario pondría en el cliente una decisión de identidad, que es justo lo que ADR-0018 §2 prohíbe al hacer del claim firmado la única fuente de tenant.
+
+Esta respuesta es **condicional**: solo aplica si M3 se materializa. No compromete trabajo hoy.
+
+## Lo que falta para que este ADR pase a `Aceptado`
+
+| # | Qué | Quién |
 |---|---|---|
-| M1 | ¿Se acepta que un cliente pertenezca a **un solo tenant** en el MVP, con la fricción de un correo por cuenta? | PO (Camila Beltrán) |
-| M2 | ¿Se reclasifica [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) como «funciona según diseño», o se cierra con la documentación del modelo como entregable? | PO con SM |
-| M3 | ¿La cuenta única con varias membresías (opción B) entra al backlog con historia propia, o se descarta para el alcance del producto? | PO |
-| M4 | Si M3 es afirmativa, ¿quién es dueño del flujo de selección de tenant en el login: Core o el cliente Flutter? | Mesa de Arquitectura |
-
-Mientras M1 no esté respondida por escrito, [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) se
-presenta como **decisión pendiente del PO**, no como defecto abierto ni como defecto resuelto.
+| R1 | Ratificar M1 a M4 en Mesa de Arquitectura (ADR-0003) | Mesa |
+| R2 | Confirmar la reserva de M2: que el comportamiento esperado coincide con el modelo vigente | Santiago, que reportó SCRUM-1637 |
+| R3 | Crear la historia de la opción B en el backlog | PO |
 
 ## Historial de cambios
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.0 | 2026-11-12 | Respondidas M1 a M4 por delegación de la SM: se adopta un tenant por cliente (M1, respaldado por REST-04), SCRUM-1637 se cierra como «funciona según diseño» con la reserva de que el comportamiento esperado nunca se escribió (M2), la cuenta única entra al backlog como historia propia (M3) y su flujo de selección sería de Core (M4). Estado: decidido por la SM, pendiente de ratificación. | Sara Albarracín |
 | 1.0 | 2026-11-11 | Ficha inicial en estado `Propuesto`. Cuatro alternativas, dos descartadas por su impacto en RLS y en la invariante de tenant. Recomendación: opción A para el MVP. Cuatro preguntas abiertas para el PO y la Mesa. | Sara Albarracín |

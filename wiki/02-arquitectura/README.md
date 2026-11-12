@@ -105,9 +105,9 @@ Atajos a secciones que suelen buscarse como si fueran un documento aparte:
 
 ## 4. Decisiones
 
-[`adr/`](adr/) — **28 fichas** al 2026-11-11: **24 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*) y **3 `Propuesto`** (ADR-0034 contrato común de proveedores externos, ADR-0035 frontera de asignación 6A, [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) pertenencia del cliente a un tenant). Dos de las aceptadas llevan matiz en su propio estado: ADR-0029 con adopción diferida al Sprint 5, y ADR-0032 aprobado en revisión de arquitectura pero **pendiente de acta de Mesa**.
+[`adr/`](adr/) — **29 fichas** al 2026-11-12: **24 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*), **2 `Propuesto`** (ADR-0034 contrato común de proveedores externos, ADR-0035 frontera de asignación 6A) y **2 decididos por la SM y pendientes de ratificación en Mesa**: [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) (pertenencia del cliente a un tenant, M1 a M4 respondidas el 2026-11-12) y [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) (cifrado de datos personales en reposo).
 
-Los números no son contiguos y no se reutilizan. **Huecos:** 0007, 0009, 0010, 0020, 0021, 0023, 0026 y 0033. El índice completo con estado y los retiros está en [Decisiones ADR](guia/decisiones-adr.md).
+Los números no son contiguos y no se reutilizan. **Huecos:** 0007, 0009, 0010, 0020, 0021, 0023, 0026 y 0033. El siguiente número libre es **ADR-0038**. El índice completo con estado y los retiros está en [Decisiones ADR](guia/decisiones-adr.md).
 
 Un ADR de esta carpeta debe enlazar tres cosas: el **requisito** que lo origina, el **atributo de calidad** que compromete y la **prueba** que lo verifica. El índice de [Decisiones ADR](guia/decisiones-adr.md) ya trae la columna de requisito por ADR; completar los que falten es trabajo de esta carpeta y **no** de [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661), que es otra cosa: los 22 contratos OpenAPI que faltan y sus *contract tests* en CI (127 de 127), trabajo de Juan S. Álvarez en los repositorios de código.
 

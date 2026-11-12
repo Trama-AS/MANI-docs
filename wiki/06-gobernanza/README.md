@@ -49,7 +49,7 @@ La autoridad es del **rol** y del **artefacto**, no de la persona (§2.3): el PO
 | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Políticas de ramas, PR, promoción, CI/CD, contenedores, testing, DevSecOps, secretos, observabilidad, uso de IA, versionamiento de despliegue y, en §22, la política de JWT entre ambientes | Daniel Ávila (DevOps) con la SM | Desarrollo, QA, DevOps | Cuando cambia una política | Vivo · 2026-10-22 |
 | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) | **Vista física vigente** del modelo 4+1: ambientes, VMs, registro de imágenes, Supabase, red y TLS, backups y el estado de lo verificado contra el código | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Por sprint y ante cada cambio de ambiente | V4 · 2026-11-05 · **Borrador para revisión** |
 | [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Vista física detallada: ambientes DEV, QA y PROD, VMs, Supabase, red y TLS, backups, escalabilidad y, en §27, el plan de alineación y rollback de Supabase PROD y QA | Daniel Ávila (DevOps) | DevOps, QA | Cuando cambia la infraestructura | Vivo · 2026-10-22 |
-| [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Validación de las discrepancias entre documentos: estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, y las preguntas de decisión abiertas | Sara Albarracín (SM) | PO, Arquitectura, DevOps, QA | Cada vez que se cierra una fila; obligatorio antes de cada sustentación | 1.1 · 2026-11-11 · **Parcial (8 de 15 filas)** |
+| [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Validación de las discrepancias entre documentos: estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, las decisiones tomadas y lo que sigue abierto | Sara Albarracín (SM) | PO, Arquitectura, DevOps, QA | Cada vez que se cierra una fila; obligatorio antes de cada sustentación | 2.0 · 2026-11-11 · **Parcial: 6 de 15 verificadas, 5 decididas, 7 pendientes** |
 | [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Bloqueos del Sprint 6: ítem afectado, tipo, causa, responsable, fecha de aparición y días hábiles abierto, con el resumen por tipo y las causas recurrentes con su acción de mejora | Sara Albarracín (SM) | El equipo en cada *daily*; el informe de cierre | En cada *daily* | 1.0 · 2026-11-11 |
 | [`DOCUMENTO_INFRAESTRUCTURA_V3.md`](DOCUMENTO_INFRAESTRUCTURA_V3.md) | Vista física al cierre del Sprint 4, con evidencia empírica y runbook | Daniel Ávila (DevOps) | Consulta histórica | No se actualiza | V3 · 2026-10-17 · **Superado por V4** |
 
@@ -107,7 +107,7 @@ Falta, y **depende de trabajo de otras tareas**:
 
 ## 7. Discrepancias de HU-VAL-01 que son de esta carpeta
 
-Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre infraestructura. Ninguna se da por cerrada aquí: el estado por fila, la evidencia y el comando están en [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md).
+Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre infraestructura. Siete siguen pendientes de validar y dos quedaron decididas el 2026-11-11. Ninguna verificación se da por cerrada aquí: el estado por fila, la evidencia y el comando están en [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md).
 
 | Fila | Qué afecta en esta carpeta | Estado |
 |---|---|---|
@@ -118,8 +118,8 @@ Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre in
 | D8 | Observabilidad: Infraestructura V4 §7 la declara futura | **Pendiente de validar** |
 | D9 | Respaldos: scripts de `pg_dump` documentados frente a volcados puntuales | **Pendiente de validar** |
 | D10 | Migraciones y roles sin `BYPASSRLS` en PROD | **Pendiente de validar** |
-| D4 | RPO/RTO: tres pares incompatibles, uno de ellos del informe de DevOps | Conflicto verificado; **falta la decisión** (P-D4), que es el acta de [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684) |
-| D12 | Quién firma el acta de ajustes: «Sara como PO» frente a Camila como PO | Conflicto verificado; **falta la decisión** (P-D12). La ficha de esta carpeta ya fija que firma el PO |
+| D4 | RPO/RTO: tres pares incompatibles, uno de ellos del informe de DevOps | **Decidido el 2026-11-11:** rige el umbral de QAS-17 (`RPO ≤ 5 min`, `RTO ≤ 30 min`), el único que vive en un artefacto vigente. Se corrigen a esa cifra el informe de DevOps y el material de la opción B. **No cuenta como verificación:** el escenario sigue `No medido` y no existe un RNF de recuperabilidad |
+| D12 | Quién firma el acta de ajustes: «Sara como PO» frente a Camila como PO | **Decidido el 2026-11-11:** firma **Camila Beltrán como PO** y Sara como SM, como ya fija la ficha de esta carpeta. La tabla de roles de [`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.1 sigue diciendo otra cosa y lleva la enmienda anotada, no reescrita: un cambio de rol se acuerda en equipo |
 
 ## 8. Dónde va un documento nuevo
 
@@ -134,6 +134,7 @@ Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre in
 
 | Fecha | Cambio |
 |---|---|
+| 2026-11-11 | Alineación con la v2.0 de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md): el conteo verificado baja de 8 a **6 de 15** (D4 y D12 tenían el conflicto verificado, no el dato), y §7 registra que esas dos quedaron **decididas**, no pendientes. |
 | 2026-11-11 | Se publica [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)) y se enlaza desde el orden de lectura, la tabla de documentos y §4. |
 | 2026-11-11 | HU-WIKI-08 ([SCRUM-1711](https://maniservices.atlassian.net/browse/SCRUM-1711)): ficha de carpeta, orden de lectura, metadatos completos por documento (finalidad, mantenedor, consumidor, frecuencia, versión y fecha), incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md` que estaba sin listar, marcado de la V3 como superada, barrido de secretos con las dos coincidencias explicadas, tabla de los cuatro documentos que aún no existen, enlace de las nueve filas de HU-VAL-01 que son de esta carpeta y reglas de ubicación de un documento nuevo. Cierre parcial: ver §6. |
 | 2026-10-22 | Absorción de la política de JWT y del plan de alineación de Supabase en sus documentos destino. |

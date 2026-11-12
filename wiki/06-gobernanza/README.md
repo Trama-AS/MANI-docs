@@ -94,6 +94,10 @@ Revisión del 2026-11-11 sobre los seis documentos de la carpeta. Se buscaron **
 
 **Lo que sí hay en la carpeta y no es un secreto pero sí es información interna:** direcciones IP de las VMs del laboratorio y los identificadores de proyecto de Supabase de PROD y QA. No son credenciales y son necesarios para que los comandos de verificación sean ejecutables, pero la carpeta **no debe contener nunca** la contraseña, el token ni la cadena de conexión que los acompaña. Quien pegue evidencia aquí reemplaza esos valores por `<redactado>`, como ya exige [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) §3.
 
+## 5.1 Comprobador de la wiki
+
+[`scripts/verificar-wiki.sh`](../../scripts/verificar-wiki.sh) recorre los `.md` de `wiki/`, resuelve cada enlace relativo **desde el directorio del archivo que lo contiene** y avisa de los que no resuelven y de los marcadores de conflicto de git commiteados. Se corre antes de commitear documentación, sobre toda la wiki o sobre una carpeta: `./scripts/verificar-wiki.sh` o `./scripts/verificar-wiki.sh wiki/06-gobernanza`. Devuelve 0 si está limpio y 1 si encuentra algo, de modo que sirve como paso de CI. Al 2026-11-11 la wiki completa está en **0 enlaces rotos y 0 marcadores**.
+
 ## 6. Qué falta para cerrar HU-WIKI-08
 
 Hecho: ficha de carpeta con responsable, firmante y consumidores; orden de lectura en cinco pasos; finalidad, mantenedor, consumidor, frecuencia y versión por documento; incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md`, que existía en la carpeta sin estar listado; marcado de la V3 como superada; barrido de secretos con sus dos coincidencias explicadas; enlace de las discrepancias de HU-VAL-01 que son de esta carpeta ([§7](#7-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)); declaración explícita de los documentos que todavía no existen; y publicación del [registro de bloqueos](REGISTRO_BLOQUEOS.md) ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)) con ocho bloqueos abiertos y uno resuelto.

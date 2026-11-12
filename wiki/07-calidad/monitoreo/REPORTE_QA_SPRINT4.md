@@ -199,7 +199,7 @@ La regresión del sprint ya no usa estos directorios de la VM: sus suites viven 
 
 ## 4. Calidad estática
 
-Consulta del 21 de octubre a SonarQube (Calidad) y SonarCloud (Flutter). Evidencia: `td_v2/evidencia/sonar_20261021.json`, **retirada del repositorio** en el commit `ea8076b`; la medición queda congelada en [`Entregas/Entrega6/7.TD_V2.pdf`](../../../Entregas/Entrega6/7.TD_V2.pdf).
+Consulta del 21 de octubre a SonarQube (Calidad) y SonarCloud (Flutter). Evidencia: [`td_v2/evidencia/sonar_20261021.json`](../td_v2/evidencia/sonar_20261021.json), restaurada el 2026-11-12.
 
 Gate `MANI ADR-0005` en SonarQube: violaciones nuevas = 0, cobertura del código nuevo ≥ 80 %, duplicación del código nuevo ≤ 3 % y hotspots nuevos revisados al 100 %.
 
@@ -683,7 +683,7 @@ Cómo se reproduce cada uno, resultado esperado, observado y corrección sugerid
 
 | Criterio | Resultado |
 |---|---|
-| Cambios integrados por PR con revisión y CI en verde | No verificado historia por historia aquí; ver `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`, retirado en `ea8076b` |
+| Cambios integrados por PR con revisión y CI en verde | No verificado historia por historia aquí; ver [`MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](../MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) |
 | QA ejecutó o validó las pruebas requeridas | Parcial: 16 ejecutadas, ninguna con cobertura completa |
 | Sin defectos que impidan la entrega | Se cumple para los defectos de la regresión; quedan abiertos R-06 a R-09 y R-11, que no hacen fallar casos |
 | Seis casos cross-tenant por historia | No se cumple en ninguna historia |
@@ -724,7 +724,7 @@ Cómo se reproduce cada uno, resultado esperado, observado y corrección sugerid
 | Monitoreo y QAS: scripts, colecciones, k6 y evidencia del 19 y 20 de octubre | [`monitoreo_qas/`](README.md) |
 | Regresión: corridas redactadas, consultas de RLS, login real y diagnóstico de Flutter | [`regresion_sprint4/evidencia/`](../regresion/evidencia) y [`20261021_validacion/`](../regresion/evidencia/20261021_validacion) |
 | Plan de regresión de US-02.1.1-M4 | [`regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md`](../regresion/PLAN_REGRESION_US-02.1.1-M4.md) |
-| Calidad estática | `td_v2/evidencia/sonar_20261021.json`, retirada en `ea8076b`; ver [`Entregas/Entrega6/7.TD_V2.pdf`](../../../Entregas/Entrega6/7.TD_V2.pdf) |
+| Calidad estática | [`td_v2/evidencia/sonar_20261021.json`](../td_v2/evidencia/sonar_20261021.json), restaurada el 2026-11-12 |
 | Criterios de aceptación y DoD del Sprint 4 | [`backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](../../05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
 | Suites de regresión y gate de CI | MANI-APIGateway `qa/` y `.github/workflows/qa-regresion.yml` |
 | Reportes de Newman y Playwright de CFG4-03 | VM de Calidad, `/opt/quality/reports/` |

@@ -16,7 +16,7 @@ Este documento es la única fuente del backlog. Reemplaza las versiones anterior
 - **Tarea:** [SCRUM-1245](https://maniservices.atlassian.net/browse/SCRUM-1245) (DOC4-02), subtareas [SCRUM-1290](https://maniservices.atlassian.net/browse/SCRUM-1290) y [SCRUM-1291](https://maniservices.atlassian.net/browse/SCRUM-1291).
 - **Autora:** Camila Beltrán (PO). **Fecha:** 2026-10-20, al cierre del Sprint 4. **Revisión:** Scrum Master (Sara Albarracín) y QA (Santiago).
 - **Contexto:** el Sprint 5 es el **último**. Las historias que entren deben terminar el producto prometido: el MVP de `SRS.md` §1.2.
-- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`, retirado en `ea8076b`), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), §6 de este documento) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
+- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), [`MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](../07-calidad/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md)), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), §6 de este documento) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
 - **Enlaces:** cada clave `SCRUM-n` de esta sección enlaza a Jira; el estado es el del tablero al 2026-10-20.
 
 ### 0.1 Estado real de los servicios al cierre del Sprint 4
@@ -569,7 +569,7 @@ calidad P1 de ISO/IEC 25010.
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](../02-arquitectura/SDD.md) |
 | Modelo de datos | [`architecture/ModeloDatos.md`](../02-arquitectura/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](../02-arquitectura/adr) |
-| Matriz historia ↔ repositorios del Sprint 4 | `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` (SCRUM-1256), **retirado del repositorio** en el commit `ea8076b` y conservado en el historial de git |
+| Matriz historia ↔ repositorios del Sprint 4 | [`MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](../07-calidad/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) (SCRUM-1256), restaurada el 2026-11-12 |
 | Criterios de aceptación del Sprint 4 | [§6 de este documento](BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
 | Políticas DevOps y versionamiento de despliegue | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
 

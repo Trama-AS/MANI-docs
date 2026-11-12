@@ -1,0 +1,104 @@
+{
+ "sonarqube_calidad": {
+  "fuente": "SonarQube Community Build 26.10.0.133078 en http://10.43.98.196:9000 (API con sesión de Santiago Hernández)",
+  "consultado_utc": "2026-10-21T17:33:13Z",
+  "condiciones_quality_gate_mani_adr_0005": [
+   "new_security_hotspots_reviewed LT 100",
+   "new_duplicated_lines_density GT 3",
+   "new_coverage LT 80",
+   "new_violations GT 0"
+  ],
+  "proyectos": {
+   "mani-apigateway": {
+    "estado": "OK",
+    "ultimo_analisis": "2026-10-21T03:34:43+0000",
+    "revision": "fc08a33",
+    "ncloc": 986,
+    "cobertura": null,
+    "duplicacion": 0.0,
+    "bugs": 0,
+    "vulnerabilidades": 1,
+    "code_smells": 0,
+    "vulnerabilidades_abiertas": [
+     "MINOR docker:S6471 Dockerfile:1"
+    ]
+   },
+   "mani-node": {
+    "estado": "OK",
+    "ultimo_analisis": "2026-10-21T04:00:10+0000",
+    "revision": "8e198ff",
+    "ncloc": 7900,
+    "cobertura": 90.1,
+    "duplicacion": 1.4,
+    "bugs": 0,
+    "vulnerabilidades": 4,
+    "code_smells": 6,
+    "vulnerabilidades_abiertas": [
+     "MAJOR javascript:S5693 src/routes/auth.routes.js:28",
+     "MAJOR javascript:S5693 src/routes/auth.routes.js:34",
+     "MAJOR javascript:S2245 src/infrastructure/repositories/InMemoryUserConsentRepository.js:15",
+     "MAJOR javascript:S2245 src/infrastructure/repositories/InMemoryAliadoCategoriaRepository.js:37"
+    ]
+   },
+   "mani-dotnet": {
+    "estado": "OK",
+    "ultimo_analisis": "2026-10-21T13:44:11+0000",
+    "revision": "a0a18e1",
+    "ncloc": 1826,
+    "cobertura": 84.5,
+    "duplicacion": 8.7,
+    "bugs": 0,
+    "vulnerabilidades": 2,
+    "code_smells": 40,
+    "vulnerabilidades_abiertas": [
+     "MINOR docker:S6471 Dockerfile:10",
+     "MAJOR csharpsquid:S5122 Program.cs:24"
+    ]
+   },
+   "mani-java": {
+    "estado": "OK",
+    "ultimo_analisis": "2026-10-20T03:44:58+0000",
+    "revision": "9f7ab3c",
+    "ncloc": 500,
+    "cobertura": 92.3,
+    "duplicacion": 0.0,
+    "bugs": 0,
+    "vulnerabilidades": 0,
+    "code_smells": 0,
+    "vulnerabilidades_abiertas": []
+   },
+   "mani-landing": {
+    "estado": "OK",
+    "ultimo_analisis": "2026-10-20T02:34:21+0000",
+    "revision": "f79e55b",
+    "ncloc": 4093,
+    "cobertura": 100.0,
+    "duplicacion": 1.0,
+    "bugs": 0,
+    "vulnerabilidades": 0,
+    "code_smells": 12,
+    "vulnerabilidades_abiertas": []
+   }
+  }
+ },
+ "sonarcloud_flutter": {
+  "fuente": "SonarCloud, API pública, proyecto Trama-AS_MANI-Flutter",
+  "estado": "OK",
+  "condiciones": [
+   "new_reliability_rating GT 1 (actual 1)",
+   "new_security_rating GT 1 (actual 1)",
+   "new_maintainability_rating GT 1 (actual 1)",
+   "new_security_hotspots_reviewed LT 100 (actual 100.0)"
+  ],
+  "ultimo_analisis": "2026-10-21T03:05:04+0000",
+  "revision": "6b805e2",
+  "metricas": {
+   "coverage": "83.2",
+   "bugs": "0",
+   "duplicated_lines_density": "13.4",
+   "code_smells": "29",
+   "ncloc": "19693",
+   "vulnerabilities": "0"
+  }
+ }
+}

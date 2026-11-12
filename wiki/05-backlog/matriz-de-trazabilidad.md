@@ -119,7 +119,7 @@
 | [SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709) | Tarea | Tarea de gestión de la Scrum Master (objetivo propio) | — | — | por completar |
 | [SCRUM-1710](https://maniservices.atlassian.net/browse/SCRUM-1710) | Tarea | mejoras de producto §1; parte que quedaba «por definir» en SCRUM-1644… | — | ADR-0027 | por completar |
 
-Las pruebas de los PR en revisión pasan a ser evidencia vigente cuando el PR se fusiona.
+Las pruebas citadas son de PR **ya fusionados** en `develop` (Node#121, #133 a #137 y Flutter#132, aprobados el 12-nov); falta desplegarlos en QA para repetir las pruebas manuales.
 
 ## Regla de mantenimiento
 

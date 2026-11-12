@@ -21,7 +21,7 @@ Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`)
 | [`04-proceso/`](04-proceso/README.md) | Cómo trabaja el equipo: ramas, PR, Jira, roles, DoR/DoD, ambientes, CI/CD, secretos y observabilidad | [Proceso de trabajo](04-proceso/README.md) |
 | [`05-backlog/`](05-backlog/README.md) | Qué se hace y en qué orden. Contiene el backlog único y el libro de módulos y servicios | [Backlog MANI](05-backlog/BACKLOG_MANI.md) |
 | [`06-gobernanza/`](06-gobernanza/README.md) | Quién decide y bajo qué políticas: gobierno del equipo, políticas DevOps e infraestructura | [Gobierno del equipo](06-gobernanza/GOBIERNO_DEL_EQUIPO.md) |
-| [`07-calidad/`](07-calidad/README.md) | Qué se probó y con qué resultado: reporte de QA, matrices, evidencia y PoC | [Reporte general de QA del Sprint 4](07-calidad/REPORTE_QA_SPRINT4.md) |
+| [`07-calidad/`](07-calidad/README.md) | Qué se probó y con qué resultado: reporte de QA, matrices, evidencia y PoC | [Reporte general de QA del Sprint 4](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md) |
 
 ---
 
@@ -36,7 +36,7 @@ Ninguna persona es dueña de un documento: la autoridad es del **rol** y del **a
 5. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](06-gobernanza/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](06-gobernanza/INFRAESTRUCTURA_MANI.md).
 6. **Tecnologías vigentes:** [`architecture/TECH_RADAR.md`](02-arquitectura/TECH_RADAR.md).
 7. **Trabajo:** Jira es la fuente del backlog y los sprints; [`05-backlog/BACKLOG_MANI.md`](05-backlog/BACKLOG_MANI.md) es el backlog único: criterios de aceptación, backlog técnico y cobertura incluidos.
-8. **Resultados de prueba:** [`07-calidad/REPORTE_QA_SPRINT4.md`](07-calidad/REPORTE_QA_SPRINT4.md) manda sobre el estado real de cada capacidad y de cada defecto. Un estado en Jira no acredita nada por sí solo.
+8. **Resultados de prueba:** [`07-calidad/REPORTE_QA_SPRINT4.md`](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md) manda sobre el estado real de cada capacidad y de cada defecto. Un estado en Jira no acredita nada por sí solo.
 9. **Esta wiki.**
 
 Tres reglas de gobierno aplican a todo lo anterior ([`GOBIERNO_DEL_EQUIPO.md`](06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §1):
@@ -66,8 +66,8 @@ Una contradicción no se resuelve en silencio: se reporta en el PR o en el issue
 | Trabajar con un asistente de IA | [Trabajo con asistentes de IA](04-proceso/trabajo-con-ia.md) |
 | Entender cómo quedó la transición V4 | [Backlog §10](05-backlog/BACKLOG_MANI.md#10-registro-de-la-transición-v4) |
 | Ver un diagrama | [Diagramas](02-arquitectura/guia/diagramas.md) |
-| Saber si una capacidad está verificada de verdad | [Cobertura y verificación](05-backlog/BACKLOG_MANI.md#9-cobertura-de-lo-que-falta-y-verificación-de-lo-que-ya-está) y el [reporte de QA](07-calidad/REPORTE_QA_SPRINT4.md) |
-| Saber el estado de un defecto | [Defectos consolidados](07-calidad/REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint) |
+| Saber si una capacidad está verificada de verdad | [Cobertura y verificación](05-backlog/BACKLOG_MANI.md#9-cobertura-de-lo-que-falta-y-verificación-de-lo-que-ya-está) y el [reporte de QA](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md) |
+| Saber el estado de un defecto | [Defectos consolidados](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint) |
 | Conocer los criterios de aceptación de una historia | [Backlog §6](05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
 | Consultar una entrega ya presentada | [Entregas](../Entregas/README.md) |
 

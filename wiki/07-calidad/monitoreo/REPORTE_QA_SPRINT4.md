@@ -7,8 +7,8 @@
 | Fecha de corte | 21 de octubre de 2026 |
 | Ambientes | DEV `10.43.98.232` (rama `develop`), QA `10.43.100.141` (rama `release`, Supabase `MANI-QA`) y Calidad `10.43.98.196` (SonarQube, runners y k6) |
 | Estado | Borrador para revisión de la Scrum Master y aceptación de la PO |
-| Relación con el TD | [`product/TD.md`](../01-producto/TD.md) (TD V2, SCRUM-1250) es el documento de pruebas del producto y resume este reporte. Aquí está el detalle de QA del sprint |
-| Umbrales | No se definen aquí: viven en el [SDD](../02-arquitectura/SDD.md) §7 y §8 y en [ADR-0005](../02-arquitectura/adr/ADR-0005-devsecops.md) |
+| Relación con el TD | [`product/TD.md`](../../01-producto/TD.md) (TD V2, SCRUM-1250) es el documento de pruebas del producto y resume este reporte. Aquí está el detalle de QA del sprint |
+| Umbrales | No se definen aquí: viven en el [SDD](../../02-arquitectura/SDD.md) §7 y §8 y en [ADR-0005](../../02-arquitectura/adr/ADR-0005-devsecops.md) |
 
 Este documento reúne en un solo archivo los siete documentos de QA que estaban sueltos en `qa/`. El contenido de cada uno se conserva en la sección indicada, y la versión completa sigue disponible en el historial de git (commit `d970013`).
 
@@ -149,7 +149,7 @@ flowchart TD
 - SonarQube Community Build 26.10 con PostgreSQL 15 persistente (`/opt/quality/sonarqube/docker-compose.yml`). Parámetros de kernel para Elasticsearch en `/etc/sysctl.d/99-sonarqube.conf` (`vm.max_map_count=262144`, `fs.file-max=65536`).
 - Salud: `curl -s http://10.43.98.196:9000/api/system/status` → `"status":"UP"`.
 - Credenciales en `/opt/quality/.env.quality` con permisos 600, fuera del repositorio. La contraseña por defecto se cambió y se generó un token global de análisis.
-- **Runner self-hosted (QA4-02, SCRUM-1265):** `nbig02-calidad`, registrado en la organización `Trama-AS`, grupo `calidad`, label `calidad`. Instalado en `/home/estudiante/actions-runner` como servicio systemd. `SONAR_TOKEN` es secreto de la organización y `SONAR_HOST_URL` variable de la organización. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../06-gobernanza/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
+- **Runner self-hosted (QA4-02, SCRUM-1265):** `nbig02-calidad`, registrado en la organización `Trama-AS`, grupo `calidad`, label `calidad`. Instalado en `/home/estudiante/actions-runner` como servicio systemd. `SONAR_TOKEN` es secreto de la organización y `SONAR_HOST_URL` variable de la organización. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../../06-gobernanza/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
 
 ```bash
 # Estado y reinicio del runner
@@ -199,7 +199,7 @@ La regresión del sprint ya no usa estos directorios de la VM: sus suites viven 
 
 ## 4. Calidad estática
 
-Consulta del 21 de octubre a SonarQube (Calidad) y SonarCloud (Flutter). Evidencia: [`td_v2/evidencia/sonar_20261021.json`](td_v2/evidencia/sonar_20261021.json).
+Consulta del 21 de octubre a SonarQube (Calidad) y SonarCloud (Flutter). Evidencia: `td_v2/evidencia/sonar_20261021.json`, **retirada del repositorio** en el commit `ea8076b`; la medición queda congelada en [`Entregas/Entrega6/7.TD_V2.pdf`](../../../Entregas/Entrega6/7.TD_V2.pdf).
 
 Gate `MANI ADR-0005` en SonarQube: violaciones nuevas = 0, cobertura del código nuevo ≥ 80 %, duplicación del código nuevo ≤ 3 % y hotspots nuevos revisados al 100 %.
 
@@ -221,7 +221,7 @@ Gate `MANI ADR-0005` en SonarQube: violaciones nuevas = 0, cobertura del código
 
 ## 5. Plan de pruebas del Sprint 4 (SCRUM-1264)
 
-Matriz de diseño [`MANI_Matriz_Pruebas_Sprint4.xlsx`](regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx), subtareas SCRUM-1271 a SCRUM-1273. Corte de fuentes: 16 de octubre de 2026. Es un documento de diseño: ningún caso estaba ejecutado al publicarse. Hojas: `resumen`, `casos`, `integracion`, `trazabilidad`, `cross_tenant`, `qas` y `brechas_supuestos`.
+Matriz de diseño [`MANI_Matriz_Pruebas_Sprint4.xlsx`](../regresion/MANI_Matriz_Pruebas_Sprint4.xlsx), subtareas SCRUM-1271 a SCRUM-1273. Corte de fuentes: 16 de octubre de 2026. Es un documento de diseño: ningún caso estaba ejecutado al publicarse. Hojas: `resumen`, `casos`, `integracion`, `trazabilidad`, `cross_tenant`, `qas` y `brechas_supuestos`.
 
 ### 5.1 Dimensiones
 
@@ -336,7 +336,7 @@ Comportamiento por comportamiento: cada regla que verificaba la arquitectura ant
 
 | Historia | Casos | Tipo predominante | Estado al 6 de octubre |
 |---|---|---|---|
-| US-02.1.1-M2/M3 | `rgA1P` a `rgB6`, definidos en [`regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md`](regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md) | P y C | Bloqueado por CFG-16, SCRUM-1065, CFG-22 y CFG-23 |
+| US-02.1.1-M2/M3 | `rgA1P` a `rgB6`, definidos en [`regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md`](../regresion/PLAN_REGRESION_US-02.1.1-M4.md) | P y C | Bloqueado por CFG-16, SCRUM-1065, CFG-22 y CFG-23 |
 | US-02.1.2-M2/M3 | US0212-P1 a P4, N1 a N3, V1, X1, X2 | P, y C para el rechazo sin documentos y el duplicado (cambio de *upsert* a 409) | P3 y P4 ejecutables en Flutter; el resto bloqueado por SCRUM-1063 |
 | US-02.1.3-M2 | US0213-P1 a P6, N1 a N8, X1, X2 (16 casos; N3 de concurrencia obligatorio por paridad) | P | Fuera del Sprint 3 |
 | US-02.2.1-M2 | US0221-P1 a P3, N1 a N3, V1, X1; dos comportamientos NP (*fallback* que escribe en tablas y `GRANT EXECUTE` a `anon`) | P, C y NP | Bloqueado por SCRUM-1064 |
@@ -354,7 +354,7 @@ Comportamiento por comportamiento: cada regla que verificaba la arquitectura ant
 
 ## 7. Monitoreo de QA y escenarios QAS-01 a QAS-09 (SCRUM-1266)
 
-Subtareas SCRUM-1274 (QA-MON-01), SCRUM-1275 (QA-MON-02) y SCRUM-1276 (QA-MON-03). Corte: 20 de octubre de 2026, 00:47 UTC. Las pruebas salieron de la VM de Calidad y, donde se indica, del equipo del autor en la red del campus. Scripts y evidencia: [`monitoreo_qas/`](monitoreo_qas/README.md). Corridas reproducibles: `ejecutar_calidad.sh` (Calidad, 00:28 a 00:35 UTC) y `verificar_monitoreo.sh vm_qa` (QA, 00:31 a 00:45 UTC).
+Subtareas SCRUM-1274 (QA-MON-01), SCRUM-1275 (QA-MON-02) y SCRUM-1276 (QA-MON-03). Corte: 20 de octubre de 2026, 00:47 UTC. Las pruebas salieron de la VM de Calidad y, donde se indica, del equipo del autor en la red del campus. Scripts y evidencia: [`monitoreo_qas/`](README.md). Corridas reproducibles: `ejecutar_calidad.sh` (Calidad, 00:28 a 00:35 UTC) y `verificar_monitoreo.sh vm_qa` (QA, 00:31 a 00:45 UTC).
 
 **Contexto que limita todo el capítulo:** el 19 y 20 de octubre QA ejecutaba las imágenes de `release` previas a la promoción, y Core, Rules y Dispatch eran stubs con datos fijos.
 
@@ -393,7 +393,7 @@ Durante la carga nominal (`docker stats` cada 10 s, sin cubrir la rampa ni el pr
 | 03 Eficiencia | p95 ≤ 500 ms con 300 sesiones y 50 req/s | p95 12,4 ms (k6) y 11 ms (Gateway); 49,99 req/s, 14 998 peticiones, 0 errores | **Bloqueado**, con línea base sobre el stub de Dispatch | Dispatch real desplegado; no se repitió |
 | 04 Mantenibilidad | 0 cambios en consumidores ante un cambio compatible de Rules | — | **No medible**: el único cambio de Rules (MANI-Java#2) obligó a cambiar Core | Sin cambio |
 | 05 Escalabilidad | 2 a 6 réplicas sin cambio de código | — | **No medible**: Docker Compose, sin Kubernetes | Sin cambio |
-| 06 Interoperabilidad | 100 % de APIs con OpenAPI y contract tests | 1 de 12 operaciones con contrato (8,3 %) | **No cumple** ([`qas06_api_vs_contrato.md`](monitoreo_qas/qas06_api_vs_contrato.md)) | MANI-APIGateway#20 agregó al contrato la ruta pública de documentos legales; no se repitió |
+| 06 Interoperabilidad | 100 % de APIs con OpenAPI y contract tests | 1 de 12 operaciones con contrato (8,3 %) | **No cumple** ([`qas06_api_vs_contrato.md`](qas06_api_vs_contrato.md)) | MANI-APIGateway#20 agregó al contrato la ruta pública de documentos legales; no se repitió |
 | 07 Corrección | Un 200, el resto 409, 0 dobles asignaciones | Arnés: 1×200 y 49×409 con 50 aceptaciones | **Bloqueado**: el stub guardaba la asignación en memoria | Aceptación idempotente y rechazo cross-tenant aprueban contra Dispatch real (1074-01 a 1074-04); la concurrencia no se ejecutó |
 | 08 Interacción | 100 % de acciones irreversibles con confirmación | — | **Bloqueado o no medible**: sin herramienta de interfaz entregada | Sin cambio |
 | 09 Safety | 0 transacciones ambiguas por fallas de terceros | — | **Bloqueado**: KYC no estaba en QA y no hay fault injection | Sin cambio |
@@ -447,7 +447,7 @@ Una prueba previa desde el equipo del autor dio p95 de 89 ms por la red del equi
 
 ## 8. Regresión funcional, API, E2E y multi-tenant (SCRUM-1267)
 
-Subtareas SCRUM-1277 (Newman), SCRUM-1278 (Playwright) y SCRUM-1279 (multi-tenant). Ejecución del 20 de octubre y validación de las correcciones el 21. Matriz de ejecución: [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](regresion_sprint4/MANI_Matriz_Ejecucion_Sprint4.xlsx), hojas `resumen_historias`, `cobertura_1264`, `ejecucion_casos`, `defectos_propuestos`, `equivalencias`, `limitaciones`, `criterios` y `ambiente`. Evidencia: [`regresion_sprint4/evidencia/`](regresion_sprint4/evidencia), con la del 21 de octubre en [`20261021_validacion/`](regresion_sprint4/evidencia/20261021_validacion). Suites: `qa/` de MANI-APIGateway, fusionadas en `develop` (#18, `9f67ab1`) y promovidas a `release` (#19, `3c070db`).
+Subtareas SCRUM-1277 (Newman), SCRUM-1278 (Playwright) y SCRUM-1279 (multi-tenant). Ejecución del 20 de octubre y validación de las correcciones el 21. Matriz de ejecución: [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](../regresion/MANI_Matriz_Ejecucion_Sprint4.xlsx), hojas `resumen_historias`, `cobertura_1264`, `ejecucion_casos`, `defectos_propuestos`, `equivalencias`, `limitaciones`, `criterios` y `ambiente`. Evidencia: [`regresion_sprint4/evidencia/`](../regresion/evidencia), con la del 21 de octubre en [`20261021_validacion/`](../regresion/evidencia/20261021_validacion). Suites: `qa/` de MANI-APIGateway, fusionadas en `develop` (#18, `9f67ab1`) y promovidas a `release` (#19, `3c070db`).
 
 | Corrida (UTC) | Newman | Playwright |
 |---|---|---|
@@ -683,7 +683,7 @@ Cómo se reproduce cada uno, resultado esperado, observado y corrección sugerid
 
 | Criterio | Resultado |
 |---|---|
-| Cambios integrados por PR con revisión y CI en verde | No verificado historia por historia aquí; ver [`backlog/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) |
+| Cambios integrados por PR con revisión y CI en verde | No verificado historia por historia aquí; ver `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`, retirado en `ea8076b` |
 | QA ejecutó o validó las pruebas requeridas | Parcial: 16 ejecutadas, ninguna con cobertura completa |
 | Sin defectos que impidan la entrega | Se cumple para los defectos de la regresión; quedan abiertos R-06 a R-09 y R-11, que no hacen fallar casos |
 | Seis casos cross-tenant por historia | No se cumple en ninguna historia |
@@ -719,13 +719,13 @@ Cómo se reproduce cada uno, resultado esperado, observado y corrección sugerid
 
 | Evidencia | Ubicación |
 |---|---|
-| Matriz de diseño (SCRUM-1264) | [`MANI_Matriz_Pruebas_Sprint4.xlsx`](regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx) |
-| Matriz de ejecución (SCRUM-1267) | [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](regresion_sprint4/MANI_Matriz_Ejecucion_Sprint4.xlsx) |
-| Monitoreo y QAS: scripts, colecciones, k6 y evidencia del 19 y 20 de octubre | [`monitoreo_qas/`](monitoreo_qas/README.md) |
-| Regresión: corridas redactadas, consultas de RLS, login real y diagnóstico de Flutter | [`regresion_sprint4/evidencia/`](regresion_sprint4/evidencia) y [`20261021_validacion/`](regresion_sprint4/evidencia/20261021_validacion) |
-| Plan de regresión de US-02.1.1-M4 | [`regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md`](regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md) |
-| Calidad estática | [`td_v2/evidencia/sonar_20261021.json`](td_v2/evidencia/sonar_20261021.json) |
-| Criterios de aceptación y DoD del Sprint 4 | [`backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](../05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
+| Matriz de diseño (SCRUM-1264) | [`MANI_Matriz_Pruebas_Sprint4.xlsx`](../regresion/MANI_Matriz_Pruebas_Sprint4.xlsx) |
+| Matriz de ejecución (SCRUM-1267) | [`MANI_Matriz_Ejecucion_Sprint4.xlsx`](../regresion/MANI_Matriz_Ejecucion_Sprint4.xlsx) |
+| Monitoreo y QAS: scripts, colecciones, k6 y evidencia del 19 y 20 de octubre | [`monitoreo_qas/`](README.md) |
+| Regresión: corridas redactadas, consultas de RLS, login real y diagnóstico de Flutter | [`regresion_sprint4/evidencia/`](../regresion/evidencia) y [`20261021_validacion/`](../regresion/evidencia/20261021_validacion) |
+| Plan de regresión de US-02.1.1-M4 | [`regresion_sprint4/PLAN_REGRESION_US-02.1.1-M4.md`](../regresion/PLAN_REGRESION_US-02.1.1-M4.md) |
+| Calidad estática | `td_v2/evidencia/sonar_20261021.json`, retirada en `ea8076b`; ver [`Entregas/Entrega6/7.TD_V2.pdf`](../../../Entregas/Entrega6/7.TD_V2.pdf) |
+| Criterios de aceptación y DoD del Sprint 4 | [`backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](../../05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
 | Suites de regresión y gate de CI | MANI-APIGateway `qa/` y `.github/workflows/qa-regresion.yml` |
 | Reportes de Newman y Playwright de CFG4-03 | VM de Calidad, `/opt/quality/reports/` |
 | Documentos originales consolidados aquí | Historial de git, commit `d970013` |

@@ -24,7 +24,7 @@ Esta carpeta tiene **tres archivos y nada más**: este índice, el backlog y el 
 | `backlog/CRITERIOS_ACEPTACION_US-02.1.1.md` | [§7](BACKLOG_MANI.md#7-criterios-de-aceptación-de-us-0211-sobre-el-camino-gateway---core) |
 | `backlog/BACKLOG_GITHUB_SPRINT4_PROPUESTA.md` | [§8](BACKLOG_MANI.md#8-backlog-técnico-en-github-estado-verificado-e-issues-propuestos-del-cierre-del-sprint-4) |
 | `transicion-v4.md` y `orden-de-ejecucion.md` | [§10](BACKLOG_MANI.md#10-registro-de-la-transición-v4), como registro histórico del Sprint 3 |
-| `backlog/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` | [`07-calidad/`](../07-calidad/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md), porque es material de QA |
+| `backlog/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` | Pasó a [`07-calidad/`](../07-calidad/README.md) porque era material de QA, y después se **retiró del repositorio** en el commit `ea8076b`; su texto está en el historial de git |
 
 **El orden de ejecución vigente no está en §10.** §10.5 es el orden del Sprint 3, ya ejecutado. El del Sprint 5 está en la hoja `12 Backlog S5 resumen` del libro de módulos.
 

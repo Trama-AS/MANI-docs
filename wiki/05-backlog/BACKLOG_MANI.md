@@ -16,7 +16,7 @@ Este documento es la única fuente del backlog. Reemplaza las versiones anterior
 - **Tarea:** [SCRUM-1245](https://maniservices.atlassian.net/browse/SCRUM-1245) (DOC4-02), subtareas [SCRUM-1290](https://maniservices.atlassian.net/browse/SCRUM-1290) y [SCRUM-1291](https://maniservices.atlassian.net/browse/SCRUM-1291).
 - **Autora:** Camila Beltrán (PO). **Fecha:** 2026-10-20, al cierre del Sprint 4. **Revisión:** Scrum Master (Sara Albarracín) y QA (Santiago).
 - **Contexto:** el Sprint 5 es el **último**. Las historias que entren deben terminar el producto prometido: el MVP de `SRS.md` §1.2.
-- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), `qa/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), §6 de este documento) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
+- **Insumos:** matriz historia ↔ repositorios ([SCRUM-1256](https://maniservices.atlassian.net/browse/SCRUM-1256), `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`, retirado en `ea8076b`), criterios de aceptación y DoD ([SCRUM-1257](https://maniservices.atlassian.net/browse/SCRUM-1257), §6 de este documento) e inventario funcional ([SCRUM-1260](https://maniservices.atlassian.net/browse/SCRUM-1260), `SRS.md` §7.2 y `architecture/SAD.md` §7.5).
 - **Enlaces:** cada clave `SCRUM-n` de esta sección enlaza a Jira; el estado es el del tablero al 2026-10-20.
 
 ### 0.1 Estado real de los servicios al cierre del Sprint 4
@@ -569,7 +569,7 @@ calidad P1 de ISO/IEC 25010.
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](../02-arquitectura/SDD.md) |
 | Modelo de datos | [`architecture/ModeloDatos.md`](../02-arquitectura/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](../02-arquitectura/adr) |
-| Matriz historia ↔ repositorios del Sprint 4 | [`qa/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](../07-calidad/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) |
+| Matriz historia ↔ repositorios del Sprint 4 | `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` (SCRUM-1256), **retirado del repositorio** en el commit `ea8076b` y conservado en el historial de git |
 | Criterios de aceptación del Sprint 4 | [§6 de este documento](BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
 | Políticas DevOps y versionamiento de despliegue | [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) |
 
@@ -1257,7 +1257,7 @@ Estado verificado el 7 de octubre de 2026: ninguno de los ajustes de abajo se ha
 | Presenta | Sara Albarracín |
 | Corte de la verificación | 20 de octubre de 2026 |
 | Alcance | Organización `Trama-AS`: MANI-docs, MANI-Node, MANI-.NET, MANI-Java, MANI-Flutter, MANI-APIGateway, MANI-Landing |
-| Fuentes | `gh issue list` y `gh pr list` sobre los siete repositorios; código de `release` y `develop` de MANI-Node, MANI-APIGateway y MANI-.NET; [reporte de monitoreo QA](../07-calidad/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) (SCRUM-1266) y [reporte de regresión](../07-calidad/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) (SCRUM-1267) |
+| Fuentes | `gh issue list` y `gh pr list` sobre los siete repositorios; código de `release` y `develop` de MANI-Node, MANI-APIGateway y MANI-.NET; [reporte de monitoreo QA](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) (SCRUM-1266) y [reporte de regresión](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) (SCRUM-1267) |
 | Estado | Propuesta. Ningún issue se ha creado en GitHub; los borradores de §4 esperan aprobación |
 
 > Este documento no registra hallazgos nuevos ni cambia estados históricos. Los hallazgos son los de
@@ -1372,8 +1372,8 @@ fuente de llaves por ambiente, y no se implementa antes de esa enmienda.
 
 **Evidencia existente.**
 
-- [SCRUM-1266](../07-calidad/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) §5 (H-02) y §5.1 (D-02).
-- [SCRUM-1267](../07-calidad/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) §8 (R-10).
+- [SCRUM-1266](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) §5 (H-02) y §5.1 (D-02).
+- [SCRUM-1267](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) §8 (R-10).
 - `qa/monitoreo_qas/evidencia/20261020T020546Z_d02/confirmacion_d02_login_real.txt`.
 - Reproducible con `qa/monitoreo_qas/confirmar_d02.sh` desde la VM de Calidad.
 - `MANI-APIGateway` `qa/README.md:73-74`.
@@ -1556,7 +1556,7 @@ El DoD del Sprint 5 exige token real ES256 por el Gateway. Ese camino **ya funci
 octubre**, así que el bloqueo de raíz está levantado; lo que queda abajo es lo que sigue abierto.
 
 > **El §8 de este documento tiene corte del 20 de octubre y la §9.2 del 22.** El reporte general de
-> QA del Sprint 4 ([`qa/REPORTE_QA_SPRINT4.md` §9](../07-calidad/REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint))
+> QA del Sprint 4 ([`qa/REPORTE_QA_SPRINT4.md` §9](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint))
 > es posterior y manda sobre el estado de cada defecto. En particular, el issue de ES256 que §8.4.1
 > propone ya se implementó.
 

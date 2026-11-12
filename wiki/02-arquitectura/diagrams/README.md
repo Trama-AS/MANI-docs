@@ -27,7 +27,7 @@ ADR-0008 exige conservar una fuente versionable además de la exportación usada
 | Vistas C4 (N1–N3, dinámicas, despliegue) | [`c4/workspace.dsl`](c4/workspace.dsl) — Structurizr DSL, se edita en el playground de C4 model | PNG en `c4/`, `despliegue/` y `flujos/dinamicos/` |
 | Flujos de negocio | los `.txt` de [`flujos/`](flujos/) son la fuente | — |
 | DHL de arquitectura e infraestructura | dibujados a mano, sin fuente DSL (SAD §4.2) | `c4/contexto/alto-nivel-arquitectura.png`, `despliegue/infraestructura.png` |
-| Secuencias por historia | exportadas desde la herramienta de secuencias | `flujos/dinamicos/secuencia-*.jpeg` |
+| Secuencias por historia | exportadas desde la herramienta de secuencias | `flujos/secuencia-*.jpeg` |
 | Modelo de datos | `architecture/ModeloDatos.md` define tablas y DDL | `datos/ModeloDatos.png` |
 
 El DSL manda: un diagrama C4 no se edita en la imagen, se cambia en el modelo y se vuelve a exportar.
@@ -52,7 +52,7 @@ La estructura previa era `HLD/` y `LLD/` — nombres heredados de `ALTO_NIVEL/` 
 | `LLD/png/despliegue-prod.png` | `despliegue/despliegue-prod.png` | despliegue |
 | `HLD/Infra.png` | `despliegue/infraestructura.png` | SAD §16 lo usa como vista de despliegue |
 | `LLD/png/dinamico-*.png` | `flujos/dinamicos/` | vistas dinámicas = flujos |
-| `LLD/4.Dinamicos/*.jpeg` | `flujos/dinamicos/secuencia-*.jpeg` | secuencias = flujos; se renombraron a kebab-case sin espacios ni acentos porque los espacios rompen los enlaces Markdown |
+| `LLD/4.Dinamicos/*.jpeg` | `flujos/secuencia-*.jpeg` | secuencias = flujos; se renombraron a kebab-case sin espacios ni acentos porque los espacios rompen los enlaces Markdown |
 
 Al verificar el contenido de las cinco secuencias apareció un archivo mal nombrado: `Aceptación de orden concurrente (Exclusión mutua).jpeg` no contenía ningún diagrama de exclusión mutua, sino una copia en 1600×1197 del mismo diagrama de cotización y despacho que ya estaba en 1190×896. Se conservó la versión de mayor resolución bajo el nombre correcto (`secuencia-cotizacion-y-despacho.jpeg`) y se eliminó la de menor resolución.
 

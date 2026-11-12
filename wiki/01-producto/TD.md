@@ -13,7 +13,7 @@
 
 | Versión | Momento | Contenido |
 |---|---|---|
-| V1 | Sprint 2 y Sprint 3 | Informe de pruebas del Sprint 2 ([`Entregas/Entrega4/Inf_test-001.md`](../../Entregas/Entrega4/Inf_test-001.md), SCRUM-953) y plan de pruebas de paridad de las historias migradas de EP-02 ([`qa/REPORTE_QA_SPRINT4.md` §6](../07-calidad/REPORTE_QA_SPRINT4.md#6-antecedente-plan-de-paridad-de-las-historias-migradas-de-ep-02-scrum-1094), DOC-38, SCRUM-1094). |
+| V1 | Sprint 2 y Sprint 3 | Informe de pruebas del Sprint 2 ([`Entregas/Entrega4/Inf_test-001.md`](../../Entregas/Entrega4/Inf_test-001.md), SCRUM-953) y plan de pruebas de paridad de las historias migradas de EP-02 ([`qa/REPORTE_QA_SPRINT4.md` §6](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#6-antecedente-plan-de-paridad-de-las-historias-migradas-de-ep-02-scrum-1094), DOC-38, SCRUM-1094). |
 | V2 | Sprint 4, 21 de octubre de 2026 | Reúne en un solo documento la estrategia de pruebas con la cadena de calidad operativa (SonarQube, Newman, Playwright y gate de CI), el plan de pruebas del Sprint 4 (SCRUM-1264), los resultados de QA del sprint (SCRUM-1265, SCRUM-1266, SCRUM-1267 y SCRUM-1279), los criterios DoD con su grado de cumplimiento y el índice de evidencia. Corrige la numeración de los QAS en la tabla de añadidos del DoD. |
 
 El plan de EP-02 se resume en el §6 del reporte general de QA del Sprint 4; su versión completa queda en el historial de git.
@@ -38,7 +38,7 @@ Regla que aplica en todo el documento: una historia no se considera aprobada por
 | Escenarios de calidad | QAS-01 a QAS-45 del SDD §8 | k6, Newman e inspección | Runner de Calidad ([SCRUM-1266](https://maniservices.atlassian.net/browse/SCRUM-1266)) |
 | Defensa en la base | RLS y roles de servicio | Consultas de catálogo de solo lectura y `db/verify/` de Core | VM de QA contra MANI-QA |
 
-La configuración de la cadena de calidad está en la [guía operativa CFG4-03](../07-calidad/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03) y la del gate de regresión en `qa/README.md` de MANI-APIGateway.
+La configuración de la cadena de calidad está en la [guía operativa CFG4-03](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03) y la del gate de regresión en `qa/README.md` de MANI-APIGateway.
 
 ### 2.2 Datos, identidad y aislamiento
 
@@ -56,7 +56,7 @@ La configuración de la cadena de calidad está en la [guía operativa CFG4-03](
 
 ## 3. Plan de pruebas del Sprint 4
 
-El plan del sprint es la matriz [`../qa/MANI_Matriz_Pruebas_Sprint4.xlsx`](../07-calidad/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx) (SCRUM-1264), derivada de los criterios de aceptación de SCRUM-1257 ([`../backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](../05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4)).
+El plan del sprint es la matriz [`../qa/MANI_Matriz_Pruebas_Sprint4.xlsx`](../07-calidad/regresion/MANI_Matriz_Pruebas_Sprint4.xlsx) (SCRUM-1264), derivada de los criterios de aceptación de SCRUM-1257 ([`../backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](../05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4)).
 
 | Dimensión | Valor |
 |---|---|
@@ -72,7 +72,7 @@ Las historias priorizadas del sprint son 27: las 24 con subtarea "QA - Validar U
 
 ### 4.1 Calidad estática
 
-Consulta del 21 de octubre a SonarQube y SonarCloud ([`qa/td_v2/evidencia/sonar_20261021.json`](../07-calidad/td_v2/evidencia/sonar_20261021.json)):
+Consulta del 21 de octubre a SonarQube y SonarCloud. Evidencia: `sonar_20261021.json`, **retirado del repositorio** en el commit `ea8076b`; la medición del TD V2 queda congelada en [`Entregas/Entrega6/7.TD_V2.pdf`](../../Entregas/Entrega6/7.TD_V2.pdf):
 
 | Repositorio | Gate | Cobertura total | Duplicación total | Vulnerabilidades abiertas | Último análisis |
 |---|---|---|---|---|---|
@@ -92,7 +92,7 @@ Observaciones:
 
 ### 4.2 Regresión funcional, API y E2E en QA (SCRUM-1267)
 
-Reporte completo: [`../qa/REPORTE_QA_REGRESION_SCRUM-1267.md`](../07-calidad/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) y matriz de ejecución [`../qa/MANI_Matriz_Ejecucion_Sprint4.xlsx`](../07-calidad/regresion_sprint4/MANI_Matriz_Ejecucion_Sprint4.xlsx). El estado al 21 de octubre está en MANI-docs#60.
+Reporte completo: [`../qa/REPORTE_QA_REGRESION_SCRUM-1267.md`](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) y matriz de ejecución [`../qa/MANI_Matriz_Ejecucion_Sprint4.xlsx`](../07-calidad/regresion/MANI_Matriz_Ejecucion_Sprint4.xlsx). El estado al 21 de octubre está en MANI-docs#60.
 
 | Corrida | Newman | Playwright |
 |---|---|---|
@@ -131,7 +131,7 @@ La defensa en la base no se ejerce en QA: Core y Dispatch se conectan como `post
 
 ### 4.4 Escenarios de calidad QAS-01 a QAS-09 (SCRUM-1266)
 
-Estado medido por [SCRUM-1266](../07-calidad/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) el 19 y 20 de octubre, cuando Core, Rules y Dispatch de QA eran todavía stubs, y cambios verificados después:
+Estado medido por [SCRUM-1266](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) el 19 y 20 de octubre, cuando Core, Rules y Dispatch de QA eran todavía stubs, y cambios verificados después:
 
 | QAS | Atributo (SDD §8) | Estado en SCRUM-1266 | Cambio verificado después |
 |---|---|---|---|
@@ -183,7 +183,7 @@ El DoD lo decide QA ([GOBIERNO_DEL_EQUIPO](../06-gobernanza/GOBIERNO_DEL_EQUIPO.
 
 | Criterio del DoD | Resultado |
 |---|---|
-| Cambios integrados mediante PR, con revisión y CI en verde | No verificado historia por historia en este documento. La relación historia–repositorio–PR está en [`../backlog/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`](../07-calidad/MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md) (SCRUM-1256). Las correcciones del 21 de octubre (sección 4.5) entraron por PR con pruebas y CI en verde |
+| Cambios integrados mediante PR, con revisión y CI en verde | No verificado historia por historia en este documento. La relación historia–repositorio–PR estaba en `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` (SCRUM-1256), **retirado del repositorio** en el commit `ea8076b` y conservado en el historial de git. Las correcciones del 21 de octubre (sección 4.5) entraron por PR con pruebas y CI en verde |
 | QA ejecutó o validó las pruebas requeridas | Parcial: 16 historias ejecutadas, ninguna con la cobertura completa de sus casos de SCRUM-1264 |
 | No existen defectos que impidan la entrega | Se cumple al 21 de octubre para los defectos de la regresión (4 corregidos y 1 mitigado); quedan abiertos R-06 a R-09 y R-11, que no hacen fallar ningún caso |
 | Seis casos cross-tenant por historia que toca tenant | No se cumple en ninguna historia (10 de 90 aprobados) |
@@ -194,13 +194,13 @@ El DoD lo decide QA ([GOBIERNO_DEL_EQUIPO](../06-gobernanza/GOBIERNO_DEL_EQUIPO.
 
 | Evidencia | Ubicación |
 |---|---|
-| Plan de pruebas del Sprint 4 | [`qa/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx`](../07-calidad/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx) (SCRUM-1264) |
+| Plan de pruebas del Sprint 4 | [`qa/regresion_sprint4/MANI_Matriz_Pruebas_Sprint4.xlsx`](../07-calidad/regresion/MANI_Matriz_Pruebas_Sprint4.xlsx) (SCRUM-1264) |
 | Criterios de aceptación y DoD del Sprint 4 | [`backlog/CRITERIOS_ACEPTACION_SPRINT4.md`](../05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) (SCRUM-1257) |
-| Matriz y reporte de la regresión | [`qa/regresion_sprint4/MANI_Matriz_Ejecucion_Sprint4.xlsx`](../07-calidad/regresion_sprint4/MANI_Matriz_Ejecucion_Sprint4.xlsx) y [`qa/REPORTE_QA_SPRINT4.md` §8](../07-calidad/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) |
-| Corridas redactadas de Newman y Playwright, consultas de RLS y login real | [`qa/regresion_sprint4/evidencia/`](../07-calidad/regresion_sprint4/evidencia), con la validación del 21 de octubre en `20261021_validacion/` |
-| Escenarios de calidad, k6 y monitoreo | [`qa/REPORTE_QA_SPRINT4.md` §7](../07-calidad/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) y [`qa/monitoreo_qas/`](../07-calidad/monitoreo_qas) |
-| Calidad estática | [`qa/td_v2/evidencia/sonar_20261021.json`](../07-calidad/td_v2/evidencia/sonar_20261021.json) |
-| Cadena de calidad (SonarQube, runners) | [`qa/REPORTE_QA_SPRINT4.md` §3](../07-calidad/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03) |
+| Matriz y reporte de la regresión | [`qa/regresion_sprint4/MANI_Matriz_Ejecucion_Sprint4.xlsx`](../07-calidad/regresion/MANI_Matriz_Ejecucion_Sprint4.xlsx) y [`qa/REPORTE_QA_SPRINT4.md` §8](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#8-regresión-funcional-api-e2e-y-multi-tenant-scrum-1267) |
+| Corridas redactadas de Newman y Playwright, consultas de RLS y login real | [`qa/regresion_sprint4/evidencia/`](../07-calidad/regresion/evidencia), con la validación del 21 de octubre en `20261021_validacion/` |
+| Escenarios de calidad, k6 y monitoreo | [`qa/REPORTE_QA_SPRINT4.md` §7](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#7-monitoreo-de-qa-y-escenarios-qas-01-a-qas-09-scrum-1266) y [`qa/monitoreo_qas/`](../07-calidad/monitoreo) |
+| Calidad estática | `sonar_20261021.json`, **retirado del repositorio** en el commit `ea8076b`; la medición del TD V2 queda congelada en [`Entregas/Entrega6/7.TD_V2.pdf`](../../Entregas/Entrega6/7.TD_V2.pdf) |
+| Cadena de calidad (SonarQube, runners) | [`qa/REPORTE_QA_SPRINT4.md` §3](../07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#3-cadena-de-calidad-en-qa-cfg4-03) |
 | Suites de regresión y gate de CI | MANI-APIGateway `qa/` y `.github/workflows/qa-regresion.yml` (MANI-APIGateway#18 y #19) |
 | Defectos | SCRUM-1358 a SCRUM-1362 en Jira |
 

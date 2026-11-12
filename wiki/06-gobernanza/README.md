@@ -10,7 +10,7 @@ Esta carpeta responde a **quién decide**, **bajo qué políticas**, **sobre qu�
 |---|---|
 | **Propósito** | Dejar por escrito la autoridad por rol y por artefacto, las políticas que rigen el trabajo, la vista física vigente y el estado verificado de lo que el equipo afirma, de modo que ninguna decisión ni ninguna cifra dependa de una conversación informal. |
 | **Responsable** | Sara Albarracín (Scrum Master) |
-| **Suplente** | **Pendiente de asignar.** Lo define el equipo según [`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3; hasta entonces, la suplencia no está cubierta. |
+| **Suplente** | **María Camila Beltrán (PO).** Decidido por la Scrum Master el 2026-11-12; pendiente de ratificación. Es la suplencia natural de esta carpeta: el PO ya firma sus actas de aceptación, de modo que la suplencia no le añade un encargo nuevo. |
 | **Quién firma las actas** | María Camila Beltrán (Product Owner). La SM facilita y redacta; no firma en nombre del PO. |
 | **Quién la consume** | Todo el equipo para las reglas de decisión; DevOps y QA para infraestructura y políticas; el PO para las actas y los informes de cierre; el jurado en la sustentación. |
 | **Cada cuánto se actualiza** | Al cerrar cada sprint (informe de cierre), y de inmediato cuando se firma un acta, se registra un bloqueo o se cierra una fila de HU-VAL-01. |
@@ -108,7 +108,7 @@ Falta, y **depende de trabajo de otras tareas**:
 1. **Suplente de la carpeta** sin asignar (decisión del equipo).
 2. **Las tres piezas que siguen faltando en [§4](#4-lo-que-esta-carpeta-todavía-no-tiene)**: acta A/B, informe de cierre y seguimiento de acuerdos. El registro de bloqueos ya está publicado; le falta la etiqueta `bloqueado` en Jira, que hoy no existe.
 3. **Las siete filas pendientes de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md)**, que exigen sesión en las VMs, consulta a Supabase de PROD o prueba de puertos desde la red de la universidad.
-4. **Revisión y aprobación del README por otro responsable de carpeta**, exigida por los criterios comunes de las ocho HU de wiki.
+4. ~~Revisión y aprobación del README por otro responsable de carpeta.~~ **Criterio retirado por la Scrum Master el 2026-11-12.** No era cumplible: ninguna de las siete carpetas de la wiki declara responsable, y cinco no tienen siquiera ficha de carpeta, de modo que la figura que el criterio invoca no existe en el proyecto. Se retira en vez de dejarlo abierto indefinidamente o darlo por cumplido sin revisión real.
 5. **Promoción de `DOCUMENTO_INFRAESTRUCTURA_V4.md`** de borrador a vigente, que depende de las mismas filas del punto 3.
 
 ## 7. Discrepancias de HU-VAL-01 que son de esta carpeta

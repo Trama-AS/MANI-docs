@@ -18,14 +18,14 @@ Esta carpeta responde a **qué se probó, cómo y con qué resultado**. La estra
 | `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md` | Qué historia toca qué repositorio (SCRUM-1256). **Retirado del repositorio** en el commit `ea8076b`; su texto está en el historial de git |
 | [`SPRINT4_INDICADORES_Y_ACUERDOS.md`](monitoreo/SPRINT4_INDICADORES_Y_ACUERDOS.md) | Indicadores del sprint y acuerdos del equipo (SCRUM-1242) |
 | [`SPRINT4_IMPEDIMENTOS_Y_TRAZABILIDAD.md`](monitoreo/SPRINT4_IMPEDIMENTOS_Y_TRAZABILIDAD.md) | Impedimentos del sprint y su trazabilidad (SCRUM-1243) |
-| `ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md` | Acta de la consolidación de PostgreSQL en Supabase. **Retirada del repositorio** en el commit `ea8076b`; su texto está en el historial de git |
+| [`ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md`](../../Entregas/Entrega4/ACTA_CONSOLIDACION_POSTGRESQL_CFG4-02.md) | Acta de la consolidación de PostgreSQL en Supabase. Salió de esta carpeta en el commit `ea8076b`; la copia congelada vive en [`Entregas/Entrega4/`](../../Entregas/Entrega4) |
 
 ## Carpetas
 
 | Carpeta | Qué contiene |
 |---|---|
-| [`monitoreo_qas/`](monitoreo/README.md) | Arnés de los escenarios QAS: Newman, k6, scripts de verificación, redactor de evidencia y las corridas en `evidencia/` |
-| [`regresion_sprint4/`](regresion) | Matriz de pruebas y matriz de ejecución del Sprint 4, el plan de regresión de US-02.1.1-M4 y su evidencia |
+| [`monitoreo/`](monitoreo/README.md) | Arnés de los escenarios QAS: Newman, k6, scripts de verificación, redactor de evidencia y las corridas en `evidencia/` |
+| [`regresion/`](regresion) | Matriz de pruebas y matriz de ejecución del Sprint 4, el plan de regresión de US-02.1.1-M4 y su evidencia |
 | `td_v2/` | Evidencia que respaldaba el TD V2. **Retirada del repositorio** en el commit `ea8076b`; la medición queda congelada en [`Entregas/Entrega6/7.TD_V2.pdf`](../../Entregas/Entrega6/7.TD_V2.pdf) |
 | [`PoC/`](PoC) | Pruebas de concepto: exclusión concurrente, identidad de servicio con RLS y versionado de eventos |
 

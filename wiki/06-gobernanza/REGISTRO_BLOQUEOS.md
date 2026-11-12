@@ -9,7 +9,7 @@
 | **Mantiene** | Sara Albarracín (Scrum Master), gestión de impedimentos |
 | **Consume** | El equipo en cada *daily*; el informe de cierre del Sprint 6 ([SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708)); el PO para los bloqueos que escalan a decisión |
 | **Se actualiza** | En cada *daily*: se abre lo nuevo, se cierra lo resuelto y se recalcula el tiempo abierto |
-| **Versión** | 1.1 |
+| **Versión** | 1.2 |
 | **Fecha de corte** | 2026-11-11 |
 | **Umbral de escalamiento** | **2 días hábiles abierto.** Al cumplirse, el bloqueo se escala con evidencia al rol con autoridad sobre el artefacto ([`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3). |
 
@@ -34,7 +34,7 @@ Ocho bloqueos al 2026-11-11. Las fechas de aparición son las del hecho que los 
 | ID | Ítem afectado | Tipo | Causa | Responsable de resolverlo | Aparición | Días hábiles | Estado |
 |---|---|---|---|---|---|---|---|
 | **B-01** | [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) (reescribir SDD §7 y §8) | Dependencia | El acta de decisión A/B ([SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)) está en `To Do` y no existe como documento. El 2026-11-11 se decidió una de sus partes —el RPO/RTO único, fila D4—, pero el acta sigue faltando: nadie ha marcado cada escenario como A o B con su motivo, y la firma es del PO. Reescribir el SDD sin eso sería inventar las cifras | Camila Beltrán (PO) firma; Sara Albarracín facilita | 2026-11-09 | **2** | **Escalado** — en umbral |
-| **B-02** | [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) (SDD §8, Infra V4 §7, Excel) | Dependencia | Doble: espera a B-01 (la tarea declara que va después de la T-48) y espera la fila D8 de HU-VAL-01, que fija si hay observabilidad en QA. Además su enunciado pide el Excel a **82/84**, cifra que la fila D11 ya contradijo: el conteo de Jira da **84/85** | Camila Beltrán (PO) y Daniel Ávila; la cifra la corrige Sara | 2026-11-09 | **2** | **Escalado** — en umbral, y con la cifra del enunciado en disputa |
+| **B-02** | [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) (SDD §8, Infra V4 §7, Excel) | Dependencia | Doble: espera a B-01 (la tarea declara que va después de la T-48) y espera la fila D8 de HU-VAL-01, que fija si hay observabilidad en QA. **La cifra del enunciado ya está corregida** el 2026-11-11: el título y el criterio decían 82/84 y ahora dicen **84/85**, el conteo de Jira. Queda por corregir el Excel, que es parte de la tarea | Camila Beltrán (PO) y Daniel Ávila; la cifra la corrige Sara | 2026-11-09 | **2** | **Escalado** — en umbral, y con la cifra del enunciado en disputa |
 | **B-03** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696), 7 filas (D1, D5, D6, D7, D8, D9, D10) | Acceso | Las siete exigen sesión SSH en las VMs de DEV, QA y PROD, consulta a Supabase de PROD, o prueba de puertos **desde la red de la universidad**. No son verificables desde los repositorios. El usuario SSH se solicita al DevOps Lead y no está repartido | Daniel Ávila (DevOps), con Santiago para D6 y D10 | 2026-11-10 | **1** | Abierto |
 | **B-04** | [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) (clientes asociados a un tenant) | Decisión | La ficha [ADR-0036](../02-arquitectura/adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) ya está publicada y establece que no es un defecto sino el diseño vigente, pero está en estado `Propuesto`: faltan las respuestas M1 a M4. No se toca código hasta que el ADR esté aprobado | Camila Beltrán (PO); M4 a la Mesa de Arquitectura | 2026-11-05 | **4** | **Escalado** — supera el umbral |
 | **B-05** | [SCRUM-1638](https://maniservices.atlassian.net/browse/SCRUM-1638) (desplegar front v1.0.4 y repetir las 18 rutas) | Dependencia | Está en `To Do`, y es la evidencia que la fila D1 necesita para cerrar. Mientras no se ejecute, la afirmación «PROD en v1.0.4 al 100 %» no tiene respaldo y no puede presentarse como hecho | Daniel Ávila (despliegue) y Camila Beltrán (revisión de rutas) | 2026-11-09 | **2** | **Escalado** — en umbral |
@@ -71,7 +71,7 @@ Ocho bloqueos al 2026-11-11. Las fechas de aparición son las del hecho que los 
 
 | # | Qué falta | De quién depende |
 |---|---|---|
-| 1 | **Crear la etiqueta `bloqueado` en Jira y aplicarla** a los nueve ítems de §2. Hoy la etiqueta **no existe**: una consulta por `labels in (bloqueado, bloqueo, blocked)` y por `status = Blocked` devuelve cero resultados en todo el proyecto. Este registro es, por ahora, la única fuente | Sara Albarracín (SM), con permiso de escritura en Jira |
+| 1 | ~~Crear la etiqueta `bloqueado` y aplicarla~~ **Hecho el 2026-11-11.** La etiqueta no existía —`labels in (bloqueado, bloqueo, blocked)` y `status = Blocked` daban cero en todo el proyecto— y Jira la creó al usarla. Aplicada a los **diez tickets** que cubren los nueve bloqueos: SCRUM-1685, 1686, 1696, 1637, 1638, 1704, 1690, 1711, 1699 y 1383, más SCRUM-1712. Las etiquetas previas de cada ticket se conservaron | — |
 | 2 | **Revisar los bloqueos abiertos en cada *daily*** y actualizar aquí lo que cambie | El equipo en la *daily* |
 | 3 | **Evidencia del escalamiento** de los seis que están en o sobre el umbral: a quién se escaló, cuándo y con qué respuesta | Sara Albarracín (SM) |
 | 4 | **Resumen de cierre** con el número final, el tiempo medio y las causas recurrentes, para alimentar [SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708) | Sara Albarracín (SM), al cerrar el sprint |
@@ -82,5 +82,6 @@ El criterio «la tabla existe antes del inicio del sprint» **no se cumplió**: 
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 1.2 | 2026-11-11 | Se aplica la etiqueta `bloqueado` en Jira a los diez tickets de los nueve bloqueos, con lo que el primer criterio de SCRUM-1709 queda cumplido. B-02 recoge que el título y el criterio de SCRUM-1686 ya dicen 84/85. | Sara Albarracín |
 | 1.1 | 2026-11-11 | Alineación con la v2.0 de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md). Se añade **B-09**: el ADR de cifrado está bloqueado porque no existe el requisito que debería cumplir, ni RNF ni QAS de confidencialidad en reposo. Se matiza B-01: la decisión de D4 cerró el RPO/RTO único, pero el acta A/B sigue faltando. Se añade una tercera causa recurrente —el requisito inexistente— y se recalcula el resumen a nueve bloqueos abiertos. | Sara Albarracín |
 | 1.0 | 2026-11-11 | Registro inicial. Ocho bloqueos abiertos y uno resuelto, con tipo, causa, responsable, fecha de aparición y días hábiles. Resumen por tipo, dos causas recurrentes con su acción de mejora, y constancia de que la etiqueta `bloqueado` no existe todavía en Jira. | Sara Albarracín |

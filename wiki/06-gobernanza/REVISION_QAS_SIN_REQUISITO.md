@@ -9,7 +9,7 @@
 | **Origen** | Bloqueo **B-09** de [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md), y la tercera causa recurrente que registra: «el requisito que la decisión debería cumplir no existe». Apareció dos veces por casualidad, al decidir D4 (recuperabilidad) y P-D15a (cifrado), nunca por una revisión. Esta es la revisión. |
 | **Redacta** | Sara Albarracín (SM), como propuesta |
 | **Decide** | María Camila Beltrán (PO): los requisitos son suyos ([`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3) |
-| **Versión** | 1.0 · corte 2026-11-11 |
+| **Versión** | 2.0 · corte 2026-11-11 |
 
 > **Lo que este documento no hace.** No crea requisitos, no cambia umbrales, no retira escenarios y no toca el SDD. Propone una clasificación para que el PO decida qué hacer con cada grupo.
 
@@ -45,25 +45,42 @@ Por eso la cadena `necesidad → requisito → atributo de calidad → ADR → c
 
 ## 3. Escenarios sin requisito, por grupo
 
-### 3.1 Grupo A — Prioridad P1 sin requisito: once escenarios
+### 3.1 Los once P1, clasificados
 
-Son los graves. Cada uno compromete a QA a medir un umbral que **ningún requisito pidió**, y todos están marcados P1, es decir, exigibles.
+**Corrección de la versión 1.0.** La v1.0 los dio por «sin requisito» sin distinguir, y era demasiado duro: solo había mirado los once RNF. El SRS tiene además **ocho restricciones de proyecto (PROY-01 a PROY-08, §3.1)** y **cinco de producto (REST-01 a REST-05, §3.2)**, y varias de ellas sí respaldan un escenario. Con eso, **siete de los once tienen origen legítimo** y solo cuatro quedan sin respaldo.
 
-| QAS | Atributo | Umbral que compromete | De dónde sale, si no es de un RNF | Qué propongo |
+Clasificación en las tres categorías pedidas: **(a)** tiene requisito, solo falta enlazarlo · **(b)** deriva de una restricción, un riesgo o un *driver* · **(c)** sin respaldo.
+
+| QAS | Atributo | Cat. | Origen propuesto | Por qué |
 |---|---|---|---|---|
-| **QAS-05** | Escalabilidad | Escalar de 2 a 6 réplicas sin cambio de código | De la arquitectura objetivo (Kubernetes, HPA). INFRA-01 e INFRA-02 están **abiertos** y QA corre en Docker Compose | **Bajar a P2 o declarar no exigible en el MVP** hasta que exista un RNF de escalabilidad. Hoy es no medible por diseño |
-| **QAS-14** | Resistencia | — | Parcialmente de RNF-03, pero resistencia no es idempotencia | Anclar a RNF-03 ampliándolo, o crear RNF |
-| **QAS-15** | Ausencia de fallos | — | Ningún RNF | Revisar si es un escenario o una aspiración |
-| **QAS-16** | Disponibilidad | **≥ 99.9% mensual** para APIs críticas | Ningún RNF exige disponibilidad. El umbral es del SDD | **Crear un RNF de disponibilidad o bajar el umbral a algo que el MVP pueda sostener.** 99.9% con una VM sin monitoreo no es sostenible |
-| **QAS-17** | Recuperabilidad | `RPO ≤ 5 min` y `RTO ≤ 30 min` | Ningún RNF exige recuperabilidad. **Ya detectado al decidir D4** | **Crear RNF de recuperabilidad.** La decisión D4 mantuvo el umbral porque era el único documentado, no porque un requisito lo pida |
-| **QAS-20** | Modularidad | El servicio no accede a datos de otro dominio | De ADR-0030 y ADR-0022, que son decisiones | Aceptable que nazca de un ADR; **anotarlo así** en vez de dejarlo sin origen |
-| **QAS-23** | Capacidad para ser probado | — | De la política DevOps | Igual: anclar a la política, no a un RNF inexistente |
-| **QAS-25** | Instalabilidad | — | Ningún RNF | Revisar prioridad |
-| **QAS-43** | Confidencialidad **en tránsito** (TLS) | TLS en el perímetro | RNF-01 cubre aislamiento entre tenants, **no cifrado de transporte** | Anclar a un RNF de protección de datos, el mismo que falta para B-09 |
-| **QAS-44** | Reversión de despliegue | — | De ADR-0004 | Anclar al ADR explícitamente |
-| **QAS-45** | Quality Gate de código nuevo | — | De la política DevOps y SonarQube | Anclar a la política explícitamente |
+| **QAS-15** | Ausencia de fallos | **(a)** | `RNF-07` | Es el caso más claro de requisito sin enlazar. RNF-07 exige soportar concurrencia y **remite explícitamente al SDD §7.4** para los umbrales; las cifras del escenario (300 sesiones concurrentes, 50 req/s sostenidos) son justo las de §7.4. El requisito existe y la cita está escrita en el RNF, pero no en el escenario |
+| **QAS-05** | Escalabilidad | **(b)** | `restricción` — PROY-08 | **PROY-08: «El proyecto exige el uso de Kubernetes como orquestador».** El escenario de escalar de 2 a 6 réplicas con HPA deriva de esa restricción de proyecto, no de una necesidad del producto. Explica por qué es `No medido`: la restricción se impuso, el clúster no existe y INFRA-01/INFRA-02 siguen abiertos |
+| **QAS-20** | Modularidad | **(b)** | `restricción` — ADR-0030 | La frontera de datos de ADR-0030 y la lógica en los servicios de ADR-0022 son decisiones `Aceptado`, y por tanto vinculantes. El escenario verifica esa frontera, no un requisito de producto |
+| **QAS-23** | Capacidad para ser probado | **(b)** | `restricción` — ADR-0005 | Deriva de la política de PR y CI y del *Quality Gate* de ADR-0005, reforzada por PROY-06 (herramientas aprobadas por el equipo) |
+| **QAS-25** | Instalabilidad | **(b)** | `restricción` — ADR-0004 | El despliegue por *pipeline* de CD y el procedimiento por ambiente son ADR-0004 |
+| **QAS-44** | Reversión de despliegue | **(b)** | `restricción` — ADR-0004 | Las imágenes versionadas en GHCR y la vuelta a la anterior son parte del mismo ADR-0004 |
+| **QAS-45** | *Quality Gate* de código nuevo | **(b)** | `restricción` — ADR-0005 | El propio escenario ya cita ADR-0005 en su columna de artefacto. Solo falta declararlo como origen |
+| **QAS-14** | Resistencia | **(c)** | `supuesto` | El escenario habla de un atacante externo que envía ráfagas o explota una vulnerabilidad conocida. **Ningún RNF, REST o PROY menciona resistencia a ataques ni abuso de consumo.** ADR-0005 (DevSecOps) aporta el medio, no el requisito |
+| **QAS-16** | Disponibilidad | **(c)** | `supuesto` | El umbral **≥ 99.9% mensual** no tiene fuente en ningún artefacto. Es el caso más caro de los cuatro: compromete a QA a una serie de un mes calendario sin que nadie lo haya pedido, y hoy no hay monitoreo en QA con el que sostenerlo |
+| **QAS-17** | Recuperabilidad | **(c)** | `supuesto` | Ningún RNF exige recuperabilidad. Detectado al decidir D4, que mantuvo `RPO ≤ 5 min` y `RTO ≤ 30 min` **porque era el único par documentado, no porque un requisito lo pida** |
+| **QAS-43** | Confidencialidad en tránsito | **(c)** | `supuesto` | RNF-01 y REST-04 exigen aislamiento **entre tenants**, que es otra cosa que cifrar el transporte. Es el escenario que el RNF de protección de datos propuesto en [`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md) cubriría de forma natural |
 
-### 3.2 Grupo B — P2 y P3 sin requisito: diecinueve escenarios
+**Recuento: (a) 1 · (b) 6 · (c) 4.** No se inventa ningún RNF para cubrir los de (c): quedan marcados `supuesto`, que es información honesta y suficiente para que el PO decida si los adopta, los baja de prioridad o los retira.
+
+### 3.1.1 Columna de origen propuesta para el SDD
+
+Propuesta de valores controlados para una columna nueva en la tabla de los 45 escenarios, **que no se aplica aquí**: el SDD es de `02-arquitectura` y su edición está repartida con la otra sesión que trabaja la wiki.
+
+| Valor | Significado | Ejemplo |
+|---|---|---|
+| `RNF-xx` | El escenario mide un requisito no funcional del SRS §6 | QAS-01 → `RNF-01` |
+| `restricción` | Deriva de una restricción de proyecto o producto (SRS §3.1 y §3.2) o de un ADR `Aceptado`, que es vinculante | QAS-05 → `restricción (PROY-08)` |
+| `riesgo` | Deriva de un riesgo registrado o de un *architectural killer* | — |
+| `supuesto` | **No tiene respaldo.** El umbral se adoptó sin requisito que lo pida | QAS-16, QAS-17 |
+
+Un escenario marcado `supuesto` no es inválido: es un compromiso que el equipo asumió por su cuenta. Lo que no puede es presentarse en la sustentación como si lo exigiera el producto.
+
+### 3.2 Los P2 y P3 sin requisito: diecinueve escenarios
 
 QAS-06, QAS-08, QAS-21, QAS-26, QAS-27, QAS-28, QAS-29, QAS-31, QAS-33, QAS-35, QAS-36, QAS-37, QAS-38, QAS-39 y QAS-40.
 
@@ -87,8 +104,8 @@ Ninguna de estas cuatro acciones la puede tomar la SM.
 |---|---|---|
 | 1 | **Crear dos RNF: recuperabilidad y protección de datos personales en reposo.** Con su prioridad | Son los dos que ya bloquean trabajo hoy: D4 quedó decidida sin requisito detrás, y B-09 impide escribir el ADR de cifrado |
 | 2 | **Derivar un QAS de confidencialidad en reposo** del segundo RNF, con umbral y método (por ejemplo: «0 campos de la lista legibles en una consulta directa con un rol sin privilegio de descifrado») | Es lo que desbloquea [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) y con él [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) |
-| 3 | **Decidir sobre los otros nueve P1 del grupo A**: crear requisito, bajar prioridad, o declarar el ADR o la política como origen legítimo | Son P1, es decir exigibles, y hoy QA está comprometida a medirlos sin que nadie los haya pedido |
-| 4 | **Añadir al SDD una columna de requisito de origen** en la tabla de los 45 escenarios | Es lo que impide que esto vuelva a pasar. Sin ella, el próximo escenario nacerá igual de huérfano |
+| 3 | **Aprobar la clasificación de §3.1**: enlazar QAS-15 a RNF-07, declarar el origen de los seis de **(b)**, y decidir sobre los cuatro de **(c)** —adoptarlos como requisito, bajar su prioridad o retirarlos | Son P1, es decir exigibles. Los cuatro de **(c)** son los únicos que hoy comprometen a QA sin respaldo |
+| 4 | **Añadir al SDD la columna de origen** con los valores controlados de §3.1.1 | Es lo que impide que esto vuelva a pasar. Sin ella, el próximo escenario nacerá igual de huérfano. La aplica quien mantiene `02-arquitectura` |
 
 ## 5. Lo que esta revisión no resolvió
 
@@ -100,4 +117,5 @@ Ninguna de estas cuatro acciones la puede tomar la SM.
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.0 | 2026-11-11 | Clasificación de los once P1 en (a) requisito sin enlazar, (b) restricción, riesgo o *driver*, y (c) sin respaldo, a petición de la SM. **Corrige a la v1.0**, que los daba todos por huérfanos: la v1.0 solo había mirado los once RNF y no las restricciones PROY-01 a PROY-08 y REST-01 a REST-05 del SRS §3. Con ellas, **siete de los once tienen origen legítimo** y solo cuatro quedan sin respaldo (QAS-14, 16, 17 y 43). Se añade la propuesta de columna de origen con valores controlados. No se inventa ningún RNF. | Sara Albarracín |
 | 1.0 | 2026-11-11 | Revisión inicial, como propuesta. Recorrido de los 45 QAS contra RNF-01 a RNF-11: 13 escenarios con requisito detrás, **11 de prioridad P1 sin ninguno**, 19 de P2 y P3 sin ninguno, y un hueco inverso (cifrado en reposo, B-09). Hallazgo estructural: no existe mapeo QAS→requisito en el SDD, ni en el cuerpo del SDD, ni en la trazabilidad del SRS §7. Cuatro acciones propuestas al PO. | Sara Albarracín |

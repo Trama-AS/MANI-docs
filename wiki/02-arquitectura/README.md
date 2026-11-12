@@ -10,7 +10,7 @@
 |---|---|
 | **Propósito** | Responder cómo es el sistema y por qué es así, de modo que cada decisión se pueda rastrear hasta el requisito que la originó y hasta la prueba que la verifica. |
 | **Responsable** | Sara Albarracín |
-| **Suplente** | **Pendiente de asignar.** Lo define el equipo según [`GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2.3; hasta entonces, la suplencia no está cubierta. |
+| **Suplente** | **Mesa de Arquitectura**, como órgano. Decidido por la Scrum Master el 2026-11-11; ver [§1.1](#11-por-qué-la-suplencia-es-de-la-mesa-y-no-de-una-persona). |
 | **Quién la consume** | Desarrollo (los seis repositorios), QA (para derivar pruebas de los escenarios), DevOps (vista de despliegue) y el PO (restricciones que afectan el alcance). |
 | **Cada cuánto se actualiza** | Al cerrar cada sprint, y de inmediato cuando una Mesa de Arquitectura produce o modifica un ADR. |
 | **Última revisión de la carpeta** | 2026-11-11 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690), HU-WIKI-02) |
@@ -28,6 +28,23 @@ La carpeta tiene tres capas, y cada documento vive en una sola:
 Si guía y documento se contradicen, manda el documento. Si documento y ADR se contradicen, manda el ADR.
 
 **No hay carpeta de expedientes.** Una auditoría, un inventario o el material de una Mesa no son un documento aparte: su contenido va al documento o al ADR que responde por ese tema, con su fecha de corte escrita. Lo que no sobrevive a esa pregunta —«¿de qué documento es esto una parte?»— no se guarda aquí.
+
+### 1.1 Por qué la suplencia es de la Mesa y no de una persona
+
+**Decisión tomada: Sara Albarracín (Scrum Master), 2026-11-11.** La suplencia de una carpeta no está regulada en [`GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md), que solo define suplencia **de rol** en §2.1 («Segundo rol»).
+
+El criterio obvio —«suple quien ya mantiene contenido de la carpeta»— **no aplica aquí**, porque la responsable escribe y mantiene todos los documentos de la carpeta. Las cabeceras que nombran a otras personas en [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) y [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) acreditan la autoría del entregable que originó cada documento, no su mantenimiento continuo.
+
+Por eso la suplencia se asigna al **órgano, no a un individuo**: la Mesa de Arquitectura. Dos razones:
+
+- §2.1 de gobernanza dice que **todos los integrantes técnicos participan transversalmente como Arquitectos** dentro de la Mesa, así que el órgano existe y tiene a todos dentro.
+- La Mesa ya es la autoridad sobre el contenido vinculante de esta carpeta: los ADR se ratifican allí (ADR-0003 §2). Hacerla suplente no le añade una atribución nueva, solo cubre el hueco de mantenimiento cuando falta la responsable.
+
+**Qué significa en la práctica.** Si la responsable no está, un cambio en esta carpeta se lleva a Mesa en lugar de esperar; la Mesa designa quién lo aplica para ese cambio concreto. No se designa a nadie de forma permanente, de modo que no se compromete a una persona que no lo aceptó.
+
+**Lo que esta decisión NO cubre.** Los criterios comunes de las ocho HU de wiki piden que el README lo revise y apruebe **otro responsable de carpeta**. Eso sigue pendiente y lo tiene que hacer quien responde por otra carpeta, no la Mesa ni la autora.
+
+**Trazabilidad:** necesidad = que la carpeta siga al día si falta la responsable → requisito = criterios comunes de las ocho HU de wiki ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690)) → atributo de calidad = Mantenibilidad P1 ([`SDD.md`](SDD.md) §8.5) → decisión = suplencia del órgano que ya decide sobre la carpeta.
 
 ## 1. Orden de lectura
 
@@ -128,7 +145,7 @@ Añadido el 2026-11-11: se resolvieron los cinco marcadores de conflicto de git 
 
 Falta, y **cada punto depende de algo que no está en esta carpeta**:
 
-1. **Suplente de la carpeta** sin asignar. Es decisión del equipo; no se inventa un nombre.
+1. **Ratificación de la suplencia en Mesa.** Asignada a la Mesa de Arquitectura el 2026-11-11 ([§1.1](#11-por-qué-la-suplencia-es-de-la-mesa-y-no-de-una-persona)); conviene que la propia Mesa lo deje en acta.
 2. **Acta A/B y los ADR pendientes.** El ADR del tenant de clientes ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) ya está publicado como [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md); le falta la decisión del PO, no la redacción. Siguen sin ficha o sin ratificar: el acta A/B ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), bloqueada por [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)), el cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la asignación idempotente ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)).
 3. **SDD §8 e Infraestructura V4 §7** corregidos respecto al monitoreo — [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686), que a su vez espera la fila D8.
 4. **Ratificación de ADR-0035 en Mesa** (ADR-0003 §2). No la puede hacer la Scrum Master, que es la proponente del ADR.
@@ -172,6 +189,8 @@ Los tres primeros se retiraron de la raíz el 2026-11-10, tras comprobar secció
 
 | Fecha | Cambio |
 |---|---|
+| 2026-11-11 | Suplencia de la carpeta asignada a la **Mesa de Arquitectura** como órgano, no a una persona: la responsable mantiene todos los documentos, y las cabeceras que nombran a otros acreditan autoría del entregable, no mantenimiento continuo (§1.1). |
+| 2026-11-11 | Correcciones: se resuelven los **cinco marcadores de conflicto de git** que estaban commiteados en [`SDD.md`](SDD.md) §4.6; [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) deja de declarar Kafka verificado; se corrige que [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661) son los contratos OpenAPI y no la trazabilidad de los ADR; se corrige que `SAD.md` §7.4 **sí** documenta la asignación idempotente y referencia a ADR-0035, de modo que [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) ya cumplía; se registran las decisiones de HU-VAL-01 que afectan a esta carpeta. |
 | 2026-11-11 | Se publica [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) (pertenencia del cliente a un tenant, `Propuesto`) y se propaga al índice de decisiones (§4, 28 fichas), al pendiente de §5 y al cierre de §7: el tenant de clientes pasa de «bug sin ADR» a «ADR publicado, decisión del PO pendiente». |
 | 2026-11-10 | HU-WIKI-02 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690)): ficha de carpeta con responsable y consumidores, orden de lectura en seis pasos, finalidad y mantenedor por documento, versión y fecha, índice de ADR corregido a 27 fichas, barrido de secretos, enlace de las discrepancias de HU-VAL-01 y retiro de los tres documentos absorbidos que seguían en la raíz. Cierre parcial: ver §7. |
 | 2026-11-04 | Reorganización en tres capas y absorción de los expedientes cerrados. |

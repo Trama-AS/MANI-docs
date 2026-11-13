@@ -73,6 +73,7 @@ Explican y ordenan; no deciden. Las mantiene la responsable de la carpeta y se r
 | [Decisiones ADR](guia/decisiones-adr.md) | Índice de ADR con estado, reglas de Mesa, huecos y lo que falta ratificar | `adr/`, ADR-0003 |
 | [Riesgos y puntos abiertos](guia/riesgos-y-puntos-abiertos.md) | *Architectural killers* y lo que falta decidir | `SAD.md` §7.4 y §7.6 |
 | [Diagramas](guia/diagramas.md) | Qué diagramas existen y dónde | `diagrams/`, ADR-0008 |
+| [Módulo M-04: cotización y ejecución](guia/modulo-m04-cotizacion-y-ejecucion.md) | Flujo, estados, endpoints del Gateway y errores `MANI-*` de 865 a 870 y 872, con sus pruebas | `core.yaml` (MANI-APIGateway), Core, `SAD.md` §7.4 y §11 |
 
 ## 3. Documentos — la fuente
 

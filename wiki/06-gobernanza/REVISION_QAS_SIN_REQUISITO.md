@@ -9,7 +9,7 @@
 | **Origen** | Bloqueo **B-09** de [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md), y la tercera causa recurrente que registra: «el requisito que la decisión debería cumplir no existe». Apareció dos veces por casualidad, al decidir D4 (recuperabilidad) y P-D15a (cifrado), nunca por una revisión. Esta es la revisión. |
 | **Redacta** | Sara Albarracín (SM), como propuesta |
 | **Decide** | María Camila Beltrán (PO): los requisitos son suyos ([`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3) |
-| **Versión** | 2.0 · corte 2026-11-11 |
+| **Versión** | 2.1 · corte 2026-11-13 |
 
 > **Lo que este documento no hace.** No crea requisitos, no cambia umbrales, no retira escenarios y no toca el SDD. Propone una clasificación para que el PO decida qué hacer con cada grupo.
 
@@ -61,9 +61,15 @@ Clasificación en las tres categorías pedidas: **(a)** tiene requisito, solo fa
 | **QAS-44** | Reversión de despliegue | **(b)** | `restricción` — ADR-0004 | Las imágenes versionadas en GHCR y la vuelta a la anterior son parte del mismo ADR-0004 |
 | **QAS-45** | *Quality Gate* de código nuevo | **(b)** | `restricción` — ADR-0005 | El propio escenario ya cita ADR-0005 en su columna de artefacto. Solo falta declararlo como origen |
 | **QAS-14** | Resistencia | **(c)** | `supuesto` | El escenario habla de un atacante externo que envía ráfagas o explota una vulnerabilidad conocida. **Ningún RNF, REST o PROY menciona resistencia a ataques ni abuso de consumo.** ADR-0005 (DevSecOps) aporta el medio, no el requisito |
-| **QAS-16** | Disponibilidad | **(c)** | `supuesto` | El umbral **≥ 99.9% mensual** no tiene fuente en ningún artefacto. Es el caso más caro de los cuatro: compromete a QA a una serie de un mes calendario sin que nadie lo haya pedido, y hoy no hay monitoreo en QA con el que sostenerlo |
+| **QAS-16** | Disponibilidad | **(c)** | `supuesto` | El umbral **≥ 99.9% mensual** no tiene fuente en ningún artefacto, y eso no cambia. Lo que sí cambió el 2026-11-13: **el medio para medirlo sí tiene origen**, porque el profesor exige Prometheus y Grafana (ver abajo). Sigue `supuesto` el **umbral**: nadie ha pedido 99.9%, y una exigencia de herramienta no fija una cifra de disponibilidad |
 | **QAS-17** | Recuperabilidad | **(c)** | `supuesto` | Ningún RNF exige recuperabilidad. Detectado al decidir D4, que mantuvo `RPO ≤ 5 min` y `RTO ≤ 30 min` **porque era el único par documentado, no porque un requisito lo pida** |
 | **QAS-43** | Confidencialidad en tránsito | **(c)** | `supuesto` | RNF-01 y REST-04 exigen aislamiento **entre tenants**, que es otra cosa que cifrar el transporte. Es el escenario que el RNF de protección de datos propuesto en [`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md) cubriría de forma natural |
+
+**La observabilidad tiene origen desde el 2026-11-13, y conviene no confundir qué cubre.** El profesor exige **Prometheus y Grafana** como entregable del corte académico. Es una **restricción de proyecto** del mismo tipo que PROY-07 y PROY-08, y hasta ese día no estaba escrita en ningún artefacto: ni en el SRS §3.1, ni en el SDD, ni en ADR-0006. Queda propuesta como **PROY-09**.
+
+Eso da origen al **medio** de medición —el servidor de métricas y sus tableros, que es lo que QAS-22 (analizabilidad) necesita— pero **no fija ningún umbral**. QAS-16 sigue en **(c)**: exigir la herramienta no es pedir un 99.9% mensual. La distinción importa porque es la que evita el error de dar por respaldado un umbral solo porque llegó la herramienta con que se mide.
+
+**Y deja una contradicción abierta que no es de esta revisión:** [ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md) está `Aceptado` **con Datadog**, mientras lo exigido y lo que se despliega es Prometheus y Grafana. Un ADR `Aceptado` es vinculante, así que esto se corrige revisando el ADR en Mesa, no contradiciéndolo desde otro documento.
 
 **Recuento: (a) 1 · (b) 6 · (c) 4.** No se inventa ningún RNF para cubrir los de (c): quedan marcados `supuesto`, que es información honesta y suficiente para que el PO decida si los adopta, los baja de prioridad o los retira.
 
@@ -117,5 +123,6 @@ Ninguna de estas cuatro acciones la puede tomar la SM.
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.1 | 2026-11-13 | Se registra que la observabilidad con Prometheus y Grafana la exige el profesor y es por tanto una restricción de proyecto, propuesta como PROY-09, que hasta hoy no estaba escrita. Da origen al **medio** de medición, no a un umbral: QAS-16 sigue en (c), porque exigir la herramienta no es pedir 99.9% mensual. Se anota la contradicción con ADR-0006, `Aceptado` con Datadog. | Sara Albarracín |
 | 2.0 | 2026-11-11 | Clasificación de los once P1 en (a) requisito sin enlazar, (b) restricción, riesgo o *driver*, y (c) sin respaldo, a petición de la SM. **Corrige a la v1.0**, que los daba todos por huérfanos: la v1.0 solo había mirado los once RNF y no las restricciones PROY-01 a PROY-08 y REST-01 a REST-05 del SRS §3. Con ellas, **siete de los once tienen origen legítimo** y solo cuatro quedan sin respaldo (QAS-14, 16, 17 y 43). Se añade la propuesta de columna de origen con valores controlados. No se inventa ningún RNF. | Sara Albarracín |
 | 1.0 | 2026-11-11 | Revisión inicial, como propuesta. Recorrido de los 45 QAS contra RNF-01 a RNF-11: 13 escenarios con requisito detrás, **11 de prioridad P1 sin ninguno**, 19 de P2 y P3 sin ninguno, y un hueco inverso (cifrado en reposo, B-09). Hallazgo estructural: no existe mapeo QAS→requisito en el SDD, ni en el cuerpo del SDD, ni en la trazabilidad del SRS §7. Cuatro acciones propuestas al PO. | Sara Albarracín |

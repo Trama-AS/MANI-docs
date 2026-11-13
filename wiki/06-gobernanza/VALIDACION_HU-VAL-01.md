@@ -8,7 +8,7 @@
 | **Origen** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) (HU-VAL-01) |
 | **Coordina** | Sara Albarracín (Scrum Master) |
 | **Consume** | PO, Arquitectura, DevOps y QA antes de la sustentación |
-| **Versión** | 2.0 |
+| **Versión** | 2.1 |
 | **Fecha de corte** | 2026-11-11 |
 | **Estado** | **PARCIAL.** **6 de 15 filas verificadas con evidencia de sistema o de código**: D2, D3, D11, D13, D14 (lado QA) y D15 (el dato de Jira). **5 puntos decididos** por Sara el 2026-11-11, que no requieren evidencia de sistema porque no son verificaciones: D4, D12, P-D2, P-D14 y P-D15a ([§4](#4-decisiones-tomadas)). **7 filas pendientes de validar**: D1, D5, D6, D7, D8, D9 y D10. |
 | **Corrección de conteo** | La versión 1.0 y la 1.1 decían «8 de 15 verificadas» contando D4 y D12 como verificadas. No lo eran: en esas dos filas se verificó que **existía el conflicto**, no cuál era el dato correcto. El avance real verificado es **6 de 15**. |
@@ -28,7 +28,7 @@
 | D5 | Servicios por ambiente | Pendiente de validar | Daniel y Sara |
 | D6 | Puertos de QA | Pendiente de validar | Daniel y Santiago |
 | D7 | Kafka en DEV y QA | Pendiente de validar | Daniel y Sara |
-| D8 | Observabilidad | Pendiente de validar | Daniel y Sara |
+| D8 | Observabilidad | Pendiente de validar; **alcance confirmado** el 2026-11-13 (lo exige el profesor) | Daniel y Sara |
 | D9 | Respaldos | Pendiente de validar | Daniel |
 | D10 | Migraciones y `BYPASSRLS` | Pendiente de validar | Daniel y Santiago |
 | D11 | Cifras del Sprint 5 | **Verificado en Jira** | Sara y Camila |
@@ -232,6 +232,12 @@ curl -sS http://10.43.100.141/metrics | head -20
 ```
 
 **Evidencia a pegar:** contenedores de Prometheus y Grafana **con su fecha de creación** (para fijar si existen desde el 6-nov), los *targets* que realmente recolecta y la cabecera de `/metrics`. Con eso se corrige SDD §8 e Infraestructura V4 §7, que hoy declaran la observabilidad como futura ([SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686)).
+
+> **El alcance de esta fila ya no está en duda (2026-11-13).** La observabilidad con **Prometheus y Grafana la exige el profesor** como entregable del corte académico. Es una **restricción de proyecto**, del mismo tipo que PROY-07 (Java y .NET en algún módulo) y PROY-08 (Kubernetes como orquestador), y hasta hoy **no estaba escrita en ninguna parte**: ni en el SRS §3.1, ni en el SDD, ni en ADR-0006. Esa ausencia es la que permitió que tres documentos del proyecto se contradijeran sobre si la observabilidad era «futura» o ya existía.
+>
+> **Lo que esto cambia y lo que no.** Cambia el alcance: la observabilidad **se queda**, no es opcional y no se descarta por esfuerzo. **No cambia el estado de esta fila:** que el profesor la exija no acredita que esté desplegada. D8 sigue **pendiente de validar** hasta que haya evidencia de la VM de Calidad, y la pregunta sigue siendo la misma: ¿están Prometheus y Grafana corriendo en QA, y desde cuándo? Una exigencia no es una verificación.
+>
+> **Dos consecuencias para otras tareas.** Primera: conviene añadir la restricción al SRS §3.1 como **PROY-09**, para que el siguiente documento que hable de observabilidad tenga de dónde colgarse; es trabajo de `01-producto`. Segunda: **[ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md) está `Aceptado` con Datadog**, y lo que se exige y lo que se está desplegando es Prometheus y Grafana. Esa contradicción no se resuelve en esta fila: necesita revisión del ADR en Mesa, no una corrección documental.
 
 ### D9 · Respaldos — Daniel
 
@@ -470,6 +476,7 @@ Las decisiones de §4 están cerradas y no esperan evidencia. P-D15b sigue abier
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.1 | 2026-11-13 | D8: se registra que la observabilidad con Prometheus y Grafana **la exige el profesor**, de modo que es una restricción de proyecto no escrita hasta hoy y el alcance deja de estar en duda. La fila **sigue pendiente de validar**: una exigencia no es una verificación. Se apuntan sus dos consecuencias: proponer PROY-09 en el SRS §3.1 y revisar ADR-0006, que está `Aceptado` con Datadog y no con Prometheus. | Sara Albarracín |
 | 2.0 | 2026-11-11 | Sara asume la autoridad de decisión y se cierran cinco puntos: D4 (rige QAS-17), D12 (firma Camila como PO, con enmienda anotada en `GOBIERNO_DEL_EQUIPO.md` §2.1), P-D2 (el pago tardío se mantiene, sin plazo nuevo), P-D14 (el estado de una categoría es configuración de operación) y P-D15a (un solo responsable para SCRUM-1383). Cada una con alternativa descartada y trazabilidad. **Se corrige el conteo a 6 de 15 verificadas**: D4 y D12 se contaban como verificadas y no lo eran. Se aclara 7 filas / 8 comprobaciones, y que lo exigible para cerrar son 7. Se añade el bloque único de comandos para las comprobaciones pendientes. **P-D15b (mecanismo de cifrado) no se decide**: faltan un RNF y un QAS, que son del PO. | Sara Albarracín |
 | 1.1 | 2026-11-11 | D2: se localiza el commit `098bf38c3f8f77cd863ea3daa592608eaf5c74c2` en `MANI-Node` tras `git fetch --all` en los siete repositorios, se retira la reserva de la versión 1.0 y se pega el fragmento de `PgPaymentRepository.js` que libera y liquida el pago tardío. Se reconfirman D3, D13 y D15 contra Jira y `origin/main`; el recuento de filas no cambia (8 de 15). | Sara Albarracín |
 | 1.0 | 2026-11-10 | Documento inicial. 8 filas verificadas (D2, D3, D4, D11, D12, D13, D14 lado QA, D15), 7 pendientes con su comando y responsable, 5 preguntas de decisión abiertas. | Sara Albarracín |

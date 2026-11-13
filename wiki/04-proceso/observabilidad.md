@@ -8,7 +8,6 @@
 |---|---|
 | **Prometheus** | Métricas: disponibilidad, latencia, throughput, errores, CPU, memoria, métricas de runtime |
 | **Grafana** | Dashboards operativos |
-| **Datadog** | APM, logs centralizados, trazas y alertas |
 | **Jira** | Destino de incidentes relevantes; las alertas críticas pueden generar o alimentar issues |
 
 ## Obligaciones de los servicios

@@ -69,7 +69,7 @@ Clasificación en las tres categorías pedidas: **(a)** tiene requisito, solo fa
 
 Eso da origen al **medio** de medición —el servidor de métricas y sus tableros, que es lo que QAS-22 (analizabilidad) necesita— pero **no fija ningún umbral**. QAS-16 sigue en **(c)**: exigir la herramienta no es pedir un 99.9% mensual. La distinción importa porque es la que evita el error de dar por respaldado un umbral solo porque llegó la herramienta con que se mide.
 
-**Y deja una contradicción abierta que no es de esta revisión:** [ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md) está `Aceptado` **con Datadog**, mientras lo exigido y lo que se despliega es Prometheus y Grafana. Un ADR `Aceptado` es vinculante, así que esto se corrige revisando el ADR en Mesa, no contradiciéndolo desde otro documento.
+**La contradicción con ADR-0006 quedó resuelta el 2026-11-13.** El ADR decía «Prometheus + Grafana + Datadog + Jira», y se **enmendó para retirar Datadog**: queda lo exigido y lo que se despliega. Lo que la enmienda **no** tapa es que APM, logs centralizados y trazas se quedan sin herramienta asignada; eso es un hueco declarado y sigue necesitando decisión.
 
 **Recuento: (a) 1 · (b) 6 · (c) 4.** No se inventa ningún RNF para cubrir los de (c): quedan marcados `supuesto`, que es información honesta y suficiente para que el PO decida si los adopta, los baja de prioridad o los retira.
 

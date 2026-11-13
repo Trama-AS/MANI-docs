@@ -237,7 +237,7 @@ curl -sS http://10.43.100.141/metrics | head -20
 >
 > **Lo que esto cambia y lo que no.** Cambia el alcance: la observabilidad **se queda**, no es opcional y no se descarta por esfuerzo. **No cambia el estado de esta fila:** que el profesor la exija no acredita que esté desplegada. D8 sigue **pendiente de validar** hasta que haya evidencia de la VM de Calidad, y la pregunta sigue siendo la misma: ¿están Prometheus y Grafana corriendo en QA, y desde cuándo? Una exigencia no es una verificación.
 >
-> **Dos consecuencias para otras tareas.** Primera: conviene añadir la restricción al SRS §3.1 como **PROY-09**, para que el siguiente documento que hable de observabilidad tenga de dónde colgarse; es trabajo de `01-producto`. Segunda: **[ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md) está `Aceptado` con Datadog**, y lo que se exige y lo que se está desplegando es Prometheus y Grafana. Esa contradicción no se resuelve en esta fila: necesita revisión del ADR en Mesa, no una corrección documental.
+> **Dos consecuencias para otras tareas.** Primera: conviene añadir la restricción al SRS §3.1 como **PROY-09**, para que el siguiente documento que hable de observabilidad tenga de dónde colgarse; es trabajo de `01-producto`. Segunda: la contradicción con **[ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md)** quedó **resuelta el 2026-11-13** al enmendarlo para retirar Datadog, de modo que el ADR ya declara solo Prometheus, Grafana y Jira. Queda abierto el hueco que deja: APM, logs centralizados y trazas sin herramienta asignada.
 
 ### D9 · Respaldos — Daniel
 

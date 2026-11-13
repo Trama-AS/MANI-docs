@@ -31,7 +31,6 @@
 - OpenAPI
 - Prometheus
 - Grafana
-- Datadog
 - Jira
 - oxlint, linter de `MANI-Landing`
 

@@ -61,7 +61,6 @@ Stack vigente relevante para DevOps:
 - OWASP ZAP
 - Prometheus
 - Grafana
-- Datadog
 - Jira
 
 Kubernetes **no está en el stack vigente**: es la plataforma de orquestación objetivo exigida por
@@ -548,7 +547,9 @@ Para peticiones autenticadas:
 
 ## 17.3 APM, logs y trazas
 
-**Datadog** se utiliza para:
+> **Datadog retirado el 2026-11-13** (enmienda de ADR-0006). Lo que esta sección describía como funciones de Datadog —APM, logs centralizados y trazas— **no tiene hoy herramienta asignada**: Prometheus cubre métricas y Grafana los tableros, no APM ni logs. Queda como hueco declarado, no como función cubierta.
+
+~~**Datadog** se utilizaba para:~~
 
 - APM;
 - logs centralizados;
@@ -602,7 +603,7 @@ Reglas:
 | Orquestación objetivo | Kubernetes — **decisión abierta**: INFRA-01, INFRA-02 |
 | Métricas | Prometheus |
 | Dashboards | Grafana |
-| APM / logs | Datadog |
+| APM / logs | **Sin herramienta asignada** desde el 2026-11-13 |
 | Diseño | Figma |
 | Documentación técnica | Markdown / Mermaid / Structurizr DSL |
 

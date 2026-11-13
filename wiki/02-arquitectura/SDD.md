@@ -352,7 +352,7 @@ Usuarios → Flutter Web / Mobile → (HTTPS) → NGINX API Gateway
         └────────── PostgreSQL + RLS por tenant ──────────┘
                                                    ↓
    Core → FCM/APNs · Operador de pagos · Storage · Realtime
-   Gateway y servicios → telemetría → Prometheus / Grafana / Datadog
+   Gateway y servicios → telemetría → Prometheus / Grafana
    PostgreSQL → carga incremental → CDC/ELT → Data Warehouse → BI
 ```
 

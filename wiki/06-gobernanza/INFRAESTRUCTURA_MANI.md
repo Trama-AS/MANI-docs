@@ -73,7 +73,6 @@ Servicios externos:
 - operador de pagos en segundo incremento;
 - Prometheus;
 - Grafana;
-- Datadog;
 - Data Warehouse.
 
 ---
@@ -571,8 +570,7 @@ Requisitos:
 Los componentes deben integrarse con:
 
 - Prometheus;
-- Grafana;
-- Datadog.
+- Grafana.
 
 Telemetría mínima:
 

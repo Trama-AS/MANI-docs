@@ -165,8 +165,9 @@ de seguridad con OWASP ZAP, construcción de imágenes Docker y publicación en 
 preserva la imagen validada (§18).
 
 Los ambientes son **tres: DEV → QA → PROD** (§16). Supabase aporta PostgreSQL, Auth, Storage y
-Realtime gestionados, y la operación se completa con Prometheus y Grafana para métricas, y Datadog
-para logs, APM y trazas (§19).
+Realtime gestionados, y la operación se completa con Prometheus y Grafana para métricas y tableros (§19).
+**Datadog se retiró el 2026-11-13** (enmienda de ADR-0006), de modo que APM, logs centralizados y
+trazas quedan sin herramienta asignada.
 
 Una precisión importante sobre este diagrama:
 
@@ -186,8 +187,8 @@ infraestructura— en tres niveles: **Sí o sí** para la base adoptada, **Tal v
 evaluación y **Mejor no** para lo que no se prioriza.
 
 La base adoptada incluye Flutter y Dart, Node.js, Java, .NET, PostgreSQL, Supabase, GitHub, NGINX,
-Docker, GitHub Actions, GHCR, SonarQube, OWASP ZAP, Newman, k6, OpenAPI, Prometheus, Grafana,
-Datadog y Jira.
+Docker, GitHub Actions, GHCR, SonarQube, OWASP ZAP, Newman, k6, OpenAPI, Prometheus, Grafana
+y Jira.
 
 > **Kubernetes figura en el radar como objetivo, no como adoptado.** [`TECH_RADAR.md`](TECH_RADAR.md)
 > lo mantiene **en evaluación** por la misma razón que §16.4: la decisión de orquestación está
@@ -978,7 +979,6 @@ Se emplean:
 
 - Prometheus para métricas;
 - Grafana para dashboards;
-- Datadog para logs/APM/trazas;
 - correlation ID para seguimiento entre servicios;
 - alertas integradas con Jira.
 

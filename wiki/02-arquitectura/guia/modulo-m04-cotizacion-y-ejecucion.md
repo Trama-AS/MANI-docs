@@ -92,7 +92,7 @@ Registrar eventos y pedir o decidir adiciones **no cambia** el estado de la soli
 Tipos que registra el aliado: avance (`EJECUCION_AVANCE`), novedad (`EJECUCION_NOVEDAD`) y observación (`EJECUCION_OBSERVACION`), con foto opcional.
 
 - Se registran con la solicitud `EN_EJECUCION`.
-- Un evento tomado sin conexión (873) trae su hora de captura (`ocurridoEn`). Entra aunque el servicio ya haya finalizado, siempre que esa hora esté entre el inicio y el fin de la ejecución. Se aceptan hasta 5 minutos de adelanto del reloj del teléfono.
+- Un evento tomado sin conexión (873, detalle en [Cola de eventos sin conexión](modulo-m04-cola-sin-conexion.md)) trae su hora de captura (`ocurridoEn`). Entra aunque el servicio ya haya finalizado, siempre que esa hora esté entre el inicio y el fin de la ejecución. Se aceptan hasta 5 minutos de adelanto del reloj del teléfono.
 - La clave de idempotencia evita duplicados al reintentar.
 - El log que ve el cliente (870) es la secuencia completa de `evento_servicio`, incluidas las transiciones de la tabla 3.1, ordenada por la hora de captura (o la de registro si no la hay).
 
@@ -194,7 +194,7 @@ El botón «Pagar» del cliente cobra el total vigente que calcula Core. La actu
 - **[`SAD.md`](../SAD.md) §12.1 contra ADR-0027.** El SAD dice que «Supabase Realtime entrega eventos mientras los participantes están conectados». [ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md) deja a Supabase en Flutter solo para autenticación, y la app actualiza por sondeo HTTP (SCRUM-1644). Se reporta aquí para que lo resuelva la responsable del SAD. Esta página no lo corrige.
 - **Errores de M-04 sin «Código · Ref» en la app.** `CotizacionFailure` y las secciones de cotización, ejecución, eventos y adiciones muestran solo el texto de Core. Llevarles el detalle de [SCRUM-1643](https://maniservices.atlassian.net/browse/SCRUM-1643) es trabajo de front no planificado: se le avisa a la SM, no se crea historia desde aquí.
 - **[ADR-0035](../adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto`.** La frontera entre la asignación (M-05) y este módulo rige por decisión de la Scrum Master hasta que la Mesa lo ratifique.
-- **Documentación pendiente del mismo grupo:** alerta de tarifa y proveedores externos ([SCRUM-1703](https://maniservices.atlassian.net/browse/SCRUM-1703)) y cola sin conexión ([SCRUM-1702](https://maniservices.atlassian.net/browse/SCRUM-1702)).
+- **Documentación pendiente del mismo grupo:** alerta de tarifa y proveedores externos ([SCRUM-1703](https://maniservices.atlassian.net/browse/SCRUM-1703)). La cola sin conexión ya tiene su página: [Cola de eventos sin conexión](modulo-m04-cola-sin-conexion.md) ([SCRUM-1702](https://maniservices.atlassian.net/browse/SCRUM-1702)).
 
 ## 9. Historial
 

@@ -8,8 +8,8 @@
 | **Origen** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) (HU-VAL-01) |
 | **Coordina** | Sara Albarracín (Scrum Master) |
 | **Consume** | PO, Arquitectura, DevOps y QA antes de la sustentación |
-| **Versión** | 2.1 |
-| **Fecha de corte** | 2026-11-11 |
+| **Versión** | 2.2 |
+| **Fecha de corte** | 2026-11-13 |
 | **Estado** | **PARCIAL.** **6 de 15 filas verificadas con evidencia de sistema o de código**: D2, D3, D11, D13, D14 (lado QA) y D15 (el dato de Jira). **5 puntos decididos** por Sara el 2026-11-11, que no requieren evidencia de sistema porque no son verificaciones: D4, D12, P-D2, P-D14 y P-D15a ([§4](#4-decisiones-tomadas)). **7 filas pendientes de validar**: D1, D5, D6, D7, D8, D9 y D10. |
 | **Corrección de conteo** | La versión 1.0 y la 1.1 decían «8 de 15 verificadas» contando D4 y D12 como verificadas. No lo eran: en esas dos filas se verificó que **existía el conflicto**, no cuál era el dato correcto. El avance real verificado es **6 de 15**. |
 | **Cuántas evidencias faltan: 7 u 8** | Las dos cifras eran correctas con distinta unidad. **7 filas** pendientes (D1, D5–D10), que suman **8 comprobaciones** porque D14 llevaba una consulta de PROD aparte. Tras la decisión P-D14 esa consulta queda **informativa y no bloquea el cierre**: lo exigible para cerrar SCRUM-1696 son **7 comprobaciones en 7 filas**. |
@@ -129,7 +129,17 @@ project = SCRUM AND (summary ~ "HU-M04-05" OR description ~ "HU-M04-05")  -> 2 r
 
 **Resultado.** **SCRUM-1394 no existe.** Las dos únicas menciones a HU-M04-05 en Jira son esta misma historia de validación ([SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696)) y [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687) («PO - Decisiones pendientes de producto», `In Progress`, Camila), que la lista como decisión pendiente.
 
-**Conclusión.** El plan de módulos cita una historia inexistente. La decisión —crear la historia o retirar el ítem— ya está asignada en SCRUM-1687 y es del PO; hasta que se tome, el plan de módulos debe marcar HU-M04-05 como **sin historia en Jira**, no como planificada.
+**Conclusión.** El plan de módulos cita una historia inexistente. La decisión —crear la historia o retirar el ítem— ya está asignada en SCRUM-1687 y es del PO; el plan de módulos marcaba HU-M04-05 como planificada cuando no tenía historia.
+
+**Decisión del PO, 2026-11-10 (Camila Beltrán, en [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687)): el ítem se retira porque su alcance ya está cubierto.** Las tres historias que lo cubren existen y están `Done`, verificado el 2026-11-13:
+
+| Historia | Qué cubre | Estado |
+|---|---|---|
+| [SCRUM-1390](https://maniservices.atlassian.net/browse/SCRUM-1390) | HU-M04-01, crear categoría de servicio con flujo operativo | `Done` |
+| [SCRUM-1391](https://maniservices.atlassian.net/browse/SCRUM-1391) | HU-M04-02, activar y desactivar categoría sin afectar servicios en curso | `Done` |
+| [SCRUM-1393](https://maniservices.atlassian.net/browse/SCRUM-1393) | HU-M04-04, catálogo jerárquico de zonas geográficas | `Done` |
+
+**Precisión de forma, para que el plan de módulos quede bien redactado.** Las tres son **HU-M04-01, 02 y 04**; ninguna es HU-M04-05. Lo correcto es escribir «**HU-M04-05 se retira del plan de módulos porque su alcance queda cubierto por 1390, 1391 y 1393**», y no que HU-M04-05 exista o esté hecha. La historia que el plan citaba, SCRUM-1394, nunca se creó. **Fila cerrada.**
 
 ### D14 · Jardinería en QA está inactiva a propósito
 
@@ -274,7 +284,9 @@ Repetir **lo mismo** contra QA (`hpsxdotaizzclkeufzct`) para poder afirmar o neg
 
 ### D14-PROD · Estado de Jardinería en PROD — Camila y Daniel *(informativo, no bloquea)*
 
-> Tras la decisión **P-D14** ([§4](#4-decisiones-tomadas)), el estado de una categoría es configuración de operación. Esta consulta se conserva porque el dato es útil, pero **no es requisito para cerrar SCRUM-1696**.
+> **Resuelto por decisión del PO el 2026-11-10** (Camila Beltrán): **Jardinería queda activa en PROD y desactivada en QA**. El estado de QA ya estaba verificado en la semilla (§2, D14) y era deliberado; con esta decisión el de PROD también lo es, de modo que **ambos ambientes quedan consistentes con lo decidido** y la fila se cierra. La tarea que la recogía, [SCRUM-1641](https://maniservices.atlassian.net/browse/SCRUM-1641), está `Done`.
+>
+> Tras la decisión **P-D14** ([§4](#4-decisiones-tomadas)), el estado de una categoría es configuración de operación. La consulta se conserva porque el dato sigue siendo útil para acreditar PROD, pero **no es requisito para cerrar SCRUM-1696**.
 
 ```sql
 SELECT tenant_id, nombre, estado, flujo_operativo
@@ -421,6 +433,8 @@ SELECT tenant_id, nombre, estado, flujo_operativo
 
 **Qué implica.** Se retira la Idea 1 del documento de mejoras de producto. No se toca el código.
 
+**Ratificado por el PO el 2026-11-10.** Camila Beltrán respondió las cuatro preguntas de pagos de Nicolás en [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687): **10 % de comisión, liberar al finalizar, liquidar todo lo retenido menos la comisión, y pago aparte**. Confirma la opción B desde la autoridad que corresponde, así que esta decisión deja de ser solo de la SM. Las dos primeras respuestas son exactamente lo que el código ya hace (§2, D2) y lo que añadió el commit `098bf38c3f8f77cd863ea3daa592608eaf5c74c2`. **El 10 % de comisión y el pago aparte no se verificaron en el código en esta revisión** y no se dan por implementados: son decisión registrada, no hallazgo.
+
 **Trazabilidad:** necesidad = cobrar el servicio prestado → requisito = RF-24 y RF-25, **fuera del MVP** → atributo de calidad = Adecuación funcional P2 ([`SDD.md`](../02-arquitectura/SDD.md) §8.8) → decisión = no cambiar nada y no añadir reglas.
 
 ### P-D14 · El estado de una categoría es configuración de operación, no una discrepancia documental
@@ -476,6 +490,7 @@ Las decisiones de §4 están cerradas y no esperan evidencia. P-D15b sigue abier
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.2 | 2026-11-13 | Se registran las decisiones del PO del 2026-11-10 (Camila Beltrán, [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687)). **D13 se cierra**: HU-M04-05 se retira del plan porque su alcance lo cubren 1390, 1391 y 1393, las tres `Done` y verificadas, con la precisión de que son HU-M04-01, 02 y 04 y ninguna es la 05. **D14-PROD se cierra**: Jardinería activa en PROD y desactivada en QA, con SCRUM-1641 `Done`. **P-D2 queda ratificado por el PO**, con la reserva de que el 10 % de comisión y el pago aparte no se verificaron en el código. | Sara Albarracín |
 | 2.1 | 2026-11-13 | D8: se registra que la observabilidad con Prometheus y Grafana **la exige el profesor**, de modo que es una restricción de proyecto no escrita hasta hoy y el alcance deja de estar en duda. La fila **sigue pendiente de validar**: una exigencia no es una verificación. Se apuntan sus dos consecuencias: proponer PROY-09 en el SRS §3.1 y revisar ADR-0006, que está `Aceptado` con Datadog y no con Prometheus. | Sara Albarracín |
 | 2.0 | 2026-11-11 | Sara asume la autoridad de decisión y se cierran cinco puntos: D4 (rige QAS-17), D12 (firma Camila como PO, con enmienda anotada en `GOBIERNO_DEL_EQUIPO.md` §2.1), P-D2 (el pago tardío se mantiene, sin plazo nuevo), P-D14 (el estado de una categoría es configuración de operación) y P-D15a (un solo responsable para SCRUM-1383). Cada una con alternativa descartada y trazabilidad. **Se corrige el conteo a 6 de 15 verificadas**: D4 y D12 se contaban como verificadas y no lo eran. Se aclara 7 filas / 8 comprobaciones, y que lo exigible para cerrar son 7. Se añade el bloque único de comandos para las comprobaciones pendientes. **P-D15b (mecanismo de cifrado) no se decide**: faltan un RNF y un QAS, que son del PO. | Sara Albarracín |
 | 1.1 | 2026-11-11 | D2: se localiza el commit `098bf38c3f8f77cd863ea3daa592608eaf5c74c2` en `MANI-Node` tras `git fetch --all` en los siete repositorios, se retira la reserva de la versión 1.0 y se pega el fragmento de `PgPaymentRepository.js` que libera y liquida el pago tardío. Se reconfirman D3, D13 y D15 contra Jira y `origin/main`; el recuento de filas no cambia (8 de 15). | Sara Albarracín |

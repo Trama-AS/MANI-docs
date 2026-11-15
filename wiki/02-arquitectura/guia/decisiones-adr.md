@@ -65,6 +65,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0034](../adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones — `Propuesto` | RF-20, RF-24 |
 | [ADR-0035](../adr/ADR-0035-frontera-de-asignacion-6a.md) | Frontera de la asignación: Dispatch decide y Core escribe (decisión 6A) — `Propuesto`; reemplazaría la fila de `AliadoAsignado` en [ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 si la Mesa lo aprueba | RF-14, RNF-03, RNF-05 |
 | [ADR-0036](../adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) | Pertenencia del cliente a un tenant — `Propuesto`; decide la PO y ratifica la Mesa. Condiciona a [ADR-0018](../adr/ADR-0018-identificacion-tenant.md) y a las políticas RLS que dependen de `tenant_id` ([SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637), [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) | RF-01, RF-08, RNF-01 |
+| [ADR-0038](../adr/ADR-0038-logs-centralizados-y-trazas-loki.md) | Logs centralizados y trazabilidad por `correlation_id` con Grafana Loki — `Propuesto` (completa el hueco declarado en [ADR-0006](../adr/ADR-0006-observabilidad.md) tras retirar Datadog, [SCRUM-1676](https://maniservices.atlassian.net/browse/SCRUM-1676)) | RNF-04, QAS-16 |
 
 ## Índice — descartado
 

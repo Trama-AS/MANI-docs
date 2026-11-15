@@ -39,6 +39,7 @@ Los Compose y scripts versionados referencian únicamente variables (`${VAR}`) c
 | `BACKUP_ENCRYPTION_KEY_FILE` (`backup.passphrase`) | Llave simétrica OpenSSL `AES-256-CBC` para cifrar/descifrar dumps (`SCRUM-1666`) | `/etc/mani-backups/backup.passphrase` (`chmod 400` en `10.43.98.197`) + custodia privada del DevOps Lead (separada de la réplica en `10.43.98.196`) |
 | `GF_SECURITY_ADMIN_USER`, `GF_SECURITY_ADMIN_PASSWORD` | Acceso administrador de Grafana en Calidad | `/home/estudiante/monitoreo/.env` (`chmod 600`) |
 
-## 4. Cuentas de prueba en PROD (`SCRUM-1640`)
+## 4. Cuentas operativas y retiro de semilla en PROD (`SCRUM-1640`)
 
-El cambio o desactivación de las cuentas seed (`@mani.local`) en PROD ([SCRUM-1640](https://maniservices.atlassian.net/browse/SCRUM-1640)) queda condicionado al cierre de la validación del PO sobre las 18 rutas en PROD ([SCRUM-1638](https://maniservices.atlassian.net/browse/SCRUM-1638)) para no bloquear las pruebas de aceptación en curso.
+- Las cuentas semilla heredadas (`@qa.mani.test`) en Supabase PROD fueron **rotadas y desactivadas** (`banned_until` + `public.usuario.estado = 'INACTIVO'`), verificando rechazo `HTTP 400` con la contraseña de semilla previa (`0` ocurrencias en `MANI-docs`).
+- En su lugar se crearon tres cuentas operativas equivalentes (`admin.t1@prod.mani.app`, `cliente.t1@prod.mani.app` y `aliado.t1@prod.mani.app`) con contraseñas únicas y distintas de alta entropía, custodiadas exclusivamente fuera de Git en `/opt/mani/.prod_accounts.env` (`chmod 600` en la VM PROD `10.43.98.203`).

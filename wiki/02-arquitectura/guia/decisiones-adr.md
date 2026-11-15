@@ -65,6 +65,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0034](../adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones — `Propuesto` | RF-20, RF-24 |
 | [ADR-0035](../adr/ADR-0035-frontera-de-asignacion-6a.md) | Frontera de la asignación: Dispatch decide y Core escribe (decisión 6A) — `Propuesto`; reemplazaría la fila de `AliadoAsignado` en [ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 si la Mesa lo aprueba | RF-14, RNF-03, RNF-05 |
 | [ADR-0036](../adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) | Pertenencia del cliente a un tenant — `Propuesto`; decide la PO y ratifica la Mesa. Condiciona a [ADR-0018](../adr/ADR-0018-identificacion-tenant.md) y a las políticas RLS que dependen de `tenant_id` ([SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637), [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) | RF-01, RF-08, RNF-01 |
+| [ADR-0037](../adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) | Cifrado de datos personales en reposo — decidido por la SM (`Opción A`: cifrado del medio + exclusión documentada + 0 PII en logs), pendiente de ratificación en Mesa; acreditación técnica M4 y plan respaldo/migración condicional completados el `2026-11-14` ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699), [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383)) | RNF-13 (prop.), QAS-46 (prop.) |
 | [ADR-0038](../adr/ADR-0038-logs-centralizados-y-trazas-loki.md) | Logs centralizados y trazabilidad por `correlation_id` con Grafana Loki — `Propuesto` (completa el hueco declarado en [ADR-0006](../adr/ADR-0006-observabilidad.md) tras retirar Datadog, [SCRUM-1676](https://maniservices.atlassian.net/browse/SCRUM-1676)) | RNF-04, QAS-16 |
 
 ## Índice — descartado
@@ -128,7 +129,7 @@ Los números **no son contiguos y no se reutilizan**. Ocho números libres, por 
 | `0007`, `0009`, `0010`, `0020`, `0021`, `0023` | Retirados el 2026-10-23, ver arriba |
 | `0026` | Nunca se emitió |
 | `0033` | Retirado el 2026-11-02 sin llegar a Mesa. Proponía a Dispatch como productor de `SolicitudCreada`, sobre la premisa de que Dispatch persiste la solicitud. La decisión del 17-oct-2026 (Core crea la solicitud, SAD §7.2) y la decisión 6A del 26-oct (Core es el único escritor de su estado) dejaron esa premisa sin base, y el propio documento lo declaraba en su cierre. La fila de `SolicitudCreada` de ADR-0029 §1 —Core como productor— sigue vigente y nunca fue reemplazada. El texto queda en el histórico de git. |
-| — | `ADR-0034`, `ADR-0035` y `ADR-0036` ya están emitidos, en estado `Propuesto`. El siguiente que se emita es `ADR-0037` |
+| — | `ADR-0034` a `ADR-0038` ya están emitidos (`ADR-0034`, `0035`, `0036` y `0038` en `Propuesto`; `ADR-0037` decidido por SM pendiente de ratificación en Mesa). El siguiente número libre es `ADR-0039` |
 
 Dos avisos para no equivocarse al leer:
 

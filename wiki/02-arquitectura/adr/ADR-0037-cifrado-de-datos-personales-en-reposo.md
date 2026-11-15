@@ -66,10 +66,41 @@ Se revisa si ocurre cualquiera de estas tres: aparece un requisito que exija pro
 | M1 | Ratificar en Mesa el criterio «cifrado por columna solo si un requisito lo exige» | Mesa de Arquitectura |
 | M2 | Aprobar **RNF-13** y **QAS-46** con el umbral revisado de este ADR | Camila Beltrán (PO) |
 | M3 | Confirmar que C1 de SCRUM-1383 se da por cumplido con la opción A, al ser decisión registrada | Santiago, que decide el DoD |
-| M4 | Acreditar la configuración de cifrado en reposo del proveedor | Daniel Ávila (DevOps) |
+| M4 | Acreditar la configuración de cifrado en reposo del proveedor | Daniel Ávila (DevOps) — **Acreditado el `2026-11-14`** (ver sección siguiente) |
+
+## Acreditación técnica M4, auditoría de logs y plan de respaldo/migración condicional ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699))
+
+Verificación realizada el `2026-11-14` sobre los proyectos gestionados de Supabase Cloud y el entorno desplegado en QA:
+
+### 1. Acreditación en proveedor y metadata de base de datos (M4)
+
+| Aspecto verificado | Resultado observado en QA (`hpsxdotaizzclkeufzct.supabase.co`) | Resultado observado en PROD (`tjxueukivwxsgipltqwb.supabase.co`) |
+|---|---|---|
+| **Motor y plataforma** | PostgreSQL `17.6` administrado en Supabase Cloud (AWS `us-east-2`, almacenamiento en volumen EBS y snapshots cifrados en reposo con `AES-256` por la plataforma) | PostgreSQL `17.6` administrado en Supabase Cloud (AWS `us-east-2`, cifrado de volumen y respaldos gestionados en reposo `AES-256`) |
+| **Transporte (`pg` / Pool)** | `ssl = on`, `ssl_min_protocol_version = TLSv1.2` | `ssl = on`, `ssl_min_protocol_version = TLSv1.2` |
+| **Roles y privilegios (`pg_roles`)** | `anon` y `authenticated` (`rolbypassrls = false`), `postgres` y `service_role` (`rolbypassrls = true`) | Separación equivalente de roles gestionada por Supabase |
+| **Extensiones criptográficas disponibles** | `pgcrypto 1.3` (`extensions`) y `supabase_vault 0.3.1` (`vault`) instaladas (sin uso activo bajo Opción A) | `pgcrypto 1.3` (`extensions`) y `supabase_vault 0.3.1` (`vault`) instaladas |
+| **Conteo de registros no nulos en los 5 campos (`text`, sin leer valores)** | `aliado.numero_documento_identidad`: `68`, `usuario.telefono`: `27`, `cliente.nit`: `14`, `cliente.telefono`: `11`, `sitio.contacto_telefono`: `14` | `aliado.numero_documento_identidad`: `0`, `usuario.telefono`: `8`, `cliente.nit`: `0`, `cliente.telefono`: `0`, `sitio.contacto_telefono`: `0` |
+
+### 2. Verificación de ausencia de PII en logs y errores (`C1` / `QAS-46`)
+
+- **Código (`MANI-Node`):** `src/middlewares/errorHandler.middleware.js` responde `INTERNAL_ERROR` genérico ante fallas no previstas (fallo cerrado `T9`, sin exponer SQLSTATE ni valores de filas); los casos de uso de sitios (`AddSiteToCompanyClientUseCase.js`, `UpdateCompanyClientSiteUseCase.js`) registran identificadores de operación, nombres de sitio y claves modificadas, no teléfonos ni documentos.
+- **Logs centralizados en QA (`Grafana Loki` `10.43.98.196:3100`):** consulta `{ambiente="qa"}` sobre los flujos activos devuelve **`0`** coincidencias para `numero_documento_identidad`, `contacto_telefono`, `password` y `SUPABASE_JWT_SECRET`.
+
+### 3. Plan de respaldo previo y migración condicional
+
+Bajo la **Opción A** decidida en este ADR, **no corresponde ejecutar migración destructiva ni alteración de columnas en `SCRUM-1383`**: el almacenamiento en reposo ya opera cifrado en el proveedor y la exclusión de lectura directa con roles con `BYPASSRLS` queda documentada arriba.
+
+En caso de activarse la [condición de revisión](#condición-de-revisión) hacia **Opción B (cifrado por columna)**, debe ejecutarse obligatoriamente en este orden:
+
+1. **Respaldo previo verificable:** ejecutar exportación lógica completa antes de cualquier `ALTER TABLE` (`pg_dump --format=custom --no-owner`) hacia almacenamiento seguro (VM de Backups `10.43.98.197` / snapshot de plataforma) y validar restauración en entorno de pruebas.
+2. **Fase Expand (migración aditiva sin pérdida de índice):** añadir columnas cifradas (`*_enc bytea` con `pgp_sym_encrypt` desde `extensions.pgcrypto` o cifrado en aplicación Core con clave gestionada fuera de Git / `supabase_vault`) y columna de huella determinista HMAC indexada (`*_hash`) solo donde exista restricción de unicidad o búsqueda exacta (`cliente.nit`).
+3. **Fase Migrate + verificación QA:** activar doble escritura y backfill por lotes verificando paridad contra la vista autorizada, sin exponer llaves ni datos en claro en logs.
+4. **Fase Contract:** retirar la lectura de columnas en claro, aplicar nulificación/borrado controlado y validar nuevamente en QA (`SCRUM-1383`).
 
 ## Historial de cambios
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
 | 1.0 | 2026-11-12 | Decisión inicial: cifrado del medio en reposo con exclusión documentada del documento de identidad y los teléfonos frente a un rol con privilegios. Se descarta el cifrado por columna por ausencia de requisito que lo exija. Se sustituye el umbral de QAS-46, que era inalcanzable con esta opción, por uno verificable sin leer el dato. | Sara Albarracín |
+| 1.1 | 2026-11-14 | Acreditación técnica M4 en Supabase QA/PROD (PostgreSQL 17.6, TLS >= 1.2, AES-256 de plataforma, conteo de los 5 campos), auditoría `0` coincidencias PII en Loki QA / `MANI-Node`, y plan explícito de respaldo previo y migración condicional para [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699). | Daniel Ávila |

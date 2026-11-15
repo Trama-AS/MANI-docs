@@ -107,7 +107,8 @@ mani-rules-service      ghcr.io/trama-as/mani-java:latest         "java -jar app
 | Desactivar/cambiar cuentas seed en PROD (`SCRUM-1640`) | **Pendiente de validar `SCRUM-1638`** | Se ejecuta tras cierre de validación PO |
 | TLS 443 + redirección externa HTTP→HTTPS y encabezados de seguridad en QA (`SCRUM-1665`) | **Desplegado y verificado en QA** (sin dominio DNS público por entorno universitario interno; PR #92/#93) | `301` externo HTTP→HTTPS, `200` TLS 1.2+ con `HSTS`/`CSP`/`X-Frame-Options`/`nosniff`; pendiente video PO |
 | Exporters sistema/contenedor/DB/NGINX en QA (`SCRUM-1671`), monitoreo PROD (`SCRUM-1673`), Alertmanager + Mailpit (`SCRUM-1669`) y logs centralizados Loki + Promtail (`SCRUM-1676` / `ADR-0038`) | **Desplegados y verificados en QA y Calidad** (PR #94 mergeado `d89173c`) | `19/19` targets `up`, pruebas `correlation_id` en Loki y simulacro `ServiceDown` en QA/PROD; pendiente video PO |
-| Cron diario de respaldos en VM Backups (`SCRUM-1666`) y coordinación SEC (`SCRUM-1699`) | **Pendientes / bloqueados en Sprint 6** (`SCRUM-1666` requiere RPO/RTO `SCRUM-1684`; `SCRUM-1699` requiere Core/Arq) | Se declaran explícitamente como pendientes operativos |
+| Decisión de cifrado en reposo y acreditación M4 ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) | **Documentado y acreditado en [`ADR-0037`](../02-arquitectura/adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) v1.1** | Acreditación Supabase QA/PROD (`TLSv1.2`, `AES-256`), `0` PII en Loki QA, plan respaldo/migración condicional; en `In Review` pendiente M1-M3 |
+| Cron diario de respaldos en VM Backups (`SCRUM-1666`) y cuentas seed PROD (`SCRUM-1640`) | **Pendientes / bloqueados en Sprint 6** (`SCRUM-1666` requiere RPO/RTO `SCRUM-1684`; `SCRUM-1640` espera cierre PO de `1638`) | Se declaran explícitamente como pendientes operativos |
 
 ---
 

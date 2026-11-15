@@ -34,22 +34,19 @@ Compose oficial versionado: `MANI-APIGateway/infra/qa/docker-compose.qa.yml`.
 | `landing-web` | `0.25` | `128M` | `0.05` | `32M` |
 | `kafka` | `1.00` | `1024M` | `0.25` | `384M` |
 
-### Pasos exactos (tiempo medido por recreación completa el `2026-11-14`: **~19 s** sin descarga previa; **1–3 min** si requiere `pull`)
+### Pasos exactos (`SCRUM-1674` · `desplegar_release_qa.sh`)
+
+- **Script versionado:** `MANI-APIGateway/infra/qa/desplegar_release_qa.sh` (PR #91, copia operativa en `/opt/mani/desplegar_release_qa.sh`).
+- **Tiempo medido en corrida real el `2026-11-14` (`pull` + recreación + 6/6 endpoints `200 OK`):** **`13s`** (límite objetivo `≤ 10 min` / `600s`).
 
 1. Copiar `infra/qa/docker-compose.qa.yml` actualizado a `/opt/mani/docker-compose.qa.yml` haciendo respaldo previo (`cp /opt/mani/docker-compose.qa.yml /opt/mani/docker-compose.qa.yml.bak_$(date -u +%Y%m%dT%H%M%SZ)`).
-2. Validar sintaxis y variables sin imprimir secretos:
+2. Ejecutar el script cronometrado (retira overrides previos de rollback, guarda `pre_deploy_digests.log`, valida `compose config -q`, ejecuta `pull`, `up -d --remove-orphans`, espera HTTP `200` en los 6 endpoints y corre `check-qa.sh`):
    ```bash
    cd /opt/mani
-   docker compose -f docker-compose.qa.yml --env-file .env.qa config -q
+   bash desplegar_release_qa.sh
    ```
-3. Descargar imágenes `:staging` y recrear:
+3. Verificar límites en ejecución y rate limit (`SCRUM-1655`):
    ```bash
-   docker compose -f docker-compose.qa.yml --env-file .env.qa pull
-   docker compose -f docker-compose.qa.yml --env-file .env.qa up -d
-   ```
-4. Verificar salud, límites en ejecución y rate limit (`SCRUM-1655`):
-   ```bash
-   /opt/mani/check-qa.sh
    docker stats --no-stream --format 'table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}'
    bash tests/gateway/rate-limit.sh http://localhost
    ```
@@ -81,17 +78,20 @@ Tiempo observado de recreación de un servicio ya cacheado o actualizado: **~15�
 
 ---
 
-## 4. Runbook C — Rollback inmediato por digest SHA256
+## 4. Runbook C — Rollback cronometrado por digest SHA256 (`SCRUM-1675`)
 
-Tiempo objetivo: **< 2 min** cuando la imagen anterior sigue en caché local o en GHCR.
+- **Script versionado:** `MANI-APIGateway/infra/qa/rollback_qa.sh` (PR #91, copia operativa en `/opt/mani/rollback_qa.sh`).
+- **Simulacro cronometrado ejecutado en QA (`2026-11-14`):** rollback real de `gateway` desde `:staging` (`sha256:403eacd4...`) hacia el digest anterior de producción (`sha256:cd4da0043d2dd139087d1f1a1d1adb4f33e4aafc7e30346c98dd544df27aea11`) con descarga de capas incluida y validación `check-qa.sh` (`6/6` en `200 OK`) en **`8s`** (límite objetivo `≤ 5 min` / `300s`). Posteriormente se restableció `:staging` en **`13s`** con `desplegar_release_qa.sh`.
 
-1. Identificar el digest bueno previo en [`01-mapa-ambientes-y-versiones.md`](01-mapa-ambientes-y-versiones.md#2-versiones-desplegadas-por-servicio-y-ambiente-tag-y-digest-verificados-2026-11-14) o en la bitácora del paso 2 anterior.
-2. En el `docker-compose.<env>.yml` afectado, reemplazar temporalmente la línea `image:` del servicio fallido por el digest exacto:
-   ```yaml
-   image: ghcr.io/trama-as/mani-apigateway@sha256:<DIGEST_ANTERIOR_VALIDADO>
-   ```
-3. Recrear únicamente el servicio afectado:
+1. Identificar el digest bueno previo en [`01-mapa-ambientes-y-versiones.md`](01-mapa-ambientes-y-versiones.md#2-versiones-desplegadas-por-servicio-y-ambiente-tag-y-digest-verificados-2026-11-14) o en `/opt/mani/pre_deploy_digests.log`.
+2. En **QA**, ejecutar el script cronometrado (genera `/opt/mani/docker-compose.rollback.override.yml`, descarga el digest, recrea con `--no-deps` y valida `check-qa.sh`):
    ```bash
-   docker compose -f docker-compose.<env>.yml --env-file .env.<env> up -d --no-deps <servicio>
+   cd /opt/mani
+   bash rollback_qa.sh gateway ghcr.io/trama-as/mani-apigateway@sha256:<DIGEST_ANTERIOR_VALIDADO>
    ```
-4. Ejecutar `/opt/mani/check-qa.sh` o `/opt/mani/check-prod.sh` y abrir el revert correspondiente en GitHub para restaurar el tag de rama sin divergencia entre Git y la VM.
+3. En **PROD**, aplicar temporalmente el digest en `docker-compose.prod.yml` y recrear el servicio afectado:
+   ```bash
+   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --no-deps <servicio>
+   /opt/mani/check-prod.sh
+   ```
+4. Abrir el revert correspondiente en GitHub para alinear la rama; una vez publicada la corrección, ejecutar `desplegar_release_qa.sh` en QA para retirar el override temporal.

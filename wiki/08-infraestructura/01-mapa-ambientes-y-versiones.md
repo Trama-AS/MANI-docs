@@ -42,10 +42,10 @@ Todos los servicios de QA tienen límites de CPU y memoria aplicados y verificad
 | Contenedor | Imagen / Tag | Digest (`RepoDigest`) | Límites aplicados (`SCRUM-1672`) |
 |---|---|---|---|
 | `mani-api-gateway` | `ghcr.io/trama-as/mani-apigateway:staging` | `sha256:403eacd4d3e34670142ce318cdfc420bd2d3691f9cc6cb6cd3dfad97adec22e9` | `0.50` CPU / `128M` RAM (actualizado `2026-11-14` con `limit_req` `SCRUM-1655`, PR #87 y #88) |
-| `mani-core-service` | `ghcr.io/trama-as/mani-node:staging` | `sha256:b2c5c79cecf656c8a9e755a6b2a44a1d5a4318e72ae75bb6c96797f1b79b8d10` | `1.00` CPU / `512M` RAM |
+| `mani-core-service` | `ghcr.io/trama-as/mani-node:staging` | `sha256:b5b131b9b2562dcdccf56dd22f4507112642eb073c49c4c8ecabb0a28b6e82d5` | `1.00` CPU / `512M` RAM |
 | `mani-rules-service` | `ghcr.io/trama-as/mani-java:staging` | `sha256:373ea577331d74f3279725cda8ef70b476567e092ca6c1b4bd736cf220680207` | `1.00` CPU / `768M` RAM |
-| `mani-dispatch-service` | `ghcr.io/trama-as/mani-dotnet:staging` | `sha256:1f14e9eae8b85d0f41fbc42a9de5fa318bb6dfb04e7fe55534241221ab37183d` | `1.00` CPU / `512M` RAM |
-| `mani-flutter-web` | `ghcr.io/trama-as/mani-flutter:staging` | `sha256:60e60486b5719a2665fe5929b6c4543b6af0102c903898cee7d7bc897c4ac793` | `0.25` CPU / `128M` RAM |
+| `mani-dispatch-service` | `ghcr.io/trama-as/mani-dotnet:staging` | `sha256:31018437b15a7a4af1a6c85ee2076bff5b78f316deee62589437e2ed9e94668b` | `1.00` CPU / `512M` RAM |
+| `mani-flutter-web` | `ghcr.io/trama-as/mani-flutter:staging` | `sha256:897766b40ba96d2763bf290d4ff353db20315d610e56c590a2637180ebd29e2c` | `0.25` CPU / `128M` RAM |
 | `mani-landing-web` | `ghcr.io/trama-as/mani-landing:staging` | `sha256:70db98c843f0d91549327f69d5b08ae8d51f1bfb9e14e2afdaeeeb017264812d` | `0.25` CPU / `128M` RAM |
 | `mani-kafka` | `apache/kafka:3.8.0` | `sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069` | `1.00` CPU / `1024M` RAM (healthy) |
 
@@ -100,11 +100,12 @@ mani-rules-service      ghcr.io/trama-as/mani-java:latest         "java -jar app
 | Salud de contenedores y endpoints en PROD y QA | **Operativo (`200 OK`)** | `/opt/mani/check-prod.sh`, `/opt/mani/check-qa.sh` |
 | Flutter Web `v1.0.4` en PROD (`SCRUM-1638`) | **Digest `1.0.4` corriendo y 18 rutas HTTP `200`** | Digest `sha256:79b3d323...`; pendiente video PO + bugs 1633-1637 |
 | Rate limiting Gateway (`SCRUM-1655`) | **Desplegado y verificado en QA** (`429`) | PR #87/#88, `tests/gateway/rate-limit.sh`; pendiente video PO |
-| Límites CPU/RAM Compose QA (`SCRUM-1672`) | **Aplicado en QA y PR #89 abierto** | `docker stats` y `docker inspect`; pendiente video PO |
-| Stack monitoreo versionado y retención `35d` (`SCRUM-1667`, `SCRUM-1668`) | **Aplicado en Calidad (`5w` = 35d, 6/6 targets UP) y PR #90 abierto** | Prometheus flags + Grafana dashboard; pendiente video PO |
+| Límites CPU/RAM Compose QA (`SCRUM-1672`) | **Aplicado en QA y PR #89 mergeado (`48a43ce`)** | `docker stats` y `docker inspect`; pendiente video PO |
+| Despliegue QA cronometrado (`SCRUM-1674`) y simulacro rollback (`SCRUM-1675`) | **Ejecutados y cronometrados en QA (`13s` deploy, `8s` rollback)** | `desplegar_release_qa.sh` y `rollback_qa.sh` (`MANI-APIGateway/infra/qa/`, PR #91); pendiente video PO |
+| Stack monitoreo versionado y retención `35d` (`SCRUM-1667`, `SCRUM-1668`) | **Aplicado en Calidad (`5w` = 35d, 6/6 targets UP) y PR #90 mergeado (`04afa61`)** | Prometheus flags + Grafana dashboard; pendiente video PO |
 | Retiro de credenciales expuestas en `HEAD` (`SCRUM-1639`, `SCRUM-1712`) | **Redactado en `main` (`2c7671a`)** | Sin rotación ni rewrite de historial por decisión de equipo |
 | Desactivar/cambiar cuentas seed en PROD (`SCRUM-1640`) | **Pendiente de validar `SCRUM-1638`** | Se ejecuta tras cierre de validación PO |
-| Dominio público + TLS 443 (`SCRUM-1665`), cron diario backups (`SCRUM-1666`), Alertmanager (`SCRUM-1669`), exporters (`SCRUM-1671`), monitoreo PROD (`SCRUM-1673`), CD automatizado (`SCRUM-1674`), simulacro DR (`SCRUM-1675`), logs/trazas centralizados (`SCRUM-1676`) | **Pendientes / abiertos en Sprint 6** | Se declaran explícitamente como pendientes operativos |
+| Dominio público + TLS 443 (`SCRUM-1665`), cron diario backups (`SCRUM-1666`), Alertmanager (`SCRUM-1669`), exporters (`SCRUM-1671`), monitoreo PROD (`SCRUM-1673`), logs/trazas centralizados (`SCRUM-1676`) | **Pendientes / abiertos en Sprint 6** | Se declaran explícitamente como pendientes operativos |
 
 ---
 

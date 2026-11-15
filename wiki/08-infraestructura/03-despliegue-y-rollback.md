@@ -45,10 +45,16 @@ Compose oficial versionado: `MANI-APIGateway/infra/qa/docker-compose.qa.yml`.
    cd /opt/mani
    bash desplegar_release_qa.sh
    ```
-3. Verificar límites en ejecución y rate limit (`SCRUM-1655`):
+3. Verificar límites en ejecución, rate limit (`SCRUM-1655`) y TLS 443 / encabezados (`SCRUM-1665`):
    ```bash
    docker stats --no-stream --format 'table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}'
    bash tests/gateway/rate-limit.sh http://localhost
+   bash tests/gateway/tls-security-headers.sh https://localhost
+   ```
+4. En QA, mantener sincronizado el stack auxiliar de exporters y Promtail (`SCRUM-1671`, `SCRUM-1676`, separado para convivir con `--remove-orphans`):
+   ```bash
+   cd /opt/mani
+   docker compose -f docker-compose.exporters.yml --env-file .env.qa up -d
    ```
 
 ---

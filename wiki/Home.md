@@ -22,6 +22,7 @@ Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`)
 | [`05-backlog/`](05-backlog/README.md) | Qué se hace y en qué orden. Contiene el backlog único y el libro de módulos y servicios | [Backlog MANI](05-backlog/BACKLOG_MANI.md) |
 | [`06-gobernanza/`](06-gobernanza/README.md) | Quién decide y bajo qué políticas: gobierno del equipo, políticas DevOps e infraestructura | [Gobierno del equipo](06-gobernanza/GOBIERNO_DEL_EQUIPO.md) |
 | [`07-calidad/`](07-calidad/README.md) | Qué se probó y con qué resultado: reporte de QA, matrices, evidencia y PoC | [Reporte general de QA del Sprint 4](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md) |
+| [`08-infraestructura/`](08-infraestructura/README.md) | Cómo opera, se despliega, monitorea y respalda MANI en DEV, QA, PROD y Calidad | [Infraestructura y Operación](08-infraestructura/README.md) |
 
 ---
 

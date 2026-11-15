@@ -93,8 +93,8 @@ Las credenciales maestras y tokens generados residen exclusivamente en `/opt/qua
 ```bash
 SONAR_HOST_URL=http://10.43.98.196:9000
 SONAR_ADMIN_USER=admin
-SONAR_ADMIN_PASSWORD=ManiSonar2026Secure+Quality
-SONAR_TOKEN=sqa_af05620bb15f30722dcf348a4511760b24c2333e
+SONAR_ADMIN_PASSWORD=<redactado>
+SONAR_TOKEN=<redactado>
 QA_GATEWAY_URL=http://10.43.100.141
 ```
 
@@ -102,7 +102,7 @@ QA_GATEWAY_URL=http://10.43.100.141
 - Se generó el token global de análisis `SONAR_TOKEN` (`GLOBAL_ANALYSIS_TOKEN`).
 - **Verificación de Autenticación por Token:**
   ```bash
-  curl -u sqa_af05620bb15f30722dcf348a4511760b24c2333e: http://10.43.98.196:9000/api/authentication/validate
+  curl -u <redactado>: http://10.43.98.196:9000/api/authentication/validate
   ```
   **Respuesta:** `{"valid":true}`
 - Se creó el proyecto base `mani-qa-platform` listo para que Santiago configure los Quality Gates en `SCRUM-1116`.
@@ -243,7 +243,7 @@ Para que Santiago continúe con la implementación de `SCRUM-1116`, `SCRUM-1119`
    ```yaml
    env:
      SONAR_HOST_URL: "http://10.43.98.196:9000"
-     SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}" # sqa_af05620bb15f30722dcf348a4511760b24c2333e
+     SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}" # <redactado>
    ```
    *Acceso Web:* Abrir `http://10.43.98.196:9000` con usuario `admin` y contraseña en `/opt/quality/.env.quality`.
 2. **Adición de Colecciones Newman (`SCRUM-1120`):**

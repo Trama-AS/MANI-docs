@@ -43,4 +43,4 @@ El 23 de octubre de 2026 se reunieron en [`REPORTE_QA_SPRINT4.md`](monitoreo/REP
 
 ## Nota de seguridad pendiente
 
-La guía CFG4-03 original publicaba la contraseña de administrador de SonarQube y el token global de análisis. El reporte no los reproduce, pero **siguen en el historial de git**: hay que rotarlos. Registrado por QA en el PR que consolidó esta carpeta.
+La guía CFG4-03 original publicaba la contraseña de administrador de SonarQube y el token global de análisis. Tanto [`REPORTE_QA_SPRINT4.md`](monitoreo/REPORTE_QA_SPRINT4.md) como la guía en `Entregas/Entrega4/` ya tienen esos valores redactados en `HEAD`, aunque **siguen en el historial de git** (sin reescritura de historial por decisión del proyecto). Registrado por QA en el PR que consolidó esta carpeta.

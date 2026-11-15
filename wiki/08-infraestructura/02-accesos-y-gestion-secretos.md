@@ -26,15 +26,17 @@
 
 ## 3. Variables de entorno por ambiente (sin valores)
 
-Los Compose versionados referencian únicamente variables (`${VAR}`) cuya plantilla sin secretos vive en:
+Los Compose y scripts versionados referencian únicamente variables (`${VAR}`) cuya plantilla sin secretos vive en:
 - `MANI-APIGateway/infra/qa/.env.qa.example`
+- `MANI-APIGateway/infra/backups/.env.backups.example`
 - `MANI-APIGateway/monitoring/.env.example`
 
 | Variable | Uso | Dónde vive el valor real |
 |---|---|---|
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Autenticación y acceso de Core / Flutter / Dispatch | `/opt/mani/.env.qa` (QA), `/opt/mani/.env.prod` (PROD), permisos `600` |
 | `SUPABASE_JWT_SECRET` | Validación perimetral HS256 / firma en pruebas Newman QA (`CFG4-04`) | `.env.qa` / `.env.prod` y GitHub Environment `qa-regresion` (`QA_JWT_SECRET`) |
-| `DATABASE_URL`, `DISPATCH_DB_CONNECTION` | Conexión PostgreSQL de Core y Dispatch | `.env.qa` / `.env.prod` |
+| `DATABASE_URL`, `DATABASE_URL_ADMIN`, `DISPATCH_DB_CONNECTION` | Conexión PostgreSQL de servicios y respaldos | `.env.qa` / `.env.prod` y `/etc/mani-backups/.env.backups` (`chmod 600` en `10.43.98.197`) |
+| `BACKUP_ENCRYPTION_KEY_FILE` (`backup.passphrase`) | Llave simétrica OpenSSL `AES-256-CBC` para cifrar/descifrar dumps (`SCRUM-1666`) | `/etc/mani-backups/backup.passphrase` (`chmod 400` en `10.43.98.197`) + custodia privada del DevOps Lead (separada de la réplica en `10.43.98.196`) |
 | `GF_SECURITY_ADMIN_USER`, `GF_SECURITY_ADMIN_PASSWORD` | Acceso administrador de Grafana en Calidad | `/home/estudiante/monitoreo/.env` (`chmod 600`) |
 
 ## 4. Cuentas de prueba en PROD (`SCRUM-1640`)

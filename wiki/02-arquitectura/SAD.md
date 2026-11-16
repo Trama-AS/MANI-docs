@@ -166,8 +166,10 @@ preserva la imagen validada (§18).
 
 Los ambientes son **tres: DEV → QA → PROD** (§16). Supabase aporta PostgreSQL, Auth, Storage y
 Realtime gestionados, y la operación se completa con Prometheus y Grafana para métricas y tableros (§19).
-**Datadog se retiró el 2026-11-13** (enmienda de ADR-0006), de modo que APM, logs centralizados y
-trazas quedan sin herramienta asignada.
+**Datadog se retiró el 2026-11-13** (enmienda de ADR-0006). Los **logs centralizados** pasaron a
+**Grafana Loki** con Promtail como recolector el 2026-11-14 ([ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md),
+`Propuesto`), correlacionados por `X-Correlation-ID`. Las **trazas por spans** (OpenTelemetry o Tempo)
+quedan **fuera de esta fase** y registradas como evolución futura.
 
 Una precisión importante sobre este diagrama:
 

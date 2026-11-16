@@ -211,6 +211,10 @@ El sistema debe ser accesible remotamente y soportar múltiples tenants de forma
 | **PROY-06** | Las herramientas utilizadas deben corresponder a las aprobadas por el equipo. |
 | **PROY-07** | El proyecto exige el uso de Java y .NET en algún módulo del backend. |
 | **PROY-08** | El proyecto exige el uso de Kubernetes como orquestador. |
+| **PROY-09** | El proyecto exige observabilidad propia: **Prometheus** para métricas, **Grafana** para tableros y **Grafana Loki** para logs centralizados, con alertas vinculadas a Jira. Decisiones que la implementan: [ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md) y [ADR-0038](../02-arquitectura/adr/ADR-0038-logs-centralizados-y-trazas-loki.md). |
+| **PROY-10** | El proyecto exige **comunicación asíncrona entre servicios mediante eventos de negocio**, no solo llamadas sincrónicas. Decisiones que la implementan: [ADR-0029](../02-arquitectura/adr/ADR-0029-comunicacion-asincrona-kafka.md) y los contratos de [`CONTRATOS_EVENTOS.md`](../02-arquitectura/CONTRATOS_EVENTOS.md). |
+| **PROY-11** | La **lógica de negocio vive en los servicios del backend, no en la base de datos**. El motor guarda y protege datos; las reglas no se implementan como funciones ni procedimientos almacenados. Decisiones que la implementan: [ADR-0022](../02-arquitectura/adr/ADR-0022-logica-de-negocio-en-servicios.md) y [ADR-0030](../02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md). |
+| **PROY-12** | **No se usa la plataforma de datos como *backend as a service* para la lógica de negocio.** El cliente no consulta ni escribe directamente contra PostgREST o Storage para operaciones de negocio: entra por el API Gateway y los servicios. Decisiones que la implementan: [ADR-0027](../02-arquitectura/adr/ADR-0027-alcance-supabase-cliente-flutter.md) y [ADR-0018](../02-arquitectura/adr/ADR-0018-identificacion-tenant.md). |
 
 ## 3.2 Restricciones del producto
 
@@ -368,6 +372,8 @@ Los identificadores no se renumeran: los requisitos RF-29 a RF-36 se incorporaro
 | Fiabilidad/concurrencia | RNF-03, RNF-05, RNF-07 |
 | Auditabilidad | RNF-04 |
 | Usabilidad/cobertura | RNF-08, RNF-09 |
+| Restricciones de producto | REST-01..REST-05 |
+| Restricciones de proyecto | PROY-01..PROY-12 |
 
 ## 7.1 Requisito → historia
 

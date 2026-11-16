@@ -4,6 +4,12 @@
 
 > **Figura 1 — Tech Radar.** Archivo: [`diagrams/TechRadar.png`](diagrams/TechRadar.png). Si la imagen y las listas de abajo discrepan, manda este documento.
 
+**Corte: 2026-11-16.** Este documento lista lo **vigente**: lo que está en uso hoy, lo que está en
+evaluación y lo que se descartó con su motivo. No arrastra versiones anteriores; el historial de
+cambios está en el log de git. **La imagen no se ha regenerado desde que cambió la pila de
+observabilidad**, así que para la entrega final hay que rehacerla o retirarla: hoy no incluye Loki,
+Promtail, Alertmanager ni los exportadores, y todavía muestra Datadog.
+
 ## Sí o sí
 
 ### Plataformas
@@ -31,8 +37,27 @@
 - OpenAPI
 - Prometheus
 - Grafana
+- Grafana Loki, logs centralizados (`grafana/loki:3.1.1`)
+- Promtail, recolector de logs de contenedores (`grafana/promtail:3.1.1`)
+- Alertmanager, enrutado de alertas
+- Exportadores de métricas: node-exporter, nginx-exporter, postgres_exporter, cAdvisor y blackbox-exporter
 - Jira
 - oxlint, linter de `MANI-Landing`
+
+### Alcance de la pila de observabilidad
+
+Prometheus, Grafana y los exportadores están **desplegados y documentados** en la VM de Calidad
+(`10.43.98.196`) y en QA, con la configuración versionada en `MANI-APIGateway/monitoring/`
+(ver [`wiki/08-infraestructura/05-monitoreo-y-politicas-devops.md`](../08-infraestructura/05-monitoreo-y-politicas-devops.md)).
+Responden a **PROY-09**, la exigencia de observabilidad propia del proyecto.
+
+**Loki y Promtail están desplegados pero su decisión aún no está ratificada:**
+[ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md) está en estado `Propuesto` y espera
+Mesa de Arquitectura. Figuran aquí como adoptados porque están en operación, no porque la decisión
+esté cerrada. Lo mismo vale para la enmienda que retiró Datadog de
+[ADR-0006](adr/ADR-0006-observabilidad.md), también pendiente de ratificar.
+
+Las **trazas por spans** quedan fuera: ver «En evaluación».
 
 ### Documentación técnica
 - Markdown
@@ -56,6 +81,11 @@ Si la landing empezara a necesitar datos de la plataforma, el radar se revisa: e
 ADR-0027 y ADR-0030, y habría que decidir si sigue en esta tecnología.
 
 ## En evaluación
+- **OpenTelemetry y Grafana Tempo**, para trazas distribuidas por *spans*. **Fuera de esta fase**
+  por decisión de [ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md): hoy la correlación
+  entre servicios se consigue filtrando los logs de Loki por `X-Correlation-ID`, que cubre la
+  necesidad de diagnóstico sin instrumentar código. Entrarían solo si un escenario de calidad o la
+  Mesa lo aprueban explícitamente.
 - **Kubernetes.** Es la plataforma de orquestación **objetivo** exigida por PROY-08, pero no está
   adoptada ni desplegada: la decisión sigue abierta como INFRA-01 e INFRA-02 de
   [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §25 y requiere ADR. Hoy QA y
@@ -66,5 +96,9 @@ ADR-0027 y ADR-0030, y habría que decidir si sigue en esta tecnología.
 - Serverpod como backend principal.
 - MongoDB/NestJS como stack primario.
 - GitHub Projects como backlog principal.
+- **Datadog**, para APM, logs y trazas. Estaba en la decisión original de
+  [ADR-0006](adr/ADR-0006-observabilidad.md) y se **retiró el 2026-11-13**: nunca se aprovisionó, no
+  llegó a ningún ambiente y nadie lo operó, de modo que figuraba como decisión vigente siendo una
+  intención. Su función de logs la asumió Grafana Loki.
 - Lógica de negocio en funciones PL/pgSQL (ADR-0022).
 - Acceso directo del cliente a PostgREST y Storage (ADR-0027).

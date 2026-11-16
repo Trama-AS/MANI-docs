@@ -1,8 +1,17 @@
 # Git: ramas y commits
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §5 y §6 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §12.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir de dónde nace una rama, cómo se nombra y por dónde vuelve |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps |
+| **Consume** | Desarrollo, DevOps |
+| **Cada cuánto se actualiza** | Cuando cambia el modelo de ramas en `POLITICAS_DEVOPS_HERRAMIENTAS.md` |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-10-22; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Historia en Jira → rama → commits → PR |
 
 ## Ramas principales
 

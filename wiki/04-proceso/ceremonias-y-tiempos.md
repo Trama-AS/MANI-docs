@@ -1,8 +1,17 @@
 # Ceremonias y tiempos de respuesta
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §4, §6 y §10.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir qué ceremonias tiene el equipo, por qué canal se trabaja y en cuánto tiempo se responde |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: Scrum Master |
+| **Consume** | Todo el equipo |
+| **Cada cuánto se actualiza** | Cuando cambia una ceremonia, un canal o un plazo en `GOBIERNO_DEL_EQUIPO.md` |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-10-22; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Regla de gobierno → ceremonia → reporte (*daily*, retrospectiva) → indicador del sprint |
 
 ## Ceremonias
 

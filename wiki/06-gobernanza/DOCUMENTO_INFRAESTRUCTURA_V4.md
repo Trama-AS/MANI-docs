@@ -8,7 +8,7 @@
 | **Documento** | Documento de Infraestructura V4 (Vista Física del modelo 4+1) |
 | **Versión** | 4.0 — Entrega 5 (Sprint 5, último sprint) |
 | **Fecha** | 5 de noviembre de 2026 |
-| **Estado** | Borrador para revisión: lo verificado contra el código está marcado; lo que exige acceso a las VMs y a Supabase queda como **pendiente de verificación** |
+| **Estado** | **Vigente** desde el 2026-11-19. Era borrador porque varios datos exigían verificación en las máquinas virtuales; esa evidencia se capturó el 14 y 15 de noviembre y cerró seis filas de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md). **Queda una reserva:** la fila D10 (migraciones y `BYPASSRLS` en PROD) sigue sin verificar, de modo que lo que este documento diga sobre migraciones o roles de base de datos **no está acreditado** y así debe leerse. |
 | **Responsables** | Daniel Ávila (DevOps Lead), Nicolás León (DevOps Secundario), Santiago Hernández (QA & Security), Sara Albarracín (Scrum Master) |
 | **Base** | [Documento de Infraestructura V3](DOCUMENTO_INFRAESTRUCTURA_V3.md) (Sprint 4, 17-oct-2026) |
 

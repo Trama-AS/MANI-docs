@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** herramientas de gestión y trazabilidad
+- **Origen (declarado el 2026-11-19):** **`PROY-01`** y **`PROY-06`**. Decisión de proceso, y **solapa con ADR-0002**: conviene revisar si una supersede a la otra.
 - **Relacionado con:** ADR-0002, ADR-0003, ADR-0004, CFG-39 (SCRUM-1114)
 - **Autor:** María Camila Beltrán Carreño
 - **Revisor:** Nicolás León (implementó CFG-39)

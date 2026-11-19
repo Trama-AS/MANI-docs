@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** entrega y despliegue
+- **Origen (declarado el 2026-11-19):** **`PROY-06`** (herramientas aprobadas) y **`PROY-04`** (siete integrantes con responsabilidad técnica distribuida, que es lo que obliga a un multirepo con promoción por ambientes). Compromete **QAS-25** (instalabilidad) y **QAS-44** (reversión de despliegue), que derivan de él.
 - **Relacionado con:** ADR-0005, ADR-0006, ADR-0019
 
 ## Contexto

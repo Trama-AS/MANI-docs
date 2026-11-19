@@ -1,14 +1,14 @@
 # Tech Radar — MANI
 
-[![Tech Radar de MANI: tecnologías adoptadas, en evaluación y descartadas](diagrams/TechRadar.png)](diagrams/TechRadar.png)
-
-> **Figura 1 — Tech Radar.** Archivo: [`diagrams/TechRadar.png`](diagrams/TechRadar.png). Si la imagen y las listas de abajo discrepan, manda este documento.
+> **La figura se retiró el 2026-11-19, y el archivo no se borró.** La imagen
+> [`diagrams/TechRadar.png`](diagrams/TechRadar.png) **ya no refleja el stack**: no muestra Loki, Promtail,
+> Alertmanager ni los cinco exportadores, y **todavía muestra Datadog**, que se retiró el 2026-11-13. Se deja de
+> mostrar en vez de presentar una imagen que contradice las listas de abajo, que son la fuente. El archivo sigue
+> donde estaba, para quien quiera regenerarlo: basta rehacerlo con estas listas y volver a insertarlo aquí.
 
 **Corte: 2026-11-16.** Este documento lista lo **vigente**: lo que está en uso hoy, lo que está en
 evaluación y lo que se descartó con su motivo. No arrastra versiones anteriores; el historial de
-cambios está en el log de git. **La imagen no se ha regenerado desde que cambió la pila de
-observabilidad**, así que para la entrega final hay que rehacerla o retirarla: hoy no incluye Loki,
-Promtail, Alertmanager ni los exportadores, y todavía muestra Datadog.
+cambios está en el log de git. La imagen quedó retirada por el mismo motivo, y el aviso está arriba.
 
 ## Sí o sí
 

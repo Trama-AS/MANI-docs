@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado · **enmendado el 2026-11-13: se retira Datadog.** Decidido por la Scrum Master; pendiente de ratificación en Mesa.
 - **Decisión de:** operación y monitoreo
+- **Origen (declarado el 2026-11-19):** **`PROY-09`** — el proyecto exige observabilidad propia con Prometheus, Grafana y Loki. **La restricción se escribió el 2026-11-16**, después de este ADR: hasta entonces la decisión no tenía requisito detrás, y esa ausencia es la que permitió que tres documentos del proyecto se contradijeran sobre si la observabilidad existía. Compromete **QAS-22** (analizabilidad).
 - **Relacionado con:** ADR-0004, ADR-0019
 
 ## Contexto

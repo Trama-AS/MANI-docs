@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** herramientas de gestión
+- **Origen (declarado el 2026-11-19):** **`PROY-01`** (el proyecto se ejecuta bajo Scrum) y **`PROY-06`** (las herramientas deben ser las aprobadas por el equipo). Decisión de proceso.
 - **Relacionado con:** ADR-0001, ADR-0004
 
 ## Contexto

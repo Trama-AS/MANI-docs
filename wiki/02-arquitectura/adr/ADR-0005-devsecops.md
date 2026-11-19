@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** seguridad del ciclo de entrega
+- **Origen (declarado el 2026-11-19):** **`PROY-06`** — herramientas aprobadas por el equipo. Compromete **QAS-23** (capacidad para ser probado) y **QAS-45** (*quality gate* de código nuevo), que derivan de él y así lo declaran en la columna de origen del SDD.
 - **Relacionado con:** ADR-0004, ADR-0015
 
 ## Contexto

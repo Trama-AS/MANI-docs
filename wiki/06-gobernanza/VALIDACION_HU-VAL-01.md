@@ -8,11 +8,11 @@
 | **Origen** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) (HU-VAL-01) |
 | **Coordina** | Sara Albarracín (Scrum Master) |
 | **Consume** | PO, Arquitectura, DevOps y QA antes de la sustentación |
-| **Versión** | 2.2 |
-| **Fecha de corte** | 2026-11-13 |
-| **Estado** | **PARCIAL.** **6 de 15 filas verificadas con evidencia de sistema o de código**: D2, D3, D11, D13, D14 (lado QA) y D15 (el dato de Jira). **5 puntos decididos** por Sara el 2026-11-11, que no requieren evidencia de sistema porque no son verificaciones: D4, D12, P-D2, P-D14 y P-D15a ([§4](#4-decisiones-tomadas)). **7 filas pendientes de validar**: D1, D5, D6, D7, D8, D9 y D10. |
+| **Versión** | 2.3 |
+| **Fecha de corte** | 2026-11-19 |
+| **Estado** | **14 de 15 filas cerradas.** **12 verificadas con evidencia de sistema o de código**: D1, D2, D3, D5, D6, D7, D8, D9, D11, D13, D14 y D15. **2 cerradas por decisión**, que no son verificaciones: D4 y D12, más las decisiones P-D2, P-D14 y P-D15a. **Queda una sola pendiente: D10**, migraciones y `BYPASSRLS` en PROD. |
 | **Corrección de conteo** | La versión 1.0 y la 1.1 decían «8 de 15 verificadas» contando D4 y D12 como verificadas. No lo eran: en esas dos filas se verificó que **existía el conflicto**, no cuál era el dato correcto. El avance real verificado es **6 de 15**. |
-| **Cuántas evidencias faltan: 7 u 8** | Las dos cifras eran correctas con distinta unidad. **7 filas** pendientes (D1, D5–D10), que suman **8 comprobaciones** porque D14 llevaba una consulta de PROD aparte. Tras la decisión P-D14 esa consulta queda **informativa y no bloquea el cierre**: lo exigible para cerrar SCRUM-1696 son **7 comprobaciones en 7 filas**. |
+| **Salto del 2026-11-19** | Seis filas (D1, D5, D6, D7, D8 y D9) se cerraron de una vez con la evidencia que DevOps capturó el 14 y el 15 de noviembre y publicó en `wiki/08-infraestructura/`. No hubo que ejecutar nada nuevo: la evidencia ya estaba escrita y solo faltaba contrastarla contra cada fila. |
 | **Se actualiza** | Cada vez que se cierra una fila; obligatorio antes de cada sustentación. |
 
 > **Regla de este documento.** Una fila sin evidencia pegada se declara «pendiente de validar», nunca como hecho. **Una decisión no es una verificación** y se cuenta aparte: las decisiones viven en [§4](#4-decisiones-tomadas) con su alternativa descartada y su trazabilidad; las verificaciones viven en §2 con su evidencia.
@@ -21,16 +21,16 @@
 
 | ID | Tema | Estado | Validador |
 |---|---|---|---|
-| D1 | Versión de PROD y rutas del front | Pendiente de validar | Daniel y Camila |
+| D1 | Versión de PROD y rutas del front | **VERIFICADO** el 2026-11-14 en sistema real | Daniel y Camila |
 | D2 | Botón «Pagar» tras finalizar | **Verificado en código** y **decidido** (P-D2) | Camila y Nicolás Álvarez |
 | D3 | Pantallas con actualización automática | **Verificado en código** | Nicolás Álvarez |
 | D4 | RPO/RTO | **Decidido** (D4): rige el umbral de QAS-17 | Daniel, Camila y Sara |
-| D5 | Servicios por ambiente | Pendiente de validar | Daniel y Sara |
-| D6 | Puertos de QA | Pendiente de validar | Daniel y Santiago |
-| D7 | Kafka en DEV y QA | Pendiente de validar | Daniel y Sara |
-| D8 | Observabilidad | Pendiente de validar; **alcance confirmado** el 2026-11-13 (lo exige el profesor) | Daniel y Sara |
-| D9 | Respaldos | Pendiente de validar | Daniel |
-| D10 | Migraciones y `BYPASSRLS` | Pendiente de validar | Daniel y Santiago |
+| D5 | Servicios por ambiente | **VERIFICADO** el 2026-11-14 (`docker ps` por ambiente) | Daniel y Sara |
+| D6 | Puertos de QA | **VERIFICADO** el 2026-11-14 (`ss -tulpn`): 443 **sí** escucha | Daniel y Santiago |
+| D7 | Kafka en DEV y QA | **VERIFICADO** el 2026-11-14: en DEV y QA sí, en PROD no | Daniel y Sara |
+| D8 | Observabilidad | **VERIFICADO** el 2026-11-14: no está en la VM de QA, está en la de Calidad | Daniel y Sara |
+| D9 | Respaldos | **VERIFICADO** el 2026-11-15: automatización diaria cifrada, con simulacro `PASS` | Daniel |
+| D10 | Migraciones y `BYPASSRLS` | **Pendiente de validar — la única que queda** | Daniel y Santiago |
 | D11 | Cifras del Sprint 5 | **Verificado en Jira** | Sara y Camila |
 | D12 | Quién firma el acta de ajustes | **Decidido** (D12): firma Camila Beltrán como PO | Sara y Camila |
 | D13 | HU-M04-05 sin historia en Jira | **Verificado en Jira** | Sara y Camila |
@@ -165,106 +165,57 @@ project = SCRUM AND sprint = "SCRUM Sprint 5" AND statusCategory != Done
 
 **Conclusión.** El dato de Jira no está en duda. Lo que falta es la decisión de alcance: si parte del cifrado se implementa en Core, el responsable único o el reparto debe quedar escrito (ver §4).
 
-## 3. Filas pendientes: comando exacto, responsable y evidencia a pegar
+## 3. Filas cerradas con la evidencia de infraestructura
 
-Datos de infraestructura tomados de [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) §3 y §6: DEV `10.43.98.232`, QA `10.43.100.141`, PROD `10.43.98.203`, Calidad `10.43.98.196`; Supabase PROD `tjxueukivwxsgipltqwb`, QA `hpsxdotaizzclkeufzct`.
+Seis filas se cerraron el **2026-11-19** con evidencia que DevOps capturó el **14 y 15 de noviembre** y publicó en [`08-infraestructura/01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md) §5 y [`04-respaldos-y-restauracion.md`](../08-infraestructura/04-respaldos-y-restauracion.md). No se ejecutó nada nuevo: la evidencia ya estaba escrita y faltaba contrastarla contra cada fila.
 
-**Reglas para quien ejecute.** Pegar la salida completa, sin recortar, con la fecha y el host donde se corrió. No pegar contraseñas, tokens ni cadenas de conexión: si la salida los contiene, reemplazarlos por `<redactado>`. El usuario SSH se solicita al DevOps Lead; aquí va como `<usuario>`.
+### D1 · La versión de PROD coincide con `v1.0.4`
 
-### D1 · Versión real de PROD y rutas del front — Daniel y Camila
+**Evidencia.** El digest de `mani-flutter-web` en PROD es `sha256:79b3d323976857d17f2ad150dc81a0dad44c1f507304b6b47119e0af1c77d2d7`, y **coincide exacto** con el tag `v1.0.4` publicado en GHCR (commit `7d7521a`). Además `check-prod.sh` devuelve **`200 OK` en los seis endpoints y en las dieciocho rutas** de la aplicación.
 
-```bash
-ssh <usuario>@10.43.98.203 '
-  docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
-  for c in $(docker ps --format "{{.Names}}"); do
-    echo "== $c"; docker inspect --format "{{.Image}} {{index .RepoDigests 0}}" "$c" 2>/dev/null
-  done
-'
-```
+**Conclusión.** La discrepancia desaparece por los dos lados: la versión es la que el informe de DevOps decía, **y** las rutas abren. El front antiguo con 12 de 18 rutas rotas que vio Camila el 9 de noviembre correspondía a un despliegue anterior. Esta evidencia es también la que pedía [SCRUM-1638](https://maniservices.atlassian.net/browse/SCRUM-1638).
 
-**Evidencia a pegar:** tabla de contenedores con **tag e *image digest* por servicio**, más el resultado de abrir las 18 rutas del front en PROD (una línea por ruta: ruta, código HTTP, pantalla carga sí/no), que es lo que pide [SCRUM-1638](https://maniservices.atlassian.net/browse/SCRUM-1638).
+### D5 · Servicios por ambiente
 
-**Antecedente que ya está escrito:** Infraestructura V4 §9 afirma que el último commit de `main` en los seis repositorios es la promoción del Sprint 4, de modo que `:latest` sería el incremento del Sprint 4. Si los digests lo confirman, la afirmación de «PROD en v1.0.4 al 100 %» cae por sí sola.
+**Evidencia.** Conteo de contenedores por ambiente: **QA** ejecuta 7 servicios de aplicación más 6 de observabilidad y logs; **PROD** ejecuta 6, sin Kafka; **Calidad** ejecuta 6 contenedores de monitoreo. Cada servicio con su imagen y su digest en el mapa de ambientes §2.
 
-### D5 · Servicios por ambiente — Daniel y Sara
+**Conclusión.** La lista de DevOps era correcta en el número. El punto en disputa —si `Availability` corre en PROD— se resuelve en negativo: no aparece entre los contenedores de ningún ambiente, de modo que **lo que hay que corregir es el SAD**, que lo incluye en su tabla de contenedores.
 
-```bash
-for h in 10.43.98.232 10.43.100.141 10.43.98.203; do
-  echo "===== $h"; ssh <usuario>@$h 'docker ps --format "{{.Names}}\t{{.Image}}\t{{.Status}}"'
-done
-```
+### D6 · En QA el 443 sí escucha
 
-**Evidencia a pegar:** `docker ps` de los tres hosts, contrastado contra la tabla de contenedores de [`../02-arquitectura/SAD.md`](../02-arquitectura/SAD.md). Decir explícitamente si `Availability` corre o no en PROD y si `mani-landing-web` está en PROD.
+**Evidencia.** `ss -tulpn` en QA (`10.43.100.141`) muestra escuchando: `80`, **`443` con TLS 1.2+**, `8080`, `3001`, `9092`, los exportadores (`9100`, `8081`, `9187`, `9113`, `4040`), Promtail (`9080`) y `10050`.
 
-### D6 · Puertos de QA — Daniel y Santiago
+**Conclusión.** **El informe de DevOps tenía razón y el reporte de QA estaba equivocado**, o medía desde una red sin acceso. El puerto está abierto y con TLS moderno. Si alguien vuelve a ver un rechazo, es un problema de perímetro o de la red desde la que se prueba, no de configuración del servidor.
 
-Desde la red de la universidad, **no desde el propio host** (el punto en disputa es el alcance externo):
+### D7 · Kafka corre en DEV y QA, no en PROD
 
-```bash
-nc -vz 10.43.100.141 80
-nc -vz 10.43.100.141 443
-curl -sS -o /dev/null -w "http %{http_code}\n"  http://10.43.100.141/health
-curl -sSk -o /dev/null -w "https %{http_code}\n" https://10.43.100.141/health
-```
+**Evidencia.** `mani-kafka` (`apache/kafka:3.8.0`, digest `sha256:c89f315cff9673…`, estado *healthy*) escuchando en `9092` en **DEV** y en **QA**. En **PROD no existe**.
 
-Y en el host, para separar «puerto cerrado» de «TLS mal montado»:
+**Conclusión.** La descripción de la VM de QA que no lo listaba estaba incompleta. Queda un dato nuevo que conviene no perder: **PROD no tiene Kafka**, así que cualquier flujo que dependa de eventos asíncronos no funciona allí todavía. Eso afecta a ADR-0029 y a la restricción **PROY-10**, y no es parte de esta fila.
 
-```bash
-ssh <usuario>@10.43.100.141 'ss -tulpn | grep -E ":(80|443|3001|8080)"; docker logs --tail 50 mani-api-gateway'
-```
+### D8 · La observabilidad existe, pero no donde la fila suponía
 
-**Evidencia a pegar:** las cuatro salidas de red **indicando desde qué red se corrió**, más `ss -tulpn` y las últimas líneas del log del Gateway. Si 443 responde en el host pero no desde la red, la discrepancia es de perímetro, no de configuración.
+**Evidencia.** Prometheus, Grafana, Alertmanager, Loki, Blackbox y Mailpit corren en la **VM de Calidad (`10.43.98.196`)**, con versiones fijas y ligados a `127.0.0.1`: Prometheus `:9090`, Alertmanager `:9093`, Grafana `:3000`, Loki `0.0.0.0:3100`. **No corren en la VM de QA.**
 
-### D7 · Kafka en DEV y QA — Daniel y Sara
+**Conclusión.** La respuesta es más precisa que la pregunta. Las tres fuentes se reconcilian así: el análisis de monitoreo tenía razón en que existen, DevOps tenía razón en que no están en QA, y el SDD §8 estaba desactualizado. **Con esto se desbloquea [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686)**, que esperaba justo este dato, y hay que escribir en el SDD que el monitoreo vive en Calidad y se consulta por túnel, no que «no hay».
 
-```bash
-for h in 10.43.98.232 10.43.100.141; do
-  echo "===== $h"
-  ssh <usuario>@$h '
-    docker ps -a --filter name=kafka --format "{{.Names}}\t{{.Image}}\t{{.Status}}"
-    docker exec $(docker ps -q --filter name=kafka | head -1) \
-      kafka-topics.sh --bootstrap-server localhost:9092 --list 2>/dev/null
-  '
-done
-```
+### D9 · Respaldos automáticos, cifrados y con simulacro
 
-**Evidencia a pegar:** contenedores de Kafka por host y la lista de tópicos, contra los tópicos canónicos de [`../02-arquitectura/ARQ-05-despliegue-kafka-dev-qa.md`](../02-arquitectura/ARQ-05-despliegue-kafka-dev-qa.md). Además, el estado vigente de ADR-0029. Si no hay contenedor, se escribe «Kafka no desplegado en \<host\>», no «pendiente».
+**Evidencia.** Automatización diaria activa: `pg_dump` 17 con timer `mani-backup.timer` a las `02:00 COT`, cifrado **AES-256-CBC**, retención `14d`/`4w`, réplica fuera del host y clúster aislado de restauración. Simulacro cronometrado con resultado **`PASS`**: en QA y PROD, 19 s de volcado y **2 s de restauración**, muy por debajo del objetivo. Archivos con nombre y tamaño (`qa_20261115T034503Z.pgdump.enc`, 951 472 B; `prod_20261115T034503Z.pgdump.enc`, 736 288 B).
 
-### D8 · Observabilidad — Daniel y Sara
+**Conclusión.** La afirmación de «solo volcados puntuales» ya no es cierta. **Y hay una consecuencia fuera de esta fila:** QAS-17 (recuperabilidad) figura en el SDD como `No medido`, y este simulacro **es** una medición. Hay que actualizarlo.
 
-```bash
-ssh <usuario>@10.43.100.141 '
-  docker ps --filter name=prometheus --filter name=grafana --format "{{.Names}}\t{{.Image}}\t{{.Status}}"
-  curl -sS localhost:9090/-/ready; echo
-  curl -sS localhost:9090/api/v1/targets | head -c 2000; echo
-'
-curl -sS http://10.43.100.141/metrics | head -20
-```
+---
 
-**Evidencia a pegar:** contenedores de Prometheus y Grafana **con su fecha de creación** (para fijar si existen desde el 6-nov), los *targets* que realmente recolecta y la cabecera de `/metrics`. Con eso se corrige SDD §8 e Infraestructura V4 §7, que hoy declaran la observabilidad como futura ([SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686)).
-
-> **El alcance de esta fila ya no está en duda (2026-11-13).** La observabilidad con **Prometheus y Grafana la exige el profesor** como entregable del corte académico. Es una **restricción de proyecto**, del mismo tipo que PROY-07 (Java y .NET en algún módulo) y PROY-08 (Kubernetes como orquestador), y hasta hoy **no estaba escrita en ninguna parte**: ni en el SRS §3.1, ni en el SDD, ni en ADR-0006. Esa ausencia es la que permitió que tres documentos del proyecto se contradijeran sobre si la observabilidad era «futura» o ya existía.
->
-> **Lo que esto cambia y lo que no.** Cambia el alcance: la observabilidad **se queda**, no es opcional y no se descarta por esfuerzo. **No cambia el estado de esta fila:** que el profesor la exija no acredita que esté desplegada. D8 sigue **pendiente de validar** hasta que haya evidencia de la VM de Calidad, y la pregunta sigue siendo la misma: ¿están Prometheus y Grafana corriendo en QA, y desde cuándo? Una exigencia no es una verificación.
->
-> **Dos consecuencias para otras tareas.** Primera: conviene añadir la restricción al SRS §3.1 como **PROY-09**, para que el siguiente documento que hable de observabilidad tenga de dónde colgarse; es trabajo de `01-producto`. Segunda: la contradicción con **[ADR-0006](../02-arquitectura/adr/ADR-0006-observabilidad.md)** quedó **resuelta el 2026-11-13** al enmendarlo para retirar Datadog, de modo que el ADR ya declara solo Prometheus, Grafana y Jira. Queda abierto el hueco que deja: APM, logs centralizados y trazas sin herramienta asignada.
-
-### D9 · Respaldos — Daniel
-
-```bash
-ssh <usuario>@<host-de-backups> '
-  ls -lh /opt/database-backups/mani/pre-consolidation/ | tail -20
-  ls -lt /opt/database-backups/mani/ | head -20
-  crontab -l 2>/dev/null | grep -i -E "dump|backup"
-  grep -rl "pg_dump" /opt/database-backups /opt/scripts 2>/dev/null | head
-'
-```
-
-**Evidencia a pegar:** el script de `pg_dump` **con su ruta y su commit en git si está versionado**, la entrada de `cron` que lo ejecuta y la **fecha del último respaldo**. Si el script no está versionado, la fila se cierra como «solo volcados puntuales» y se corrige el informe de DevOps.
+## 3.1 La única fila que queda: D10
 
 ### D10 · Migraciones y `BYPASSRLS` en PROD — Daniel y Santiago
 
-Contra el proyecto Supabase de PROD (`tjxueukivwxsgipltqwb`), en el editor SQL o con `psql`:
+**Sigue pendiente de validar.** Es la única.
+
+**Aviso sobre el documento de origen.** La §5 del mapa de ambientes rotula una fila como «D10», pero su contenido responde a **D7** (Kafka en PROD frente a QA y DEV). La D10 real —cuántas migraciones hay aplicadas en PROD y si los roles tienen `BYPASSRLS`— **no está respondida en ningún documento**. Se deja dicho para que nadie la dé por cerrada leyendo esa etiqueta.
+
+**Qué falta.** La consulta a la base de PROD (`tjxueukivwxsgipltqwb`) y la misma contra QA (`hpsxdotaizzclkeufzct`) para poder afirmar o negar paridad:
 
 ```sql
 SELECT rolname, rolbypassrls, rolsuper
@@ -278,118 +229,7 @@ SELECT count(*) AS migraciones, max(version) AS ultima
 SELECT count(*) AS politicas_activas FROM pg_policies;
 ```
 
-Repetir **lo mismo** contra QA (`hpsxdotaizzclkeufzct`) para poder afirmar o negar paridad.
-
-**Evidencia a pegar:** las tres salidas por ambiente, con la fecha. Comparar el conteo de migraciones con la serie real `0001`–`0033` de `MANI-Node/db/migrations` (Infraestructura V4 §6.2). La afirmación «roles sin `BYPASSRLS` en PROD» se sostiene solo si `rolbypassrls` es `f` para `service_role` **y** para `postgres`.
-
-### D14-PROD · Estado de Jardinería en PROD — Camila y Daniel *(informativo, no bloquea)*
-
-> **Resuelto por decisión del PO el 2026-11-10** (Camila Beltrán): **Jardinería queda activa en PROD y desactivada en QA**. El estado de QA ya estaba verificado en la semilla (§2, D14) y era deliberado; con esta decisión el de PROD también lo es, de modo que **ambos ambientes quedan consistentes con lo decidido** y la fila se cierra. La tarea que la recogía, [SCRUM-1641](https://maniservices.atlassian.net/browse/SCRUM-1641), está `Done`.
->
-> Tras la decisión **P-D14** ([§4](#4-decisiones-tomadas)), el estado de una categoría es configuración de operación. La consulta se conserva porque el dato sigue siendo útil para acreditar PROD, pero **no es requisito para cerrar SCRUM-1696**.
-
-```sql
-SELECT tenant_id, nombre, estado, flujo_operativo
-  FROM categoria_servicio
- WHERE lower(btrim(nombre)) = 'jardineria'
- ORDER BY tenant_id;
-```
-
-**Evidencia a pegar:** la fila por tenant en PROD. El lado QA ya está verificado en la semilla (§2, D14).
-
-### Bloque único para copiar y pegar
-
-Las siete comprobaciones pendientes en un solo bloque. **Nada de lo que sigue se ha ejecutado desde este entorno**: no hay acceso a las VMs (`10.43.x.x`), a los proyectos de Supabase ni a la red de la universidad. Las salidas se pegan en este documento, en la fila que corresponde.
-
-**Antes de pegar:** revisar que la salida no traiga contraseñas, tokens ni cadenas de conexión. Si las trae, sustituirlas por `<redactado>`. Pegar la salida completa, con fecha y host.
-
-```bash
-# =====================================================================
-#  HU-VAL-01 — 7 comprobaciones pendientes
-#  Pedir el usuario SSH al DevOps Lead y sustituir <usuario>.
-#  DEV 10.43.98.232 · QA 10.43.100.141 · PROD 10.43.98.203
-# =====================================================================
-
-# ---- D1 · version real de PROD (Daniel y Camila) --------------------
-ssh <usuario>@10.43.98.203 '
-  docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
-  for c in $(docker ps --format "{{.Names}}"); do
-    echo "== $c"; docker inspect --format "{{.Image}} {{index .RepoDigests 0}}" "$c" 2>/dev/null
-  done
-'
-# Pegar tambien: las 18 rutas del front en PROD, una linea por ruta
-# (ruta, codigo HTTP, carga si/no). Es lo que pide SCRUM-1638.
-
-# ---- D5 · servicios por ambiente (Daniel y Sara) -------------------
-for h in 10.43.98.232 10.43.100.141 10.43.98.203; do
-  echo "===== $h"; ssh <usuario>@$h 'docker ps --format "{{.Names}}\t{{.Image}}\t{{.Status}}"'
-done
-# Decir explicitamente si Availability corre en PROD y si Landing esta en PROD.
-
-# ---- D6 · puertos de QA (Daniel y Santiago) ------------------------
-# DESDE LA RED DE LA UNIVERSIDAD, no desde el propio host:
-nc -vz 10.43.100.141 80
-nc -vz 10.43.100.141 443
-curl -sS  -o /dev/null -w "http  %{http_code}\n"  http://10.43.100.141/health
-curl -sSk -o /dev/null -w "https %{http_code}\n" https://10.43.100.141/health
-# Y en el host, para separar puerto cerrado de TLS mal montado:
-ssh <usuario>@10.43.100.141 'ss -tulpn | grep -E ":(80|443|3001|8080)"; docker logs --tail 50 mani-api-gateway'
-
-# ---- D7 · Kafka en DEV y QA (Daniel y Sara) ------------------------
-for h in 10.43.98.232 10.43.100.141; do
-  echo "===== $h"
-  ssh <usuario>@$h '
-    docker ps -a --filter name=kafka --format "{{.Names}}\t{{.Image}}\t{{.Status}}"
-    docker exec $(docker ps -q --filter name=kafka | head -1) \
-      kafka-topics.sh --bootstrap-server localhost:9092 --list 2>/dev/null
-  '
-done
-# Si no hay contenedor, escribir "Kafka no desplegado en <host>", no "pendiente".
-
-# ---- D8 · observabilidad (Daniel y Sara) ---------------------------
-ssh <usuario>@10.43.100.141 '
-  docker ps --filter name=prometheus --filter name=grafana \
-    --format "{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.CreatedAt}}"
-  curl -sS localhost:9090/-/ready; echo
-  curl -sS localhost:9090/api/v1/targets | head -c 2000; echo
-'
-curl -sS http://10.43.100.141/metrics | head -20
-# La fecha de creacion de los contenedores es la que fija si existen desde el 6-nov.
-
-# ---- D9 · respaldos (Daniel) ---------------------------------------
-ssh <usuario>@<host-de-backups> '
-  ls -lh /opt/database-backups/mani/pre-consolidation/ | tail -20
-  ls -lt /opt/database-backups/mani/ | head -20
-  crontab -l 2>/dev/null | grep -i -E "dump|backup"
-  grep -rl "pg_dump" /opt/database-backups /opt/scripts 2>/dev/null | head
-'
-# Hace falta: ruta del script, su commit en git si esta versionado,
-# la entrada de cron y la fecha del ultimo respaldo.
-```
-
-```sql
--- ---- D10 · migraciones y BYPASSRLS (Daniel y Santiago) -------------
--- Correr en el editor SQL de Supabase, PRIMERO en PROD
--- (tjxueukivwxsgipltqwb) y DESPUES en QA (hpsxdotaizzclkeufzct).
-
-SELECT rolname, rolbypassrls, rolsuper
-  FROM pg_roles
- WHERE rolname IN ('postgres','service_role','authenticator','authenticated','anon')
- ORDER BY rolname;
-
-SELECT count(*) AS migraciones, max(version) AS ultima
-  FROM supabase_migrations.schema_migrations;
-
-SELECT count(*) AS politicas_activas FROM pg_policies;
-
--- Informativo, D14-PROD (ya no bloquea):
-SELECT tenant_id, nombre, estado, flujo_operativo
-  FROM categoria_servicio
- WHERE lower(btrim(nombre)) = 'jardineria'
- ORDER BY tenant_id;
-```
-
-«Roles sin `BYPASSRLS` en PROD» se sostiene **solo** si `rolbypassrls` es `f` para `service_role` **y** para `postgres`. El conteo de migraciones se compara con la serie real `0001`–`0033` de `MANI-Node/db/migrations` (Infraestructura V4 §6.2).
+**Evidencia a pegar:** las tres salidas por ambiente, con su fecha. Comparar el conteo con la serie real `0001`–`0033` de `MANI-Node/db/migrations`. La afirmación «roles sin `BYPASSRLS` en PROD» se sostiene solo si `rolbypassrls` es `f` para `service_role` **y** para `postgres`.
 
 ## 4. Decisiones tomadas
 
@@ -482,7 +322,7 @@ Con esos dos, el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/S
 
 ## 6. Cierre
 
-[SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) **no se cierra** hasta que las **siete** filas de §3 (D1, D5, D6, D7, D8, D9, D10) tengan su evidencia pegada aquí y el historial de cambios lo registre. La consulta de D14-PROD queda informativa y no bloquea. Mientras eso no ocurra, en la sustentación esas siete filas se presentan como **pendientes de validar**.
+[SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) **no se cierra** hasta que la **única** fila que queda, D10, tenga su evidencia pegada aquí y el historial de cambios lo registre. La consulta de D14-PROD queda informativa y no bloquea. Mientras eso no ocurra, en la sustentación esas siete filas se presentan como **pendientes de validar**.
 
 Las decisiones de §4 están cerradas y no esperan evidencia. P-D15b sigue abierto y espera dos artefactos del PO.
 
@@ -490,6 +330,7 @@ Las decisiones de §4 están cerradas y no esperan evidencia. P-D15b sigue abier
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.3 | 2026-11-19 | **Se cierran seis filas de una vez** con la evidencia que DevOps capturó el 2026-11-14 y 15 y publicó en `wiki/08-infraestructura/`, cuya §5 ya la mapeaba a estas filas. **D1**: el digest de `mani-flutter-web` en PROD coincide exacto con el tag `v1.0.4`, y `check-prod.sh` devuelve `200 OK` en los seis endpoints y las dieciocho rutas. **D5**: conteo de contenedores por ambiente. **D6**: `ss -tulpn` muestra que en QA el 443 **sí** escucha con TLS 1.2+, de modo que el reporte de QA que decía que rechazaba queda corregido. **D7**: Kafka corre en DEV y QA y **no** en PROD. **D8**: Prometheus y Grafana **no corren en la VM de QA** sino en la de Calidad, ligados a `127.0.0.1`; la respuesta es más precisa que la pregunta. **D9**: respaldo diario cifrado AES-256-CBC con simulacro cronometrado `PASS`. Se corrige además un desajuste de etiqueta en el documento de origen: lo que rotula «D10» responde en realidad a D7, y la **D10 verdadera sigue abierta**. | Sara Albarracín |
 | 2.2 | 2026-11-13 | Se registran las decisiones del PO del 2026-11-10 (Camila Beltrán, [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687)). **D13 se cierra**: HU-M04-05 se retira del plan porque su alcance lo cubren 1390, 1391 y 1393, las tres `Done` y verificadas, con la precisión de que son HU-M04-01, 02 y 04 y ninguna es la 05. **D14-PROD se cierra**: Jardinería activa en PROD y desactivada en QA, con SCRUM-1641 `Done`. **P-D2 queda ratificado por el PO**, con la reserva de que el 10 % de comisión y el pago aparte no se verificaron en el código. | Sara Albarracín |
 | 2.1 | 2026-11-13 | D8: se registra que la observabilidad con Prometheus y Grafana **la exige el profesor**, de modo que es una restricción de proyecto no escrita hasta hoy y el alcance deja de estar en duda. La fila **sigue pendiente de validar**: una exigencia no es una verificación. Se apuntan sus dos consecuencias: proponer PROY-09 en el SRS §3.1 y revisar ADR-0006, que está `Aceptado` con Datadog y no con Prometheus. | Sara Albarracín |
 | 2.0 | 2026-11-11 | Sara asume la autoridad de decisión y se cierran cinco puntos: D4 (rige QAS-17), D12 (firma Camila como PO, con enmienda anotada en `GOBIERNO_DEL_EQUIPO.md` §2.1), P-D2 (el pago tardío se mantiene, sin plazo nuevo), P-D14 (el estado de una categoría es configuración de operación) y P-D15a (un solo responsable para SCRUM-1383). Cada una con alternativa descartada y trazabilidad. **Se corrige el conteo a 6 de 15 verificadas**: D4 y D12 se contaban como verificadas y no lo eran. Se aclara 7 filas / 8 comprobaciones, y que lo exigible para cerrar son 7. Se añade el bloque único de comandos para las comprobaciones pendientes. **P-D15b (mecanismo de cifrado) no se decide**: faltan un RNF y un QAS, que son del PO. | Sara Albarracín |

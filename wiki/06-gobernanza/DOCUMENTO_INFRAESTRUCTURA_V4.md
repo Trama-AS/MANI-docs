@@ -216,7 +216,11 @@ Implementado en el Sprint 5 por TEC-14 (hallazgo R-4 de la revisión de segurida
 | `HighAuth401Rate` | proporción de respuestas `401` sobre el total | > 5 % durante 2 min | warning |
 | `IncompleteClaimsAttemptsDetected` | `auth_validations_total{result="failure",reason=~"missing_.*"}` | > 0 durante 1 min | critical |
 
-- **Pendiente de verificación:** si existe un Prometheus cargando estos archivos en DEV/QA/PROD y a dónde notifica. Los manifiestos están versionados; el despliegue del recolector no está evidenciado en los repositorios.
+- **Verificado el 2026-11-14, y la respuesta no era la que la pregunta suponía.** Sí existe un recolector desplegado, pero **no corre en DEV, QA ni PROD**: corre en la **VM de Calidad (`10.43.98.196`)**, que raspa a los demás ambientes. Allí operan Prometheus (`127.0.0.1:9090`), Alertmanager (`127.0.0.1:9093`), Grafana (`127.0.0.1:3000`), Loki (`0.0.0.0:3100`), Blackbox (`127.0.0.1:9115`) y Mailpit (`127.0.0.1:8025`), con versiones fijas y configuración versionada en `MANI-APIGateway/monitoring/`. En QA corren además cinco exportadores y Promtail como agente de logs. Evidencia: [`08-infraestructura/01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md) §5 y [`05-monitoreo-y-politicas-devops.md`](../08-infraestructura/05-monitoreo-y-politicas-devops.md).
+
+  **Por qué esto resolvió una contradicción de tres documentos.** El informe de DevOps decía que la observabilidad era futura, el análisis de monitoreo decía que ya existía, y el SDD §8 decía que no estaba aprovisionada. Las tres tenían una parte de razón: existe, pero no en la máquina donde todos la buscaban. Es la fila **D8** de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md), cerrada el 2026-11-19.
+
+  **Lo que sigue sin estar:** las alertas de autenticación de este apartado notifican a Alertmanager, pero **a dónde escala desde ahí no está escrito**, y el escenario de disponibilidad (QAS-16) sigue sin medir porque exige una serie de un mes calendario que todavía no se ha acumulado. Que exista el recolector no equivale a tener la medición.
 
 ---
 

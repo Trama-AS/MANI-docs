@@ -132,7 +132,7 @@ Cinco de las quince filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDA
 | Fila | Qué afecta en esta carpeta | Estado |
 |---|---|---|
 | D4 | RPO/RTO: `SDD.md` QAS-17 contra el informe de DevOps y la opción B | Conflicto verificado; **falta la decisión** (P-D4) |
-| D5 | Servicios por ambiente: la tabla de contenedores de `SAD.md` incluye Availability | **Pendiente de validar** (`docker ps` por host) |
+| D5 | Servicios por ambiente | **CERRADA** el 2026-11-19 con el conteo de contenedores por ambiente. La premisa de la fila estaba mal planteada: `Availability` **no es un contenedor** sino un componente interno de Core ([`SDD.md`](SDD.md) §4.3), y el propio [`SAD.md`](SAD.md) ya dice que no existe `MANI-Availability` como desplegable. No había nada que corregir en el SAD |
 | D7 | Kafka en DEV y QA: [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) y el estado de ADR-0029 | **Pendiente de validar** |
 | D8 | Observabilidad: `SDD.md` §8 declara que no hay | **Pendiente de validar** |
 | D15 | Responsable y alcance del cifrado, que condiciona el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) | **Decidido en [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) (Opción A) + M4 acreditado (`2026-11-14`)**; pendiente M1-M3 (Mesa/PO/DoD) |

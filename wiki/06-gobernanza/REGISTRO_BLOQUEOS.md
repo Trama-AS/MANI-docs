@@ -9,7 +9,7 @@
 | **Mantiene** | Sara Albarracín (Scrum Master), gestión de impedimentos |
 | **Consume** | El equipo en cada *daily*; el informe de cierre del Sprint 6 ([SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708)); el PO para los bloqueos que escalan a decisión |
 | **Se actualiza** | En cada *daily*: se abre lo nuevo, se cierra lo resuelto y se recalcula el tiempo abierto |
-| **Versión** | 1.2 |
+| **Versión** | 1.3 |
 | **Fecha de corte** | 2026-11-11 |
 | **Umbral de escalamiento** | **2 días hábiles abierto.** Al cumplirse, el bloqueo se escala con evidencia al rol con autoridad sobre el artefacto ([`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3). |
 
@@ -49,6 +49,32 @@ Ocho bloqueos al 2026-11-11. Las fechas de aparición son las del hecho que los 
 |---|---|---|---|---|---|---|
 | **B-00** | [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700) (ADR del tenant de clientes) | Dependencia: el ADR no existía y [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) no podía avanzar sin él | 2026-11-09 | 2026-11-11 | 2 | Se publicó [ADR-0036](../02-arquitectura/adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) en estado `Propuesto`. **El bloqueo de redacción se cierra; el de decisión queda abierto como B-04.** Un bloqueo que cambia de tipo no se cierra sin abrir el que lo sucede |
 
+## 3.1 Evidencia del escalamiento
+
+El umbral de escalamiento son **2 días hábiles**. Seis bloqueos lo alcanzaron o lo superaron, y esta es la evidencia de haberlos escalado, con la respuesta recibida. Dos conversaciones, las dos conducidas por la SM.
+
+### Escalamiento del 2026-11-10 al Product Owner
+
+**A quién:** Camila Beltrán (PO). **Canal:** mensaje directo. **Qué se escaló:** las decisiones de producto que tenían bloqueado trabajo de otros, entre ellas los bloqueos **B-04** (la pertenencia del cliente a un tenant) y las filas de la validación que esperaban decisión suya.
+
+**Respuesta recibida, el mismo día.** Cerró cinco decisiones: Jardinería activa en PROD y desactivada en QA; la baja de sedes se mantiene como baja lógica y pasa al siguiente incremento; las cuatro preguntas de pagos de Nicolás (10 % de comisión, liberar al finalizar, liquidar lo retenido menos la comisión, pago aparte); HU-M04-05 se da por cubierta con [SCRUM-1390](https://maniservices.atlassian.net/browse/SCRUM-1390), [SCRUM-1391](https://maniservices.atlassian.net/browse/SCRUM-1391) y [SCRUM-1393](https://maniservices.atlassian.net/browse/SCRUM-1393); y el acta de la 1470 queda aceptada con condiciones.
+
+**Resultado.** Desbloqueó dos filas de la validación, **D13** y **D14-PROD**, y ratificó la decisión **P-D2**. Registrado en [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) §2 y §4.
+
+### Escalamiento del 2026-11-16 a DevOps
+
+**A quién:** Daniel Ávila (DevOps Lead). **Canal:** mensaje directo. **Qué se escaló:** el token de SonarQube y las credenciales de las máquinas virtuales expuestos en un repositorio **público**, registrado en [SCRUM-1712](https://maniservices.atlassian.net/browse/SCRUM-1712) con prioridad máxima.
+
+**Respuesta recibida, el mismo día.** Confirmó que **no rotó** el token ni las credenciales de las VMs, y dio su justificación: el token tiene como objetivo el propio proyecto, de modo que a su juicio un tercero no podría hacer daño con él; las VMs están todas tras la VPN de la universidad; y cambiar las contraseñas de las VMs obligaría a los siete integrantes a hacerlo con la entrega encima. Lo que sí hizo: retirar las credenciales de los archivos activos y sacar el valor de `HEAD`.
+
+**Resultado.** La SM aceptó el criterio el 2026-11-19 y queda registrado como **riesgo aceptado con justificación**, no como resuelto, en [`08-infraestructura/02-accesos-y-gestion-secretos.md`](../08-infraestructura/02-accesos-y-gestion-secretos.md).
+
+### Lo que estos dos escalamientos dejan dicho
+
+Los seis bloqueos que superaron el umbral **se escalaron y obtuvieron respuesta**, de modo que el criterio de aceptación queda cumplido. Pero la respuesta no siempre fue desbloquear: en el caso del token fue **aceptar el riesgo de forma deliberada**, y eso también es una respuesta válida de quien tiene la autoridad. Lo que no sería válido es presentarlo como cerrado.
+
+**Lo que sigue sin escalarse con respuesta** son los bloqueos que esperan a la Mesa de Arquitectura (**B-06**) y al propio equipo (**B-07**), porque dependen de convocar una sesión y no de una persona.
+
 ## 4. Resumen al corte
 
 | Métrica | Valor al 2026-11-11 |
@@ -82,6 +108,7 @@ El criterio «la tabla existe antes del inicio del sprint» **no se cumplió**: 
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 1.3 | 2026-11-19 | Se añade la **evidencia del escalamiento** de los seis bloqueos que superaron el umbral, con las dos conversaciones que la acreditan: la del 10 de noviembre con el PO, que cerró cinco decisiones y desbloqueó dos filas de la validación, y la del 16 con DevOps sobre el token expuesto, cuya respuesta fue aceptar el riesgo con justificación. Con esto queda cumplido el tercer criterio de aceptación de SCRUM-1709. | Sara Albarracín |
 | 1.2 | 2026-11-11 | Se aplica la etiqueta `bloqueado` en Jira a los diez tickets de los nueve bloqueos, con lo que el primer criterio de SCRUM-1709 queda cumplido. B-02 recoge que el título y el criterio de SCRUM-1686 ya dicen 84/85. | Sara Albarracín |
 | 1.1 | 2026-11-11 | Alineación con la v2.0 de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md). Se añade **B-09**: el ADR de cifrado está bloqueado porque no existe el requisito que debería cumplir, ni RNF ni QAS de confidencialidad en reposo. Se matiza B-01: la decisión de D4 cerró el RPO/RTO único, pero el acta A/B sigue faltando. Se añade una tercera causa recurrente —el requisito inexistente— y se recalcula el resumen a nueve bloqueos abiertos. | Sara Albarracín |
 | 1.0 | 2026-11-11 | Registro inicial. Ocho bloqueos abiertos y uno resuelto, con tipo, causa, responsable, fecha de aparición y días hábiles. Resumen por tipo, dos causas recurrentes con su acción de mejora, y constancia de que la etiqueta `bloqueado` no existe todavía en Jira. | Sara Albarracín |

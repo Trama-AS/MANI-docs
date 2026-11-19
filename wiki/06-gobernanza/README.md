@@ -28,7 +28,8 @@ Seis pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en ord
 | 2 | **Políticas de trabajo**: ramas, PR, promoción, CI/CD, secretos, uso de IA | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Es la norma que el incumplimiento de un entregable se mide contra ella |
 | 3 | **Infraestructura vigente**: ambientes, VMs, Supabase, red, backups | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) y [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Fija sobre qué se despliega lo que se decide |
 | 4 | **Validación de discrepancias**: qué se verificó de verdad y qué sigue pendiente | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Separa lo verificado de lo afirmado, antes de llevar una cifra a la sustentación |
-| 5 | **Registro de bloqueos del Sprint 6** | [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Ocho bloqueos abiertos, seis de ellos en o sobre el umbral de escalamiento: es lo que explica por qué varias tareas del sprint no avanzan |
+| 5 | **Registro de bloqueos del Sprint 6** | [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Cierre del Sprint 6: resultados con cifras de Jira, lo que sí se cerró, cuatro lecciones aprendidas y nueve puntos de deuda abierta con su responsable | Sara Albarracín (SM) | El equipo, el PO y el jurado | Al cierre de cada sprint | 1.0 · 2026-11-19 |
+| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Ocho bloqueos abiertos, seis de ellos en o sobre el umbral de escalamiento: es lo que explica por qué varias tareas del sprint no avanzan |
 | 6 | **Actas e informes de cierre** | **Aún no existen como documento.** Ver [§4](#4-lo-que-esta-carpeta-todavía-no-tiene) | Es lo que falta para cerrar HU-WIKI-08 |
 
 ## 2. La regla que resuelve discusiones
@@ -77,7 +78,6 @@ Los criterios específicos de HU-WIKI-08 piden actas, informes de cierre y regis
 | Qué falta | Qué debe contener | Jira | Estado |
 |---|---|---|---|
 | **Acta de decisión A/B por escenario de calidad** | Cada escenario marcado como opción A o B con su motivo, un RPO/RTO único (hoy hay tres propuestas incompatibles), y firma del PO | [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684) | `To Do`. **Bloquea** [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) y [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686): sin el acta, reescribir los umbrales del SDD sería inventarlos |
-| **Informe de cierre del Sprint 6** | Resultados, lecciones aprendidas y deuda abierta | [SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708) | `To Do`. Se redacta al cierre del sprint |
 | **Seguimiento de los acuerdos de la planning del Sprint 6** | Acuerdo, responsable, fecha comprometida y estado | [SCRUM-1707](https://maniservices.atlassian.net/browse/SCRUM-1707) | `To Do` |
 
 **Toda acta de esta carpeta lleva**, sin excepción: fecha, asistentes, decisiones tomadas una por una, y el enlace a la tarea de Jira que la ejecuta. Las actas de aceptación las firma el PO. Un acta sin firma del PO no es un acta: es un borrador de la SM.

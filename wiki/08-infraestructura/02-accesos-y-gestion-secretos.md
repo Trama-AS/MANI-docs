@@ -12,6 +12,18 @@
 
 - **Cero secretos en Git (`HEAD`):** Ni la wiki, ni `Entregas/`, ni `docker-compose.*.yml` deben incluir contraseñas SSH, tokens de SonarQube (`sqa_...`), llaves `anon`/`service_role` de Supabase ni `SUPABASE_JWT_SECRET`.
 - **Reemplazo aplicado en `DOCUMENTO_INFRAESTRUCTURA_V3.md` y `GUIA_OPERATIVA_CALIDAD_QA_CFG4-03.md`:** Las credenciales previamente documentadas fueron redactadas en `main` (`2c7671a`, [SCRUM-1639](https://maniservices.atlassian.net/browse/SCRUM-1639), [SCRUM-1712](https://maniservices.atlassian.net/browse/SCRUM-1712)) con la referencia `<redactado — solicitar al DevOps Lead por canal privado>`.
+> ### Riesgo aceptado, decidido el 2026-11-19
+>
+> **No se rotaron ni el token de SonarQube ni las credenciales de las máquinas virtuales.** Es una **decisión registrada del equipo con riesgo aceptado**, no un asunto resuelto, y conviene que la diferencia quede escrita.
+>
+> **Quién y cuándo.** Propuesto por Daniel Ávila (DevOps Lead) el 2026-11-16 y aceptado por Sara Albarracín (SM) el 2026-11-19, tras el escalamiento registrado en [`../06-gobernanza/REGISTRO_BLOQUEOS.md`](../06-gobernanza/REGISTRO_BLOQUEOS.md) §3.1.
+>
+> **Justificación de DevOps.** El token de SonarQube tiene como objetivo el propio proyecto, de modo que el daño aprovechable por un tercero es limitado. Las máquinas virtuales están todas tras la VPN de la universidad. Y rotar las credenciales de las VMs obligaría a los siete integrantes a cambiar la suya con la entrega encima, lo que sería un cuello de botella real.
+>
+> **Lo que sigue siendo cierto, y por eso esto es riesgo y no cierre.** Retirar una credencial de `HEAD` **no la invalida**: el repositorio es público y el valor sigue en el historial de git, accesible con un comando. Mientras no se rote, la credencial es válida.
+>
+> **Qué queda pendiente después de la entrega**, por orden de coste: rotar el token de SonarQube, que lo hace una sola persona en minutos y solo exige actualizar el secreto `SONAR_TOKEN` de GitHub Actions sin afectar a nadie más; y rotar las credenciales de las VMs, que sí requiere coordinar a los siete integrantes.
+
 - **Alcance de redacción en Sprint 6:** Por decisión operativa registrada en Jira (`SCRUM-1639`, `SCRUM-1712`), se retiraron los secretos de los archivos activos en `HEAD` sin reescribir el historial git (`no force-push`) y sin rotar claves activas de VMs/SonarQube para no interrumpir accesos ni pruebas de QA.
 
 ## 2. Cómo solicitar acceso operativo

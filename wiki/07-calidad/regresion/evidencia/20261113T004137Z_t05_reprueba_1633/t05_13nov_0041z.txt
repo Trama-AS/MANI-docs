@@ -1,0 +1,43 @@
+== conectado a la VM; corriendo t05_qa.py (tarda 1 a 2 minutos)
+== SCRUM-1642 T-05 re-prueba de SCRUM-1633 en MANI-QA (2026-11-13T00:41:37Z)
+
+== Revision de Core desplegada (debe contener 098bf38)
+  mani-core-service rev=cfa503a
+  sesiones de cliente.t1, aliado.t1, admin.t1 y cliente.t2: ok
+  comision vigente de T1: 200 porcentaje=10
+
+== Camino A: pagar con la solicitud FINALIZADA
+  solicitud …6f45: aceptar oferta 200, aceptar cotizacion 200
+  iniciar 200  | finalizar 200 
+PASA  | A | estado antes de pagar | esperado FINALIZADA | obtenido FINALIZADA | cid=t05-b50b5d3516
+PASA  | A | pagar tras finalizar (decision PO 891/892: permitido) | esperado 200/201 APROBADO | obtenido 201 APROBADO  | cid=t05-504a1a22bd
+PASA  | A | retencion del pago | esperado LIBERADA con fecha | obtenido 200 LIBERADA 2026-11-13T00:42:36.259Z | cid=t05-ea5c069e93
+  motor (estado | liberada_at | liquidaciones | bruto | comision | neto | %): ['LIBERADA | 2026-11-13 00:42:36.259142+00 | 1 | 100000.00 | 10000.00 | 90000.00 | 10.00']
+PASA  | A | una sola liquidacion del aliado en la base | esperado 1 | obtenido 1 | cid=
+PASA  | A | liquidacion cuadra: bruto = total, neto = bruto - comision, comision = bruto x % | esperado bruto 100000 | obtenido bruto=100000.00 comision=10000.00 neto=90000.00 pct=10.00 | cid=
+PASA  | A | aliado.t1 ve el cobro liquidado | esperado pago presente con liquidacion | obtenido 200 presente=True | cid=t05-f316531cf5
+PASA  | A | otro tenant no ve la retencion | esperado 403/404 | obtenido 404 | cid=t05-b733255677
+PASA  | A | repetir el pago con la misma clave no duplica | esperado mismo pago | obtenido 200 mismo=True | cid=t05-bf39a244f2
+PASA  | A | sigue habiendo una sola liquidacion por la solicitud | esperado 1 | obtenido 1 | cid=
+
+== Camino B: pagar con la solicitud CERRADA (camino exacto de SCRUM-1633)
+  solicitud …9f3d: aceptar oferta 200, aceptar cotizacion 200
+  finalizar 200 | califica cliente 201 | califica aliado 201 | cerrar 200 
+PASA  | B | estado antes de pagar | esperado CERRADA | obtenido CERRADA | cid=t05-ffced7222d
+PASA  | B | pagar con la solicitud cerrada (decision PO: permitido) | esperado 200/201 APROBADO | obtenido 201 APROBADO  | cid=t05-b8a10d019a
+PASA  | B | retencion del pago | esperado LIBERADA con fecha | obtenido 200 LIBERADA 2026-11-13T00:44:32.712Z | cid=t05-6731a5b6e5
+  motor (estado | liberada_at | liquidaciones | bruto | comision | neto | %): ['LIBERADA | 2026-11-13 00:44:32.712334+00 | 1 | 100000.00 | 10000.00 | 90000.00 | 10.00']
+PASA  | B | una sola liquidacion del aliado en la base | esperado 1 | obtenido 1 | cid=
+PASA  | B | liquidacion cuadra: bruto = total, neto = bruto - comision, comision = bruto x % | esperado bruto 100000 | obtenido bruto=100000.00 comision=10000.00 neto=90000.00 pct=10.00 | cid=
+PASA  | B | aliado.t1 ve el cobro liquidado | esperado pago presente con liquidacion | obtenido 200 presente=True | cid=t05-22e8cdaa19
+PASA  | B | otro tenant no ve la retencion | esperado 403/404 | obtenido 404 | cid=t05-5482bd401c
+
+== Camino C (control): pago antes de finalizar
+PASA  | C | sin finalizar sigue retenida (892 C2) | esperado RETENIDA | obtenido RETENIDA | cid=t05-9fd825e225
+PASA  | C | al finalizar se libera | esperado LIBERADA | obtenido LIBERADA | cid=t05-c74420fbc4
+
+== Dato del fallo del 5-nov (informativo, no cuenta)
+  pago 087f7259…: retencion LIBERADA creada 2026-11-05T05:42:49.362Z (anterior al commit 098bf38 de 2026-11-05T14:57Z)
+
+== Fin (2026-11-13T00:46:17Z): 18 PASA, 0 FALLA
+  solicitudes de prueba: A=…ed2f6f45 B=…6ae49f3d C=…cc4ad67e

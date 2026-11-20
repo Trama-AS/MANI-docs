@@ -1,0 +1,1561 @@
+{
+  "info": {
+    "name": "SCRUM-1664 T-27 negativos de operaciones criticas (QAS-10)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "crear_solicitud",
+      "item": [
+        {
+          "name": "C-ROL | crear_solicitud | rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-C-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"sitioId\": \"70000000-0000-4000-8000-000000000011\", \"descripcion\": \"SCRUM-1664 T-27 {{corrida}} intento de aliado publicando\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-SOL-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('C-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('C-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | C-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "C-PAY | crear_solicitud | payload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-C-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"sitioId\": \"70000000-0000-4000-8000-000000000011\", \"descripcion\": \"corta\", \"claveIdempotencia\": \"{{clave_nueva_1}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400, 422];",
+                  "const regex = \"^MANI-SOL-422D\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('C-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('C-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | C-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "C-DUP | crear_solicitud | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-C-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"sitioId\": \"70000000-0000-4000-8000-000000000011\", \"descripcion\": \"{{desc_s_pend}}\", \"claveIdempotencia\": \"{{clave_s_pend}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [200, 201];",
+                  "const regex = null;",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('C-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('C-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | C-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "C-DUP2 | crear_solicitud | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-C-DUP2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"sitioId\": \"70000000-0000-4000-8000-000000000011\", \"descripcion\": \"{{desc_s_pend}} con otros datos\", \"claveIdempotencia\": \"{{clave_s_pend}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [409];",
+                  "const regex = \"^MANI-SOL-409K\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('C-DUP2 http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('C-DUP2 codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | C-DUP2 | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "aceptar_solicitud",
+      "item": [
+        {
+          "name": "A-ROL | aceptar_solicitud | rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-A-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{clave_nueva_2}}"
+              }
+            ],
+            "url": "{{gw}}/api/v1/dispatch/requests/{{s_pend}}/accept"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-DSP-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('A-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('A-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | A-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-TEN | aceptar_solicitud | tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t2}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-A-TEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{clave_nueva_3}}"
+              }
+            ],
+            "url": "{{gw}}/api/v1/dispatch/requests/{{s_pend}}/accept"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403, 404];",
+                  "const regex = \"^MANI-(DSP|SOL)-40[34]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('A-TEN http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('A-TEN codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | A-TEN | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-PAY | aceptar_solicitud | payload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-A-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{clave_nueva_4}}"
+              }
+            ],
+            "url": "{{gw}}/api/v1/dispatch/requests/no-es-uuid/accept"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400, 404];",
+                  "const regex = \"^MANI-DSP-40[04]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('A-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('A-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | A-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-DUP | aceptar_solicitud | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-A-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{clave_nueva_5}}"
+              }
+            ],
+            "url": "{{gw}}/api/v1/dispatch/requests/{{s_full}}/accept"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [200, 409];",
+                  "const regex = \"^(MANI-DSP-409|$)\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('A-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('A-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | A-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-EST | aceptar_solicitud | estado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-A-EST"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{clave_nueva_11}}"
+              }
+            ],
+            "url": "{{gw}}/api/v1/dispatch/requests/{{s_cancel}}/accept"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [404, 409];",
+                  "const regex = \"^MANI-(DSP|SOL)-40[49]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('A-EST http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('A-EST codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | A-EST | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "aceptar_cotizacion",
+      "item": [
+        {
+          "name": "Q-ROL | aceptar_cotizacion | rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-Q-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/cotizaciones/{{cot}}/aceptar",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-COT-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('Q-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('Q-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | Q-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Q-TEN | aceptar_cotizacion | tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t2}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-Q-TEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/cotizaciones/{{cot}}/aceptar",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403, 404];",
+                  "const regex = \"^MANI-COT-40[34]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('Q-TEN http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('Q-TEN codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | Q-TEN | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Q-PAY | aceptar_cotizacion | payload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-Q-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/cotizaciones/no-es-uuid/aceptar",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400];",
+                  "const regex = \"^MANI-COT-400\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('Q-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('Q-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | Q-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Q-DUP | aceptar_cotizacion | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-Q-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/cotizaciones/{{cot}}/aceptar",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [200, 409];",
+                  "const regex = \"^(MANI-COT-409|$)\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('Q-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('Q-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | Q-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cancelar_solicitud",
+      "item": [
+        {
+          "name": "X-ROL | cancelar_solicitud | rol",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-X-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes/me/{{s_pend}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"motivo\": \"SCRUM-1664 T-27\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-SOL-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('X-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('X-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | X-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "X-TEN | cancelar_solicitud | tenant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t2}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-X-TEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes/me/{{s_pend}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"motivo\": \"SCRUM-1664 T-27\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403, 404];",
+                  "const regex = \"^MANI-SOL-40[34]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('X-TEN http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('X-TEN codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | X-TEN | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "X-PAY | cancelar_solicitud | payload",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-X-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes/me/{{s_pend}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"motivo\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400, 422];",
+                  "const regex = \"^MANI-SOL-422M\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('X-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('X-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | X-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "X-DUP | cancelar_solicitud | duplicado",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-X-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/solicitudes/me/{{s_cancel}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"motivo\": \"SCRUM-1664 T-27 segunda vez\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [200, 409];",
+                  "const regex = \"^(MANI-SOL-409C|$)\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('X-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('X-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | X-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pagar",
+      "item": [
+        {
+          "name": "P-ROL | pagar | rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-P-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cotizacionId\": \"{{cot}}\", \"claveIdempotencia\": \"{{clave_nueva_6}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-PAG-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('P-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('P-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | P-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P-TEN | pagar | tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t2}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-P-TEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cotizacionId\": \"{{cot}}\", \"claveIdempotencia\": \"{{clave_nueva_7}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403, 404];",
+                  "const regex = \"^MANI-PAG-40[34]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('P-TEN http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('P-TEN codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | P-TEN | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P-PAY | pagar | payload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-P-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cotizacionId\": \"no-es-uuid\", \"claveIdempotencia\": \"{{clave_nueva_8}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400];",
+                  "const regex = \"^MANI-PAG-400\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('P-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('P-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | P-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P-PAY2 | pagar | payload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-P-PAY2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cotizacionId\": \"{{cot}}\", \"claveIdempotencia\": \"{{clave_nueva_9}}\", \"numeroTarjeta\": \"4111111111111111\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400];",
+                  "const regex = \"^MANI-PAG-400\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('P-PAY2 http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('P-PAY2 codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | P-PAY2 | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P-DUP | pagar | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-P-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cotizacionId\": \"{{cot}}\", \"claveIdempotencia\": \"{{clave_pago}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [200];",
+                  "const regex = null;",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('P-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('P-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | P-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P-DUP2 | pagar | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-P-DUP2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cotizacionId\": \"{{cot}}\", \"claveIdempotencia\": \"{{clave_nueva_10}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [409];",
+                  "const regex = \"^MANI-PAG-409A\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('P-DUP2 http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('P-DUP2 codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | P-DUP2 | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "aprobar_aliado",
+      "item": [
+        {
+          "name": "V-ROL | aprobar_aliado | rol",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_aliado_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-V-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/aliados/{{aliado}}/verificacion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\": \"APROBADO\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-VER-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('V-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('V-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | V-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "V-TEN | aprobar_aliado | tenant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t2}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-V-TEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/aliados/{{aliado}}/verificacion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\": \"APROBADO\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403, 404];",
+                  "const regex = \"^MANI-VER-40[34]\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('V-TEN http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('V-TEN codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | V-TEN | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "V-PAY | aprobar_aliado | payload",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-V-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/aliados/{{aliado}}/verificacion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\": \"QUIZAS\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400, 422];",
+                  "const regex = \"^MANI-VER-422D\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('V-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('V-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | V-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "V-PAY2 | aprobar_aliado | payload",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-V-PAY2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/aliados/{{aliado}}/verificacion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\": \"RECHAZADO\", \"motivo\": \"no\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400, 422];",
+                  "const regex = \"^MANI-VER-422M\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('V-PAY2 http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('V-PAY2 codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | V-PAY2 | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "V-DUP | aprobar_aliado | duplicado",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-V-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/aliados/{{aliado}}/verificacion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\": \"APROBADO\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [409];",
+                  "const regex = \"^MANI-VER-409\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('V-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('V-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | V-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cambiar_tarifa",
+      "item": [
+        {
+          "name": "T-ROL | cambiar_tarifa | rol",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_cliente_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-T-ROL"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/tarifas/{{tarifa}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"valorMin\": {{t_min}}, \"valorTipico\": {{t_tip}}, \"valorMax\": {{t_max}}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403];",
+                  "const regex = \"^MANI-TAR-403\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('T-ROL http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('T-ROL codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | T-ROL | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T-TEN | cambiar_tarifa | tenant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t2}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-T-TEN"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/tarifas/{{tarifa}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"valorMin\": {{t_min}}, \"valorTipico\": {{t_tip}}, \"valorMax\": {{t_max}}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [403, 404];",
+                  "const regex = \"^MANI-TAR-404\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('T-TEN http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('T-TEN codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | T-TEN | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T-PAY | cambiar_tarifa | payload",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-T-PAY"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/tarifas/{{tarifa}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"valorMin\": 500000, \"valorTipico\": 300000, \"valorMax\": 100000}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [400, 422];",
+                  "const regex = \"^MANI-TAR-400\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('T-PAY http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('T-PAY codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | T-PAY | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T-DUP | cambiar_tarifa | duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-T-DUP"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/tarifas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"valorMin\": {{t_min}}, \"valorTipico\": {{t_tip}}, \"valorMax\": {{t_max}}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [409];",
+                  "const regex = \"^MANI-TAR-409V\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('T-DUP http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('T-DUP codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | T-DUP | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T-VER | cambiar_tarifa | duplicado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tk_admin_t1}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "t27-{{corrida}}-T-VER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gw}}/api/v1/core/tarifas/{{tarifa_vieja}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"categoriaId\": \"60000000-0000-4000-8000-000000000011\", \"valorMin\": {{t_min}}, \"valorTipico\": {{t_tip}}, \"valorMax\": {{t_max}}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperado = [409];",
+                  "const regex = \"^MANI-TAR-409R\";",
+                  "let cuerpo = {};",
+                  "try { cuerpo = pm.response.json(); } catch (e) { cuerpo = {}; }",
+                  "const err = cuerpo && cuerpo.error;",
+                  "const codigo = (err && typeof err === 'object' ? err.code : null) || cuerpo.code || '';",
+                  "pm.test('T-VER http ' + esperado.join('/'), () => pm.expect(esperado).to.include(pm.response.code));",
+                  "if (regex) {",
+                  "  pm.test('T-VER codigo ' + regex, () => pm.expect(String(codigo)).to.match(new RegExp(regex)));",
+                  "}",
+                  "console.log('T27 | T-VER | http=' + pm.response.code + ' | codigo=' + (codigo || '-'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

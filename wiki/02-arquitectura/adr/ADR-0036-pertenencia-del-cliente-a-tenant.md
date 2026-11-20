@@ -1,6 +1,6 @@
 # ADR-0036 — Pertenencia del cliente a un tenant
 
-- **Estado:** **Decidido por la Scrum Master el 2026-11-12; pendiente de ratificación en Mesa.** No es `Aceptado`: ADR-0003 reserva la ratificación a la Mesa y la SM es aquí la proponente.
+- **Estado:** `Aceptado` · **ratificado por la Scrum Master (Sara Albarracín) el 2026-11-19**, sin sesión de Mesa de Arquitectura. ADR-0003 reserva la ratificación a la Mesa; al no haberse convocado ninguna en el Sprint 6 y con la entrega en curso, la SM ratifica para que la decisión no quede sin respaldo formal mientras el código ya la cumple. **La Mesa puede confirmarla o revertirla** cuando se reúna.
 - **Decisión de:** modelo de datos, identidad y aislamiento multitenant
 - **Proponente:** Sara Albarracín Niño (arquitectura)
 - **Decide:** María Camila Beltrán Carreño (Product Owner); ratifica la Mesa de Arquitectura (ADR-0003)
@@ -185,6 +185,14 @@ Esta respuesta es **condicional**: solo aplica si M3 se materializa. No comprome
 | R1 | Ratificar M1 a M4 en Mesa de Arquitectura (ADR-0003) | Mesa |
 | R2 | Confirmar la reserva de M2: que el comportamiento esperado coincide con el modelo vigente | Santiago, que reportó SCRUM-1637 |
 | R3 | Crear la historia de la opción B en el backlog | PO |
+
+## Ratificación del 2026-11-19
+
+**Ratificado por Sara Albarracín (Scrum Master), sin sesión de Mesa de Arquitectura.**
+
+**Por qué sin Mesa.** [ADR-0003](ADR-0003-mesa-arquitectura.md) reserva la ratificación de una decisión estructural a la Mesa. En el Sprint 6 **no se convocó ninguna sesión**, y la decisión ya estaba siendo cumplida por el código y la infraestructura. Dejarla indefinidamente como «pendiente de ratificar» habría significado llevar a la sustentación una decisión que el proyecto aplica y que formalmente nadie aprobó.
+
+**Qué significa esta ratificación y qué no.** Da respaldo formal a la decisión para que sea exigible y citable. **No sustituye a la Mesa:** cuando se reúna puede **confirmarla o revertirla**, y si la revierte, esta ratificación y su fecha quedan en el historial como lo que fueron. Se registra así, y no como una ratificación ordinaria, para que cualquiera pueda auditar cómo se tomó.
 
 ## Historial de cambios
 

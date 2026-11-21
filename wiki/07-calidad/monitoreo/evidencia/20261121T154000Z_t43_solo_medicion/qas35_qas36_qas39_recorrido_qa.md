@@ -55,4 +55,6 @@ Las capturas están en `capturas/`, con el nombre `qasNN_rol_paso.jpg`.
 - `GET /api/v1/core/aliados/verificacion` responde 500 `INTERNAL_ERROR` «Error consultando documentos KYC» en 3 de 3 intentos (correlationId `c8a271e6-ba48-4b83-8738-20a3cce029ec`).
 - En la misma sesión, `GET /api/v1/core/profiles/me` respondió una vez 500 «Error consultando perfil» (`6ee02b95-cb27-4f86-a61e-99b53289ada0`) y la siguiente vez 200.
 - Efecto: el admin de ACME no puede ver ni aprobar aliados en QA.
-- Falta revisar los logs del Core con esos correlationId.
+- **Causa (logs del Core, 21 nov 21:05Z, `d_t43_1_logs_core_21nov_2105z.txt`):** `EMAXCONNSESSION max clients reached in session mode - max clients are limited to pool_size: 15`. El pooler de Supabase en modo sesión ya tenía sus 15 clientes ocupados y rechazó la conexión de `withTenantContext`. No es un fallo de la lógica de KYC: la consulta ni llegó a la base.
+- Lo agrava el código: `ListAlliesVerificationUseCase` hidrata todos los aliados en paralelo y cada uno abre 3 conexiones a la vez (usuario, categorías y documentos KYC), así que esta pantalla es la primera en chocar con el límite. El pool propio de Core es de 5 por instancia (`DATABASE_POOL_MAX`), de modo que los otros cupos del pooler los ocupan otros clientes del mismo proyecto de Supabase.
+- En los logs, el error que aparece junto a `6ee02b95…` (`profiles/me`) es el de una petición de verificación intercalada; el 500 de perfil tiene la misma causa probable.

@@ -35,7 +35,7 @@
 | # | Hallazgo | Escenario | Responsable sugerido |
 |---|---|---|---|
 | H-21-1 | Validación de reglas del tenant duplicada entre Core y Rules. Si cambia un límite en un lado, el otro rechaza o acepta distinto. | QAS-21 | Equipo de Core y de Rules |
-| D-T43-1 | **Defecto:** `GET /core/aliados/verificacion` responde 500 «Error consultando documentos KYC» de forma persistente; el admin no puede ver ni aprobar aliados en QA (correlationId `c8a271e6-ba48-4b83-8738-20a3cce029ec`). | QAS-35 y 39 | Equipo de Core |
+| D-T43-1 | **Defecto:** `GET /core/aliados/verificacion` responde 500 «Error consultando documentos KYC» de forma persistente; el admin no puede ver ni aprobar aliados en QA (correlationId `c8a271e6-ba48-4b83-8738-20a3cce029ec`). Causa en los logs: `EMAXCONNSESSION`, el pooler de Supabase en modo sesión agotó sus 15 conexiones; la pantalla abre 3 conexiones por aliado a la vez (`d_t43_1_logs_core_21nov_2105z.txt`). | QAS-35 y 39 | Daniel (pooler) y equipo de Core |
 | H-35-1 | Una ruta de otro rol redirige al inicio sin mensaje, y los errores 500 muestran un genérico «Algo salió mal». | QAS-35 | Flutter |
 | H-36-1 | El perfil muestra «Rol: ALLY» y «Estado: VERIFIED» en vez de «Aliado» y «Verificado». | QAS-36 | Flutter |
 | H-33-1 | Adopción baja del sistema de diseño, sobre todo en campos de texto (1 %). | QAS-33 | Nicolás León (PR #142 a #147) |
@@ -50,6 +50,7 @@
 - **QAS-13, token vencido en las 45 escrituras limitadas:** no se repitió, porque el token vencido se borró al terminar la primera corrida y uno nuevo tarda 60 min en vencer. Se da por cubierto porque el Gateway valida todas las rutas protegidas con el mismo `auth_request /_auth_validate`, y la corrida sin 429 (360 de 360) muestra que las 120 operaciones pasan por esa validación. Si la corrida programada de las 17:55Z termina, se agrega como confirmación.
 - **Lighthouse (QAS-34):** no se corrió. Necesita descargar el paquete y la Landing no respondía desde la máquina de QA. No cambia el estado: sin criterio publicado no hay contra qué medir.
 - **Recorrido de 35, 36 y 39:** hecho el 21 nov en la app de QA con 24 capturas (`qas35_qas36_qas39_recorrido_qa.md`). No se pudo ver el estado «KYC pendiente» (`aliado.t1` ya está verificado) ni aprobar o rechazar aliados (D-T43-1).
+- [`d_t43_1_logs_core_21nov_2105z.txt`](d_t43_1_logs_core_21nov_2105z.txt): logs del Core con la causa de D-T43-1.
 - **Sonar, fecha de último análisis:** el token de análisis no puede listar análisis. Las medidas sí responden.
 
 ## 4. Evidencia (esta carpeta)
@@ -65,4 +66,4 @@
 - `flutter_test_interaccion.md`: `flutter test` de MANI-Flutter `develop` `daba130` y selección por escenario (08, 35, 36, 39). La salida JSON completa (800 KB) no se versiona.
 - QAS-44: [`08-infraestructura/03-despliegue-y-rollback.md`](../../../../08-infraestructura/03-despliegue-y-rollback.md), Runbook C.
 
-Scripts en `scripts/`: `qas13_tokens.py`, `correr_qas13.sh` y `consultar_sonar_duplicacion.sh`. No guardan ni imprimen tokens ni contraseñas.
+Scripts en `scripts/`: `qas13_tokens.py`, `correr_qas13.sh`, `consultar_sonar_duplicacion.sh` y `revisar_logs_d_t43_1.sh`. No guardan ni imprimen tokens ni contraseñas.

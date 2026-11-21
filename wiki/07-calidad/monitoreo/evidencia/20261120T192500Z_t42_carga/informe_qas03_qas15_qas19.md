@@ -73,3 +73,28 @@ Salidas de la corrida, en esta carpeta:
 | [`logs_carga_20nov_1958z.txt`](logs_carga_20nov_1958z.txt) | Análisis de logs de la ventana y latencia a la base |
 
 Scripts, en [`scripts/`](scripts): `verificar_qa_t42.sh`, `migrar_0040_0042_qa.sh`, `configurar_pools_qa.sh`, `desplegar_release_qa_t42.sh`, `k6_qas_carga.js`, `correr_qas_carga_t42.sh`, `logs_carga_qa_t42.py` y `correr_logs_carga_t42.sh`. Se corrieron desde la carpeta local de QA (`qa_t42/`), por eso escriben en `qa_t42/evidencia/`. Ninguno contiene credenciales: las contraseñas se teclean al ejecutar y las salidas ocultan URLs y claves.
+
+## 6. Carga corta del 21 nov, tras el cambio del pooler
+
+El 21 nov DevOps pasó el Core de QA al pooler en modo transacción (puerto 6543) y bajó el pool de Dispatch a 5 (SCRUM-1680, comentarios 11235 y 11236). Se repitió la misma carga nominal en versión corta: QAS-03 por 2 min y la mezcla por 5 min, en vez de 5 y 15. Es una medición complementaria: no reemplaza la corrida de 15 min que pide QAS-15.
+
+| Prueba | 20 nov | 21 nov (corta) |
+|---|---|---|
+| Humo, p95 de elegibles | 2.870 ms | 879 ms |
+| QAS-03, p95 de elegibles | 3.025 ms | 3.031 ms |
+| QAS-03, 5xx | 100 % | 88,4 % |
+| Mezcla, req/s sostenidas | 31,9 | 47,0 |
+| Mezcla, 5xx | 81,4 % | 39,6 % |
+| Mezcla, 5xx de las rutas de Core (perfil, sitios, tarifa) | altos | 0 % (p95 de 5,2 a 9,1 s) |
+| Mezcla, 5xx de las rutas de Dispatch (elegibles, ofertas) | altos | 98,2 % y 99,5 % (p95 ~3,1 s) |
+| `EMAXCONN` en Core | 2.232 | **0** |
+| `timeout exceeded when trying to connect` en Core | 20.956 | 383 |
+| `TaskCanceledException` en Dispatch | 27.217 | 21.768 |
+
+**Lectura:**
+
+- El cambio del pooler eliminó el rechazo de conexiones y casi todos los timeouts del pool de Core. Las rutas que atiende solo el Core ya no fallan, aunque siguen lentas (p95 de 5 a 9 s).
+- **El cuello de botella ahora es Dispatch:** casi todos los 5xx que quedan son de `eligible-allies` y `offers/me`, que cortan a los ~3 s por el `HttpClient.Timeout` de 3 s hacia Core. Es lo que pide SCRUM-1651 (≥ 10 s) y sigue sin desplegarse.
+- Los tres escenarios siguen en **No cumple** (p95 muy por encima de 500 ms, 5xx muy por encima de 1 %, 47 req/s con 40 % de errores). Mejoraron QAS-15 (de 81 % a 40 % de 5xx) y QAS-19 (de 31,9 a 47 req/s).
+
+Evidencia: `qas_carga_corta_21nov_2242z.txt`, `qas_stats_corta_qas03_21nov_2242z.txt`, `qas_stats_corta_qas19_21nov_2242z.txt` y `scripts/correr_qas_carga_t42_corta.sh`.

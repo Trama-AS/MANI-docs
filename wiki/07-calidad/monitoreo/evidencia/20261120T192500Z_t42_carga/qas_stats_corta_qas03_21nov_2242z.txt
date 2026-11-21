@@ -1,0 +1,30 @@
+22:43:14
+mani-core-service cpu=1.54% mem=13.43%
+mani-dispatch-service cpu=9.40% mem=25.94%
+mani-api-gateway cpu=0.13% mem=6.13%
+mani-rules-service cpu=0.59% mem=15.64%
+22:43:47
+mani-core-service cpu=17.16% mem=13.68%
+mani-dispatch-service cpu=12.52% mem=26.96%
+mani-api-gateway cpu=2.43% mem=6.96%
+mani-rules-service cpu=6.80% mem=16.08%
+22:44:20
+mani-core-service cpu=32.99% mem=14.18%
+mani-dispatch-service cpu=24.22% mem=27.89%
+mani-api-gateway cpu=5.05% mem=11.00%
+mani-rules-service cpu=6.98% mem=16.26%
+22:44:52
+mani-core-service cpu=28.24% mem=15.08%
+mani-dispatch-service cpu=33.11% mem=31.38%
+mani-api-gateway cpu=4.44% mem=13.63%
+mani-rules-service cpu=0.11% mem=15.88%
+22:45:24
+mani-core-service cpu=39.70% mem=16.25%
+mani-dispatch-service cpu=33.94% mem=31.22%
+mani-api-gateway cpu=5.59% mem=13.92%
+mani-rules-service cpu=0.12% mem=15.88%
+22:45:57
+mani-core-service cpu=31.31% mem=16.45%
+mani-dispatch-service cpu=37.84% mem=31.29%
+mani-api-gateway cpu=4.57% mem=14.25%
+mani-rules-service cpu=0.11% mem=15.88%

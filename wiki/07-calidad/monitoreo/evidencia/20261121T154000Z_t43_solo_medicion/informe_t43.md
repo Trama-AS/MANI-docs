@@ -51,6 +51,7 @@
 - **Lighthouse (QAS-34):** no se corrió. Necesita descargar el paquete y la Landing no respondía desde la máquina de QA. No cambia el estado: sin criterio publicado no hay contra qué medir.
 - **Recorrido de 35, 36 y 39:** hecho el 21 nov en la app de QA con 24 capturas (`qas35_qas36_qas39_recorrido_qa.md`). No se pudo ver el estado «KYC pendiente» (`aliado.t1` ya está verificado) ni aprobar o rechazar aliados (D-T43-1).
 - [`d_t43_1_logs_core_21nov_2105z.txt`](d_t43_1_logs_core_21nov_2105z.txt): logs del Core con la causa de D-T43-1.
+- [`d_t43_1_hipotesis_cuentas_21nov_2137z.txt`](d_t43_1_hipotesis_cuentas_21nov_2137z.txt): prueba de la hipótesis de cuentas: `mani_core_svc` tiene 15 cupos en el pooler y el Core en QA está en `DATABASE_POOL_MAX=30`; 2232 errores iguales durante la carga de T-42.
 - **Sonar, fecha de último análisis:** el token de análisis no puede listar análisis. Las medidas sí responden.
 
 ## 4. Evidencia (esta carpeta)
@@ -66,4 +67,4 @@
 - `flutter_test_interaccion.md`: `flutter test` de MANI-Flutter `develop` `daba130` y selección por escenario (08, 35, 36, 39). La salida JSON completa (800 KB) no se versiona.
 - QAS-44: [`08-infraestructura/03-despliegue-y-rollback.md`](../../../../08-infraestructura/03-despliegue-y-rollback.md), Runbook C.
 
-Scripts en `scripts/`: `qas13_tokens.py`, `correr_qas13.sh`, `consultar_sonar_duplicacion.sh` y `revisar_logs_d_t43_1.sh`. No guardan ni imprimen tokens ni contraseñas.
+Scripts en `scripts/`: `qas13_tokens.py`, `correr_qas13.sh`, `consultar_sonar_duplicacion.sh`, `revisar_logs_d_t43_1.sh` y `probar_hipotesis_d_t43_1.sh`. No guardan ni imprimen tokens ni contraseñas.

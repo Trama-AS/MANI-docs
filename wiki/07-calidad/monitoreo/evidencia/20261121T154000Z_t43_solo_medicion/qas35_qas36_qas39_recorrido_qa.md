@@ -44,9 +44,9 @@ Las capturas están en `capturas/`, con el nombre `qasNN_rol_paso.jpg`.
 | Eliminar ausencia | Aliado | «¿Eliminar esta ausencia? Volverás a recibir solicitudes entre…» | No aplica | `qas39_aliado_eliminar_ausencia_dialogo.jpg`, `qas39_aliado_ausencia_eliminada.jpg` |
 | Ocultar categoría | Admin | **Ninguno**: pasa directo a «Guardando…». Después avisa «No recibirá nuevas solicitudes» | — | `qas39_admin_ocultar_categoria_sin_confirmacion.jpg`, `qas39_admin_categoria_ocultada.jpg` |
 | Cerrar sesión | Cliente | **Ninguno**: un clic y vuelve al login | — | `qas39_cliente_cerrar_sesion_sin_confirmacion.jpg` |
-| Aprobar o rechazar aliado | Admin | No se pudo probar por el defecto D-T43-1; lo cubren las pruebas de Flutter | — | — |
+| Aprobar o rechazar aliado | Admin | Reprobado tras el arreglo de D-T43-1 (22:26Z). Aprobar: «¿Aprobar a Aliado QA Final?» con lo que implica y «Confirma que revisaste su documento». Rechazar: motivo obligatorio que recibe el aliado | Sí: «Cancelar» deja al aliado Pendiente, sin ninguna petición de escritura | `qas39_admin_aprobar_aliado_dialogo.jpg`, `qas39_admin_rechazar_aliado_dialogo.jpg`, `qas39_admin_cancelar_conserva_pendiente.jpg` |
 
-**Resultado:** **Parcial.** Las cancelaciones y rechazos tienen aviso y «Volver» funciona. Ocultar categoría y cerrar sesión no piden confirmación; falta que la PO decida si son reversiones críticas.
+**Resultado:** **Parcial.** Las cancelaciones, rechazos y la aprobación de aliados tienen aviso y «Volver» funciona. Ocultar categoría y cerrar sesión no piden confirmación; falta que la PO decida si son reversiones críticas.
 
 ## Defecto encontrado
 
@@ -58,3 +58,18 @@ Las capturas están en `capturas/`, con el nombre `qasNN_rol_paso.jpg`.
 - **Causa (logs del Core, 21 nov 21:05Z, `d_t43_1_logs_core_21nov_2105z.txt`):** `EMAXCONNSESSION max clients reached in session mode - max clients are limited to pool_size: 15`. El pooler de Supabase en modo sesión ya tenía sus 15 clientes ocupados y rechazó la conexión de `withTenantContext`. No es un fallo de la lógica de KYC: la consulta ni llegó a la base.
 - Lo agrava el código: `ListAlliesVerificationUseCase` hidrata todos los aliados en paralelo y cada uno abre 3 conexiones a la vez (usuario, categorías y documentos KYC), así que esta pantalla es la primera en chocar con el límite. El pool propio de Core es de 5 por instancia (`DATABASE_POOL_MAX`), de modo que los otros cupos del pooler los ocupan otros clientes del mismo proyecto de Supabase.
 - En los logs, el error que aparece junto a `6ee02b95…` (`profiles/me`) es el de una petición de verificación intercalada; el 500 de perfil tiene la misma causa probable.
+
+### Re-prueba tras el arreglo de DevOps (21 nov, 22:24Z)
+
+Daniel pasó el Core de QA al modo transacción del pooler (puerto 6543) y bajó Dispatch a 5 conexiones (Jira SCRUM-1680, comentario 11236).
+
+| Intento | Hora (UTC) | Estado | Tiempo | Tamaño |
+|---|---|---|---|---|
+| 1 (al abrir la pantalla) | 22:24:49 | 200 | 12,0 s | 25.233 B |
+| 2 (recargar) | 22:25:15 | 200 | 10,8 s | 25.233 B |
+| 3 (recargar) | 22:25:30 | 200 | 10,8 s | 25.233 B |
+
+- La lista carga: 1 pendiente, 67 aprobados y 3 rechazados (71 aliados) (`qas35_admin_verificacion_200_tras_6543.jpg`).
+- **El 500 desapareció, pero la respuesta tarda unos 11 s**, porque el Core sigue abriendo 3 consultas por aliado (unas 213 por petición). Según DevOps, con 5 peticiones a la vez se llega al timeout de conexión de 10 s. Queda como hallazgo de rendimiento para el equipo de Core.
+- Con la pantalla disponible se probó el caso pendiente de QAS-39 (aprobar o rechazar aliado): los dos piden confirmación y «Cancelar» no cambia nada.
+- Para QAS-35, el caso del 500 ya no se reproduce. El escenario sigue en No cumple por la ruta de otro rol que redirige sin mensaje.

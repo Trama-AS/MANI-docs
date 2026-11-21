@@ -1,8 +1,17 @@
 # Estándares de documentación
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`adr/ADR-0001`](../02-arquitectura/adr/ADR-0001-gestion-documental.md) · [`adr/ADR-0008`](../02-arquitectura/adr/ADR-0008-diagramacion-tecnica.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §3 y §9.4 · [`README.md`](../../README.md) §16.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir qué documento se actualiza con cada tipo de cambio y qué formato lleva un ADR |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: Scrum Master; aprueba el PO |
+| **Consume** | Todo el equipo |
+| **Cada cuánto se actualiza** | Cuando cambia la estructura documental o el formato de un ADR |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-04; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Cambio → documento fuente → página de la wiki que lo ordena |
 
 ## Qué se actualiza con cada tipo de cambio
 

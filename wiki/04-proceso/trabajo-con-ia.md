@@ -1,8 +1,17 @@
 # Trabajo con asistentes de IA
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`POLITICAS_DEVOPS_HERRAMIENTAS.md` §18](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md#18-política-de-uso-de-ia) (el antiguo ADR-0009 se retiró el 2026-10-23: no era una decisión de arquitectura del producto) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §1.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir cómo se usan los asistentes de IA y qué no pueden hacer |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps con la Scrum Master |
+| **Consume** | Todo el equipo y los asistentes de IA |
+| **Cada cuánto se actualiza** | Cuando cambia la política §18 |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-04; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Política §18 → reglas de uso → revisión de una persona → PR |
 
 ## Política vigente
 

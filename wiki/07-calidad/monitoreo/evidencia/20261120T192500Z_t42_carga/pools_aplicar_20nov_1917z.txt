@@ -1,0 +1,5 @@
+== Fecha 2026-11-20T19:17:09Z, modo aplicar
+== cambios: compose: linea 39 agrega DATABASE_POOL_MAX en core-service; env: agrega CORE_DATABASE_POOL_MAX=30; env: DISPATCH_DB_CONNECTION termina en ;Maximum Pool Size=10
+respaldo en /opt/mani/respaldo_t42_20261120T191709Z
+validacion: Core DATABASE_POOL_MAX=30; Dispatch Maximum Pool Size=10
+== aplicado

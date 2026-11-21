@@ -1,0 +1,167 @@
+== Carga QAS 2026-11-20T19:25:01Z
+k6 v2.3.0 (commit/e088784614, go1.26.8, linux/amd64)
+4
+gateway puerto 80: 301
+gateway puerto 8080: 200
+muestreos vivos tras limpiar: 0
+vigencia del token en minutos: 60
+== Humo 30 s (19:25:04Z)
+{
+ "modo": "mezcla",
+ "fecha_utc": "2026-11-20T19:25:44.491Z",
+ "base_url": "http://10.43.100.141:8080",
+ "carga": {
+  "vus": 10,
+  "rps": 2,
+  "rampa": "5s",
+  "duracion": "30s"
+ },
+ "tasa_sostenida_rps": 2,
+ "peticiones_sostenidas": 60,
+ "tasa_fallo_http": 0,
+ "tasa_5xx": 0,
+ "por_ruta": {
+  "elegibles": {
+   "ruta": "/api/v1/dispatch/requests/cb68d899-f579-46a8-b30f-7eed71878baf/eligible-allies?pageSize=20",
+   "p95_ms": 2870.3637180999995,
+   "p99_ms": 3219.5945060199997,
+   "max_ms": 3306.902203,
+   "peticiones": 15,
+   "tasa_5xx": 0
+  },
+  "perfil": {
+   "ruta": "/api/v1/core/profiles/me",
+   "p95_ms": 1779.4648005999982,
+   "p99_ms": 2645.320130519999,
+   "max_ms": 2861.783963,
+   "peticiones": 15,
+   "tasa_5xx": 0
+  },
+  "sitios": {
+   "ruta": "/api/v1/core/solicitudes/sitios",
+   "p95_ms": 1308.93147685,
+   "p99_ms": 1315.2507825700002,
+   "max_ms": 1316.830609,
+   "peticiones": 10,
+   "tasa_5xx": 0
+  },
+  "tarifa": {
+   "ruta": "/api/v1/core/solicitudes/cb68d899-f579-46a8-b30f-7eed71878baf/tarifa-referencia",
+   "p95_ms": 1345.3755827,
+   "p99_ms": 1373.2199677400001,
+   "max_ms": 1380.181064,
+   "peticiones": 10,
+   "tasa_5xx": 0
+  },
+  "ofertas": {
+   "ruta": "/api/v1/dispatch/offers/me",
+   "p95_ms": 2977.65454375,
+   "p99_ms": 3037.16747035,
+   "max_ms": 3052.045702,
+   "peticiones": 10,
+   "tasa_5xx": 0
+  }
+ }
+}
+time="2026-11-20T14:25:44-05:00" level=error msg="thresholds on metrics 'http_req_duration{fase:sostenida,nombre:elegibles}, http_req_duration{fase:sostenida,nombre:ofertas}, http_req_duration{fase:sostenida,nombre:perfil}, http_req_duration{fase:sostenida,nombre:sitios}, http_req_duration{fase:sostenida,nombre:tarifa}' have been crossed"
+== QAS-03 consulta 5 min (19:25:44Z)
+{
+ "modo": "consulta",
+ "fecha_utc": "2026-11-20T19:31:50.787Z",
+ "base_url": "http://10.43.100.141:8080",
+ "carga": {
+  "vus": 300,
+  "rps": 50,
+  "rampa": "60s",
+  "duracion": "5m"
+ },
+ "tasa_sostenida_rps": 49.983333333333334,
+ "peticiones_sostenidas": 14995,
+ "tasa_fallo_http": 1,
+ "tasa_5xx": 1,
+ "por_ruta": {
+  "elegibles": {
+   "ruta": "/api/v1/dispatch/requests/cb68d899-f579-46a8-b30f-7eed71878baf/eligible-allies?pageSize=20",
+   "p95_ms": 3025.5495047,
+   "p99_ms": 3044.41598434,
+   "max_ms": 3105.304404,
+   "peticiones": 14995,
+   "tasa_5xx": 1
+  }
+ }
+}
+time="2026-11-20T14:31:50-05:00" level=error msg="thresholds on metrics 'http_req_duration{fase:sostenida,nombre:elegibles}' have been crossed"
+== Salud tras QAS-03 (19:31:51Z)
+/health 200 0.002659s
+/api/v1/core/health 200 0.363196s
+/api/v1/rules/health 200 0.008190s
+/api/v1/dispatch/health 200 0.004295s
+== QAS-15 y QAS-19 mezcla 15 min (19:32:51Z)
+{
+ "modo": "mezcla",
+ "fecha_utc": "2026-11-20T19:49:01.815Z",
+ "base_url": "http://10.43.100.141:8080",
+ "carga": {
+  "vus": 300,
+  "rps": 50,
+  "rampa": "60s",
+  "duracion": "15m"
+ },
+ "tasa_sostenida_rps": 31.91,
+ "peticiones_sostenidas": 28719,
+ "tasa_fallo_http": 0.8138166370695359,
+ "tasa_5xx": 0.8138166370695359,
+ "por_ruta": {
+  "elegibles": {
+   "ruta": "/api/v1/dispatch/requests/cb68d899-f579-46a8-b30f-7eed71878baf/eligible-allies?pageSize=20",
+   "p95_ms": 3021.96744135,
+   "p99_ms": 5391.89233011001,
+   "max_ms": 11963.112442,
+   "peticiones": 5750,
+   "tasa_5xx": 1
+  },
+  "perfil": {
+   "ruta": "/api/v1/core/profiles/me",
+   "p95_ms": 21010.936687,
+   "p99_ms": 21146.2542964,
+   "max_ms": 21233.689615,
+   "peticiones": 5741,
+   "tasa_5xx": 0.8542065842187773
+  },
+  "sitios": {
+   "ruta": "/api/v1/core/solicitudes/sitios",
+   "p95_ms": 11216.93990055,
+   "p99_ms": 11252.72474564,
+   "max_ms": 11314.657801,
+   "peticiones": 5752,
+   "tasa_5xx": 0.6062239221140473
+  },
+  "tarifa": {
+   "ruta": "/api/v1/core/solicitudes/cb68d899-f579-46a8-b30f-7eed71878baf/tarifa-referencia",
+   "p95_ms": 11222.16173525,
+   "p99_ms": 11254.653198,
+   "max_ms": 11471.105228,
+   "peticiones": 5736,
+   "tasa_5xx": 0.6086122733612274
+  },
+  "ofertas": {
+   "ruta": "/api/v1/dispatch/offers/me",
+   "p95_ms": 3021.33970515,
+   "p99_ms": 6668.145749089986,
+   "max_ms": 11922.32549,
+   "peticiones": 5740,
+   "tasa_5xx": 1
+  }
+ }
+}
+time="2026-11-20T14:49:01-05:00" level=error msg="thresholds on metrics 'http_req_duration{fase:sostenida,nombre:elegibles}, http_req_duration{fase:sostenida,nombre:ofertas}, http_req_duration{fase:sostenida,nombre:perfil}, http_req_duration{fase:sostenida,nombre:sitios}, http_req_duration{fase:sostenida,nombre:tarifa}' have been crossed"
+== Salud tras la mezcla (19:49:01Z)
+/health 200 0.001862s
+/api/v1/core/health 200 0.589460s
+/api/v1/rules/health 200 0.004974s
+/api/v1/dispatch/health 200 0.003383s
+mani-api-gateway Up 27 minutes
+mani-dispatch-service Up 27 minutes
+mani-rules-service Up 27 minutes
+mani-core-service Up 27 minutes
+40273

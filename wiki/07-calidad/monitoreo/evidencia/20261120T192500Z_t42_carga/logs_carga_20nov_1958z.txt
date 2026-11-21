@@ -1,0 +1,173 @@
+== Ventana 2026-11-20T19:25:40Z a 2026-11-20T19:49:10Z
+
+== Gateway: estado por ruta
+  lineas: 46937
+  campos: body_bytes_sent,http_referrer,http_user_agent,remote_addr,request_method,request_time,request_uri,status,time_local,x_correlation_id
+   21978 503 aguas=- /api/v1/dispatch/requests/{id}/eligible-allies mediana=3.009
+    5891 503 aguas=- /api/v1/dispatch/offers/me mediana=3.009
+    5144 500 aguas=- /api/v1/core/profiles/me mediana=10.01
+    3629 500 aguas=- /api/v1/core/solicitudes/sitios mediana=10.007
+    3629 500 aguas=- /api/v1/core/solicitudes/{id}/tarifa-referencia mediana=10.008
+    2396 200 aguas=- /api/v1/core/solicitudes/sitios mediana=11.089
+    2336 200 aguas=- /api/v1/core/solicitudes/{id}/tarifa-referencia mediana=11.094
+     959 200 aguas=- /api/v1/core/profiles/me mediana=20.882
+     678 200 aguas=- /api/v1/dispatch/requests/{id}/eligible-allies mediana=1.072
+      49 200 aguas=- /api/v1/rules/health mediana=0.005
+      49 200 aguas=- /api/v1/core/health mediana=0.441
+      49 200 aguas=- /api/v1/dispatch/health mediana=0.002
+      47 200 aguas=- /health mediana=0.0
+      47 200 aguas=- /metrics mediana=0.009
+      32 499 aguas=- /api/v1/core/profiles/me mediana=14.775
+      18 200 aguas=- /api/v1/dispatch/offers/me mediana=3.78
+       4 499 aguas=- /api/v1/core/solicitudes/sitios mediana=10.79
+       2 499 aguas=- /api/v1/core/solicitudes/{id}/tarifa-referencia mediana=10.413
+
+== mani-dispatch-service: mensajes mas repetidos
+  lineas: 821839
+  palabras: timeout=61841, taskcanceled=54434, pool=32155,  500=1956,  504=17,  503=7,  502=3
+  107908          --- End of inner exception stack trace ---
+   54434          at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   54434          at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean dis
+   29916 info: System.Net.Http.HttpClient.IAllyRepository.LogicalHandler[#]
+   29916 info: System.Net.Http.HttpClient.IAllyRepository.ClientHandler[#]
+   27860 fail: ManiDispatch.Infrastructure.Core.CoreAllyClient[#]
+   27217       Fallo de conexión o tiempo de espera agotado hacia Core.
+   27217       System.Threading.Tasks.TaskCanceledException: The request was canceled due to the configured HttpClient.Timeout of # seconds elapsing.
+   27217        ---> System.TimeoutException: The operation was canceled.
+   27217        ---> System.Threading.Tasks.TaskCanceledException: The operation was canceled.
+   27217          at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken c
+   27217          at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   27217          at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   27217          at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|5_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancell
+   27217          at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|5_0(HttpRequestMessage request, Boolean useAsync, CancellationToken ca
+   27217          at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken c
+   27214          at ManiDispatch.Infrastructure.Core.CoreAllyClient.SendAsync(String url, Guid tenantId, String correlationId) in /src/Infrastructure/Core/CoreAllyClient.cs:line 
+   26257        ---> System.IO.IOException: Unable to read data from the transport connection: Operation canceled.
+   26257        ---> System.Net.Sockets.SocketException (#): Operation canceled
+   26257          at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   26257          at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource<System.Int32>.GetResult(Int16 token)
+   26123          at System.Net.Http.HttpConnection.InitialFillAsync(Boolean async)
+   22656       Start processing HTTP request GET http://core-service:#/api/v1/allies/eligible/by-request/{id}?page=#&pageSize=#
+   22656       Sending HTTP request GET http://core-service:#/api/v1/allies/eligible/by-request/{id}?page=#&pageSize=#
+    5909       Start processing HTTP request GET http://core-service:#/api/v1/allies/me
+
+== mani-core-service: mensajes mas repetidos
+  lineas: 378755
+  palabras: pool=33590, timeout=30021, timeout exceeded=29126,  500=8766, emaxconn=2232, max clients=2232
+   46693 [{hora}] [GET] /api/v1/auth/validate-token - Correlation: {cid}
+   22656 [{hora}] [GET] /api/v1/allies/eligible/by-request/{id}?page=#&pageSize=# - Correlation: {cid}
+   22592     at /app/node_modules/pg-pool/index.js:#:#
+   22592     at async withTenantContext (/app/src/infrastructure/db/withTenantContext.js:#:#)
+   20956 Error: timeout exceeded when trying to connect
+   15328     at async GetEligibleAlliesForRequestUseCase.execute (/app/src/application/useCases/dispatch/GetEligibleAlliesForRequestUseCase.js:#:#)
+   14185     at async listEligibleAlliesForRequest (/app/src/controllers/dispatchIntegration.controller.js:#:#)
+   10402 }
+    8766     at fallaDeBase (/app/src/infrastructure/db/enContextoTenant.js:#:#)
+    8766   code: 'INTERNAL_ERROR',
+    8766   statusCode: #,
+    8766       at /app/node_modules/pg-pool/index.js:#:#
+    8170   cause: Error: timeout exceeded when trying to connect
+    7373       at async withTenantContext (/app/src/infrastructure/db/withTenantContext.js:#:#)
+    6132 [{hora}] [GET] /profiles/me - Correlation: {cid}
+    6029 [{hora}] [GET] /solicitudes/sitios - Correlation: {cid}
+    5967 [{hora}] [GET] /solicitudes/{id}/tarifa-referencia - Correlation: {cid}
+    5909 [{hora}] [GET] /api/v1/allies/me - Correlation: node-#
+    5160     at async GetOwnProfileUseCase.execute (/app/src/application/useCases/profiles/GetOwnProfileUseCase.js:#:#)
+    5160     at async getOwnProfile (/app/src/controllers/profiles.controller.js:#:#) {
+    5160       at async GetOwnProfileUseCase.execute (/app/src/application/useCases/profiles/GetOwnProfileUseCase.js:#:#)
+    4791       at async getOwnProfile (/app/src/controllers/profiles.controller.js:#:#)
+    4647     at runNextTicks (node:internal/process/task_queues:#:#)
+    4647     at process.processTimers (node:internal/timers:#:#)
+    3767 DomainError: Error consultando perfil
+
+== mani-rules-service: mensajes mas repetidos
+  lineas: 1405
+  palabras: 
+     678 INFO | Ranking de aliados tenant={id} criterio=CALIFICACION candidatos=#
+     678 INFO | HTTP POST /api/v1/rules/rank-allies status=# correlationId={cid}
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=c8bba02c24ca885dabe258b0d05b90e8
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=6874eafd21b5e28ae73768fdd12ec102
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=34db76892452eb0007a7e8e7dff94b97
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=b9071249c3104a0293ad59fe210c6808
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=43029c7f9ca6021e271b8147cbe3d036
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=680fc568a1d2a2f3f128cd534c50e72f
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=db703d7f922ce53c1aef3401d4673384
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=d00701c13724218db505e4828923e90b
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=1f1fcb97082a42ce051c670208ef1d94
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=f5c077bbff09a3d5a780c8d21504e30a
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=2bc89284ce889294fe56b96ab4ce732a
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=377d603841e2911d80ffab13d3ce0c2e
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=3a7e99dbcea9b476a332816696f291b1
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=869363e3b3ba53addd7e76e9d50f70a7
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=ac1432a1640f0e9694bbbabcb1465132
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=df57c3f71d4cb3e50bb23ccd8ba9d24e
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=cf4b723cd09c70091dc3efdefd13cded
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=19e5a2803dcb975e7cb693af1d9f3bb5
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=dd143d974395ec853758fcae490db509
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=e82c3ca751942934636dad310365e12c
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=4c00c8698d7dda07be4f99d526268eb1
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=a92c3869dde279050a577a4ed68e0e81
+       1 INFO | HTTP GET /api/v1/rules/health status=# correlationId=bf003df9a7e4dfcec04ca563d966ca4f
+
+== Reinicios
+  mani-api-gateway: 0 2026-11-20T19:21:54.725032898Z oom=false
+  mani-core-service: 0 2026-11-20T19:21:36.124527777Z oom=false
+  mani-dispatch-service: 0 2026-11-20T19:21:54.406969119Z oom=false
+  mani-rules-service: 0 2026-11-20T19:21:54.028352884Z oom=false
+
+== Base: metadatos
+  [max_connections]
+  60
+  [latencia_ida_y_vuelta: 10 consultas SELECT 1, tiempos en ms]
+  Timing is on.
+  1
+  Time: 97.550 ms
+  1
+  Time: 96.322 ms
+  1
+  Time: 96.691 ms
+  1
+  Time: 96.590 ms
+  1
+  Time: 96.887 ms
+  1
+  Time: 96.513 ms
+  1
+  Time: 97.111 ms
+  1
+  Time: 96.380 ms
+  1
+  Time: 97.008 ms
+  1
+  Time: 96.453 ms
+  Timing is off.
+  [conexiones_por_usuario]
+  ||5
+  supabase_admin||4
+  pgbouncer||2
+  authenticator||1
+  postgres||1
+  mani_core_svc|idle|1
+  mani_core_svc|active|1
+  supabase_auth_admin||1
+  [triggers_en_tablas_de_rastro]
+  consulta_conversacion|trg_consulta_conversacion_inmutable|DELETE,UPDATE
+  evento_servicio|trg_evento_servicio_inmutable|DELETE,UPDATE
+  regla_tenant|trg_regla_tenant_inmutable|UPDATE,DELETE
+  transaccion_evento|trg_transaccion_evento_inmutable|UPDATE,DELETE
+  [columnas_de_rastro]
+  consulta_conversacion|actor_id,actor_rol,correlation_id
+  evento_servicio|actor_id,actor_rol,correlation_id
+  outbox_evento|correlation_id
+  pago|actor_rol,correlation_id
+  queja|correlation_id
+  queja_transicion|actor_id,actor_rol,correlation_id
+  regla_tenant|actor_rol,correlation_id
+  tarifa_referencia|actor_rol,correlation_id
+  tenant_estado_cambio|actor_id,actor_rol,correlation_id
+  transaccion_evento|actor_id,actor_rol,correlation_id
+  [tablas_candidatas]
+  evento_servicio
+  outbox_evento
+  poc_asignacion_log
+  transaccion_evento

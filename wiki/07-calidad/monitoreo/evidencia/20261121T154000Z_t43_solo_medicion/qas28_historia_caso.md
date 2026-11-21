@@ -6,7 +6,7 @@ Corte 2026-11-21.
 
 **Fuentes de casos:** `07-calidad/regresion/MANI_Matriz_Pruebas_Sprint4.xlsx`, `MANI_Matriz_Ejecucion_Sprint4.xlsx`, `REPORTE_QA_SPRINT5.md` (matriz por historia), `monitoreo/REPORTE_QA_SPRINT4.md` y `MATRIZ_HISTORIAS_REPOSITORIOS_SPRINT4.md`. Una historia cuenta si alguna fuente la cita por clave de Jira o por código US/HU. Se buscó además en toda `07-calidad`, `01-producto/TD.md` y las guías de prueba manual.
 
-**Resultado:** 45 de 51 historias críticas tienen al menos un caso (88.2 %).
+**Resultado:** 45 de 51 historias críticas tenían al menos un caso en las fuentes (88.2 %). Las 6 que faltaban tienen ahora sus casos definidos en [`qas28_casos_faltantes.md`](qas28_casos_faltantes.md): **51 de 51 (100 %)**.
 
 ## Sin caso
 

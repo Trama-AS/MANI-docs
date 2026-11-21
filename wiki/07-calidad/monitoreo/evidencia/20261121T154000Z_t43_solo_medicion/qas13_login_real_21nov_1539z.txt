@@ -1,0 +1,6 @@
+== QAS-13 login real 2026-11-21T15:40:03Z
+  GET /api/v1/core/profiles/me con token vigente: 200
+  GET /api/v1/core/solicitudes/me con token vigente: 200
+  (resumen del token, recalculado desde el archivo guardado; el print original fallo por sintaxis)
+  cuenta cliente.t1@qa.mani.test; alg=ES256; kid presente=True; vigencia=60 min; emitido 15:40:03Z; vence 16:40:03Z
+  claims de MANI presentes: tenant_id=True; rol=True

@@ -1,0 +1,19 @@
+== SonarQube 26.10.0.133078 2026-11-21T15:51:22Z
+== autenticacion: {"valid":true}
+== proyectos: mani-node mani-java mani-dotnet mani-apigateway mani-landing
+mani-node: densidad=0.6 % bloques=11 archivos=5 lineas_dup=137 ncloc=17062
+   ultimo analisis: ninguno 
+mani-java: densidad=0.0 % bloques=0 archivos=0 lineas_dup=0 ncloc=986
+   ultimo analisis: ninguno 
+mani-dotnet: densidad=1.6 % bloques=2 archivos=2 lineas_dup=59 ncloc=2853
+   ultimo analisis: ninguno 
+mani-apigateway: densidad=0.0 % bloques=0 archivos=0 lineas_dup=0 ncloc=1167
+   ultimo analisis: ninguno 
+mani-landing: densidad=1.0 % bloques=2 archivos=1 lineas_dup=44 ncloc=4093
+   ultimo analisis: ninguno 
+
+== Notas de QA (21 nov)
+- Consulta autenticada con el token global de analisis (validate = true). Claves de rama principal de los workflows.
+- "ultimo analisis: ninguno": el token de analisis no tiene permiso para listar analisis (project_analyses); las medidas si responden. No indica que falte analisis.
+- Sonar mide duplicacion dentro de cada repo; no detecta reglas copiadas entre repos. Esa parte la cubre la revision manual (H-21-1 en qas21_duplicacion.txt).
+- Resumen de los 6 repos: Node 0,6 %, Java 0,0 %, .NET 1,6 %, Gateway 0,0 %, Landing 1,0 % (VM de Calidad) y Flutter 6,3 % (SonarCloud, develop).

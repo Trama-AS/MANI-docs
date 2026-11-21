@@ -1,0 +1,12 @@
+== QAS-13 2026-11-21T16:54:55Z
+  token real: alg=ES256; emitido=16:54:53Z; vence=17:54:53Z; vencido hace -3598 s
+  casos: ausente, firma_alterada, otro_emisor_es256
+  otro emisor: alg=ES256, firma P-256 propia, iss=https://otro-emisor.qa.invalid/auth/v1, mismos sub/tenant/rol, exp +1 h
+  lecturas 63 en paralelo; escrituras 57 en serie (~3.1 min)
+  operaciones protegidas probadas: 120 {'core': 109, 'dispatch': 7, 'rules': 4}; intentos: 360
+    ausente:401: 120
+    firma_alterada:401: 120
+    otro_emisor_es256:401: 120
+PASA  | QAS-13 | intento sin token valido rechazado con 401/403 | esperado 360 de 360 | obtenido 360 de 360
+  aceptados (2xx): 0; limitados (429): 0
+PASA  | QAS-13 | rechazos sin datos de negocio en el cuerpo | 0 con datos

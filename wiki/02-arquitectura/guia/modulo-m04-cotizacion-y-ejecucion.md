@@ -30,7 +30,7 @@ M-04 cubre lo que pasa entre que un aliado queda asignado a una solicitud y el s
 | [SCRUM-870](https://maniservices.atlassian.net/browse/SCRUM-870) · US-04.3.3 | El cliente consulta el log del servicio | Finalizada (Sprint 5) |
 | [SCRUM-872](https://maniservices.atlassian.net/browse/SCRUM-872) · US-04.3.5 | El aliado pide una adición por imprevisto y el cliente decide | Finalizada (Sprint 5) |
 
-La alerta de tarifa (866) y la cola sin conexión de eventos (873) tienen su propia documentación en [SCRUM-1703](https://maniservices.atlassian.net/browse/SCRUM-1703) y [SCRUM-1702](https://maniservices.atlassian.net/browse/SCRUM-1702). Aquí solo aparecen donde tocan el flujo.
+La alerta de tarifa (866) y la cola sin conexión de eventos (873) tienen su propia página: [Alerta de tarifa y proveedores externos](alerta-de-tarifa-y-proveedores-externos.md) y [Cola de eventos sin conexión](modulo-m04-cola-sin-conexion.md). Aquí solo aparecen donde tocan el flujo.
 
 ## 2. Flujo
 
@@ -194,7 +194,7 @@ El botón «Pagar» del cliente cobra el total vigente que calcula Core. La actu
 - **[`SAD.md`](../SAD.md) §12.1 contra ADR-0027.** El SAD dice que «Supabase Realtime entrega eventos mientras los participantes están conectados». [ADR-0027](../adr/ADR-0027-alcance-supabase-cliente-flutter.md) deja a Supabase en Flutter solo para autenticación, y la app actualiza por sondeo HTTP (SCRUM-1644). Se reporta aquí para que lo resuelva la responsable del SAD. Esta página no lo corrige.
 - **Errores de M-04 sin «Código · Ref» en la app.** `CotizacionFailure` y las secciones de cotización, ejecución, eventos y adiciones muestran solo el texto de Core. Llevarles el detalle de [SCRUM-1643](https://maniservices.atlassian.net/browse/SCRUM-1643) es trabajo de front no planificado: se le avisa a la SM, no se crea historia desde aquí.
 - **[ADR-0035](../adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto`.** La frontera entre la asignación (M-05) y este módulo rige por decisión de la Scrum Master hasta que la Mesa lo ratifique.
-- **Documentación pendiente del mismo grupo:** alerta de tarifa y proveedores externos ([SCRUM-1703](https://maniservices.atlassian.net/browse/SCRUM-1703)). La cola sin conexión ya tiene su página: [Cola de eventos sin conexión](modulo-m04-cola-sin-conexion.md) ([SCRUM-1702](https://maniservices.atlassian.net/browse/SCRUM-1702)).
+- **Páginas relacionadas:** [Alerta de tarifa y proveedores externos](alerta-de-tarifa-y-proveedores-externos.md) ([SCRUM-1703](https://maniservices.atlassian.net/browse/SCRUM-1703)) y [Cola de eventos sin conexión](modulo-m04-cola-sin-conexion.md) ([SCRUM-1702](https://maniservices.atlassian.net/browse/SCRUM-1702)).
 
 ## 9. Historial
 

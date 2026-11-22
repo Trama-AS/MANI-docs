@@ -1,0 +1,130 @@
+== Fecha 2026-11-22T02:58:08Z
+
+== QAS-43: puertos y TLS desde la propia VM
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      4096         0.0.0.0:8080       0.0.0.0:*          
+LISTEN 0      4096         0.0.0.0:80         0.0.0.0:*          
+LISTEN 0      4096         0.0.0.0:443        0.0.0.0:*          
+LISTEN 0      4096            [::]:8080          [::]:*          
+LISTEN 0      4096            [::]:80            [::]:*          
+LISTEN 0      4096            [::]:443           [::]:*          
+tls1_1: 40D730102C7B0000:error:0A0000BF:SSL routines:tls_setup_handshake:no protocols available:../ssl/statem/statem_lib.c:104:
+tls1_2: New, TLSv1.2, Cipher is ECDHE-RSA-AES256-GCM-SHA384
+tls1_3: New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+subject=C = CO, ST = Bogota, L = Bogota, O = MANI, OU = DevOps, CN = gateway.mani.local
+issuer=C = CO, ST = Bogota, L = Bogota, O = MANI, OU = DevOps, CN = gateway.mani.local
+notAfter=Oct 26 03:08:24 2036 GMT
+HTTP :80 -> 301 https://127.0.0.1/
+HTTP :8080 -> 200 
+
+== QAS-18/27: limites de CPU y memoria por contenedor
+mani-api-gateway cpus=500000000 mem=134217728
+mani-core-service cpus=1000000000 mem=536870912
+mani-dispatch-service cpus=1000000000 mem=536870912
+mani-flutter-web cpus=250000000 mem=134217728
+mani-kafka cpus=1000000000 mem=1073741824
+mani-landing-web cpus=250000000 mem=134217728
+mani-qa-cadvisor cpus=300000000 mem=201326592
+mani-qa-nginx-exporter cpus=150000000 mem=50331648
+mani-qa-nginxlog-exporter cpus=150000000 mem=50331648
+mani-qa-node-exporter cpus=250000000 mem=67108864
+mani-qa-postgres-exporter cpus=200000000 mem=67108864
+mani-qa-promtail cpus=250000000 mem=134217728
+mani-rules-service cpus=1000000000 mem=805306368
+
+== QAS-24: imagen y digest en QA
+mani-api-gateway ghcr.io/trama-as/mani-apigateway:staging sha256:8e890621aa549c2e4acc42e783b341a09ac3588048109528e3aa72a03423238e
+  repodigest=ghcr.io/trama-as/mani-apigateway@sha256:8e890621aa549c2e4acc42e783b341a09ac3588048109528e3aa72a03423238e
+mani-core-service ghcr.io/trama-as/mani-node:staging sha256:438921efa5ec06a90630a7bd79b2cb2922c696c31836a7199b879ba713283d7a
+  repodigest=ghcr.io/trama-as/mani-node@sha256:438921efa5ec06a90630a7bd79b2cb2922c696c31836a7199b879ba713283d7a
+mani-dispatch-service ghcr.io/trama-as/mani-dotnet:staging sha256:ca11bfd74d58a760912c298c9a966b9d944168d457e82d1cf71b196ee5e1f7b7
+  repodigest=ghcr.io/trama-as/mani-dotnet@sha256:ca11bfd74d58a760912c298c9a966b9d944168d457e82d1cf71b196ee5e1f7b7
+mani-rules-service ghcr.io/trama-as/mani-java:staging sha256:3d0d4a5dfbffcbf160a9856ed51e6fbdbfb46cad9859611435dd00b1f8c8cf29
+  repodigest=ghcr.io/trama-as/mani-java@sha256:3d0d4a5dfbffcbf160a9856ed51e6fbdbfb46cad9859611435dd00b1f8c8cf29
+mani-flutter-web ghcr.io/trama-as/mani-flutter:staging sha256:e12f32c06ec670bf2d32727ee3fbaccb81efd8650107ce2a249b7ab54223bc82
+  repodigest=ghcr.io/trama-as/mani-flutter@sha256:e12f32c06ec670bf2d32727ee3fbaccb81efd8650107ce2a249b7ab54223bc82
+mani-landing-web ghcr.io/trama-as/mani-landing:staging sha256:70db98c843f0d91549327f69d5b08ae8d51f1bfb9e14e2afdaeeeb017264812d
+  repodigest=ghcr.io/trama-as/mani-landing@sha256:70db98c843f0d91549327f69d5b08ae8d51f1bfb9e14e2afdaeeeb017264812d
+
+== QAS-02/09: proveedores configurados en el Core (nombres y valores no secretos)
+
+== QAS-22: formato de las ultimas lineas de log por servicio
+-- mani-api-gateway
+{"time_local": "22/Nov/2026:02:58:08 +0000","remote_addr": "172.18.0.1","request_method": "","request_uri": "","status": "400","body_bytes_sent": "0","request_time": "0.000","http_referrer": "","http_user_agent": "","x_correlation_id": ""}
+{"time_local": "22/Nov/2026:02:58:08 +0000","remote_addr": "172.18.0.1","request_method": "GET","request_uri": "/","status": "301","body_bytes_sent": "169","request_time": "0.000","http_referrer": "","http_user_agent": "curl/7.81.0","x_correlation_id": "7b556d7971096b284cc3c0c3e5a5434c"}
+{"time_local": "22/Nov/2026:02:58:09 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/api/v1/dispatch/health","status": "200","body_bytes_sent": "153","request_time": "0.003","http_referrer": "","http_user_agent": "Blackbox Exporter/0.25.0","x_correlation_id": "88a82080f
+-- mani-core-service
+[2026-11-22T02:57:38.101Z] [GET] /metrics - Correlation: be15fc9b899c6c08bc8ae8bdae65c8ea
+[2026-11-22T02:58:05.604Z] [GET] /health - Correlation: c58825ae43ff091b0edec4407da749a9
+[2026-11-22T02:58:08.100Z] [GET] /metrics - Correlation: 865f4488c062f376897228bb53e0aa9b
+-- mani-dispatch-service
+      Received HTTP response headers after 408.1669ms - 200
+info: System.Net.Http.HttpClient.IAllyRepository.LogicalHandler[101]
+      End processing HTTP request after 408.2581ms - 200
+-- mani-rules-service
+{"timestamp":"2026-11-22T02:56:48.308Z","level":"INFO","service":"mani-rules-java","correlationId":"7de0dbace4a7c83b0feacfd0d2f611a2","correlation_id":"7de0dbace4a7c83b0feacfd0d2f611a2","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1/rules/health status=200 correlationId=7
+{"timestamp":"2026-11-22T02:57:18.306Z","level":"INFO","service":"mani-rules-java","correlationId":"6a0ad1f394f68535a81af7d49b64d267","correlation_id":"6a0ad1f394f68535a81af7d49b64d267","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1/rules/health status=200 correlationId=6
+{"timestamp":"2026-11-22T02:57:48.308Z","level":"INFO","service":"mani-rules-java","correlationId":"ef3dd61b0998fabef597e4b4cd42e1dc","correlation_id":"ef3dd61b0998fabef597e4b4cd42e1dc","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1/rules/health status=200 correlationId=e
+
+== QAS-11/12: base de datos (via Core)
+-- migraciones 0040 a 0045 aplicadas: ERROR 42501 permission denied for table schema_migrations
+-- columnas de actor, rol, fecha y correlation ID en tablas de auditoria
+┌─────────┬─────────────────────────┬───────────────────────────────────────────────────────────┐
+│ (index) │ table_name              │ columnas                                                  │
+├─────────┼─────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 0       │ 'aliado'                │ 'created_at, usuario_id'                                  │
+│ 1       │ 'consulta_conversacion' │ 'actor_id, actor_rol, correlation_id, created_at'         │
+│ 2       │ 'cotizacion'            │ 'created_at'                                              │
+│ 3       │ 'evento_servicio'       │ 'actor_id, actor_rol, correlation_id'                     │
+│ 4       │ 'pago'                  │ 'actor_rol, actor_usuario_id, correlation_id, created_at' │
+│ 5       │ 'queja'                 │ 'correlation_id, creado_por, created_at'                  │
+│ 6       │ 'regla_tenant'          │ 'actor_rol, correlation_id, creado_por, created_at'       │
+│ 7       │ 'solicitud'             │ 'created_at'                                              │
+│ 8       │ 'tarifa_referencia'     │ 'actor_rol, correlation_id, creado_por, created_at'       │
+│ 9       │ 'transaccion_evento'    │ 'actor_id, actor_rol, correlation_id, created_at'         │
+└─────────┴─────────────────────────┴───────────────────────────────────────────────────────────┘
+-- triggers de inmutabilidad
+┌─────────┬─────────────────────────┬─────────────────┬───────────────────────────────────────┐
+│ (index) │ tabla                   │ ops             │ triggers                              │
+├─────────┼─────────────────────────┼─────────────────┼───────────────────────────────────────┤
+│ 0       │ 'consulta_conversacion' │ 'DELETE,UPDATE' │ 'trg_consulta_conversacion_inmutable' │
+│ 1       │ 'evento_servicio'       │ 'DELETE,UPDATE' │ 'trg_evento_servicio_inmutable'       │
+│ 2       │ 'queja_transicion'      │ 'DELETE,UPDATE' │ 'trg_queja_transicion_inmutable'      │
+│ 3       │ 'regla_tenant'          │ 'DELETE,UPDATE' │ 'trg_regla_tenant_inmutable'          │
+│ 4       │ 'tarifa_referencia'     │ 'DELETE,UPDATE' │ 'trg_tarifa_referencia_inmutable'     │
+│ 5       │ 'tenant_estado_cambio'  │ 'DELETE,UPDATE' │ 'trg_tenant_estado_cambio_inmutable'  │
+│ 6       │ 'transaccion_evento'    │ 'DELETE,UPDATE' │ 'trg_transaccion_evento_inmutable'    │
+└─────────┴─────────────────────────┴─────────────────┴───────────────────────────────────────┘
+-- QAS-12: evento_servicio de las solicitudes de T-46 (asignacion)
+┌─────────┬────────────┬──────────────────────┬───────┬───────────┬────────┬──────────────────────┐
+│ (index) │ solicitud  │ tipo_evento          │ actor │ actor_rol │ creado │ correlation_id       │
+├─────────┼────────────┼──────────────────────┼───────┼───────────┼────────┼──────────────────────┤
+│ 0       │ '03490d4a' │ 'SOLICITUD_CREADA'   │ true  │ 'cliente' │ null   │ 'qa-t46-crear-1'     │
+│ 1       │ '03490d4a' │ 'SOLICITUD_ASIGNADA' │ true  │ 'aliado'  │ null   │ 'qa-t46-03490d4a-22' │
+│ 2       │ '6ef93e76' │ 'SOLICITUD_CREADA'   │ true  │ 'cliente' │ null   │ 'qa-t46-crear-1'     │
+│ 3       │ '6ef93e76' │ 'SOLICITUD_ASIGNADA' │ true  │ 'aliado'  │ null   │ 'qa-t46-6ef93e76-33' │
+│ 4       │ '0b226a4a' │ 'SOLICITUD_CREADA'   │ true  │ 'cliente' │ null   │ 'qa-t46-crear-2'     │
+│ 5       │ '0b226a4a' │ 'SOLICITUD_ASIGNADA' │ true  │ 'aliado'  │ null   │ 'qa-t46-0b226a4a-19' │
+│ 6       │ '04b65083' │ 'SOLICITUD_CREADA'   │ true  │ 'cliente' │ null   │ 'qa-t46-crear-3'     │
+│ 7       │ '04b65083' │ 'SOLICITUD_ASIGNADA' │ true  │ 'aliado'  │ null   │ 'qa-t46-04b65083-25' │
+│ 8       │ '5aedc113' │ 'SOLICITUD_CREADA'   │ true  │ 'cliente' │ null   │ 'qa-t46-crear-4'     │
+│ 9       │ '5aedc113' │ 'SOLICITUD_ASIGNADA' │ true  │ 'aliado'  │ null   │ 'qa-t46-5aedc113-7'  │
+└─────────┴────────────┴──────────────────────┴───────┴───────────┴────────┴──────────────────────┘
+-- QAS-12: ultimos 8 eventos con correlation (cualquier tipo)
+┌─────────┬──────────────────────┬───────────┬───────┬──────────────────────┐
+│ (index) │ tipo_evento          │ actor_rol │ actor │ correlation          │
+├─────────┼──────────────────────┼───────────┼───────┼──────────────────────┤
+│ 0       │ 'SOLICITUD_CREADA'   │ 'cliente' │ true  │ 'qa-t46-crear-1'     │
+│ 1       │ 'SOLICITUD_CREADA'   │ 'cliente' │ true  │ 'qa-t46-crear-1'     │
+│ 2       │ 'SOLICITUD_CREADA'   │ 'cliente' │ true  │ 'qa-t46-crear-1'     │
+│ 3       │ 'SOLICITUD_ASIGNADA' │ 'aliado'  │ true  │ 'qa-t46-03490d4a-22' │
+│ 4       │ 'SOLICITUD_CREADA'   │ 'cliente' │ true  │ 'qa-t46-crear-1'     │
+│ 5       │ 'SOLICITUD_ASIGNADA' │ 'aliado'  │ true  │ 'qa-t46-6ef93e76-33' │
+│ 6       │ 'SOLICITUD_CREADA'   │ 'cliente' │ true  │ 'qa-t46-crear-2'     │
+│ 7       │ 'SOLICITUD_ASIGNADA' │ 'aliado'  │ true  │ 'qa-t46-0b226a4a-19' │
+└─────────┴──────────────────────┴───────────┴───────┴──────────────────────┘
+-- QAS-11 intento UPDATE: rechazado 42501 evento_servicio es inmutable: no admite UPDATE (SCRUM-1656)
+-- QAS-11 intento DELETE: rechazado 42501 evento_servicio es inmutable: no admite DELETE (SCRUM-1656)
+-- QAS-11 intento TRUNCATE: rechazado 42501 permission denied for table evento_servicio
+-- QAS-11 intento UPDATE transaccion_evento: rechazado 42501 permission denied for table transaccion_evento
+-- transaccion revertida

@@ -1,0 +1,2 @@
+== etiquetas de container_cpu_usage_seconds_total: ['__name__', 'ambiente', 'cpu', 'id', 'instance', 'job'] series: 1
+== etiqueta usada: None

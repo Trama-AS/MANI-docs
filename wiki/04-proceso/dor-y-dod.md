@@ -1,8 +1,17 @@
 # DoR y DoD
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §8 y §9. El **DoD lo decide QA** (§2.3).
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir cuándo una historia puede entrar a un sprint y cuándo está terminada |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: QA decide el DoD; la Scrum Master, el DoR |
+| **Consume** | Desarrollo, QA, PO |
+| **Cada cuánto se actualiza** | Cuando QA cambia el DoD o la retrospectiva cambia el DoR |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-04; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Requisito → criterios de aceptación → atributo de calidad (QAS) → prueba → aceptación del PO |
 
 ## Definition of Ready
 

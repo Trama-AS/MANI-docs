@@ -1,8 +1,17 @@
 # CI/CD y calidad
 
-[← 03 · Entrega](../../Entregas/README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §8, §13 y §14 · [`architecture/SAD.md`](../02-arquitectura/SAD.md) §18 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §11 · [`adr/ADR-0005`](../02-arquitectura/adr/ADR-0005-devsecops.md), [`ADR-0015`](../02-arquitectura/adr/ADR-0015-pruebas-aislamiento-multitenant.md).
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir qué etapas tiene el pipeline, qué pruebas se exigen y qué *gates* detienen una promoción |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps y QA |
+| **Consume** | Desarrollo, QA, DevOps |
+| **Cada cuánto se actualiza** | Cuando cambia el pipeline o un *gate* |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-04; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Atributo de calidad → ADR-0005 y ADR-0015 → pipeline → prueba y *quality gate* |
 
 GitHub Actions es el motor oficial de CI/CD.
 

@@ -1,8 +1,17 @@
 # Roles y decisiones
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2 y §5 · [`adr/ADR-0003`](../02-arquitectura/adr/ADR-0003-mesa-arquitectura.md).
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir quién decide qué, cómo se desempata y cómo funciona la Mesa de Arquitectura |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: Scrum Master |
+| **Consume** | Todo el equipo |
+| **Cada cuánto se actualiza** | Cuando el equipo acuerda un cambio de rol o de regla |
+| **Versión y fecha** | Viva, sin número · contenido y ficha del 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Rol → autoridad sobre un artefacto → decisión registrada (acta o ADR) |
 
 Ninguna persona es dueña de un documento ni de una decisión: la autoridad es del **rol**, y las decisiones estructurales son de la **Mesa de Arquitectura**, no de un individuo.
 
@@ -17,6 +26,8 @@ Ninguna persona es dueña de un documento ni de una decisión: la autoridad es d
 | Santiago | QA | Product Owner |
 | Daniel Ávila | DevOps | Backend |
 | Nicolás León | Product Owner | DevOps |
+
+> **La fila del Product Owner está desactualizada en la fuente.** `GOBIERNO_DEL_EQUIPO.md` §2.1 lleva una enmienda pendiente del 2026-11-11: el backlog vigente designa a **Camila Beltrán** como PO (por ejemplo, «Camila (PO) lo valida» en las tareas del Sprint 6). La tabla de arriba copia la de la fuente y no se reescribe aquí: el cambio de rol lo acuerda el equipo. Mientras tanto, quien valida y acepta como PO es Camila Beltrán.
 
 Todos los integrantes técnicos participan como **Arquitectos** en la Mesa de Arquitectura. Daniel Ávila es DevOps titular (repositorios, CI/CD, release, ambientes, operación) y Nicolás León DevOps secundario.
 

@@ -1,8 +1,17 @@
 # Ambientes y promoción
 
-[← 03 · Entrega](../../Entregas/README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §7–§12 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §9–§12 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §4–§10 · [`adr/ADR-0004`](../02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md) · [`adr/ADR-0028`](../02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md).
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir qué ambientes existen, cómo se promueve una versión y qué no se promete |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps |
+| **Consume** | Desarrollo, QA, DevOps |
+| **Cada cuánto se actualiza** | Cuando cambia un ambiente o la forma de promover |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-10-23; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Restricción del SRS → ADR-0004 y ADR-0028 → imagen en GHCR → despliegue en QA y PROD |
 
 ## Secuencia oficial
 

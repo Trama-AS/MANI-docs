@@ -223,13 +223,18 @@ SELECT rolname, rolbypassrls, rolsuper
  WHERE rolname IN ('postgres','service_role','authenticator','authenticated','anon')
  ORDER BY rolname;
 
-SELECT count(*) AS migraciones, max(version) AS ultima
-  FROM supabase_migrations.schema_migrations;
+SELECT count(*) AS migraciones,
+       count(*) FILTER (WHERE version LIKE '00__') AS serie_core,
+       count(*) FILTER (WHERE version LIKE '00_')  AS serie_gateway,
+       max(version) FILTER (WHERE version LIKE '00__') AS ultima_core
+  FROM public.schema_migrations;
 
 SELECT count(*) AS politicas_activas FROM pg_policies;
 ```
 
-**Evidencia a pegar:** las tres salidas por ambiente, con su fecha. Comparar el conteo con la serie real `0001`–`0033` de `MANI-Node/db/migrations`. La afirmación «roles sin `BYPASSRLS` en PROD» se sostiene solo si `rolbypassrls` es `f` para `service_role` **y** para `postgres`.
+**Evidencia a pegar:** las tres salidas por ambiente, con su fecha. Valor esperado al 2026-11-22, contado sobre los repositorios: **45 filas** = 37 de `MANI-Node/db/migrations` (`0001`–`0039`, sin `0011` ni `0012`) + 8 de `MANI-APIGateway/database/migrations` (`001`–`008`), con `ultima_core = '0039'`.
+
+> **Corrección del 2026-11-22.** La versión anterior de esta consulta leía `supabase_migrations.schema_migrations` y comparaba contra la serie `0001`–`0033`. Las dos cosas estaban mal: las migraciones del proyecto se registran en la tabla propia `public.schema_migrations` (cada archivo hace `INSERT INTO schema_migrations`), no en la de la CLI de Supabase, y la serie de Core llega hoy a `0039`. Además, `max(version)` sin filtro devolvía `'008'`, porque compara texto y `'008'` > `'0039'`. La afirmación «roles sin `BYPASSRLS` en PROD» se sostiene solo si `rolbypassrls` es `f` para `service_role` **y** para `postgres`.
 
 ## 4. Decisiones tomadas
 

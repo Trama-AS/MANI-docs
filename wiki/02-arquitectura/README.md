@@ -74,6 +74,7 @@ Explican y ordenan; no deciden. Las mantiene la responsable de la carpeta y se r
 | [Riesgos y puntos abiertos](guia/riesgos-y-puntos-abiertos.md) | *Architectural killers* y lo que falta decidir | `SAD.md` §7.4 y §7.6 |
 | [Diagramas](guia/diagramas.md) | Qué diagramas existen y dónde | `diagrams/`, ADR-0008 |
 | [Módulo M-04: cotización y ejecución](guia/modulo-m04-cotizacion-y-ejecucion.md) | Flujo, estados, endpoints del Gateway y errores `MANI-*` de 865 a 870 y 872, con sus pruebas | `core.yaml` (MANI-APIGateway), Core, `SAD.md` §7.4 y §11 |
+| [Módulo M-04: cola de eventos sin conexión](guia/modulo-m04-cola-sin-conexion.md) | Cómo funciona la cola del aliado (873), cómo se reintenta y sus límites | MANI-Flutter `features/services/events`, Core (`ocurrido_en`, migración `0026`) |
 
 ## 3. Documentos — la fuente
 

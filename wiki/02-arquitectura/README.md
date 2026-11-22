@@ -13,9 +13,9 @@
 | **Suplente** | **Mesa de Arquitectura**, como órgano. Decidido por la Scrum Master el 2026-11-11; ver [§1.1](#11-por-qué-la-suplencia-es-de-la-mesa-y-no-de-una-persona). |
 | **Quién la consume** | Desarrollo (los seis repositorios), QA (para derivar pruebas de los escenarios), DevOps (vista de despliegue) y el PO (restricciones que afectan el alcance). |
 | **Cada cuánto se actualiza** | Al cerrar cada sprint, y de inmediato cuando una Mesa de Arquitectura produce o modifica un ADR. |
-| **Última revisión de la carpeta** | 2026-11-11 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690), HU-WIKI-02) |
-| **Barrido de secretos** | 2026-11-10: sin credenciales en la carpeta. Se buscaron valores, no palabras: JWT (`eyJ…`), llaves de Supabase (`sb_…`), llaves de AWS (`AKIA…`), bloques `BEGIN … PRIVATE KEY`, cadenas hexadecimales de 40+ caracteres y asignaciones del tipo `password=…`, `secret=…`, `token=…`. **0 coincidencias.** Las apariciones de «token», «secret» y `LOGIN PASSWORD` son vocabulario y referencias de política (ADR-0031 §5), no valores. |
-| **Estado del cierre de HU-WIKI-02** | **Parcial.** Ver [§7](#7-qué-falta-para-cerrar-hu-wiki-02). |
+| **Última revisión de la carpeta** | 2026-11-22 ([SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690), HU-WIKI-02) |
+| **Barrido de secretos** | 2026-11-22: sin credenciales en la carpeta (repetido sobre el estado de `main` de esa fecha; la única cadena hexadecimal larga de la carpeta vecina es un digest de imagen y SHA de commits). 2026-11-10: sin credenciales. Se buscaron valores, no palabras: JWT (`eyJ…`), llaves de Supabase (`sb_…`), llaves de AWS (`AKIA…`), bloques `BEGIN … PRIVATE KEY`, cadenas hexadecimales de 40+ caracteres y asignaciones del tipo `password=…`, `secret=…`, `token=…`. **0 coincidencias.** Las apariciones de «token», «secret» y `LOGIN PASSWORD` son vocabulario y referencias de política (ADR-0031 §5), no valores. |
+| **Estado del cierre de HU-WIKI-02** | **Criterios cumplidos al 2026-11-22; pendiente de la decisión de cierre de la SM.** Ver [§7](#7-qué-falta-para-cerrar-hu-wiki-02). |
 
 La carpeta tiene tres capas, y cada documento vive en una sola:
 
@@ -93,7 +93,7 @@ Los tres primeros son **documentos vivos**: no llevan número de versión, la vi
 | [`TECH_RADAR.md`](TECH_RADAR.md) | Tecnologías adoptadas, en prueba y descartadas | Arquitectura | Todo el equipo | Por sprint | Vivo · 2026-11-04 |
 | [`ARQ-05-despliegue-kafka-dev-qa.md`](ARQ-05-despliegue-kafka-dev-qa.md) | Configuración y despliegue de Kafka en DEV y QA: tópicos canónicos, *smoke test* y monitoreo (SCRUM-1236) | Daniel Ávila | DevOps, Desarrollo | Cuando cambia el broker o sus tópicos | ARQ-05 · 2026-11-03 |
 
-> **Dato en disputa.** Este documento declara Kafka implementado y verificado en DEV y QA. La fila D7 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) está **pendiente de validar** porque la descripción de la VM de QA no lista el contenedor. No se cita como hecho hasta que haya evidencia.
+> **Dato verificado el 2026-11-19.** La fila D7 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) confirma Kafka `3.8.0` en DEV y QA con la evidencia de `wiki/08-infraestructura/`. Kafka **no** corre en PROD.
 
 Atajos a secciones que suelen buscarse como si fueran un documento aparte:
 
@@ -109,7 +109,7 @@ Atajos a secciones que suelen buscarse como si fueran un documento aparte:
 
 ## 4. Decisiones
 
-[`adr/`](adr/) — **30 fichas** al `2026-11-19`: **28 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*) y **1 `Propuesto`** (ADR-0034, contrato común de proveedores externos). El siguiente número libre es **ADR-0039**.
+[`adr/`](adr/) — **30 fichas** al `2026-11-22`: **27 `Aceptado`** (vinculantes), **1 `Rechazado`** (ADR-0014, *feature toggle*) y **2 `Propuesto`**: ADR-0034 (contrato común de proveedores externos) y ADR-0035 (frontera de la asignación 6A). Conteo hecho sobre el campo `Estado` de cada archivo; la cifra anterior, 28 y 1, omitía que ADR-0035 sigue `Propuesto`. El siguiente número libre es **ADR-0039**.
 
 **Cuatro de las aceptadas lo fueron sin Mesa, y conviene saber cuáles.** [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md), [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md), [ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md) y la enmienda de [ADR-0006](adr/ADR-0006-observabilidad.md) fueron **ratificadas por la Scrum Master el 2026-11-19**, porque no se convocó sesión de Mesa en el Sprint 6 y el código ya las cumplía. **La Mesa puede confirmarlas o revertirlas**, y cada ficha lo explica en su apartado de ratificación. Se declara aquí para que se pueda auditar **cómo** se ratificaron, no solo cuántas hay.
 
@@ -128,11 +128,11 @@ Ninguno de estos puntos se presenta como resuelto.
 | Pendiente | Estado hoy | Qué lo cierra |
 |---|---|---|
 | **Asignación idempotente (6A)** | **Documentado y cerrado.** [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) está escrito con contexto, alternativas A/B/C y consecuencias, y [`SAD.md`](SAD.md) §7.4 lo referencia y registra la decisión 6A cerrando el pendiente P1; la asignación idempotente sí está escrita, en §7.2 y §7.4. Lo único que falta es **ratificar el ADR en Mesa**: hasta entonces queda `Propuesto` y la decisión de la SM rige el sprint | Sesión de Mesa (ADR-0003 §2). [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) ya cumple sus dos criterios |
-| **Acta A/B** | Los escenarios con opción B no están reflejados en `SDD.md` §7 y §8. [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) **está bloqueada**: depende del acta [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684), que es la que fija los umbrales nuevos de los escenarios 05, 16, 17, 18, 24, 25, 26, 40 y 43. Sin el acta no hay cifra que escribir | Firmar el acta 1684, y después 1685 |
-| **Tenant de los clientes** | [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) existe en estado `Propuesto` desde el 2026-11-11: establece que lo reportado en [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) **no es un defecto sino el diseño vigente** de ADR-0012 y ADR-0018, y propone mantener un tenant por cliente en el MVP | Decisión del PO sobre las preguntas M1 a M4 del propio ADR y ratificación en Mesa; solo entonces se reclasifica SCRUM-1637 |
-| **Cifrado de credenciales y datos sensibles** | **Decisión y acreditación técnica emitidas en [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md)** ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)): Opción A (cifrado del medio Supabase + exclusión documentada frente a `BYPASSRLS` + `0` PII en logs/errores), acreditación M4 verificada en QA/PROD (`2026-11-14`) y plan respaldo/migración condicional. Sigue pendiente M1 (ratificación Mesa), M2 (aprobación PO de RNF-13/QAS-46) y M3 (cierre DoD por Santiago en [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383)) | Mesa (M1), PO (M2) y QA Santiago (M3) sobre [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) |
-| **Kafka: declarado verificado sin evidencia** | [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) decía «Implementado y Verificado en DEV y QA». Corregido el 2026-11-11 a «Implementado; NO verificado de forma independiente», porque la descripción de la VM de QA no lista el contenedor | Fila D7 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) |
-| **Observabilidad: APM, logs y trazas sin herramienta** | **Resuelto en parte el 2026-11-13:** [ADR-0006](adr/ADR-0006-observabilidad.md) se enmendó para **retirar Datadog**, y quedan Prometheus para métricas, Grafana para tableros y Jira para incidentes, que es lo que el profesor exige. Lo que **no** queda cubierto es APM, logs centralizados y trazas: ninguna herramienta los asume hoy | Decidir si se adopta Loki u otra, o si el MVP se declara sin APM ni logs centralizados. Ratificación de la enmienda en Mesa |
+| **Acta A/B** | **Cerrado.** El [acta](../06-gobernanza/ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md) está **firmada por la PO el 2026-11-21** ([SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)) y los umbrales de la opción B ya están en `SDD.md` §7 y §8 (commit `7815d75`, [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) `Done`) | — |
+| **Tenant de los clientes** | **Cerrado.** [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) está `Aceptado`, ratificado por la SM el 2026-11-19 sin Mesa: lo reportado en [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) **no es un defecto sino el diseño vigente** de ADR-0012 y ADR-0018, con un tenant por cliente en el MVP. [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700) `Done` | La Mesa puede confirmar o revertir la ratificación cuando se reúna |
+| **Cifrado de credenciales y datos sensibles** | **Decisión y acreditación técnica emitidas en [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md)** ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)): Opción A (cifrado del medio Supabase + exclusión documentada frente a `BYPASSRLS` + `0` PII en logs/errores), acreditación M4 verificada en QA/PROD (`2026-11-14`) y plan respaldo/migración condicional. El ADR está `Aceptado`, ratificado por la SM el 2026-11-19 sin Mesa, y [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) está `Done`. Lo que el ADR deja abierto es M2: la aprobación de la PO de RNF-13 y QAS-46 | PO (M2) sobre [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) |
+| **Kafka en PROD** | La fila D7 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) se cerró el 2026-11-19: Kafka `3.8.0` corre en DEV y QA y **no en PROD**. Los flujos que dependen de eventos asíncronos no funcionan en PROD todavía, y la restricción PROY-10 lo exige | Desplegar Kafka en PROD o declarar la excepción en [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md). Es deuda abierta del [informe de cierre](../06-gobernanza/INFORME_CIERRE_SPRINT_6.md), no un criterio de HU-WIKI-02 |
+| **Observabilidad: logs y trazas** | **Cerrado.** La enmienda de [ADR-0006](adr/ADR-0006-observabilidad.md) retira Datadog, y [ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md) adopta Grafana Loki para logs centralizados con `correlation_id`. Los dos ratificados por la SM el 2026-11-19 sin Mesa. Las trazas por *spans* siguen fuera de fase, como dice el propio ADR-0038 | La Mesa puede confirmar o revertir la ratificación |
 | **SDD §8 e Infraestructura V4 §7 sobre monitoreo** | **Ejecutado el 2026-11-19 (`a0bb876`)**: `SDD.md` §8 (`QAS-16`, `QAS-17`) y `DOCUMENTO_INFRAESTRUCTURA_V4.md` §7 reflejan el stack real en **Calidad (`10.43.98.196`)** y la evidencia de `wiki/08-infraestructura/` | Fila D8 cerrada en [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) y [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) en revisión |
 
 ## 6. Discrepancias de HU-VAL-01 que son de esta carpeta
@@ -141,11 +141,11 @@ Cinco de las quince filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDA
 
 | Fila | Qué afecta en esta carpeta | Estado |
 |---|---|---|
-| D4 | RPO/RTO: `SDD.md` QAS-17 contra el informe de DevOps y la opción B | Conflicto verificado; **falta la decisión** (P-D4) |
+| D4 | RPO/RTO: `SDD.md` QAS-17 contra el informe de DevOps y la opción B | **Decidido.** El [acta A/B](../06-gobernanza/ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md), firmada por la PO el 2026-11-21, fija **RPO ≤ 24 h y RTO ≤ 30 min** y reemplaza en cuanto al RPO la decisión del 2026-11-11 (`RPO ≤ 5 min`) |
 | D5 | Servicios por ambiente | **CERRADA** el 2026-11-19 con el conteo de contenedores por ambiente. La premisa de la fila estaba mal planteada: `Availability` **no es un contenedor** sino un componente interno de Core ([`SDD.md`](SDD.md) §4.3), y el propio [`SAD.md`](SAD.md) ya dice que no existe `MANI-Availability` como desplegable. No había nada que corregir en el SAD |
 | D7 | Kafka en DEV y QA: [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) y el estado de ADR-0029 | **CERRADA** el 2026-11-19 en [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md): Kafka `3.8.0` corre en DEV y QA y **no** en PROD (`D10` del inventario de infraestructura) |
 | D8 | Observabilidad: `SDD.md` §8 y `DOCUMENTO_INFRAESTRUCTURA_V4.md` §7 | **CERRADA** el 2026-11-19 (`a0bb876`, [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686)): Prometheus, Grafana, Alertmanager, Mailpit, Blackbox y Loki operan en **Calidad (`10.43.98.196`)** scrapeando QA, PROD y Backups |
-| D15 | Responsable y alcance del cifrado, que condiciona el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) | **Decidido en [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) (Opción A) + M4 acreditado (`2026-11-14`)**; pendiente M1-M3 (Mesa/PO/DoD) |
+| D15 | Responsable y alcance del cifrado, que condiciona el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) | **Cerrada.** [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) `Aceptado` (Opción A, ratificado por la SM el 2026-11-19), M4 acreditado el 2026-11-14 y [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) `Done`. Queda M2 de la PO |
 
 ## 7. Qué falta para cerrar HU-WIKI-02
 
@@ -153,13 +153,22 @@ Hecho: orden de lectura, ficha de carpeta, finalidad y mantenedor por documento,
 
 Añadido el 2026-11-11: se resolvieron los cinco marcadores de conflicto de git que estaban commiteados en [`SDD.md`](SDD.md) §4.6, se corrigió el estado de [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) y se registraron las decisiones de HU-VAL-01 que afectan a esta carpeta ([§6](#6-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)). [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) quedó verificada como **ya cumplida**: el ADR existe y `SAD.md` §7.4 lo referencia.
 
-Falta, y **cada punto depende de algo que no está en esta carpeta**:
+**Estado al 2026-11-22: los criterios de HU-WIKI-02 están cumplidos.** Lo que aparecía aquí como pendiente se cerró entre el 19 y el 21 de noviembre:
 
-1. **Ratificación de la suplencia en Mesa.** Asignada a la Mesa de Arquitectura el 2026-11-11 ([§1.1](#11-por-qué-la-suplencia-es-de-la-mesa-y-no-de-una-persona)); conviene que la propia Mesa lo deje en acta.
-2. **Acta A/B y los ADR pendientes.** El ADR del tenant de clientes ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) ya está publicado como [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md); le falta la decisión del PO, no la redacción. Siguen sin ficha o sin ratificar: el acta A/B ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), bloqueada por [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)), el cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) y la asignación idempotente ([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)).
-3. **SDD §8 e Infraestructura V4 §7** corregidos respecto al monitoreo — [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686), que a su vez espera la fila D8.
-4. **Ratificación de ADR-0035 en Mesa** (ADR-0003 §2). No la puede hacer la Scrum Master, que es la proponente del ADR.
-5. ~~Revisión y aprobación del README por otro responsable de carpeta.~~ **Criterio retirado por la Scrum Master el 2026-11-12**, por el mismo motivo que en [06-gobernanza](../06-gobernanza/README.md): ninguna carpeta de la wiki declara responsable, así que la figura no existe.
+| Pendiente anterior | Cómo se cerró |
+|---|---|
+| Acta A/B ([SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)) y umbrales de la opción B en el SDD ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685)) | Acta firmada por la PO el 2026-11-21; umbrales en `SDD.md` §7 y §8 (`7815d75`); SCRUM-1685 `Done` |
+| ADR del tenant ([SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) y del cifrado ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699)) | ADR-0036 y ADR-0037 `Aceptado`, ratificados por la SM el 2026-11-19 sin Mesa |
+| SDD §8 e Infraestructura V4 §7 sobre monitoreo ([SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686)) | Ejecutado el 2026-11-19 (`a0bb876`) tras cerrar la fila D8 |
+| ADR-0006 si se cambia Datadog | Enmienda de ADR-0006 y ADR-0038 (Loki), ratificados el 2026-11-19 |
+| Trazabilidad por ADR (requisito, atributo, prueba) | Los 30 ADR declaran su origen ([§4](#4-decisiones)) |
+
+**Lo que sigue abierto y no bloquea el cierre de esta historia**, porque el criterio pide el índice de ADR **con su estado** y ese estado está declarado:
+
+1. **[ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto`.** Su proponente es la Scrum Master, así que no puede ratificarlo ella: le corresponde a la Mesa (ADR-0003 §2). [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) ya cumple sus dos criterios.
+2. **Confirmación en Mesa** de la suplencia de la carpeta y de las cuatro ratificaciones del 2026-11-19, cuando se convoque.
+3. **La nota de ratificación de octubre de [ADR-0025](adr/ADR-0025-integracion-jira-github.md)**, que la SM indica no haber escrito: la confirma o se corrige.
+4. ~~Revisión y aprobación del README por otro responsable de carpeta.~~ **Criterio retirado por la Scrum Master el 2026-11-12**, por el mismo motivo que en [06-gobernanza](../06-gobernanza/README.md): ninguna carpeta de la wiki declara responsable, así que la figura no existe.
 
 **Fuera del alcance de esta carpeta:** [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661) no es trazabilidad de ADR. Son los 22 contratos OpenAPI que faltan (127 de 127) con sus *contract tests* en CI y un vídeo de validación en QA aprobado por la PO: trabajo de Juan S. Álvarez en los repositorios de código, no documentación de esta carpeta.
 
@@ -199,6 +208,7 @@ Los tres primeros se retiraron de la raíz el 2026-11-10, tras comprobar secció
 
 | Fecha | Cambio |
 |---|---|
+| 2026-11-22 | Puesta al día con el estado real de `main`: acta A/B firmada (2026-11-21) y SCRUM-1685 `Done`; ADR-0036, ADR-0037, ADR-0038 y la enmienda de ADR-0006 ratificados por la SM el 2026-11-19; filas D4, D7 y D15 actualizadas; §7 reescrita: los criterios de HU-WIKI-02 quedan cumplidos y lo abierto (ADR-0035 en Mesa, ADR-0025) se declara sin bloquear. Barrido de secretos repetido. |
 | 2026-11-11 | Suplencia de la carpeta asignada a la **Mesa de Arquitectura** como órgano, no a una persona: la responsable mantiene todos los documentos, y las cabeceras que nombran a otros acreditan autoría del entregable, no mantenimiento continuo (§1.1). |
 | 2026-11-11 | Correcciones: se resuelven los **cinco marcadores de conflicto de git** que estaban commiteados en [`SDD.md`](SDD.md) §4.6; [`ARQ-05`](ARQ-05-despliegue-kafka-dev-qa.md) deja de declarar Kafka verificado; se corrige que [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661) son los contratos OpenAPI y no la trazabilidad de los ADR; se corrige que `SAD.md` §7.4 **sí** documenta la asignación idempotente y referencia a ADR-0035, de modo que [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) ya cumplía; se registran las decisiones de HU-VAL-01 que afectan a esta carpeta. |
 | 2026-11-11 | Se publica [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) (pertenencia del cliente a un tenant, `Propuesto`) y se propaga al índice de decisiones (§4, 28 fichas), al pendiente de §5 y al cierre de §7: el tenant de clientes pasa de «bug sin ADR» a «ADR publicado, decisión del PO pendiente». |

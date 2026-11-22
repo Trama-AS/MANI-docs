@@ -14,9 +14,9 @@ Esta carpeta responde a **quién decide**, **bajo qué políticas**, **sobre qu�
 | **Quién firma las actas** | María Camila Beltrán (Product Owner). La SM facilita y redacta; no firma en nombre del PO. |
 | **Quién la consume** | Todo el equipo para las reglas de decisión; DevOps y QA para infraestructura y políticas; el PO para las actas y los informes de cierre; el jurado en la sustentación. |
 | **Cada cuánto se actualiza** | Al cerrar cada sprint (informe de cierre), y de inmediato cuando se firma un acta, se registra un bloqueo o se cierra una fila de HU-VAL-01. |
-| **Última revisión de la carpeta** | 2026-11-11 ([SCRUM-1711](https://maniservices.atlassian.net/browse/SCRUM-1711), HU-WIKI-08) |
-| **Barrido de secretos** | 2026-11-11: **sin credenciales en la carpeta.** Ver [§5](#5-barrido-de-secretos). |
-| **Estado del cierre de HU-WIKI-08** | **Parcial.** Ver [§6](#6-qué-falta-para-cerrar-hu-wiki-08). |
+| **Última revisión de la carpeta** | 2026-11-22 ([SCRUM-1711](https://maniservices.atlassian.net/browse/SCRUM-1711), HU-WIKI-08) |
+| **Barrido de secretos** | 2026-11-22: **sin credenciales en la carpeta**, repetido sobre los doce documentos y este README. Ver [§5](#5-barrido-de-secretos). |
+| **Estado del cierre de HU-WIKI-08** | **Criterios cumplidos al 2026-11-22, con una reserva sobre el acta A/B; pendiente de la decisión de cierre de la SM.** Ver [§6](#6-qué-falta-para-cerrar-hu-wiki-08). |
 
 ## 1. Orden de lectura
 
@@ -28,10 +28,8 @@ Seis pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en ord
 | 2 | **Políticas de trabajo**: ramas, PR, promoción, CI/CD, secretos, uso de IA | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Es la norma que el incumplimiento de un entregable se mide contra ella |
 | 3 | **Infraestructura vigente**: ambientes, VMs, Supabase, red, backups | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) y [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Fija sobre qué se despliega lo que se decide |
 | 4 | **Validación de discrepancias**: qué se verificó de verdad y qué sigue pendiente | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Separa lo verificado de lo afirmado, antes de llevar una cifra a la sustentación |
-| 5 | **Registro de bloqueos del Sprint 6** | [`SEGUIMIENTO_ACUERDOS_SPRINT_6.md`](SEGUIMIENTO_ACUERDOS_SPRINT_6.md) | Acuerdos del sprint con responsable, estado y evidencia. Deja constancia de que **no existen notas escritas de la planning** y no las reconstruye de memoria | Sara Albarracín (SM) | El equipo en cada *daily* | En cada *daily* | 1.0 · 2026-11-19 |
-| [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Cierre del Sprint 6: resultados con cifras de Jira, lo que sí se cerró, cuatro lecciones aprendidas y nueve puntos de deuda abierta con su responsable | Sara Albarracín (SM) | El equipo, el PO y el jurado | Al cierre de cada sprint | 1.0 · 2026-11-19 |
-| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Ocho bloqueos abiertos, seis de ellos en o sobre el umbral de escalamiento: es lo que explica por qué varias tareas del sprint no avanzan |
-| 6 | **Actas e informes de cierre** | **Aún no existen como documento.** Ver [§4](#4-lo-que-esta-carpeta-todavía-no-tiene) | Es lo que falta para cerrar HU-WIKI-08 |
+| 5 | **Seguimiento del sprint**: acuerdos y bloqueos | [`SEGUIMIENTO_ACUERDOS_SPRINT_6.md`](SEGUIMIENTO_ACUERDOS_SPRINT_6.md) y [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Qué se acordó, quién responde y qué está bloqueado, con su causa y su tiempo |
+| 6 | **Actas e informes de cierre** | [`ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md`](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md) y [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Lo que la PO firmó y el balance del sprint con cifras de Jira |
 
 ## 2. La regla que resuelve discusiones
 
@@ -51,8 +49,11 @@ La autoridad es del **rol** y del **artefacto**, no de la persona (§2.3): el PO
 | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Políticas de ramas, PR, promoción, CI/CD, contenedores, testing, DevSecOps, secretos, observabilidad, uso de IA, versionamiento de despliegue y, en §22, la política de JWT entre ambientes | Daniel Ávila (DevOps) con la SM | Desarrollo, QA, DevOps | Cuando cambia una política | Vivo · 2026-10-22 |
 | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) | **Vista física vigente desde el 2026-11-19** del modelo 4+1: ambientes, VMs, registro de imágenes, Supabase, red y TLS, backups y el estado de lo verificado contra el código | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Por sprint y ante cada cambio de ambiente | V4 · 2026-11-19 · **Vigente** |
 | [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Vista física detallada: ambientes DEV, QA y PROD, VMs, Supabase, red y TLS, backups, escalabilidad y, en §27, el plan de alineación y rollback de Supabase PROD y QA | Daniel Ávila (DevOps) | DevOps, QA | Cuando cambia la infraestructura | Vivo · 2026-10-22 |
-| [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Validación de las discrepancias entre documentos: estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, las decisiones tomadas y lo que sigue abierto | Sara Albarracín (SM) | PO, Arquitectura, DevOps, QA | Cada vez que se cierra una fila; obligatorio antes de cada sustentación | 2.0 · 2026-11-11 · **Parcial: 6 de 15 verificadas, 5 decididas, 7 pendientes** |
-| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Bloqueos del Sprint 6: ítem afectado, tipo, causa, responsable, fecha de aparición y días hábiles abierto, con el resumen por tipo y las causas recurrentes con su acción de mejora | Sara Albarracín (SM) | El equipo en cada *daily*; el informe de cierre | En cada *daily* | 1.0 · 2026-11-11 |
+| [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Validación de las discrepancias entre documentos: estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, las decisiones tomadas y lo que sigue abierto | Sara Albarracín (SM) | PO, Arquitectura, DevOps, QA | Cada vez que se cierra una fila; obligatorio antes de cada sustentación | 2.3 · 2026-11-19 · **14 de 15 filas cerradas; queda D10** |
+| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Bloqueos del Sprint 6: ítem afectado, tipo, causa, responsable, fecha de aparición y días hábiles abierto, con el resumen por tipo y las causas recurrentes con su acción de mejora | Sara Albarracín (SM) | El equipo en cada *daily*; el informe de cierre | En cada *daily* | 1.3 |
+| [`SEGUIMIENTO_ACUERDOS_SPRINT_6.md`](SEGUIMIENTO_ACUERDOS_SPRINT_6.md) | Acuerdos del Sprint 6 con responsable, estado y evidencia. Deja constancia de que **no existen notas escritas de la planning** y no las reconstruye de memoria ([SCRUM-1707](https://maniservices.atlassian.net/browse/SCRUM-1707)) | Sara Albarracín (SM) | El equipo en cada *daily*; el informe de cierre | En cada *daily* | 1.0 · 2026-11-19 |
+| [`ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md`](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md) | Acta de decisión A/B por escenario de calidad: qué escenarios se ajustan con umbral nuevo y cuáles exigen cambiar el sistema ([SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)) | Santiago Hernández (QA) prepara; la SM facilita | QA, Arquitectura ([SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685)) | Una vez; se reemplaza con un acta nueva | **Firmada por la PO** · 2026-11-21 |
+| [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Cierre del Sprint 6: resultados con cifras de Jira, lecciones aprendidas y deuda abierta con su responsable ([SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708)) | Sara Albarracín (SM) | El equipo, el PO y el jurado | Al cierre de cada sprint | 1.0 · corte 2026-11-19; se actualiza al cierre definitivo |
 | [`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md) | **Propuesta, pendiente del PO.** Dos requisitos que hoy faltan —recuperabilidad y protección de datos personales en reposo— y el escenario derivado del segundo, con el desacuerdo entre cifrado de volumen y por columna | Sara Albarracín (SM) | PO, Arquitectura, QA | Hasta que el PO los apruebe o los descarte | 1.0 · 2026-11-11 · **Propuesta** |
 | [`REVISION_QAS_SIN_REQUISITO.md`](REVISION_QAS_SIN_REQUISITO.md) | **Propuesta, pendiente de PO.** Recorrido de los 45 escenarios de calidad contra los once RNF y las restricciones del SRS §3: los once P1 clasificados en requisito sin enlazar, restricción y sin respaldo, con la columna de origen propuesta para el SDD | Sara Albarracín (SM) | PO, Arquitectura, QA | Cuando se crea o retira un RNF o un QAS | 2.0 · 2026-11-11 · **Propuesta** |
 | [`DOCUMENTO_INFRAESTRUCTURA_V3.md`](DOCUMENTO_INFRAESTRUCTURA_V3.md) | Vista física al cierre del Sprint 4, con evidencia empírica y runbook | Daniel Ávila (DevOps) | Consulta histórica | No se actualiza | V3 · 2026-10-17 · **Superado por V4** |
@@ -72,17 +73,24 @@ El 22 de octubre de 2026 se absorbieron dos documentos que vivían sueltos, porq
 
 Se citan por su sección. Sus versiones originales quedan en el historial de git y, congeladas, en [`Entregas/Entrega4/`](../../Entregas/Entrega4).
 
-## 4. Lo que esta carpeta todavía no tiene
+## 4. Actas, informes y seguimiento: estado
 
-Los criterios específicos de HU-WIKI-08 piden actas, informes de cierre y registro de bloqueos. El registro de bloqueos **ya existe** ([`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md), v1.0). Los otros tres **no existen como documento todavía**, y esta tabla es el enlace exigido. Mientras un documento no exista, su fila dice «no existe», no «pendiente de revisión».
+Los criterios específicos de HU-WIKI-08 piden actas, informes de cierre y registro de bloqueos. **Al 2026-11-22 los cuatro existen como documento.** Hasta el 2026-11-19 esta sección los declaraba ausentes.
 
-| Qué falta | Qué debe contener | Jira | Estado |
-|---|---|---|---|
-| **Acta de decisión A/B por escenario de calidad** | Cada escenario marcado como opción A o B con su motivo, un RPO/RTO único (hoy hay tres propuestas incompatibles), y firma del PO | [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684) | `To Do`. **Bloquea** [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) y [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686): sin el acta, reescribir los umbrales del SDD sería inventarlos |
+| Documento | Jira | Estado |
+|---|---|---|
+| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | [SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709) | Publicado; se mantiene hasta el cierre del sprint |
+| [`SEGUIMIENTO_ACUERDOS_SPRINT_6.md`](SEGUIMIENTO_ACUERDOS_SPRINT_6.md) | [SCRUM-1707](https://maniservices.atlassian.net/browse/SCRUM-1707) | Publicado el 2026-11-19 |
+| [`ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md`](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md) | [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684) | **Firmada por la PO el 2026-11-21.** Desbloqueó [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685), hoy `Done` |
+| [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | [SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708) | Versión 1.0 con corte al 2026-11-19; se actualiza al cierre definitivo del sprint |
+
+**Reserva sobre el acta A/B.** Lleva fecha, decisiones escenario por escenario, firma de la PO y enlace a la tarea que la ejecuta, pero **no tiene un campo «Asistentes»**: nombra a quien decide, facilita y prepara. Como es un acta firmada, no se modifica aquí; si se quiere el campo, lo añade la PO o se registra en una adenda.
 
 **Toda acta de esta carpeta lleva**, sin excepción: fecha, asistentes, decisiones tomadas una por una, y el enlace a la tarea de Jira que la ejecuta. Las actas de aceptación las firma el PO. Un acta sin firma del PO no es un acta: es un borrador de la SM.
 
 ## 5. Barrido de secretos
+
+**Repetida el 2026-11-22** sobre los doce documentos y este README con los mismos patrones, más el prefijo `sqa_` de SonarQube: **0 credenciales.** Las únicas cadenas hexadecimales largas son el digest de imagen de la fila D1 y SHA de commits.
 
 Revisión del 2026-11-11 sobre los seis documentos de la carpeta. Se buscaron **valores, no palabras**: JWT (`eyJ…`), llaves de Supabase (`sb_…`), llaves de AWS (`AKIA…`), bloques `BEGIN … PRIVATE KEY`, cadenas hexadecimales de 40 o más caracteres y asignaciones del tipo `password=…`, `secret=…`, `token=…`, `api_key=…`.
 
@@ -101,31 +109,36 @@ Revisión del 2026-11-11 sobre los seis documentos de la carpeta. Se buscaron **
 
 ## 6. Qué falta para cerrar HU-WIKI-08
 
-Hecho: ficha de carpeta con responsable, firmante y consumidores; orden de lectura en cinco pasos; finalidad, mantenedor, consumidor, frecuencia y versión por documento; incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md`, que existía en la carpeta sin estar listado; marcado de la V3 como superada; barrido de secretos con sus dos coincidencias explicadas; enlace de las discrepancias de HU-VAL-01 que son de esta carpeta ([§7](#7-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)); declaración explícita de los documentos que todavía no existen; y publicación del [registro de bloqueos](REGISTRO_BLOQUEOS.md) ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)) con ocho bloqueos abiertos y uno resuelto.
+**Estado al 2026-11-22: criterios cumplidos.**
 
-Falta, y **depende de trabajo de otras tareas**:
+| Criterio | Estado |
+|---|---|
+| README con propósito, responsable, suplente, orden de lectura y para qué sirve cada documento | Cumplido. Suplente: la PO, decidido el 2026-11-12 |
+| Finalidad, mantenedor, consumidor, frecuencia, versión y fecha por documento | Cumplido para los trece documentos, incluidos los cuatro publicados entre el 19 y el 21 de noviembre |
+| Obsoletos marcados, no borrados | Cumplido: la V3 de infraestructura queda como superada |
+| Sin credenciales | Cumplido: barrido del 2026-11-22 sin coincidencias ([§5](#5-barrido-de-secretos)) |
+| Discrepancias de HU-VAL-01 resueltas o enlazadas | Cumplido: 14 de 15 cerradas y D10 enlazada ([§7](#7-discrepancias-de-hu-val-01-que-son-de-esta-carpeta)) |
+| Actas, informe de cierre, registro de bloqueos y tabla de HU-VAL-01 en la carpeta | Cumplido ([§4](#4-actas-informes-y-seguimiento-estado)) |
+| Cada acta con fecha, asistentes, decisiones y enlace a Jira; el PO firma las de aceptación | Cumplido salvo el campo «Asistentes» del acta A/B (reserva en §4) |
+| ~~Otro responsable de carpeta revisa y aprueba el README~~ | **Criterio retirado por la Scrum Master el 2026-11-12**: ninguna carpeta de la wiki declara responsable, así que la figura no existe |
 
-1. **Suplente de la carpeta** sin asignar (decisión del equipo).
-2. **Las tres piezas que siguen faltando en [§4](#4-lo-que-esta-carpeta-todavía-no-tiene)**: acta A/B, informe de cierre y seguimiento de acuerdos. El registro de bloqueos ya está publicado; le falta la etiqueta `bloqueado` en Jira, que hoy no existe.
-3. **Las siete filas pendientes de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md)**, que exigen sesión en las VMs, consulta a Supabase de PROD o prueba de puertos desde la red de la universidad.
-4. ~~Revisión y aprobación del README por otro responsable de carpeta.~~ **Criterio retirado por la Scrum Master el 2026-11-12.** No era cumplible: ninguna de las siete carpetas de la wiki declara responsable, y cinco no tienen siquiera ficha de carpeta, de modo que la figura que el criterio invoca no existe en el proyecto. Se retira en vez de dejarlo abierto indefinidamente o darlo por cumplido sin revisión real.
-5. ~~Promoción de `DOCUMENTO_INFRAESTRUCTURA_V4.md` de borrador a vigente.~~ **Hecho el 2026-11-19**, al cerrarse las filas que lo bloqueaban. Queda la reserva de la fila D10.
+**Lo que sigue abierto y es de otras tareas:** la fila D10 de HU-VAL-01 ([SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696)), que necesita la consulta a la base de PROD; y la versión final del informe de cierre ([SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708)) y del registro de bloqueos ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)), que se cierran al final del sprint.
 
 ## 7. Discrepancias de HU-VAL-01 que son de esta carpeta
 
-Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre infraestructura. Siete siguen pendientes de validar y dos quedaron decididas el 2026-11-11. Ninguna verificación se da por cerrada aquí: el estado por fila, la evidencia y el comando están en [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md).
+Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre infraestructura. **Al 2026-11-22 ocho están cerradas y una pendiente.** El estado por fila, la evidencia y el comando están en [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md).
 
 | Fila | Qué afecta en esta carpeta | Estado |
 |---|---|---|
-| D1 | Versión real de PROD frente al informe de DevOps | **Pendiente de validar** |
-| D5 | Servicios por ambiente: la lista de PROD del informe de DevOps | **Pendiente de validar** |
-| D6 | Puertos de QA: 80 y 443 según el informe, 443 rechaza según QA | **Pendiente de validar** |
-| D7 | Kafka en DEV y QA frente a la descripción de la VM de QA | **Pendiente de validar** |
-| D8 | Observabilidad: Infraestructura V4 §7 la declara futura | **Pendiente de validar** |
-| D9 | Respaldos: scripts de `pg_dump` documentados frente a volcados puntuales | **Pendiente de validar** |
-| D10 | Migraciones y roles sin `BYPASSRLS` en PROD | **Pendiente de validar** |
-| D4 | RPO/RTO: tres pares incompatibles, uno de ellos del informe de DevOps | **Decidido el 2026-11-11:** rige el umbral de QAS-17 (`RPO ≤ 5 min`, `RTO ≤ 30 min`), el único que vive en un artefacto vigente. Se corrigen a esa cifra el informe de DevOps y el material de la opción B. **No cuenta como verificación:** el escenario sigue `No medido` y no existe un RNF de recuperabilidad |
-| D12 | Quién firma el acta de ajustes: «Sara como PO» frente a Camila como PO | **Decidido el 2026-11-11:** firma **Camila Beltrán como PO** y Sara como SM, como ya fija la ficha de esta carpeta. La tabla de roles de [`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.1 sigue diciendo otra cosa y lleva la enmienda anotada, no reescrita: un cambio de rol se acuerda en equipo |
+| D1 | Versión real de PROD frente al informe de DevOps | **Cerrada el 2026-11-19:** el digest de PROD coincide con `v1.0.4` y las dieciocho rutas responden `200 OK` |
+| D5 | Servicios por ambiente: la lista de PROD del informe de DevOps | **Cerrada el 2026-11-19** con el conteo de contenedores por ambiente |
+| D6 | Puertos de QA: 80 y 443 según el informe, 443 rechaza según QA | **Cerrada el 2026-11-19:** el 443 escucha con TLS 1.2+ |
+| D7 | Kafka en DEV y QA frente a la descripción de la VM de QA | **Cerrada el 2026-11-19:** Kafka corre en DEV y QA, no en PROD |
+| D8 | Observabilidad: Infraestructura V4 §7 la declaraba futura | **Cerrada el 2026-11-19:** Prometheus y Grafana corren en la VM de Calidad; V4 §7 corregida (`a0bb876`) |
+| D9 | Respaldos: scripts de `pg_dump` documentados frente a volcados puntuales | **Cerrada el 2026-11-19:** respaldo diario cifrado y simulacro `PASS` |
+| D10 | Migraciones y roles sin `BYPASSRLS` en PROD | **Pendiente de validar.** Falta la consulta a la base de PROD y a la de QA ([`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) §3.1) |
+| D4 | RPO/RTO: tres pares incompatibles | **Decidido.** El [acta A/B](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md), firmada el 2026-11-21, fija **RPO ≤ 24 h y RTO ≤ 30 min** y reemplaza en cuanto al RPO la decisión del 2026-11-11 |
+| D12 | Quién firma el acta de ajustes: «Sara como PO» frente a Camila como PO | **Decidido el 2026-11-11:** firma **Camila Beltrán como PO** y Sara como SM, y así se firmó el acta A/B. La tabla de roles de [`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.1 lleva la enmienda anotada, no reescrita |
 
 ## 8. Dónde va un documento nuevo
 
@@ -140,6 +153,7 @@ Nueve de las quince filas tocan documentos de 06-gobernanza, casi todas sobre in
 
 | Fecha | Cambio |
 |---|---|
+| 2026-11-22 | Puesta al día con el estado de `main`: se listan el acta A/B (firmada el 2026-11-21), el seguimiento de acuerdos y el informe de cierre, que §4 seguía declarando ausentes; se repara el orden de lectura, cuyas filas 5 y 6 estaban mezcladas con la tabla de documentos; §6 pasa a tabla de criterios y §7 refleja las seis filas cerradas el 2026-11-19 y la D4 reemplazada por el acta. Barrido de secretos repetido. |
 | 2026-11-11 | Alineación con la v2.0 de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md): el conteo verificado baja de 8 a **6 de 15** (D4 y D12 tenían el conflicto verificado, no el dato), y §7 registra que esas dos quedaron **decididas**, no pendientes. |
 | 2026-11-11 | Se publica [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) ([SCRUM-1709](https://maniservices.atlassian.net/browse/SCRUM-1709)) y se enlaza desde el orden de lectura, la tabla de documentos y §4. |
 | 2026-11-11 | HU-WIKI-08 ([SCRUM-1711](https://maniservices.atlassian.net/browse/SCRUM-1711)): ficha de carpeta, orden de lectura, metadatos completos por documento (finalidad, mantenedor, consumidor, frecuencia, versión y fecha), incorporación de `DOCUMENTO_INFRAESTRUCTURA_V4.md` que estaba sin listar, marcado de la V3 como superada, barrido de secretos con las dos coincidencias explicadas, tabla de los cuatro documentos que aún no existen, enlace de las nueve filas de HU-VAL-01 que son de esta carpeta y reglas de ubicación de un documento nuevo. Cierre parcial: ver §6. |

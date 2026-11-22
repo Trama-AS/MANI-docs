@@ -8,8 +8,8 @@
 | Mantiene | Camila Beltrán (PO) |
 | Consume | Sustentación, SM, QA |
 | Frecuencia | Una por incremento |
-| Versión y fecha | 1.0 · 2026-11-17 · **borrador, sin firma** |
-| Ambiente validado | QA (2026-11-03 a 2026-11-05). Producción pendiente: ver condición 5 |
+| Versión y fecha | 1.1 · 2026-11-21 · **firmada por la PO el 2026-11-21** |
+| Ambiente validado | QA (2026-11-03 a 2026-11-05) y PROD (2026-11-21) |
 
 ## 1. Evidencia
 
@@ -20,6 +20,7 @@
 | Prueba de la PO desde la app en QA (2026-11-03 y 04) | 53 pruebas de la guía de QA: 39 funcionan, 12 fallaban (10 por pantallas sin conectar, corregidas y cerradas después) y 2 sin probar |
 | Prueba de la PO, corte 2 (2026-11-05) | Recorrido principal hasta la ejecución, con pago antes de iniciar y doble pago bloqueado; incompleto porque QA se cayó |
 | Revisión de producción (2026-11-09 y 2026-11-14) | El 9-nov se vio un front anterior con 12 de 18 rutas rotas. El 14-nov DevOps verificó que el digest del front en producción coincide con el tag v1.0.4 y que check-prod.sh responde 200 en los 6 endpoints y las 18 rutas ([D1](../06-gobernanza/VALIDACION_HU-VAL-01.md)). Availability no es un contenedor sino un componente interno del Core Service ([`SDD.md`](../02-arquitectura/SDD.md) §4.3.3), por eso no aparece en ningún ambiente ([D5](../06-gobernanza/VALIDACION_HU-VAL-01.md#d5--servicios-por-ambiente)) |
+| Recorrido de la PO en producción (2026-11-21) | Ciclo completo en PROD (v1.0.4) con las cuentas de prueba de ACME: solicitud, oferta con reglas del sitio, cotización de $30.000, ejecución con bitácora, pago después de finalizar aprobado, doble pago rechazado, liquidación con comisión del 10 % (neto $27.000), calificaciones, cierre y auditoría. Capturas en [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687). Observación: después de pagar, la pantalla del cliente sigue mostrando «Pagar» y no muestra el comprobante |
 
 ## 2. Lo que se acepta
 
@@ -45,5 +46,5 @@ La firma se hace cuando se cumpla la condición 5. Las condiciones 1 a 4 no bloq
 
 | Rol | Nombre | Fecha | Firma |
 |---|---|---|---|
-| Product Owner | Camila Beltrán | | |
+| Product Owner | Camila Beltrán | 2026-11-21 | Aprobado |
 | Scrum Master | Sara Albarracín | | |

@@ -1,0 +1,53 @@
+== QAS-11/37/42 base de QA 2026-11-22T03:19:39.176Z corrida 0318
+-- solicitudes de la prueba
+┌─────────┬────────────┬─────────────┬────────────┐
+│ (index) │ id         │ estado      │ con_aliado │
+├─────────┼────────────┼─────────────┼────────────┤
+│ 0       │ '9a0238ad' │ 'CANCELADA' │ false      │
+│ 1       │ '6ef93e76' │ 'ACEPTADA'  │ true       │
+└─────────┴────────────┴─────────────┴────────────┘
+-- QAS-42: solicitudes con la descripcion de la prueba (debe ser 1)
+┌─────────┬───┐
+│ (index) │ n │
+├─────────┼───┤
+│ 0       │ 1 │
+└─────────┴───┘
+-- cotizaciones de la solicitud A
+┌─────────┬────────────┬─────────┬────────────┬─────────────────┬──────────────────┐
+│ (index) │ id         │ version │ estado     │ valor_mano_obra │ valor_materiales │
+├─────────┼────────────┼─────────┼────────────┼─────────────────┼──────────────────┤
+│ 0       │ '73cecd30' │ 1       │ 'ACEPTADA' │ '120000.00'     │ '30000.00'       │
+└─────────┴────────────┴─────────┴────────────┴─────────────────┴──────────────────┘
+-- QAS-11/42: pagos de la cotizacion (debe haber 1 APROBADO)
+┌─────────┬────────────┬────────────┬─────────────┬──────────┬───────────┬─────────┬───────────────────────┬───────┬────────┐
+│ (index) │ id         │ estado     │ monto       │ simulado │ proveedor │ cliente │ correlation_id        │ clave │ huella │
+├─────────┼────────────┼────────────┼─────────────┼──────────┼───────────┼─────────┼───────────────────────┼───────┼────────┤
+│ 0       │ 'fa6b63c9' │ 'APROBADO' │ '150000.00' │ true     │ 'mock'    │ true    │ 'qa-qas11-0318-pagar' │ true  │ true   │
+└─────────┴────────────┴────────────┴─────────────┴──────────┴───────────┴─────────┴───────────────────────┴───────┴────────┘
+-- QAS-11: evento_servicio de la prueba
+┌─────────┬────────────┬───────────────────────┬───────┬───────────┬─────────────────────────────┐
+│ (index) │ solicitud  │ tipo_evento           │ actor │ actor_rol │ correlation_id              │
+├─────────┼────────────┼───────────────────────┼───────┼───────────┼─────────────────────────────┤
+│ 0       │ '6ef93e76' │ 'COTIZACION_ACEPTADA' │ true  │ 'cliente' │ 'qa-qas11-0318-aceptar-cot' │
+│ 1       │ '9a0238ad' │ 'SOLICITUD_CANCELADA' │ true  │ 'cliente' │ 'qa-qas11-0318-cancelar'    │
+│ 2       │ '6ef93e76' │ 'COTIZACION_ENVIADA'  │ true  │ 'aliado'  │ 'qa-qas11-0318-cotizar'     │
+│ 3       │ '9a0238ad' │ 'SOLICITUD_CREADA'    │ true  │ 'cliente' │ 'qa-qas11-0318-crear'       │
+│ 4       │ '6ef93e76' │ 'PAGO_REGISTRADO'     │ true  │ 'cliente' │ 'qa-qas11-0318-pagar'       │
+│ 5       │ '6ef93e76' │ 'SOLICITUD_ASIGNADA'  │ true  │ 'aliado'  │ 'qa-t46-6ef93e76-33'        │
+│ 6       │ '6ef93e76' │ 'SOLICITUD_CREADA'    │ true  │ 'cliente' │ 'qa-t46-crear-1'            │
+└─────────┴────────────┴───────────────────────┴───────┴───────────┴─────────────────────────────┘
+-- QAS-11: transaccion_evento de la prueba
+┌─────────┬────────────────────────────────────────┬────────────────────────────────────────┬────────────────────────────────────────┬───────────────────┬────────────┬─────────────┬────────┬────────────────────────────────────────┬───────────┬───────────────────────┬──────────────────────────┐
+│ (index) │ id                                     │ tenant_id                              │ pago_id                                │ tipo              │ estado     │ monto       │ moneda │ actor_id                               │ actor_rol │ correlation_id        │ created_at               │
+├─────────┼────────────────────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────┼───────────────────┼────────────┼─────────────┼────────┼────────────────────────────────────────┼───────────┼───────────────────────┼──────────────────────────┤
+│ 0       │ '7fdcbd08-b643-409c-9a7c-603bb363cb9d' │ '10000000-0000-4000-8000-000000000011' │ 'fa6b63c9-3a9e-4674-a370-2bd61a60fd08' │ 'PAGO_REGISTRADO' │ 'APROBADO' │ '150000.00' │ 'COP'  │ '30000000-0000-4000-8000-000000000012' │ 'CLIENT'  │ 'qa-qas11-0318-pagar' │ 2026-11-22T03:18:53.751Z │
+└─────────┴────────────────────────────────────────┴────────────────────────────────────────┴────────────────────────────────────────┴───────────────────┴────────────┴─────────────┴────────┴────────────────────────────────────────┴───────────┴───────────────────────┴──────────────────────────┘
+-- QAS-11 intento UPDATE evento_servicio (pago de la prueba): rechazado 42501 evento_servicio es inmutable: no admite UPDATE (SCRUM-1656)
+-- QAS-11 intento DELETE evento_servicio (pago de la prueba): rechazado 42501 evento_servicio es inmutable: no admite DELETE (SCRUM-1656)
+-- QAS-11 intento UPDATE transaccion_evento de la prueba: rechazado 42501 permission denied for table transaccion_evento
+-- QAS-11 intento DELETE transaccion_evento de la prueba: rechazado 42501 permission denied for table transaccion_evento
+-- QAS-11 intento UPDATE pago (monto): rechazado 42501 permission denied for table pago
+-- QAS-11 intento DELETE pago: rechazado 42501 permission denied for table pago
+-- QAS-11 intento TRUNCATE evento_servicio: rechazado 42501 permission denied for table evento_servicio
+-- QAS-11 intento TRUNCATE transaccion_evento: rechazado 42501 permission denied for table transaccion_evento
+-- transaccion revertida: nada cambio en la base

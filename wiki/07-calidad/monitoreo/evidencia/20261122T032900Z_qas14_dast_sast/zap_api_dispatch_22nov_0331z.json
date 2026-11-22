@@ -1,0 +1,1051 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Sun, 22 Nov 2026 03:47:14",
+	"created": "2026-11-22T03:47:14.086279711Z",
+	"insights":[
+		{
+			"level": "Medium",
+			"reason": "Exceeded High",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "94"
+		},
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.warn",
+			"description": "ZAP warnings logged - see the zap.log file for details",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "",
+			"key": "insight.network.failure",
+			"description": "Percentage of network failures",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.code.3xx",
+			"description": "Percentage of responses with status code 3xx",
+			"statistic": "3"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.ctype.application/json",
+			"description": "Percentage of endpoints with content type application/json",
+			"statistic": "70"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "29"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "65"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.POST",
+			"description": "Percentage of endpoints with method POST",
+			"statistic": "34"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "44"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.response.slow",
+			"description": "Percentage of slow responses",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "https://10.43.100.141",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "100"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "https://10.43.100.141",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "100"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "https://10.43.100.141",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "4"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "https://10.43.100.141",
+			"@host": "10.43.100.141",
+			"@port": "443",
+			"@ssl": "true",
+			"alerts": [ 
+				{
+					"pluginid": "100001",
+					"alertRef": "100001",
+					"alert": "Unexpected Content-Type was returned",
+					"name": "Unexpected Content-Type was returned",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>A Content-Type of text/html was returned by the server.</p><p>This is not one of the types expected to be returned by an API.</p><p>Raised by the 'Alert on Unexpected Content Types' script</p>",
+					"instances":[ 
+						{
+							"id": "1352",
+							"uri": "https://10.43.100.141/api/",
+							"nodeName": "https:\/\/10.43.100.141\/api\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "9",
+							"uri": "https://10.43.100.141/api/5638824727358041369",
+							"nodeName": "https:\/\/10.43.100.141\/api\/5638824727358041369",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "1354",
+							"uri": "https://10.43.100.141/api/v1/",
+							"nodeName": "https:\/\/10.43.100.141\/api\/v1\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "10",
+							"uri": "https://10.43.100.141/api/v1/4923024056510932282",
+							"nodeName": "https:\/\/10.43.100.141\/api\/v1\/4923024056510932282",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						}
+					],
+					"count": "4",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "1349"
+				}
+			]
+		},
+		{
+			"@name": "http://10.43.100.141:8080",
+			"@host": "10.43.100.141",
+			"@port": "8080",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "40018",
+					"alertRef": "40018",
+					"alert": "SQL Injection",
+					"name": "SQL Injection",
+					"riskcode": "3",
+					"confidence": "2",
+					"riskdesc": "High (Medium)",
+					"desc": "<p>SQL injection may be possible.</p>",
+					"instances":[ 
+						{
+							"id": "388",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/match",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/match ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "tenantId",
+							"attack": "John Doe OR 1=1 -- ",
+							"evidence": "",
+							"otherinfo": "The page results were successfully manipulated using the boolean conditions [John Doe AND 1=1 -- ] and [John Doe OR 1=1 -- ]\nThe parameter value being modified was stripped from the HTML output for the purposes of the comparison.\nData was NOT returned for the original parameter.\nThe vulnerability was detected by successfully retrieving more data than originally returned, by manipulating the parameter."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Do not trust client side input, even if there is client side validation in place.</p><p>In general, type check all data on the server side.</p><p>If the application uses JDBC, use PreparedStatement or CallableStatement, with parameters passed by '?'</p><p>If the application uses ASP, use ADO Command Objects with strong type checking and parameterized queries.</p><p>If database Stored Procedures can be used, use them.</p><p>Do *not* concatenate strings into queries in the stored procedure, or use 'exec', 'exec immediate', or equivalent functionality!</p><p>Do not create dynamic SQL queries using simple string concatenation.</p><p>Escape all data received from the client.</p><p>Apply an 'allow list' of allowed characters, or a 'deny list' of disallowed characters in user input.</p><p>Apply the principle of least privilege by using the least privileged database user possible.</p><p>In particular, avoid using the 'sa' or 'db-owner' database users. This does not eliminate SQL injection, but minimizes its impact.</p><p>Grant the minimum database access that is necessary for the application.</p>",
+					"otherinfo": "<p>The page results were successfully manipulated using the boolean conditions [John Doe AND 1=1 -- ] and [John Doe OR 1=1 -- ]</p><p>The parameter value being modified was stripped from the HTML output for the purposes of the comparison.</p><p>Data was NOT returned for the original parameter.</p><p>The vulnerability was detected by successfully retrieving more data than originally returned, by manipulating the parameter.</p>",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html</p>",
+					"cweid": "89",
+					"wascid": "19",
+					"sourceid": "378"
+				},
+				{
+					"pluginid": "10098",
+					"alertRef": "10098",
+					"alert": "Cross-Domain Misconfiguration",
+					"name": "Cross-Domain Misconfiguration",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>Web browser data loading may be possible, due to a Cross Origin Resource Sharing (CORS) misconfiguration on the web server.</p>",
+					"instances":[ 
+						{
+							"id": "50",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "49",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "53",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "55",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/match",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/match ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "51",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/accept",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/accept",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that sensitive data is not available in an unauthenticated manner (using IP address white-listing, for instance).</p><p>Configure the \"Access-Control-Allow-Origin\" HTTP header to a more restrictive set of domains, or remove all CORS headers entirely, to allow the web browser to enforce the Same Origin Policy (SOP) in a more restrictive manner.</p>",
+					"otherinfo": "<p>The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing.</p>",
+					"reference": "<p>https://vulncat.fortify.com/en/detail?category=HTML5&subcategory=Overly%20Permissive%20CORS%20Policy</p>",
+					"cweid": "264",
+					"wascid": "14",
+					"sourceid": "15"
+				},
+				{
+					"pluginid": "10036",
+					"alertRef": "10036-2",
+					"alert": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+					"name": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>The web/application server is leaking version information via the \"Server\" HTTP response header. Access to such information may facilitate attackers identifying other vulnerabilities your web/application server is subject to.</p>",
+					"instances":[ 
+						{
+							"id": "66",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "59",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "64",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/orchestrate",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/orchestrate ()({requestId,tenantId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "61",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/accept",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/accept",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "62",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/reject",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/reject ()({motivo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to suppress the \"Server\" header or provide generic details.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://httpd.apache.org/docs/current/mod/core.html#servertokens</p><p>https://learn.microsoft.com/en-us/previous-versions/msp-n-p/ff648552(v=pandp.10)</p><p>https://www.troyhunt.com/shhh-dont-let-your-response-headers/</p>",
+					"cweid": "497",
+					"wascid": "13",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "100001",
+					"alertRef": "100001",
+					"alert": "Unexpected Content-Type was returned",
+					"name": "Unexpected Content-Type was returned",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>A Content-Type of text/html was returned by the server.</p><p>This is not one of the types expected to be returned by an API.</p><p>Raised by the 'Alert on Unexpected Content Types' script</p>",
+					"instances":[ 
+						{
+							"id": "92",
+							"uri": "http://10.43.100.141:8080",
+							"nodeName": "http:\/\/10.43.100.141:8080",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "1349",
+							"uri": "http://10.43.100.141:8080/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "8",
+							"uri": "http://10.43.100.141:8080/7318264875637409621",
+							"nodeName": "http:\/\/10.43.100.141:8080\/7318264875637409621",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "7",
+							"uri": "http://10.43.100.141:8080/997146110880624462",
+							"nodeName": "http:\/\/10.43.100.141:8080\/997146110880624462",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "115",
+							"uri": "http://10.43.100.141:8080/api",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "117",
+							"uri": "http://10.43.100.141:8080/api/v1",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "119",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "971",
+							"uri": "http://10.43.100.141:8080/computeMetadata/v1/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/computeMetadata\/v1\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "965",
+							"uri": "http://10.43.100.141:8080/latest/meta-data/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/latest\/meta-data\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "995",
+							"uri": "http://10.43.100.141:8080/metadata/instance",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/instance ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "998",
+							"uri": "http://10.43.100.141:8080/metadata/v1",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/v1 ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "977",
+							"uri": "http://10.43.100.141:8080/opc/v1/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v1\/instance\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "983",
+							"uri": "http://10.43.100.141:8080/opc/v2/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v2\/instance\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "1002",
+							"uri": "http://10.43.100.141:8080/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/10.43.100.141:8080\/openstack\/latest\/meta_data.json ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						}
+					],
+					"count": "14",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "87"
+				},
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-1",
+					"alert": "A Client Error response code was returned by the server",
+					"name": "A Client Error response code was returned by the server",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>A response code of 401 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "1355",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "11",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/5086549388382324766",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/5086549388382324766",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1556",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/actuator/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/actuator\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "121",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1357",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "12",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments/5996167709268559640",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments\/5996167709268559640",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "6",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1358",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments\/me\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1359",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/health/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/health\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "132",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1361",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "13",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers/3501030480095958321",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers\/3501030480095958321",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "5",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1363",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/offers/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/offers\/me\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "140",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1365",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/503687986785535832",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/503687986785535832",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "142",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1366",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "15",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/7768273846157934246",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/7768273846157934246",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/eligible-allies?tipo=PERSONA_NATURAL&page=1&pageSize=20",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/eligible-allies (page,pageSize,tipo)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1367",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/eligible-allies/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/eligible-allies\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "0",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/match",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/match ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "46",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/match",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/match ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "1345",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/match/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/match\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/orchestrate",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/orchestrate ()({requestId,tenantId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "47",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/orchestrate",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/orchestrate ()({requestId,tenantId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "1344",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/orchestrate/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/orchestrate\/ ()({requestId,tenantId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "3",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/accept",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/accept",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1346",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/accept/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/accept\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/reject",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/reject ()({motivo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "93",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/reject",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/reject ()({motivo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "1348",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/reject/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/reject\/ ()({motivo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "970",
+							"uri": "http://10.43.100.141:8080/computeMetadata/v1/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/computeMetadata\/v1\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "964",
+							"uri": "http://10.43.100.141:8080/latest/meta-data/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/latest\/meta-data\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "994",
+							"uri": "http://10.43.100.141:8080/metadata/instance",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/instance ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "997",
+							"uri": "http://10.43.100.141:8080/metadata/v1",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/v1 ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "976",
+							"uri": "http://10.43.100.141:8080/opc/v1/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v1\/instance\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "982",
+							"uri": "http://10.43.100.141:8080/opc/v2/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v2\/instance\/ ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "1001",
+							"uri": "http://10.43.100.141:8080/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/10.43.100.141:8080\/openstack\/latest\/meta_data.json ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						}
+					],
+					"count": "40",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "1352"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-1",
+					"alert": "Non-Storable Content",
+					"name": "Non-Storable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are not storable by caching components such as proxy servers. If the response does not contain sensitive, personal or user-specific information, it may benefit from being stored and cached, to improve performance.</p>",
+					"instances":[ 
+						{
+							"id": "68",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/assignments/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/assignments\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "69",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/eligible-allies?tipo=PERSONA_NATURAL&page=1&pageSize=20",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/eligible-allies (page,pageSize,tipo)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "72",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/match",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/match ()({tenantId,zonaId,categoriaId,requestId,tipo,page,pageSize})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "70",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/orchestrate",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/orchestrate ()({requestId,tenantId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "71",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/requests/requestId/reject",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/requests\/requestId\/reject ()({motivo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>The content may be marked as storable by ensuring that the following conditions are satisfied:</p><p>The request method must be understood by the cache and defined as being cacheable (\"GET\", \"HEAD\", and \"POST\" are currently defined as cacheable)</p><p>The response status code must be understood by the cache (one of the 1XX, 2XX, 3XX, 4XX, or 5XX response classes are generally understood)</p><p>The \"no-store\" cache directive must not appear in the request or response header fields</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"private\" response directive must not appear in the response</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"Authorization\" header field must not appear in the request, unless the response explicitly allows it (using one of the \"must-revalidate\", \"public\", or \"s-maxage\" Cache-Control response directives)</p><p>In addition to the conditions above, at least one of the following conditions must also be satisfied by the response:</p><p>It must contain an \"Expires\" header field</p><p>It must contain a \"max-age\" response directive</p><p>For \"shared\" caches such as \"proxy\" caches, it must contain a \"s-maxage\" response directive</p><p>It must contain a \"Cache Control Extension\" that allows it to be cached</p><p>It must have a status code that is defined as cacheable by default (200, 203, 204, 206, 300, 301, 404, 405, 410, 414, 501).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "15"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-3",
+					"alert": "Storable and Cacheable Content",
+					"name": "Storable and Cacheable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users. If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where \"shared\" caching servers such as \"proxy\" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.</p>",
+					"instances":[ 
+						{
+							"id": "67",
+							"uri": "http://10.43.100.141:8080/api/v1/dispatch/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/dispatch\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Validate that the response does not contain sensitive, personal or user-specific information. If it does, consider the use of the following HTTP response headers, to limit, or prevent the content being stored and retrieved from the cache by another user:</p><p>Cache-Control: no-cache, no-store, must-revalidate, private</p><p>Pragma: no-cache</p><p>Expires: 0</p><p>This configuration directs both HTTP 1.0 and HTTP 1.1 compliant caching servers to not store the response, and to not retrieve the response (without validation) from the cache, in response to a similar request.</p>",
+					"otherinfo": "<p>In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.</p>",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "1"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}

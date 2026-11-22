@@ -1,0 +1,22 @@
+{
+ "consultado": "2026-11-22T03:32:09Z",
+ "proyecto": "Trama-AS_MANI-Flutter",
+ "ramas": [
+  [
+   "develop",
+   "2026-11-21T22:54:21+0000"
+  ]
+ ],
+ "issues_abiertos": 70,
+ "por_calidad": {
+  "MAINTAINABILITY": 57,
+  "RELIABILITY": 13
+ },
+ "por_severidad": {
+  "HIGH": 41,
+  "MEDIUM": 29
+ },
+ "seguridad_abiertas": 0,
+ "vulnerabilidades_tipo_clasico": 0,
+ "hotspots": 0
+}

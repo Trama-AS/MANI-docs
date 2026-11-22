@@ -1,0 +1,5097 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Sun, 22 Nov 2026 03:43:02",
+	"created": "2026-11-22T03:43:02.334418844Z",
+	"insights":[
+		{
+			"level": "Medium",
+			"reason": "Exceeded High",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "99"
+		},
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.warn",
+			"description": "ZAP warnings logged - see the zap.log file for details",
+			"statistic": "29"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.ctype.application/json",
+			"description": "Percentage of endpoints with content type application/json",
+			"statistic": "96"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "3"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.ctype.text/plain",
+			"description": "Percentage of endpoints with content type text/plain",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.DELETE",
+			"description": "Percentage of endpoints with method DELETE",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "69"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.PATCH",
+			"description": "Percentage of endpoints with method PATCH",
+			"statistic": "5"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.POST",
+			"description": "Percentage of endpoints with method POST",
+			"statistic": "20"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.method.PUT",
+			"description": "Percentage of endpoints with method PUT",
+			"statistic": "4"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "391"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://10.43.100.141:8080",
+			"key": "insight.response.slow",
+			"description": "Percentage of slow responses",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "https://10.43.100.141",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "100"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "https://10.43.100.141",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "100"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "https://10.43.100.141",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "4"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "https://10.43.100.141",
+			"@host": "10.43.100.141",
+			"@port": "443",
+			"@ssl": "true",
+			"alerts": [ 
+				{
+					"pluginid": "100001",
+					"alertRef": "100001",
+					"alert": "Unexpected Content-Type was returned",
+					"name": "Unexpected Content-Type was returned",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>A Content-Type of text/html was returned by the server.</p><p>This is not one of the types expected to be returned by an API.</p><p>Raised by the 'Alert on Unexpected Content Types' script</p>",
+					"instances":[ 
+						{
+							"id": "16461",
+							"uri": "https://10.43.100.141/api/",
+							"nodeName": "https:\/\/10.43.100.141\/api\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "169",
+							"uri": "https://10.43.100.141/api/2668694185995346269",
+							"nodeName": "https:\/\/10.43.100.141\/api\/2668694185995346269",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "16462",
+							"uri": "https://10.43.100.141/api/v1/",
+							"nodeName": "https:\/\/10.43.100.141\/api\/v1\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "170",
+							"uri": "https://10.43.100.141/api/v1/380557902439616560",
+							"nodeName": "https:\/\/10.43.100.141\/api\/v1\/380557902439616560",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						}
+					],
+					"count": "4",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "16572"
+				}
+			]
+		},
+		{
+			"@name": "http://10.43.100.141:8080",
+			"@host": "10.43.100.141",
+			"@port": "8080",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "40018",
+					"alertRef": "40018",
+					"alert": "SQL Injection",
+					"name": "SQL Injection",
+					"riskcode": "3",
+					"confidence": "2",
+					"riskdesc": "High (Medium)",
+					"desc": "<p>SQL injection may be possible.</p>",
+					"instances":[ 
+						{
+							"id": "4941",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin/employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin\/employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "fullName",
+							"attack": "\"John Doe\" AND 1=1 -- ",
+							"evidence": "",
+							"otherinfo": "The page results were successfully manipulated using the boolean conditions [\"John Doe\" AND 1=1 -- ] and [\"John Doe\" AND 1=2 -- ]\nThe parameter value being modified was stripped from the HTML output for the purposes of the comparison.\nData was returned for the original parameter.\nThe vulnerability was detected by successfully restricting the data originally returned, by manipulating the parameter."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Do not trust client side input, even if there is client side validation in place.</p><p>In general, type check all data on the server side.</p><p>If the application uses JDBC, use PreparedStatement or CallableStatement, with parameters passed by '?'</p><p>If the application uses ASP, use ADO Command Objects with strong type checking and parameterized queries.</p><p>If database Stored Procedures can be used, use them.</p><p>Do *not* concatenate strings into queries in the stored procedure, or use 'exec', 'exec immediate', or equivalent functionality!</p><p>Do not create dynamic SQL queries using simple string concatenation.</p><p>Escape all data received from the client.</p><p>Apply an 'allow list' of allowed characters, or a 'deny list' of disallowed characters in user input.</p><p>Apply the principle of least privilege by using the least privileged database user possible.</p><p>In particular, avoid using the 'sa' or 'db-owner' database users. This does not eliminate SQL injection, but minimizes its impact.</p><p>Grant the minimum database access that is necessary for the application.</p>",
+					"otherinfo": "<p>The page results were successfully manipulated using the boolean conditions [\"John Doe\" AND 1=1 -- ] and [\"John Doe\" AND 1=2 -- ]</p><p>The parameter value being modified was stripped from the HTML output for the purposes of the comparison.</p><p>Data was returned for the original parameter.</p><p>The vulnerability was detected by successfully restricting the data originally returned, by manipulating the parameter.</p>",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html</p>",
+					"cweid": "89",
+					"wascid": "19",
+					"sourceid": "5013"
+				},
+				{
+					"pluginid": "10098",
+					"alertRef": "10098",
+					"alert": "Cross-Domain Misconfiguration",
+					"name": "Cross-Domain Misconfiguration",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>Web browser data loading may be possible, due to a Cross Origin Resource Sharing (CORS) misconfiguration on the web server.</p>",
+					"instances":[ 
+						{
+							"id": "2",
+							"uri": "http://10.43.100.141:8080/api/v1/core/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "5",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metrics",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metrics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "1",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/logout",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "52",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						},
+						{
+							"id": "50",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes ()({categoriaId,descripcion,sitioId,direccion,zonaId,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *",
+							"otherinfo": "The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that sensitive data is not available in an unauthenticated manner (using IP address white-listing, for instance).</p><p>Configure the \"Access-Control-Allow-Origin\" HTTP header to a more restrictive set of domains, or remove all CORS headers entirely, to allow the web browser to enforce the Same Origin Policy (SOP) in a more restrictive manner.</p>",
+					"otherinfo": "<p>The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing.</p>",
+					"reference": "<p>https://vulncat.fortify.com/en/detail?category=HTML5&subcategory=Overly%20Permissive%20CORS%20Policy</p>",
+					"cweid": "264",
+					"wascid": "14",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10037",
+					"alertRef": "10037",
+					"alert": "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
+					"name": "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The web/application server is leaking information via one or more \"X-Powered-By\" HTTP response headers. Access to such information may facilitate attackers identifying other frameworks/components your web application is reliant upon and the vulnerabilities such components may be subject to.</p>",
+					"instances":[ 
+						{
+							"id": "7",
+							"uri": "http://10.43.100.141:8080/api/v1/core/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "12",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metrics",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metrics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "6",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/logout",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "65",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client ()({fullName,email,password,phone,direccionHogar})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "58",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to suppress \"X-Powered-By\" headers.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework</p><p>https://www.troyhunt.com/shhh-dont-let-your-response-headers/</p>",
+					"cweid": "497",
+					"wascid": "13",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10036",
+					"alertRef": "10036-2",
+					"alert": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+					"name": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>The web/application server is leaking version information via the \"Server\" HTTP response header. Access to such information may facilitate attackers identifying other vulnerabilities your web/application server is subject to.</p>",
+					"instances":[ 
+						{
+							"id": "4",
+							"uri": "http://10.43.100.141:8080/api/v1/core/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "10",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metrics",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metrics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "3",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/logout",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "55",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						},
+						{
+							"id": "51",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes ()({categoriaId,descripcion,sitioId,direccion,zonaId,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "nginx/1.31.9",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to suppress the \"Server\" header or provide generic details.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://httpd.apache.org/docs/current/mod/core.html#servertokens</p><p>https://learn.microsoft.com/en-us/previous-versions/msp-n-p/ff648552(v=pandp.10)</p><p>https://www.troyhunt.com/shhh-dont-let-your-response-headers/</p>",
+					"cweid": "497",
+					"wascid": "13",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10096",
+					"alertRef": "10096",
+					"alert": "Timestamp Disclosure - Unix",
+					"name": "Timestamp Disclosure - Unix",
+					"riskcode": "1",
+					"confidence": "1",
+					"riskdesc": "Low (Low)",
+					"desc": "<p>A timestamp was disclosed by the application/web server. - Unix</p>",
+					"instances":[ 
+						{
+							"id": "11",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metrics",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metrics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1795299040",
+							"otherinfo": "1795299040, which evaluates to: 2026-11-21 22:10:40."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Manually confirm that the timestamp data is not sensitive, and that the data cannot be aggregated to disclose exploitable patterns.</p>",
+					"otherinfo": "<p>1795299040, which evaluates to: 2026-11-21 22:10:40.</p>",
+					"reference": "<p>https://cwe.mitre.org/data/definitions/200.html</p>",
+					"cweid": "497",
+					"wascid": "13",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "100001",
+					"alertRef": "100001",
+					"alert": "Unexpected Content-Type was returned",
+					"name": "Unexpected Content-Type was returned",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>A Content-Type of text/html was returned by the server.</p><p>This is not one of the types expected to be returned by an API.</p><p>Raised by the 'Alert on Unexpected Content Types' script</p>",
+					"instances":[ 
+						{
+							"id": "1910",
+							"uri": "http://10.43.100.141:8080",
+							"nodeName": "http:\/\/10.43.100.141:8080",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "16457",
+							"uri": "http://10.43.100.141:8080/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "167",
+							"uri": "http://10.43.100.141:8080/9167855587843492751",
+							"nodeName": "http:\/\/10.43.100.141:8080\/9167855587843492751",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "168",
+							"uri": "http://10.43.100.141:8080/937940098341332904",
+							"nodeName": "http:\/\/10.43.100.141:8080\/937940098341332904",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "1930",
+							"uri": "http://10.43.100.141:8080/api",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "1932",
+							"uri": "http://10.43.100.141:8080/api/v1",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "1934",
+							"uri": "http://10.43.100.141:8080/api/v1/core",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "2002",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11182",
+							"uri": "http://10.43.100.141:8080/computeMetadata/v1/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/computeMetadata\/v1\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11177",
+							"uri": "http://10.43.100.141:8080/latest/meta-data/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/latest\/meta-data\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11206",
+							"uri": "http://10.43.100.141:8080/metadata/instance",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/instance ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11209",
+							"uri": "http://10.43.100.141:8080/metadata/v1",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/v1 ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11189",
+							"uri": "http://10.43.100.141:8080/opc/v1/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v1\/instance\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11195",
+							"uri": "http://10.43.100.141:8080/opc/v2/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v2\/instance\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "11212",
+							"uri": "http://10.43.100.141:8080/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/10.43.100.141:8080\/openstack\/latest\/meta_data.json ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						}
+					],
+					"count": "15",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "1985"
+				},
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-1",
+					"alert": "A Client Error response code was returned by the server",
+					"name": "A Client Error response code was returned by the server",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>A response code of 401 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "91",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/absenceId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/absenceId",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16428",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/absenceId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/absenceId\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16463",
+							"uri": "http://10.43.100.141:8080/api/v1/core/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "171",
+							"uri": "http://10.43.100.141:8080/api/v1/core/8386924631086307439",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/8386924631086307439",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1936",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16465",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "172",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/3995488560217893471",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/3995488560217893471",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1938",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16467",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "173",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/2436085549062781119",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/2436085549062781119",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "19155",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/actuator/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/actuator\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1940",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16469",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "174",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin/392085172899104798",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin\/392085172899104798",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1942",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16473",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "175",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/5772698704652632244",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/5772698704652632244",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "116",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/calificaciones?categoriaId=categoriaId&zonaId=zonaId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/calificaciones (categoriaId,zonaId)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16472",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/calificaciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/calificaciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1950",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16476",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "176",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/3746348295823849289",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/3746348295823849289",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "117",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/calificacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/calificacion",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16474",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/calificacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/calificacion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1987",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16477",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "177",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/7577265168451554458",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/7577265168451554458",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1988",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/documentoId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/documentoId",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16479",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/documentoId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/documentoId\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "178",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/documentoId/8255848327975800424",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/documentoId\/8255848327975800424",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "153",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/documentoId/url",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/documentoId\/url",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16480",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/documentos/documentoId/url/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/documentos\/documentoId\/url\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "151",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/verificacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/verificacion",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16481",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/verificacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/verificacion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "150",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/verificacion?estado=PENDIENTE",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/verificacion (estado)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16483",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/verificacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/verificacion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1989",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16484",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "179",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/8637296515286746047",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/8637296515286746047",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1992",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16487",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "180",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/7667912249711291151",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/7667912249711291151",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "154",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/historial",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/historial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16486",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/historial/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/historial\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "181",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/historial/917029512938816759",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/historial\/917029512938816759",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "155",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/historial/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/historial\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16489",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/historial/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/historial\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "122",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/history",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/history",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16488",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/history/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/history\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "182",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/history/8736957219221651113",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/history\/8736957219221651113",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "123",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/history/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/history\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16490",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/me/history/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/me\/history\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2001",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16492",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "183",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria/6996109936077529846",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria\/6996109936077529846",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "88",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria/consultas-conversacion?despuesDe=despuesDe&solicitudId=solicitudId&limite=50",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria\/consultas-conversacion (despuesDe,limite,solicitudId)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16493",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria/consultas-conversacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria\/consultas-conversacion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "47",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria/transacciones?despuesDe=despuesDe&pagoId=pagoId&limite=50",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria\/transacciones (despuesDe,limite,pagoId)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16495",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auditoria/transacciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auditoria\/transacciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16497",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "184",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/135446260952982722",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/135446260952982722",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2063",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "16498",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "185",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/8474279010930101786",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/8474279010930101786",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2064",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "16500",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "186",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally/4404876239962157706",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally\/4404876239962157706",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2065",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "19111",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16504",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "187",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/1883986401071409391",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/1883986401071409391",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "16502",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "188",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/8433333243031905657",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/8433333243031905657",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2066",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "101",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories?onlyActive=false",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories (onlyActive)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16505",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "189",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/6859207692605364038",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/6859207692605364038",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "103",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16507",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "190",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/5173450906364208352",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/5173450906364208352",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "110",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/geometrias?zonaIds=20000000-0000-4000-8000-000000000002,20000000-0000-4000-8000-000000005002",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/geometrias (zonaIds)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16508",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/geometrias/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/geometrias\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2068",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/zones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/zones",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "111",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/zones?onlyActive=false&level=CIUDAD&parentId=parentId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/zones (level,onlyActive,parentId)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16510",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/zones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/zones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "191",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/zones/2134615226878280100",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/zones\/2134615226878280100",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "112",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/zones/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/zones\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16511",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/zones/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/zones\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2088",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16515",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "192",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/1891367006346108405",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/1891367006346108405",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2091",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16516",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "193",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/1981724060262678981",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/1981724060262678981",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "107",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16518",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "194",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites/903154814323767930",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites\/903154814323767930",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2096",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16520",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "195",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/3972219240096818745",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/3972219240096818745",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2098",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16521",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "196",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/6133873696714519044",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/6133873696714519044",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "131",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/evaluacion-tarifa",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/evaluacion-tarifa",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16523",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/evaluacion-tarifa/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/evaluacion-tarifa\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16524",
+							"uri": "http://10.43.100.141:8080/api/v1/core/health/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/health\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2111",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16526",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "197",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/2022485657315257465",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/2022485657315257465",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2113",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/documents",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/documents",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16527",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/documents/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/documents\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "198",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/documents/993859735541489749",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/documents\/993859735541489749",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "100",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/documents/active",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/documents\/active",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "16528",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/documents/active/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/documents\/active\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2121",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metricas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metricas",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16531",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metricas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metricas\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "199",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metricas/7590461193608066252",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metricas\/7590461193608066252",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "141",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metricas/operativas?desde=desde&hasta=hasta",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metricas\/operativas (desde,hasta)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16530",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metricas/operativas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metricas\/operativas\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16532",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metrics/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metrics\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2125",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16535",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "200",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/4328811891713146262",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/4328811891713146262",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "41",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/aliado",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/aliado",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16534",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/aliado/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/aliado\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "42",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/comision",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/comision",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16537",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/comision/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/comision\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "44",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16536",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "201",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/3471082964392896516",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/3471082964392896516",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "45",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/comprobante",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/comprobante",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16538",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/comprobante/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/comprobante\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "46",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/eventos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/eventos",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16539",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/eventos/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/eventos\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "43",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/retencion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/retencion",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16540",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/id/retencion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/id\/retencion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2146",
+							"uri": "http://10.43.100.141:8080/api/v1/core/plataforma",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/plataforma",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16544",
+							"uri": "http://10.43.100.141:8080/api/v1/core/plataforma/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/plataforma\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "202",
+							"uri": "http://10.43.100.141:8080/api/v1/core/plataforma/7331136226814964634",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/plataforma\/7331136226814964634",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "145",
+							"uri": "http://10.43.100.141:8080/api/v1/core/plataforma/contexto",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/plataforma\/contexto",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16543",
+							"uri": "http://10.43.100.141:8080/api/v1/core/plataforma/contexto/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/plataforma\/contexto\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2147",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16546",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "203",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/7787798757653652557",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/7787798757653652557",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "147",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16545",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "204",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/2439496435676632525",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/2439496435676632525",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "94",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16548",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "205",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories/7925938965878076842",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories\/7925938965878076842",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "97",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories/available",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories\/available",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16547",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories/available/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories\/available\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "98",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/coverage",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/coverage",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16549",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/coverage/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/coverage\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "93",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/inbox?limit=50",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/inbox (limit)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16550",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/inbox/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/inbox\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "89",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16552",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "206",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/1394723190326946781",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/1394723190326946781",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2155",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "138",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas?estado=ABIERTA&limite=50",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas (estado,limite)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16553",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "207",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/3250807642044276001",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/3250807642044276001",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "139",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16555",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "208",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/id/8998389790892325669",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/id\/8998389790892325669",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "137",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/mias",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/mias",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16554",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/mias/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/mias\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2160",
+							"uri": "http://10.43.100.141:8080/api/v1/core/reportes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/reportes",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16559",
+							"uri": "http://10.43.100.141:8080/api/v1/core/reportes/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/reportes\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "209",
+							"uri": "http://10.43.100.141:8080/api/v1/core/reportes/3957462102648310673",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/reportes\/3957462102648310673",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "132",
+							"uri": "http://10.43.100.141:8080/api/v1/core/reportes/cotizaciones-fuera-de-rango?desde=desde&hasta=hasta",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/reportes\/cotizaciones-fuera-de-rango (desde,hasta)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16558",
+							"uri": "http://10.43.100.141:8080/api/v1/core/reportes/cotizaciones-fuera-de-rango/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/reportes\/cotizaciones-fuera-de-rango\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2167",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16561",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "210",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/7439820777234250462",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/7439820777234250462",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2200",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16564",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "211",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/7136396651878527906",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/7136396651878527906",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "159",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/reglas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/reglas",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16563",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/reglas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/reglas\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "156",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/rules",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/rules",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16565",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/rules/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/rules\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2202",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16567",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "212",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/3664129388863938308",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/3664129388863938308",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "64",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/categorias",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/categorias",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16569",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/categorias/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/categorias\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2203",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16570",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "213",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/5274450118022686988",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/5274450118022686988",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "36",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/adiciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/adiciones",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16572",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/adiciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/adiciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "113",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/calificaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/calificaciones",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16571",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/calificaciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/calificaciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2204",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/conversacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/conversacion",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16575",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/conversacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/conversacion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "214",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/conversacion/1564082910500169225",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/conversacion\/1564082910500169225",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "25",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cotizaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cotizaciones",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16574",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cotizaciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cotizaciones\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "32",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/ejecucion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/ejecucion",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16576",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/ejecucion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/ejecucion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "33",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16577",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "215",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/3221678840268655974",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/3221678840268655974",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2205",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/eventoId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/eventoId",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16580",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/eventoId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/eventoId\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "216",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/eventoId/3574565637956561604",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/eventoId\/3574565637956561604",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "35",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/eventoId/evidencia",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/eventoId\/evidencia",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16579",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/eventoId/evidencia/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/eventoId\/evidencia\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "48",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/mensajes?despuesDe=despuesDe&limite=50",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/mensajes (despuesDe,limite)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16581",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/mensajes/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/mensajes\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "130",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/tarifa-referencia",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/tarifa-referencia",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16582",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/tarifa-referencia/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/tarifa-referencia\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "22",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16583",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "217",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/4153692255596446007",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/4153692255596446007",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "121",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/historial",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/historial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16584",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/historial/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/historial\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "23",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16585",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "218",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/7242334899367186424",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/7242334899367186424",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "120",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/cancelacion-preview",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/cancelacion-preview",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16586",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/cancelacion-preview/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/cancelacion-preview\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "85",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/sitios",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/sitios",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16588",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/sitios/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/sitios\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2226",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "124",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas?categoriaId=categoriaId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas (categoriaId)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16590",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "219",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/7127796490963454516",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/7127796490963454516",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2227",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16591",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "220",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/854898062363019892",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/854898062363019892",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2228",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/categoriaId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/categoriaId",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16593",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/categoriaId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/categoriaId\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "221",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/categoriaId/4300156402987575749",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/categoriaId\/4300156402987575749",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "129",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/categoriaId/historial",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/categoriaId\/historial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16594",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/categorias/categoriaId/historial/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/categorias\/categoriaId\/historial\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2229",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16597",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "222",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/2279959441151020563",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/2279959441151020563",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "133",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16598",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "223",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules/6980774411839761301",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules\/6980774411839761301",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "135",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules/history",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules\/history",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16599",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules/history/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules\/history\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "142",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16600",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "224",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/6699444342419591906",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/6699444342419591906",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2240",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16602",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "225",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/5394200922206269224",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/5394200922206269224",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2241",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16605",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "226",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado/7175193897937749339",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado\/7175193897937749339",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "144",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado/historial",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado\/historial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16604",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado/historial/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado\/historial\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "146",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/usuarios",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/usuarios",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16607",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/usuarios/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/usuarios\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2242",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16608",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "227",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/1900198503057611681",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/1900198503057611681",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "118",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/politica-cancelacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/politica-cancelacion",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16609",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/politica-cancelacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/politica-cancelacion\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "152",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/verificacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/verificacion ()({decision,motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "248",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/verificacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/verificacion ()({decision,motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16403",
+							"uri": "http://10.43.100.141:8080/api/v1/core/aliados/id/verificacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/aliados\/id\/verificacion\/ ()({decision,motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "105",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/activate",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/activate",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16412",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/activate/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/activate\/",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "106",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/deactivate",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/deactivate",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16415",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/deactivate/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/deactivate\/",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "109",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites/siteId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites\/siteId ()({nombre,direccion,zonaId,contactoNombre,contactoTelefono})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1018",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites/siteId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites\/siteId ()({nombre,direccion,zonaId,contactoNombre,contactoTelefono})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16418",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites/siteId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites\/siteId\/ ()({nombre,direccion,zonaId,contactoNombre,contactoTelefono})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "148",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me ()({fullName,phone,address})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1322",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me ()({fullName,phone,address})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16433",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/ ()({fullName,phone,address})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "92",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/absenceId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/absenceId ()({startsAt,endsAt,reason,note})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1245",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/absenceId",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/absenceId ()({startsAt,endsAt,reason,note})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16430",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/absenceId/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/absenceId\/ ()({startsAt,endsAt,reason,note})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "140",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/id/estado",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/id\/estado ()({estado,nota})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1359",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/id/estado",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/id\/estado ()({estado,nota})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16432",
+							"uri": "http://10.43.100.141:8080/api/v1/core/quejas/id/estado/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/quejas\/id\/estado\/ ()({estado,nota})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "161",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/reglas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/reglas ()({})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16435",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/reglas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/reglas\/ ()({})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "158",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/rules",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/rules ()({})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16436",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/rules/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/rules\/ ()({})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "24",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/cancelar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/cancelar ()({motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1608",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/cancelar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/cancelar ()({motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16449",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id/cancelar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id\/cancelar\/ ()({motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "143",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado ()({estado,motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1888",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado ()({estado,motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16454",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/id/estado/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/id\/estado\/ ()({estado,motivo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "38",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/aceptar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/aceptar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "231",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/aceptar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/aceptar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16401",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/aceptar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/aceptar\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "39",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/rechazar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/rechazar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "229",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/rechazar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/rechazar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16400",
+							"uri": "http://10.43.100.141:8080/api/v1/core/adiciones/id/rechazar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/adiciones\/id\/rechazar\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "2284",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin/employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin\/employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "166",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin/employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin\/employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16402",
+							"uri": "http://10.43.100.141:8080/api/v1/core/admin/employees/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/admin\/employees\/ ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "165",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/direct-employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/direct-employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "295",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/direct-employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/direct-employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16404",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/direct-employees/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/direct-employees\/ ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "20",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password,documento_identidad)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "387",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/employees",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/employees ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password,documento_identidad)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16405",
+							"uri": "http://10.43.100.141:8080/api/v1/core/allies/employees/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/allies\/employees\/ ()(multipart:fullName,email,phone,documentType,documentNumber,categoriaIds,password,documento_identidad)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "0",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/logout",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16406",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/logout/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/logout\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-recovery",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-recovery ()({email})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "7127",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-recovery",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-recovery ()({email})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16407",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-recovery/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-recovery\/ ()({email})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "10596",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-reset",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-reset ()({accessToken,newPassword})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "15",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-reset",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-reset ()({accessToken,newPassword})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "502",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-reset",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-reset ()({accessToken,newPassword})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16409",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-reset/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-reset\/ ()({accessToken,newPassword})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally ()(multipart:fullName,email,password,phone,categoriaId,documentType,documentNumber,cedula_ciudadania,rut_certificado,acceptsTerms)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "555",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally ()(multipart:fullName,email,password,phone,categoriaId,documentType,documentNumber,cedula_ciudadania,rut_certificado,acceptsTerms)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16411",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally\/ ()(multipart:fullName,email,password,phone,categoriaId,documentType,documentNumber,cedula_ciudadania,rut_certificado,acceptsTerms)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "17",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally\/company ()(multipart:razonSocial,nit,nombreRepresentante,docRepresentante,email,password,phone,categoriaId,camara_comercio,rut_empresa,cedula_representante)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "527",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally\/company ()(multipart:razonSocial,nit,nombreRepresentante,docRepresentante,email,password,phone,categoriaId,camara_comercio,rut_empresa,cedula_representante)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16408",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/ally/company/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/ally\/company\/ ()(multipart:razonSocial,nit,nombreRepresentante,docRepresentante,email,password,phone,categoriaId,camara_comercio,rut_empresa,cedula_representante)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "18",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client ()({fullName,email,password,phone,direccionHogar})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "859",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client ()({fullName,email,password,phone,direccionHogar})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16413",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/ ()({fullName,email,password,phone,direccionHogar})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "19",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "840",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16410",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company\/ ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "102",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories ()({name,description,flujoOperativo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "967",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories ()({name,description,flujoOperativo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16417",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/ ()({name,description,flujoOperativo})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "164",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/company ()({})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16416",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/company/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/company\/ ()({})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "108",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites ()({nombre,direccion,zonaId,contactoNombre,contactoTelefono,reglas:{}})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1019",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites ()({nombre,direccion,zonaId,contactoNombre,contactoTelefono,reglas:{}})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16419",
+							"uri": "http://10.43.100.141:8080/api/v1/core/clients/id/sites/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/clients\/id\/sites\/ ()({nombre,direccion,zonaId,contactoNombre,contactoTelefono,reglas:{}})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "27",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/aceptar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/aceptar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1118",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/aceptar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/aceptar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16421",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/aceptar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/aceptar\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "29",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/ajustar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/ajustar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1119",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/ajustar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/ajustar ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16420",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/ajustar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/ajustar\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "28",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/rechazar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/rechazar ()({motivo,comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1138",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/rechazar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/rechazar ()({motivo,comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16423",
+							"uri": "http://10.43.100.141:8080/api/v1/core/cotizaciones/id/rechazar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/cotizaciones\/id\/rechazar\/ ()({motivo,comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "18128",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/consents",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/consents ()({documentId,accepted})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "163",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/consents",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/consents ()({documentId,accepted})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16422",
+							"uri": "http://10.43.100.141:8080/api/v1/core/legal/consents/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/legal\/consents\/ ()({documentId,accepted})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "40",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos ()({cotizacionId,escenario,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1159",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos ()({cotizacionId,escenario,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16424",
+							"uri": "http://10.43.100.141:8080/api/v1/core/pagos/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/pagos\/ ()({cotizacionId,escenario,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "95",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories ()({categoryIds:[]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1179",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories ()({categoryIds:[]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16425",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories\/ ()({categoryIds:[]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "149",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/photo",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/photo ()(multipart:photo)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1219",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/photo",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/photo ()(multipart:photo)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "19460",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/photo",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/photo ()(multipart:rtobject)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16429",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/photo/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/photo\/ ()(multipart:photo)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "90",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability ()({startsAt,endsAt,reason,note})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1275",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability ()({startsAt,endsAt,reason,note})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16431",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/unavailability/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/unavailability\/ ()({startsAt,endsAt,reason,note})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "162",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/validate-schedule",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/validate-schedule ()({})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16438",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/validate-schedule/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/validate-schedule\/ ()({})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "21",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes ()({categoriaId,descripcion,sitioId,direccion,zonaId,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1629",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes ()({categoriaId,descripcion,sitioId,direccion,zonaId,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16450",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/ ()({categoriaId,descripcion,sitioId,direccion,zonaId,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "37",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/adiciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/adiciones ()({motivo,valorManoObra,valorMateriales,tiempoAdicionalMinutos})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1389",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/adiciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/adiciones ()({motivo,valorManoObra,valorMateriales,tiempoAdicionalMinutos})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16439",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/adiciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/adiciones\/ ()({motivo,valorManoObra,valorMateriales,tiempoAdicionalMinutos})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "114",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/calificaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/calificaciones ()({puntaje,comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1390",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/calificaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/calificaciones ()({puntaje,comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16441",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/calificaciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/calificaciones\/ ()({puntaje,comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "115",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cerrar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cerrar",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16440",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cerrar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cerrar\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "87",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/conversacion/consultas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/conversacion\/consultas ()({motivo,quejaRef,limite,despuesDe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1436",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/conversacion/consultas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/conversacion\/consultas ()({motivo,quejaRef,limite,despuesDe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16443",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/conversacion/consultas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/conversacion\/consultas\/ ()({motivo,quejaRef,limite,despuesDe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "26",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cotizaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cotizaciones ()({valorManoObra,valorMateriales,total})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1464",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cotizaciones",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cotizaciones ()({valorManoObra,valorMateriales,total})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16442",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/cotizaciones/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/cotizaciones\/ ()({valorManoObra,valorMateriales,total})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "34",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos ()({tipo,observacion,claveIdempotencia,ocurridoEn})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1512",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos ()({tipo,observacion,claveIdempotencia,ocurridoEn})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16445",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/eventos/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/eventos\/ ()({tipo,observacion,claveIdempotencia,ocurridoEn})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "31",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/finalizar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/finalizar ()({observacion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1529",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/finalizar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/finalizar ()({observacion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16444",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/finalizar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/finalizar\/ ()({observacion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "30",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/iniciar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/iniciar ()({observacion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1550",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/iniciar",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/iniciar ()({observacion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16446",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/iniciar/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/iniciar\/ ()({observacion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "49",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/mensajes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/mensajes ()({contenido,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1572",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/mensajes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/mensajes ()({contenido,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16447",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/mensajes/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/mensajes\/ ()({contenido,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "136",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/quejas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/quejas ()({motivo,descripcion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1590",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/quejas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/quejas ()({motivo,descripcion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16448",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/id/quejas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/id\/quejas\/ ()({motivo,descripcion})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "125",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas ()({categoriaId,valorMin,valorTipico,valorMax,moneda,vigenciaDesde,condiciones})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1751",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas ()({categoriaId,valorMin,valorTipico,valorMax,moneda,vigenciaDesde,condiciones})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16452",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/ ()({categoriaId,valorMin,valorTipico,valorMax,moneda,vigenciaDesde,condiciones})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "11181",
+							"uri": "http://10.43.100.141:8080/computeMetadata/v1/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/computeMetadata\/v1\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "11176",
+							"uri": "http://10.43.100.141:8080/latest/meta-data/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/latest\/meta-data\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "11205",
+							"uri": "http://10.43.100.141:8080/metadata/instance",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/instance ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "11208",
+							"uri": "http://10.43.100.141:8080/metadata/v1",
+							"nodeName": "http:\/\/10.43.100.141:8080\/metadata\/v1 ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "11188",
+							"uri": "http://10.43.100.141:8080/opc/v1/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v1\/instance\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "11194",
+							"uri": "http://10.43.100.141:8080/opc/v2/instance/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/opc\/v2\/instance\/ ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "11211",
+							"uri": "http://10.43.100.141:8080/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/10.43.100.141:8080\/openstack\/latest\/meta_data.json ()({comentario})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "104",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id ()({name,description,flujoOperativo})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "966",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id ()({name,description,flujoOperativo})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16414",
+							"uri": "http://10.43.100.141:8080/api/v1/core/catalog/categories/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/catalog\/categories\/id\/ ()({name,description,flujoOperativo})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "96",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories ()({categoryIds:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1200",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories ()({categoryIds:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16426",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/categories/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/categories\/ ()({categoryIds:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "99",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/coverage",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/coverage ()({zoneIds:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1218",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/coverage",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/coverage ()({zoneIds:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16427",
+							"uri": "http://10.43.100.141:8080/api/v1/core/profiles/me/coverage/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/profiles\/me\/coverage\/ ()({zoneIds:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "160",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/reglas",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/reglas ()({})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16434",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/reglas/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/reglas\/ ()({})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "157",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/rules",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/rules ()({})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "16437",
+							"uri": "http://10.43.100.141:8080/api/v1/core/sites/id/rules/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/sites\/id\/rules\/ ()({})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "126",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/id ()({valorMin,valorTipico,valorMax,moneda,vigenciaDesde,vigenciaHasta,condiciones})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1628",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/id ()({valorMin,valorTipico,valorMax,moneda,vigenciaDesde,vigenciaHasta,condiciones})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16451",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tarifas/id/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tarifas\/id\/ ()({valorMin,valorTipico,valorMax,moneda,vigenciaDesde,vigenciaHasta,condiciones})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "134",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules ()({expectedVersion,reglas:{ordenListado:{criterio},alertaTarifa:{toleranciaPorcentaje},comision:{porcentaje},cancelacion:{ventanaHoras,penalizacionPorcentaje},oferta:{minutosParaAceptar}}})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1770",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules ()({expectedVersion,reglas:{ordenListado:{criterio},alertaTarifa:{toleranciaPorcentaje},comision:{porcentaje},cancelacion:{ventanaHoras,penalizacionPorcentaje},oferta:{minutosParaAceptar}}})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16453",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenant/rules/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenant\/rules\/ ()({expectedVersion,reglas:{ordenListado:{criterio},alertaTarifa:{toleranciaPorcentaje},comision:{porcentaje},cancelacion:{ventanaHoras,penalizacionPorcentaje},oferta:{minutosParaAceptar}}})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "119",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/politica-cancelacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/politica-cancelacion ()({activa,modoCalculo,porcentajePenalizacion,montoFijoPenalizacion,minutosGraciaSinCosto})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "1912",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/politica-cancelacion",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/politica-cancelacion ()({activa,modoCalculo,porcentajePenalizacion,montoFijoPenalizacion,minutosGraciaSinCosto})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "16455",
+							"uri": "http://10.43.100.141:8080/api/v1/core/tenants/me/politica-cancelacion/",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/tenants\/me\/politica-cancelacion\/ ()({activa,modoCalculo,porcentajePenalizacion,montoFijoPenalizacion,minutosGraciaSinCosto})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						}
+					],
+					"count": "428",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "71"
+				},
+				{
+					"pluginid": "10111",
+					"alertRef": "10111",
+					"alert": "Authentication Request Identified",
+					"name": "Authentication Request Identified",
+					"riskcode": "0",
+					"confidence": "1",
+					"riskdesc": "Informational (Low)",
+					"desc": "<p>The given request has been identified as an authentication request. The 'Other Info' field contains a set of key=value lines which identify any relevant fields. If the request is in a context which has an Authentication Method set to \"Auto-Detect\" then this rule will change the authentication to match the request identified.</p>",
+					"instances":[ 
+						{
+							"id": "63",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/password-reset",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/password-reset ()({accessToken,newPassword})",
+							"method": "POST",
+							"param": "accessToken",
+							"attack": "",
+							"evidence": "newPassword",
+							"otherinfo": "userParam=accessToken\nuserValue=John Doe\npasswordParam=newPassword"
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>userParam=accessToken</p><p>userValue=John Doe</p><p>passwordParam=newPassword</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/auth-req-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "10"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-1",
+					"alert": "Non-Storable Content",
+					"name": "Non-Storable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are not storable by caching components such as proxy servers. If the response does not contain sensitive, personal or user-specific information, it may benefit from being stored and cached, to improve performance.</p>",
+					"instances":[ 
+						{
+							"id": "59",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes/me/id",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes\/me\/id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "8",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/logout",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "68",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client ()({fullName,email,password,phone,direccionHogar})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "61",
+							"uri": "http://10.43.100.141:8080/api/v1/core/auth/register/client/company",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/auth\/register\/client\/company ()({razonSocial,nit,nombreRepresentante,email,password,phone,acceptsTerms})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "53",
+							"uri": "http://10.43.100.141:8080/api/v1/core/solicitudes",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/solicitudes ()({categoriaId,descripcion,sitioId,direccion,zonaId,claveIdempotencia})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>The content may be marked as storable by ensuring that the following conditions are satisfied:</p><p>The request method must be understood by the cache and defined as being cacheable (\"GET\", \"HEAD\", and \"POST\" are currently defined as cacheable)</p><p>The response status code must be understood by the cache (one of the 1XX, 2XX, 3XX, 4XX, or 5XX response classes are generally understood)</p><p>The \"no-store\" cache directive must not appear in the request or response header fields</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"private\" response directive must not appear in the response</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"Authorization\" header field must not appear in the request, unless the response explicitly allows it (using one of the \"must-revalidate\", \"public\", or \"s-maxage\" Cache-Control response directives)</p><p>In addition to the conditions above, at least one of the following conditions must also be satisfied by the response:</p><p>It must contain an \"Expires\" header field</p><p>It must contain a \"max-age\" response directive</p><p>For \"shared\" caches such as \"proxy\" caches, it must contain a \"s-maxage\" response directive</p><p>It must contain a \"Cache Control Extension\" that allows it to be cached</p><p>It must have a status code that is defined as cacheable by default (200, 203, 204, 206, 300, 301, 404, 405, 410, 414, 501).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "23"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-3",
+					"alert": "Storable and Cacheable Content",
+					"name": "Storable and Cacheable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users. If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where \"shared\" caching servers such as \"proxy\" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.</p>",
+					"instances":[ 
+						{
+							"id": "9",
+							"uri": "http://10.43.100.141:8080/api/v1/core/health",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "13",
+							"uri": "http://10.43.100.141:8080/api/v1/core/metrics",
+							"nodeName": "http:\/\/10.43.100.141:8080\/api\/v1\/core\/metrics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>Validate that the response does not contain sensitive, personal or user-specific information. If it does, consider the use of the following HTTP response headers, to limit, or prevent the content being stored and retrieved from the cache by another user:</p><p>Cache-Control: no-cache, no-store, must-revalidate, private</p><p>Pragma: no-cache</p><p>Expires: 0</p><p>This configuration directs both HTTP 1.0 and HTTP 1.1 compliant caching servers to not store the response, and to not retrieve the response (without validation) from the cache, in response to a similar request.</p>",
+					"otherinfo": "<p>In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.</p>",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "1"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}

@@ -1,0 +1,15 @@
+== Reproduccion sin token de las alertas 40018 de ZAP, 2026-11-22T03:49:31Z
+core/admin/employees fullName=["John Doe"] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+core/admin/employees fullName=["John Doe" AND 1=1 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+core/admin/employees fullName=["John Doe" AND 1=2 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+dispatch/match tenantId=[John Doe] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+dispatch/match tenantId=[John Doe AND 1=1 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+dispatch/match tenantId=[John Doe OR 1=1 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+
+== Rules, 2026-11-22T03:52:24Z
+rules/categories/evaluate [John Doe] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+rules/categories/evaluate [John Doe AND 1=1 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-
+rules/categories/evaluate [John Doe AND 1=2 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-
+rules/rates/evaluate [John Doe] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro"}
+rules/rates/evaluate [John Doe AND 1=1 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro
+rules/rates/evaluate [John Doe AND 1=2 -- ] -> 401 {"error":"UNAUTHORIZED","message":"Peticion rechazada en el Gateway: token invalido, expirado o sin claim de tenant_id","correlationId":"qa-zap-repro

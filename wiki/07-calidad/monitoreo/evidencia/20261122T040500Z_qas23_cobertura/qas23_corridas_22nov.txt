@@ -1,0 +1,13 @@
+== QAS-23 cobertura de casos de uso criticos, 2026-11-22T04:12:17Z
+Core release 73c28f4, npm run test:coverage (node --test, Node v25.9.0):
+ℹ tests 1704
+ℹ pass 1490
+ℹ fail 0
+ℹ skipped 214
+
+Dispatch release eedb112, dotnet test + coverlet (SDK 10, roll forward a net8):
+Con error! - Con error:    22, Superado:   273, Omitido:     0, Total:   295, Duración: 393 ms - Mani.Dispatch.Tests.dll (net8.0)
+(las 22 fallas son pruebas de integracion con Testcontainers: Docker apagado)
+
+Rules release 348f6d9, mvn test con JaCoCo 0.8.14 (JDK 25; el pom usa 0.8.12, que no soporta Java 25):
+[INFO] Tests run: 142, Failures: 0, Errors: 0, Skipped: 0

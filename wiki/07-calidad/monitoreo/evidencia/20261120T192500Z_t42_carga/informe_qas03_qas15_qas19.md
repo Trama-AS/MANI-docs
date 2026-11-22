@@ -98,3 +98,28 @@ El 21 nov DevOps pasó el Core de QA al pooler en modo transacción (puerto 6543
 - Los tres escenarios siguen en **No cumple** (p95 muy por encima de 500 ms, 5xx muy por encima de 1 %, 47 req/s con 40 % de errores). Mejoraron QAS-15 (de 81 % a 40 % de 5xx) y QAS-19 (de 31,9 a 47 req/s).
 
 Evidencia: `qas_carga_corta_21nov_2242z.txt`, `qas_stats_corta_qas03_21nov_2242z.txt`, `qas_stats_corta_qas19_21nov_2242z.txt` y `scripts/correr_qas_carga_t42_corta.sh`.
+
+## 7. Corrida completa del 22 nov, con el pooler en modo transacción
+
+22 nov, de 04:14Z a 04:38Z, con el mismo script y la misma carga nominal que el 20 nov (300 VUs, 50 req/s, QAS-03 por 5 min y la mezcla por **15 min**). El Core usa el pooler en modo transacción (puerto 6543) con pool de 30, y Dispatch tiene pool de 5 (cambio de DevOps del 21 nov, SCRUM-1680, comentario 11236). SCRUM-1651 sigue sin desplegarse: Dispatch corta a los 3 s hacia Core. Esta es la medición oficial de QAS-15, que pide 15 min.
+
+| Prueba | 20 nov | 22 nov |
+|---|---|---|
+| Humo, p95 de elegibles | 2.870 ms | 548 ms |
+| QAS-03, p95 de elegibles | 3.025 ms | 3.044 ms |
+| QAS-03, 5xx | 100 % | 96,3 % (14.999 peticiones) |
+| Mezcla 15 min, req/s sostenidas | 31,9 | 43,9 (39.487 peticiones) |
+| Mezcla 15 min, 5xx | 81,4 % | **39,8 %** |
+| Mezcla, rutas de Core (perfil, sitios, tarifa) | 5xx altos | **0 % de 5xx**, p95 de 7,0 a 11,6 s |
+| Mezcla, rutas de Dispatch (elegibles, ofertas) | 5xx altos | 99,5 % y 100 % de 5xx, p95 3,2 y 5,7 s |
+| CPU máxima de Core (límite 1 CPU) | 55 % | **101 %** en la mezcla |
+
+**Lectura:**
+
+- Se confirma la carga corta del 21 nov en una ventana de 15 min. Con el pooler en modo transacción las rutas que atiende el Core ya no fallan, pero son lentas y **el Core llega al 100 % de su CPU** (límite de 1 CPU, SCRUM-1672): el siguiente techo del Core es de cómputo, no de conexiones.
+- Los 5xx que quedan son casi todos de Dispatch (`eligible-allies` y `offers/me`), que corta a los 3 s esperando al Core. Mientras SCRUM-1651 no se despliegue, esas rutas fallan bajo carga.
+- Los tres escenarios siguen en **No cumple**: QAS-03 con p95 de 3 s frente a 500 ms, QAS-15 con 39,8 % de 5xx frente a 1 %, y QAS-19 con 43,9 req/s y p95 de 3 a 11,6 s frente a 50 req/s dentro del umbral.
+
+**Qué haría falta:** desplegar SCRUM-1651 (timeout de Dispatch ≥ 10 s); reducir las consultas por petición de `eligible-allies` y de las rutas de perfil, sitios y tarifa, que el Core resuelve con varias transacciones cada una; y revisar el límite de 1 CPU del Core o escalarlo (QAS-05).
+
+Evidencia: `qas_carga_22nov_0412z.txt`, `qas_stats_qas03_22nov_0412z.txt` y `qas_stats_qas19_22nov_0412z.txt`. No se tomaron logs de esta corrida; las causas en Core y Dispatch son las mismas que se registraron en la carga corta del 21 nov.

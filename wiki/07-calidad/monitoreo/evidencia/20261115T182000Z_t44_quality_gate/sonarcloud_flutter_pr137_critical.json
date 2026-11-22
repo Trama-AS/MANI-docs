@@ -1,0 +1,11 @@
+[
+ {
+  "key": "AaHgS_taC7n5zOm-2bpD",
+  "rule": "dart:S3776",
+  "severity": "CRITICAL",
+  "component": "Trama-AS_MANI-Flutter:lib/features/services/tracking/presentation/mis_solicitudes_page.dart",
+  "line": 59,
+  "message": "Refactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.",
+  "creationDate": "2026-11-13T17:16:54+0000"
+ }
+]

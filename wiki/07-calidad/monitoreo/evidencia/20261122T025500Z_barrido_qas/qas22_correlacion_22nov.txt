@@ -1,0 +1,29 @@
+== QAS-22 X-Correlation-ID por el Gateway de QA (:8080), 2026-11-22T02:55:49Z. Rutas publicas de salud, sin token.
+-- GET /api/v1/core/health con X-Correlation-ID: qa-barrido-22
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug, Idempotency-Key, X-Idempotency-Key, X-Mani-Tenant, X-Mani-Actuar-Como
+X-Correlation-ID: qa-barrido-22
+-- GET /api/v1/core/health sin cabecera
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug, Idempotency-Key, X-Idempotency-Key, X-Mani-Tenant, X-Mani-Actuar-Como
+X-Correlation-ID: d4d88db12f4791db91f0d5e62289c000
+-- GET /api/v1/dispatch/health con X-Correlation-ID: qa-barrido-22
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug, Idempotency-Key, X-Idempotency-Key, X-Mani-Tenant, X-Mani-Actuar-Como
+X-Correlation-ID: qa-barrido-22
+-- GET /api/v1/dispatch/health sin cabecera
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug, Idempotency-Key, X-Idempotency-Key, X-Mani-Tenant, X-Mani-Actuar-Como
+X-Correlation-ID: 410a7c1e324bc2422a564492fdb02c95
+-- GET /api/v1/rules/health con X-Correlation-ID: qa-barrido-22
+HTTP/1.1 200 
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug, Idempotency-Key, X-Idempotency-Key, X-Mani-Tenant, X-Mani-Actuar-Como
+X-Correlation-ID: qa-barrido-22
+-- GET /api/v1/rules/health sin cabecera
+HTTP/1.1 200 
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Correlation-Id, X-Tenant-ID, X-Tenant-Slug, Idempotency-Key, X-Idempotency-Key, X-Mani-Tenant, X-Mani-Actuar-Como
+X-Correlation-ID: 9941439847e6c4f91aa658f55f72cc68
+-- GET /health con X-Correlation-ID: qa-barrido-22
+HTTP/1.1 200 OK
+-- GET /health sin cabecera
+HTTP/1.1 200 OK

@@ -1,0 +1,5 @@
+== Fecha 2026-11-20T19:19:26Z, modo aplicar
+compose: core-service ya tiene DATABASE_POOL_MAX
+env: ya existe CORE_DATABASE_POOL_MAX=30
+env: DISPATCH_DB_CONNECTION ya tiene Maximum Pool Size=10
+== cambios: ninguno

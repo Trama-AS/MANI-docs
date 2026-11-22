@@ -1,0 +1,75 @@
+cabezas de release: core 73c28f4 dispatch eedb112 flutter b74d923 gateway ee5000c rules 348f6d9
+== Antes (2026-11-20T19:19:45Z)
+  mani-core-service 98506f7
+  mani-dispatch-service 746c451
+  mani-flutter-web f62f241
+  mani-api-gateway 8370e87
+  mani-rules-service 3e3da57
+  mani-landing-web a82b94e
+== Comprobaciones sin cambios
+  migraciones de release registradas: ultima 0042
+  CORE_SERVICE_URL de Dispatch: http://core-service:3000
+  pools en el compose: Core 30, Dispatch 10
+  landing ya en release
+== Pull de imagenes :staging
+ Image ghcr.io/trama-as/mani-java:staging Pulled 
+ Image ghcr.io/trama-as/mani-dotnet:staging Pulled 
+ Image ghcr.io/trama-as/mani-apigateway:staging Pulled 
+ Image ghcr.io/trama-as/mani-flutter:staging Pulled 
+  ok  ghcr.io/trama-as/mani-node:staging 73c28f4
+  ok  ghcr.io/trama-as/mani-dotnet:staging eedb112
+  ok  ghcr.io/trama-as/mani-java:staging 348f6d9
+  ok  ghcr.io/trama-as/mani-flutter:staging b74d923
+  ok  ghcr.io/trama-as/mani-apigateway:staging ee5000c
+== Redespliegue 1/2: core-service
+ Container mani-core-service Recreate 
+ Container mani-core-service Error response from daemon: Conflict. The container name "/c6725c46a1c2_mani-core
+Error response from daemon: Conflict. The container name "/c6725c46a1c2_mani-core-service" is already in use b
+  core: 200
+== Redespliegue 2/2: dispatch-service rules-service flutter-web gateway
+ Container mani-flutter-web Starting 
+ Container mani-rules-service Starting 
+ Container mani-dispatch-service Starting 
+ Container mani-flutter-web Started 
+ Container mani-rules-service Started 
+ Container mani-dispatch-service Started 
+ Container mani-api-gateway Starting 
+ Container mani-api-gateway Started 
+== Espera y salud
+mani-api-gateway | Up 11 seconds
+mani-core-service | Up 30 seconds
+mani-dispatch-service | Up 12 seconds
+mani-flutter-web | Up 13 seconds
+mani-kafka | Up 5 days (healthy)
+mani-landing-web | Up 5 days
+mani-qa-cadvisor | Up 5 days (healthy)
+mani-qa-nginx-exporter | Up 5 days
+mani-qa-nginxlog-exporter | Up 5 days
+mani-qa-node-exporter | Up 5 days
+mani-qa-postgres-exporter | Up 5 days
+mani-qa-promtail | Up 5 days
+mani-rules-service | Up 12 seconds
+  200 http://localhost/health
+  200 http://localhost/api/v1/core/health
+  200 http://localhost/api/v1/rules/health
+  200 http://localhost/api/v1/dispatch/health
+  200 http://localhost:8080/
+  200 http://localhost:3001/
+== Rol de arranque en logs
+🔒 PostgreSQL: Core conecta como mani_core_svc, sin BYPASSRLS (RLS activo)
+      PostgreSQL: Dispatch conecta como mani_dispatch_svc, sin BYPASSRLS (RLS activo).
+== Verificacion oficial (termina con 'roles y politicas conformes' si cumple)
+supabase_storage_admin | Supabase Storage API 1.96.4 | ::1 | 1
+DO
+TEC-21: roles y políticas conformes
+== Pools en los contenedores
+DATABASE_POOL_MAX=30
+Maximum Pool Size=10
+== Revisiones finales
+  mani-core-service 73c28f4
+  mani-dispatch-service eedb112
+  mani-flutter-web b74d923
+  mani-api-gateway ee5000c
+  mani-rules-service 348f6d9
+  mani-landing-web a82b94e
+== Fin (2026-11-20T19:22:09Z)

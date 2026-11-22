@@ -1,0 +1,74 @@
+== QAS-13 2026-11-21T16:40:46Z
+  token real: alg=ES256; emitido=15:40:03Z; vence=16:40:03Z; vencido hace 43 s
+  otro emisor: alg=ES256, firma P-256 propia, iss=https://otro-emisor.qa.invalid/auth/v1, mismos sub/tenant/rol, exp +1 h
+  operaciones protegidas probadas: 120 {'core': 109, 'dispatch': 7, 'rules': 4}; intentos: 480
+    ausente:401: 76
+    ausente:429: 44
+    firma_alterada:401: 74
+    firma_alterada:429: 46
+    otro_emisor_es256:401: 74
+    otro_emisor_es256:429: 46
+    vencido_real:401: 75
+    vencido_real:429: 45
+FALLA | QAS-13 | intento sin token valido rechazado con 401/403 | esperado 480 de 480 | obtenido 299 de 480
+  no rechazado: vencido_real 429 POST /api/v1/core/solicitudes/{id}/adiciones
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/solicitudes/{id}/adiciones
+  no rechazado: ausente 429 POST /api/v1/core/adiciones/{id}/aceptar
+  no rechazado: firma_alterada 429 POST /api/v1/core/adiciones/{id}/aceptar
+  no rechazado: vencido_real 429 POST /api/v1/core/adiciones/{id}/aceptar
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/adiciones/{id}/aceptar
+  no rechazado: ausente 429 POST /api/v1/core/adiciones/{id}/rechazar
+  no rechazado: firma_alterada 429 POST /api/v1/core/adiciones/{id}/rechazar
+  no rechazado: vencido_real 429 POST /api/v1/core/adiciones/{id}/rechazar
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/adiciones/{id}/rechazar
+  no rechazado: ausente 429 POST /api/v1/core/pagos
+  no rechazado: firma_alterada 429 POST /api/v1/core/pagos
+  no rechazado: vencido_real 429 POST /api/v1/core/pagos
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/pagos
+  no rechazado: ausente 429 POST /api/v1/core/solicitudes/{id}/mensajes
+  no rechazado: firma_alterada 429 POST /api/v1/core/solicitudes/{id}/mensajes
+  no rechazado: vencido_real 429 POST /api/v1/core/solicitudes/{id}/mensajes
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/solicitudes/{id}/mensajes
+  no rechazado: ausente 429 POST /api/v1/core/solicitudes/{id}/conversacion/consultas
+  no rechazado: firma_alterada 429 POST /api/v1/core/solicitudes/{id}/conversacion/consultas
+  no rechazado: vencido_real 429 POST /api/v1/core/solicitudes/{id}/conversacion/consultas
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/solicitudes/{id}/conversacion/consultas
+  no rechazado: ausente 429 POST /api/v1/core/profiles/me/unavailability
+  no rechazado: firma_alterada 429 POST /api/v1/core/profiles/me/unavailability
+  no rechazado: vencido_real 429 POST /api/v1/core/profiles/me/unavailability
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/profiles/me/unavailability
+  no rechazado: ausente 429 PATCH /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: firma_alterada 429 PATCH /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: vencido_real 429 PATCH /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: otro_emisor_es256 429 PATCH /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: ausente 429 DELETE /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: firma_alterada 429 DELETE /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: vencido_real 429 DELETE /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: otro_emisor_es256 429 DELETE /api/v1/core/profiles/me/unavailability/{absenceId}
+  no rechazado: firma_alterada 429 PUT /api/v1/core/profiles/me/categories
+  no rechazado: vencido_real 429 PUT /api/v1/core/profiles/me/categories
+  no rechazado: otro_emisor_es256 429 PUT /api/v1/core/profiles/me/categories
+  no rechazado: ausente 429 POST /api/v1/core/profiles/me/categories
+  no rechazado: firma_alterada 429 POST /api/v1/core/profiles/me/categories
+  no rechazado: vencido_real 429 POST /api/v1/core/profiles/me/categories
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/profiles/me/categories
+  no rechazado: ausente 429 PUT /api/v1/core/profiles/me/coverage
+  no rechazado: firma_alterada 429 PUT /api/v1/core/profiles/me/coverage
+  no rechazado: vencido_real 429 PUT /api/v1/core/profiles/me/coverage
+  no rechazado: otro_emisor_es256 429 PUT /api/v1/core/profiles/me/coverage
+  no rechazado: ausente 429 POST /api/v1/core/catalog/categories
+  no rechazado: firma_alterada 429 POST /api/v1/core/catalog/categories
+  no rechazado: vencido_real 429 POST /api/v1/core/catalog/categories
+  no rechazado: otro_emisor_es256 429 POST /api/v1/core/catalog/categories
+  no rechazado: ausente 429 PUT /api/v1/core/catalog/categories/{id}
+  no rechazado: firma_alterada 429 PUT /api/v1/core/catalog/categories/{id}
+  no rechazado: vencido_real 429 PUT /api/v1/core/catalog/categories/{id}
+  no rechazado: otro_emisor_es256 429 PUT /api/v1/core/catalog/categories/{id}
+  no rechazado: ausente 429 PATCH /api/v1/core/catalog/categories/{id}/activate
+  no rechazado: firma_alterada 429 PATCH /api/v1/core/catalog/categories/{id}/activate
+  no rechazado: vencido_real 429 PATCH /api/v1/core/catalog/categories/{id}/activate
+  no rechazado: otro_emisor_es256 429 PATCH /api/v1/core/catalog/categories/{id}/activate
+  no rechazado: ausente 429 PATCH /api/v1/core/catalog/categories/{id}/deactivate
+  no rechazado: firma_alterada 429 PATCH /api/v1/core/catalog/categories/{id}/deactivate
+  no rechazado: vencido_real 429 PATCH /api/v1/core/catalog/categories/{id}/deactivate
+PASA  | QAS-13 | rechazos sin datos de negocio en el cuerpo | 0 con datos

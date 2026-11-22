@@ -1,0 +1,11 @@
+== QAS-07 ranking en vivo (GET eligible-allies por el Gateway, token de cliente.t1), 2026-11-22T01:55Z
+03490d4a (Plomeria, Niza): 200, totalCount 2
+  1. aliado.t1 (Aliado QA Tenant 1), puntaje 0.972, 'Calificacion promedio 4.86 de 5 (7 calificaciones)'
+  2. empleado_directo.t1, sin puntaje, 'Sin calificaciones todavia: va despues de los valorados'
+b94cdb40 (Plomeria, Nueva Granada Bosa): 200, totalCount 0 (nadie cubre Bosa), coincide con orquestar NO_ELIGIBLE_ALLIES
+Lectura: el orden respeta la regla del ranking (valorados por calificacion primero, sin calificar despues) y la elegibilidad por categoria y zona ancestro (Niza dentro de Suba).
+
+== QAS-07 tarifa de referencia en vivo (GET /core/solicitudes/{id}/tarifa-referencia), solicitud 6ef93e76 asignada a aliado.t1
+  aliado.t1: 200 {"disponible": true, "tarifa": {"id": "2133a9e8-4b60-4138-b80d-cc73cc617931", "categoriaId": "60000000-0000-4000-8000-000000000011", "categoriaNombre": "Plomeria", "valorMin": 80000, "valorTipico": 150000, "valorMax": 350000, "moneda": "COP", "vigenciaDesde": "2026-11-05", "vigenciaHasta": null, "condiciones": null, "version": 5}}
+  empleado_directo.t1: 404 {"error": "MANI-TAR-404S: solicitud no encontrada", "code": "MANI-TAR-404S"}
+  cliente.t1: 200 {"disponible": true, "tarifa": {"id": "2133a9e8-4b60-4138-b80d-cc73cc617931", "categoriaId": "60000000-0000-4000-8000-000000000011", "categoriaNombre": "Plomeria", "valorMin": 80000, "valorTipico": 150000, "valorMax": 350000, "moneda": "COP", "vigenciaDesde": "2026-11-05", "vigenciaHasta": null, "condiciones": null, "version": 5}}

@@ -1,0 +1,22 @@
+{
+  "escenario": "QAS-41 / QAS-07 (asignacion y conflicto)",
+  "ticket": "SCRUM-1683",
+  "fecha_utc": "2026-11-22T01:51:38.776Z",
+  "base_url": "http://10.43.100.141:8080",
+  "ronda": "4",
+  "solicitud_id": "5aedc113-aa96-4af8-a076-19ce91cc97c8",
+  "aliados": [
+    "aliado.t1@qa.mani.test",
+    "empleado_directo.t1@qa.mani.test"
+  ],
+  "aceptaciones_simultaneas": 37,
+  "medido": {
+    "asignada_200": 1,
+    "reintento_idempotente_200": 18,
+    "conflicto_409": 18,
+    "otros_status": 0,
+    "reintento_ganador_200": 1,
+    "p95_ms": 5418,
+    "max_ms": 5618
+  }
+}

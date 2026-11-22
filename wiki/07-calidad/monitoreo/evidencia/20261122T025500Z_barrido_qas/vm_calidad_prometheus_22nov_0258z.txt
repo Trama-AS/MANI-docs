@@ -1,0 +1,38 @@
+== Fecha 2026-11-22T02:58:34.805369Z
+== Targets: mani_backups_node:up, mani_core_prod:up, mani_core_qa:up, mani_qa_cadvisor:up, mani_qa_nginx:up, mani_qa_nginxlog:up, mani_qa_node:up, mani_qa_postgres:up, mani_salud_prod:up, mani_salud_qa:up
+
+== QAS-16: disponibilidad por sonda (probe_success del blackbox)
+-- ventana 7d
+   http://10.43.100.141:3001/: 99.970 %  (20109 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.100.141:8080/: 99.995 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.98.203/api/v1/core/health: 99.965 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.98.203/api/v1/dispatch/health: 100.000 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.98.203/api/v1/rules/health: 100.000 %  (20109 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.98.203/health: 100.000 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.98.203:3001/: 99.970 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   http://10.43.98.203:8080/: 100.000 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   https://10.43.100.141/api/v1/core/health: 99.965 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   https://10.43.100.141/api/v1/dispatch/health: 99.990 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   https://10.43.100.141/api/v1/rules/health: 99.995 %  (20108 muestras, primera 2026-11-15 02:59Z)
+   https://10.43.100.141/health: 99.995 %  (20108 muestras, primera 2026-11-15 02:59Z)
+-- ventana 14d
+   http://10.43.100.141/api/v1/core/health: 99.910 %  (20056 muestras, primera 2026-11-08 02:59Z)
+   http://10.43.100.141/api/v1/dispatch/health: 99.980 %  (20055 muestras, primera 2026-11-08 02:59Z)
+   http://10.43.100.141/api/v1/rules/health: 99.975 %  (20056 muestras, primera 2026-11-08 02:59Z)
+   http://10.43.100.141/health: 99.980 %  (20055 muestras, primera 2026-11-08 02:59Z)
+   http://10.43.100.141:3001/: 99.941 %  (20213 muestras, primera 2026-11-15 02:09Z)
+   http://10.43.100.141:8080/: 99.998 %  (40266 muestras, primera 2026-11-08 02:59Z)
+   http://10.43.98.203/api/v1/core/health: 99.965 %  (20211 muestras, primera 2026-11-15 02:09Z)
+   http://10.43.98.203/api/v1/dispatch/health: 100.000 %  (20210 muestras, primera 2026-11-15 02:09Z)
+   http://10.43.98.203/api/v1/rules/health: 100.000 %  (20213 muestras, primera 2026-11-15 02:09Z)
+   http://10.43.98.203/health: 100.000 %  (20212 muestras, primera 2026-11-15 02:09Z)
+   http://10.43.98.203:3001/: 99.946 %  (20210 muestras, primera 2026-11-15 02:09Z)
+   http://10.43.98.203:8080/: 100.000 %  (20210 muestras, primera 2026-11-15 02:09Z)
+   https://10.43.100.141/api/v1/core/health: 99.965 %  (20211 muestras, primera 2026-11-15 02:09Z)
+   https://10.43.100.141/api/v1/dispatch/health: 99.990 %  (20210 muestras, primera 2026-11-15 02:09Z)
+   https://10.43.100.141/api/v1/rules/health: 99.995 %  (20211 muestras, primera 2026-11-15 02:09Z)
+   https://10.43.100.141/health: 99.995 %  (20211 muestras, primera 2026-11-15 02:09Z)
+
+== QAS-18/27: CPU (nucleos) y memoria por contenedor de QA en las cargas de T-42
+-- carga 20 nov (2026-11-20T19:24:00Z a 2026-11-20T19:46:00Z)
+-- carga corta 21 nov (2026-11-21T22:42:00Z a 2026-11-21T22:52:00Z)

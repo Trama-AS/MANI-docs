@@ -1,0 +1,40 @@
+== SCRUM-1679 (T-42) verificacion previa de QA, 2026-11-20T19:00:11Z
+== contenedores
+mani-api-gateway | Up 5 days | creado 2026-11-14 21:04:20 -0500 -05
+mani-core-service | Up 5 days | creado 2026-11-14 20:41:24 -0500 -05
+mani-dispatch-service | Up 5 days | creado 2026-11-14 20:41:24 -0500 -05
+mani-flutter-web | Up 5 days | creado 2026-11-14 20:41:24 -0500 -05
+mani-kafka | Up 5 days (healthy) | creado 2026-11-14 20:25:53 -0500 -05
+mani-landing-web | Up 5 days | creado 2026-11-14 20:25:53 -0500 -05
+mani-qa-cadvisor | Up 5 days (healthy) | creado 2026-11-14 21:05:44 -0500 -05
+mani-qa-nginx-exporter | Up 5 days | creado 2026-11-14 21:05:44 -0500 -05
+mani-qa-nginxlog-exporter | Up 5 days | creado 2026-11-14 21:05:44 -0500 -05
+mani-qa-node-exporter | Up 5 days | creado 2026-11-14 21:05:44 -0500 -05
+mani-qa-postgres-exporter | Up 5 days | creado 2026-11-14 21:05:44 -0500 -05
+mani-qa-promtail | Up 5 days | creado 2026-11-14 21:05:44 -0500 -05
+mani-rules-service | Up 5 days | creado 2026-11-14 20:25:53 -0500 -05
+== revisiones desplegadas
+REV mani-core-service 98506f7e76ad9dc0ca5007750def2744c1042768
+REV mani-dispatch-service 746c4519d3c4796df586a3c7e077e59c0434187a
+REV mani-api-gateway 8370e8753d228462d864f552e891ed7b6000909a
+REV mani-rules-service 3e3da57e5784f74445439b5b85b7eb3d7904d10b
+== pool de Core (variables del contenedor)
+Core sin DATABASE_POOL_* (usa el valor por omision del codigo)
+== pool de Dispatch (solo el parametro Maximum Pool Size)
+Dispatch sin Maximum Pool Size (Npgsql abre hasta 100 por omision)
+== compose y .env.qa en /opt/mani (solo nombres y numeros del pool)
+compose sin DATABASE_POOL_MAX
+.env.qa sin CORE_DATABASE_POOL_MAX
+.env.qa: DISPATCH_DB_CONNECTION sin Maximum Pool Size
+== PR de SCRUM-1651 y 1652 contenidos en lo desplegado (comparado en los clones locales)
+  mani-core-service: 98506f7 2026-11-05T15:51:47-05:00 Merge pull request #131 from Trama-AS/develop
+    NO  Node#133 pool configurable (1651)
+    NO  Node#138 contexto en una sentencia (1652)
+    NO  Node#139 elegibles por solicitud (1652)
+  mani-dispatch-service: 746c451 2026-11-05T16:13:44-05:00 Merge pull request #32 from Trama-AS/develop
+    NO  .NET#36 lecturas en paralelo (1652)
+    NO  .NET#37 una sola llamada a Core (1652)
+  mani-api-gateway: 8370e87 2026-11-14T21:02:20-05:00 Merge pull request #93 from Trama-AS/develop
+    NO  Gateway#97 contrato y pools de QA (1652)
+== referencia: origin/release Node 98506f7, .NET 746c451, Gateway 8370e87
+== codigo de salida de ssh: 1

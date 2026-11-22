@@ -1,0 +1,12 @@
+== QAS-43 TLS contra el Gateway de QA (10.43.100.141), 2026-11-22T02:55:41Z, LibreSSL 3.3.6
+tls1   : rechazado (Connection refused)
+tls1_1 : rechazado (Connection refused)
+tls1_2 : rechazado (Connection refused)
+tls1_3 : rechazado (Connection refused)
+-- certificado
+-- HTTP puerto 80
+GET http://10.43.100.141/ -> 000 Location: 
+-- HTTPS /api/v1/dispatch/health
+000
+-- HTTP puerto 8080 (usado por QA en las pruebas)
+GET http://10.43.100.141:8080/ -> 200

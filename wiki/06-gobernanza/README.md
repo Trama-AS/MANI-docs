@@ -28,7 +28,9 @@ Seis pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en ord
 | 2 | **Políticas de trabajo**: ramas, PR, promoción, CI/CD, secretos, uso de IA | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Es la norma que el incumplimiento de un entregable se mide contra ella |
 | 3 | **Infraestructura vigente**: ambientes, VMs, Supabase, red, backups | [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) y [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Fija sobre qué se despliega lo que se decide |
 | 4 | **Validación de discrepancias**: qué se verificó de verdad y qué sigue pendiente | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Separa lo verificado de lo afirmado, antes de llevar una cifra a la sustentación |
-| 5 | **Registro de bloqueos del Sprint 6** | [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Ocho bloqueos abiertos, seis de ellos en o sobre el umbral de escalamiento: es lo que explica por qué varias tareas del sprint no avanzan |
+| 5 | **Registro de bloqueos del Sprint 6** | [`SEGUIMIENTO_ACUERDOS_SPRINT_6.md`](SEGUIMIENTO_ACUERDOS_SPRINT_6.md) | Acuerdos del sprint con responsable, estado y evidencia. Deja constancia de que **no existen notas escritas de la planning** y no las reconstruye de memoria | Sara Albarracín (SM) | El equipo en cada *daily* | En cada *daily* | 1.0 · 2026-11-19 |
+| [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Cierre del Sprint 6: resultados con cifras de Jira, lo que sí se cerró, cuatro lecciones aprendidas y nueve puntos de deuda abierta con su responsable | Sara Albarracín (SM) | El equipo, el PO y el jurado | Al cierre de cada sprint | 1.0 · 2026-11-19 |
+| [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Ocho bloqueos abiertos, seis de ellos en o sobre el umbral de escalamiento: es lo que explica por qué varias tareas del sprint no avanzan |
 | 6 | **Actas e informes de cierre** | **Aún no existen como documento.** Ver [§4](#4-lo-que-esta-carpeta-todavía-no-tiene) | Es lo que falta para cerrar HU-WIKI-08 |
 
 ## 2. La regla que resuelve discusiones
@@ -47,7 +49,7 @@ La autoridad es del **rol** y del **artefacto**, no de la persona (§2.3): el PO
 |---|---|---|---|---|---|
 | [`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) | Roles, autoridad por artefacto, desempates, ceremonias, plazos exigibles y qué pasa con un incremento no entregado | Sara Albarracín (SM) | Todo el equipo | Cuando cambia un rol o una ceremonia | Vivo · 2026-11-04 |
 | [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](POLITICAS_DEVOPS_HERRAMIENTAS.md) | Políticas de ramas, PR, promoción, CI/CD, contenedores, testing, DevSecOps, secretos, observabilidad, uso de IA, versionamiento de despliegue y, en §22, la política de JWT entre ambientes | Daniel Ávila (DevOps) con la SM | Desarrollo, QA, DevOps | Cuando cambia una política | Vivo · 2026-10-22 |
-| [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) | **Vista física vigente** del modelo 4+1: ambientes, VMs, registro de imágenes, Supabase, red y TLS, backups y el estado de lo verificado contra el código | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Por sprint y ante cada cambio de ambiente | V4 · 2026-11-05 · **Borrador para revisión** |
+| [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) | **Vista física vigente desde el 2026-11-19** del modelo 4+1: ambientes, VMs, registro de imágenes, Supabase, red y TLS, backups y el estado de lo verificado contra el código | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Por sprint y ante cada cambio de ambiente | V4 · 2026-11-19 · **Vigente** |
 | [`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) | Vista física detallada: ambientes DEV, QA y PROD, VMs, Supabase, red y TLS, backups, escalabilidad y, en §27, el plan de alineación y rollback de Supabase PROD y QA | Daniel Ávila (DevOps) | DevOps, QA | Cuando cambia la infraestructura | Vivo · 2026-10-22 |
 | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) | Validación de las discrepancias entre documentos: estado por fila, lo verificado en el sistema o en el código con su evidencia, el comando y el responsable de cada fila pendiente, las decisiones tomadas y lo que sigue abierto | Sara Albarracín (SM) | PO, Arquitectura, DevOps, QA | Cada vez que se cierra una fila; obligatorio antes de cada sustentación | 2.0 · 2026-11-11 · **Parcial: 6 de 15 verificadas, 5 decididas, 7 pendientes** |
 | [`REGISTRO_BLOQUEOS.md`](REGISTRO_BLOQUEOS.md) | Bloqueos del Sprint 6: ítem afectado, tipo, causa, responsable, fecha de aparición y días hábiles abierto, con el resumen por tipo y las causas recurrentes con su acción de mejora | Sara Albarracín (SM) | El equipo en cada *daily*; el informe de cierre | En cada *daily* | 1.0 · 2026-11-11 |
@@ -77,8 +79,6 @@ Los criterios específicos de HU-WIKI-08 piden actas, informes de cierre y regis
 | Qué falta | Qué debe contener | Jira | Estado |
 |---|---|---|---|
 | **Acta de decisión A/B por escenario de calidad** | Cada escenario marcado como opción A o B con su motivo, un RPO/RTO único (hoy hay tres propuestas incompatibles), y firma del PO | [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684) | `To Do`. **Bloquea** [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) y [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686): sin el acta, reescribir los umbrales del SDD sería inventarlos |
-| **Informe de cierre del Sprint 6** | Resultados, lecciones aprendidas y deuda abierta | [SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708) | `To Do`. Se redacta al cierre del sprint |
-| **Seguimiento de los acuerdos de la planning del Sprint 6** | Acuerdo, responsable, fecha comprometida y estado | [SCRUM-1707](https://maniservices.atlassian.net/browse/SCRUM-1707) | `To Do` |
 
 **Toda acta de esta carpeta lleva**, sin excepción: fecha, asistentes, decisiones tomadas una por una, y el enlace a la tarea de Jira que la ejecuta. Las actas de aceptación las firma el PO. Un acta sin firma del PO no es un acta: es un borrador de la SM.
 
@@ -109,7 +109,7 @@ Falta, y **depende de trabajo de otras tareas**:
 2. **Las tres piezas que siguen faltando en [§4](#4-lo-que-esta-carpeta-todavía-no-tiene)**: acta A/B, informe de cierre y seguimiento de acuerdos. El registro de bloqueos ya está publicado; le falta la etiqueta `bloqueado` en Jira, que hoy no existe.
 3. **Las siete filas pendientes de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md)**, que exigen sesión en las VMs, consulta a Supabase de PROD o prueba de puertos desde la red de la universidad.
 4. ~~Revisión y aprobación del README por otro responsable de carpeta.~~ **Criterio retirado por la Scrum Master el 2026-11-12.** No era cumplible: ninguna de las siete carpetas de la wiki declara responsable, y cinco no tienen siquiera ficha de carpeta, de modo que la figura que el criterio invoca no existe en el proyecto. Se retira en vez de dejarlo abierto indefinidamente o darlo por cumplido sin revisión real.
-5. **Promoción de `DOCUMENTO_INFRAESTRUCTURA_V4.md`** de borrador a vigente, que depende de las mismas filas del punto 3.
+5. ~~Promoción de `DOCUMENTO_INFRAESTRUCTURA_V4.md` de borrador a vigente.~~ **Hecho el 2026-11-19**, al cerrarse las filas que lo bloqueaban. Queda la reserva de la fila D10.
 
 ## 7. Discrepancias de HU-VAL-01 que son de esta carpeta
 

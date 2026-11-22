@@ -1,7 +1,8 @@
 # ADR-0006 — Observabilidad distribuida y gestión de incidentes
 
-- **Estado:** Aceptado · **enmendado el 2026-11-13: se retira Datadog.** Decidido por la Scrum Master; pendiente de ratificación en Mesa.
+- **Estado:** `Aceptado` · **enmendado el 2026-11-13 para retirar Datadog, y la enmienda ratificada por la Scrum Master (Sara Albarracín) el 2026-11-19**, sin sesión de Mesa, por el mismo motivo que las demás de esa fecha. **La Mesa puede confirmarla o revertirla.**
 - **Decisión de:** operación y monitoreo
+- **Origen (declarado el 2026-11-19):** **`PROY-09`** — el proyecto exige observabilidad propia con Prometheus, Grafana y Loki. **La restricción se escribió el 2026-11-16**, después de este ADR: hasta entonces la decisión no tenía requisito detrás, y esa ausencia es la que permitió que tres documentos del proyecto se contradijeran sobre si la observabilidad existía. Compromete **QAS-22** (analizabilidad).
 - **Relacionado con:** ADR-0004, ADR-0019
 
 ## Contexto
@@ -45,7 +46,7 @@ Revisar si se consolida el stack de observabilidad en una única plataforma sin 
 
 ## Enmienda del 2026-11-13 — se retira Datadog
 
-**Decidido por la Scrum Master; pendiente de ratificación en Mesa.**
+**Decidido por la Scrum Master el 2026-11-13 y ratificado por ella misma el 2026-11-19**, sin sesión de Mesa de Arquitectura. [ADR-0003](ADR-0003-mesa-arquitectura.md) reserva la ratificación a la Mesa; no se convocó ninguna en el Sprint 6 y la enmienda ya estaba aplicada en los documentos y en la infraestructura. **La Mesa puede confirmarla o revertirla** cuando se reúna, y entonces esta ratificación y su fecha quedan en el historial como lo que fueron.
 
 **Qué cambia.** La decisión era «Prometheus + Grafana + Datadog + Jira». Se retira **Datadog**. Quedan **Prometheus** para métricas, **Grafana** para tableros y **Jira** como destino de incidentes.
 
@@ -59,6 +60,7 @@ Revisar si se consolida el stack de observabilidad en una única plataforma sin 
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 1.2 | 2026-11-19 | La enmienda que retiró Datadog queda **ratificada por la Scrum Master, sin Mesa**, junto con ADR-0036, ADR-0037 y ADR-0038. El motivo y la reversibilidad quedan escritos en el apartado de la enmienda. | Sara Albarracín |
 | 1.1 | 2026-11-13 | Se retira Datadog. Quedan Prometheus, Grafana y Jira, que es lo exigido y lo que se despliega. Se declara el hueco de APM, logs y trazas en vez de darlo por cubierto. Decidido por la SM; pendiente de ratificación en Mesa. | Sara Albarracín |
 | 1.0 | — | Decisión original: Prometheus + Grafana + Datadog + Jira. | — |
 

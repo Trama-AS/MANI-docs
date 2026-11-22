@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** Seguridad, Infraestructura, Autenticación y Autorización Multi-Tenant
+- **Origen (declarado el 2026-11-19):** **`RNF-01`** — el aislamiento entre tenants debe ser verificable por el servidor, y este ADR fija cómo se configura y propaga el token que lo hace verificable. Compromete **QAS-13** (autenticidad) y refuerza **QAS-01**. Relacionado con **REST-04**.
 - **Autor:** Daniel Ávila (DevOps) / Santiago (Validación Conjunta)
 - **Fecha:** 2026-10-17
 - **Jira:** CFG4-04 (Auditoría y definición JWT), SCRUM-1102 (Emisión/Propagación JWT)

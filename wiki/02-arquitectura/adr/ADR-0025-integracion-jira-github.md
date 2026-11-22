@@ -2,12 +2,13 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** herramientas de gestión y trazabilidad
+- **Origen (declarado el 2026-11-19):** **`PROY-01`** y **`PROY-06`**. Decisión de proceso. **Extiende a [ADR-0002](ADR-0002-jira-github.md), no lo supersede:** aquel decidió qué herramienta para qué y dejó la integración entre ambas como «puede automatizarse», sin decidirla; este decide cómo se integran y cierra ese punto abierto. Los dos siguen vigentes.
 - **Relacionado con:** ADR-0002, ADR-0003, ADR-0004, CFG-39 (SCRUM-1114)
 - **Autor:** María Camila Beltrán Carreño
 - **Revisor:** Nicolás León (implementó CFG-39)
 - **Fecha:** 2026-10-07
 - **Jira:** DOC-36 (SCRUM-1091)
-- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que el apartado «Decisión» de ADR-0003 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
+- **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **Pendiente de confirmar por la SM (anotado el 2026-11-19):** Sara Albarracín indica **no haber dejado esa ratificación por escrito**, de modo que esta nota la añadió otra persona durante la consolidación. Queda señalada para que ella la confirme o se corrija; hasta entonces **no se cita como precedente** de ratificación sin Mesa. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que el apartado «Decisión» de ADR-0003 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
 ## Contexto
 

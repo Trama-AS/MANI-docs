@@ -1,6 +1,6 @@
 # ADR-0038 — Logs centralizados y trazabilidad por `correlation_id` con Grafana Loki
 
-- **Estado:** **Propuesto** (redactado por DevOps para implementar [SCRUM-1676](https://maniservices.atlassian.net/browse/SCRUM-1676) tras la enmienda del `2026-11-13` a [ADR-0006](ADR-0006-observabilidad.md); pendiente de ratificación en Mesa de Arquitectura según [ADR-0003](ADR-0003-mesa-arquitectura.md)).
+- **Estado:** `Aceptado` · **ratificado por la Scrum Master (Sara Albarracín) el 2026-11-19**, sin sesión de Mesa de Arquitectura. ADR-0003 reserva la ratificación a la Mesa; al no haberse convocado ninguna en el Sprint 6 y con la entrega en curso, la SM ratifica para que la decisión no quede sin respaldo formal mientras el código ya la cumple. **La Mesa puede confirmarla o revertirla** cuando se reúna. Redactado por Daniel Ávila (DevOps) para implementar [SCRUM-1676](https://maniservices.atlassian.net/browse/SCRUM-1676); la SM ratifica la decisión, no la autoría.
 - **Decisión de:** observabilidad, agregación de logs y correlación distribuida
 - **Proponente:** Daniel Ávila (DevOps)
 - **Fecha:** `2026-11-14`
@@ -48,6 +48,16 @@ Se adopta **Grafana Loki (`grafana/loki:3.1.1`)** en la VM de **Calidad (`10.43.
 ## Condición de revisión
 
 Revisar en Mesa de Arquitectura si el proyecto requiere recolección activa de spans con OpenTelemetry Collector + Grafana Tempo o replicar Promtail sobre `PROD` una vez validada la operación en `QA`.
+
+## Ratificación del 2026-11-19
+
+**Ratificado por Sara Albarracín (Scrum Master), sin sesión de Mesa de Arquitectura.**
+
+**Por qué sin Mesa.** [ADR-0003](ADR-0003-mesa-arquitectura.md) reserva la ratificación de una decisión estructural a la Mesa. En el Sprint 6 **no se convocó ninguna sesión**, y la decisión ya estaba siendo cumplida por el código y la infraestructura. Dejarla indefinidamente como «pendiente de ratificar» habría significado llevar a la sustentación una decisión que el proyecto aplica y que formalmente nadie aprobó.
+
+**Qué significa esta ratificación y qué no.** Da respaldo formal a la decisión para que sea exigible y citable. **No sustituye a la Mesa:** cuando se reúna puede **confirmarla o revertirla**, y si la revierte, esta ratificación y su fecha quedan en el historial como lo que fueron. Se registra así, y no como una ratificación ordinaria, para que cualquiera pueda auditar cómo se tomó.
+
+**Sobre la autoría.** Este ADR lo redactó Daniel Ávila (DevOps). La SM ratifica **la decisión**, no la autoría, y las trazas por *spans* siguen fuera de fase tal como el propio ADR las dejó.
 
 ## Historial de cambios
 

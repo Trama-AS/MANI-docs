@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** gobierno técnico
+- **Origen (declarado el 2026-11-19):** **`PROY-05`** — las decisiones técnicas costosas de revertir deben discutirse y documentarse formalmente. Este ADR es el mecanismo con que se cumple esa restricción.
 
 ## Contexto
 

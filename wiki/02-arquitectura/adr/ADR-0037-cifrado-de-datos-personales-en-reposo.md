@@ -1,6 +1,6 @@
 # ADR-0037 — Cifrado de datos personales en reposo
 
-- **Estado:** **Decidido por la Scrum Master el 2026-11-12; pendiente de ratificación en Mesa.** No es `Aceptado`: ADR-0003 reserva la ratificación a la Mesa de Arquitectura y la SM es aquí la proponente. Vinculante para la implementación desde ya; su estado formal cambia cuando la Mesa lo ratifique.
+- **Estado:** `Aceptado` · **ratificado por la Scrum Master (Sara Albarracín) el 2026-11-19**, sin sesión de Mesa de Arquitectura. ADR-0003 reserva la ratificación a la Mesa; al no haberse convocado ninguna en el Sprint 6 y con la entrega en curso, la SM ratifica para que la decisión no quede sin respaldo formal mientras el código ya la cumple. **La Mesa puede confirmarla o revertirla** cuando se reúna.
 - **Decisión de:** protección de datos personales y frontera de responsabilidad
 - **Proponente y decide:** Sara Albarracín Niño (Scrum Master)
 - **Fecha:** 2026-11-12
@@ -97,6 +97,16 @@ En caso de activarse la [condición de revisión](#condición-de-revisión) haci
 2. **Fase Expand (migración aditiva sin pérdida de índice):** añadir columnas cifradas (`*_enc bytea` con `pgp_sym_encrypt` desde `extensions.pgcrypto` o cifrado en aplicación Core con clave gestionada fuera de Git / `supabase_vault`) y columna de huella determinista HMAC indexada (`*_hash`) solo donde exista restricción de unicidad o búsqueda exacta (`cliente.nit`).
 3. **Fase Migrate + verificación QA:** activar doble escritura y backfill por lotes verificando paridad contra la vista autorizada, sin exponer llaves ni datos en claro en logs.
 4. **Fase Contract:** retirar la lectura de columnas en claro, aplicar nulificación/borrado controlado y validar nuevamente en QA (`SCRUM-1383`).
+
+## Ratificación del 2026-11-19
+
+**Ratificado por Sara Albarracín (Scrum Master), sin sesión de Mesa de Arquitectura.**
+
+**Por qué sin Mesa.** [ADR-0003](ADR-0003-mesa-arquitectura.md) reserva la ratificación de una decisión estructural a la Mesa. En el Sprint 6 **no se convocó ninguna sesión**, y la decisión ya estaba siendo cumplida por el código y la infraestructura. Dejarla indefinidamente como «pendiente de ratificar» habría significado llevar a la sustentación una decisión que el proyecto aplica y que formalmente nadie aprobó.
+
+**Qué significa esta ratificación y qué no.** Da respaldo formal a la decisión para que sea exigible y citable. **No sustituye a la Mesa:** cuando se reúna puede **confirmarla o revertirla**, y si la revierte, esta ratificación y su fecha quedan en el historial como lo que fueron. Se registra así, y no como una ratificación ordinaria, para que cualquiera pueda auditar cómo se tomó.
+
+**La exclusión sigue en pie, y ratificarla es ratificarla también.** Un rol de base de datos con permiso de lectura —`service_role`, o cualquiera con `BYPASSRLS`— **puede leer en claro el documento de identidad y los teléfonos**. Eso no es un efecto no previsto: es el alcance aceptado, y queda firme con esta ratificación.
 
 ## Historial de cambios
 

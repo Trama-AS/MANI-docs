@@ -2,6 +2,7 @@
 
 - **Estado:** Aceptado
 - **Decisión de:** gobierno documental
+- **Origen (declarado el 2026-11-19):** **`PROY-03`** — la documentación y la gestión siguen el esquema de gobierno definido por el equipo. No tiene requisito funcional detrás y no debe tenerlo: es una decisión de proceso.
 - **Relacionado con:** ADR-0008
 
 ## Contexto

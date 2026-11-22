@@ -1,0 +1,38 @@
+QAS-33 con umbral B (acta A/B): PRs de MANI-Flutter desde la regla (SCRUM-1648, decidida 17 nov, en README con #149 el 21 nov)
+Medido 2026-11-22 ~18:10Z. Diff contra merge-base con origin/develop, solo lib/.
+Nativos = ElevatedButton|TextButton|OutlinedButton|FilledButton|TextField|TextFormField|CupertinoButton|CupertinoTextField
+
+PR | estado | archivos de pantalla tocados | lineas + con nativo | lineas + con ManiButton/ManiTextField
+#148 | MERGED | 0 | 0 | 0
+#149 | MERGED | 2 | 0 | 4
+#150 | MERGED | 0 | 0 | 0
+#142 | OPEN | 1 | 0 | 3
+#143 | OPEN | 10 | 0 | 8
+#144 | OPEN | 14 | 0 | 15
+#145 | OPEN | 18 | 0 | 28
+#146 | OPEN | 24 | 0 | 32
+#147 | OPEN | 35 | 0 | 33
+#152 | OPEN | 40 | 20 | 7
+
+Detalle #152 (abierto, Alviz09): lineas con nativo por archivo (+ agregadas / - quitadas)
+2 lib/core/widgets/mani_estado.dart +
+4 lib/features/audit/presentation/auditoria_page.dart +
+4 lib/features/audit/presentation/auditoria_page.dart -
+2 lib/features/auth/presentation/pages/login_page.dart +
+1 lib/features/auth/presentation/pages/login_page.dart -
+3 lib/features/auth/presentation/pages/registro_aliado_empresa_page.dart -
+3 lib/features/auth/presentation/pages/registro_aliado_page.dart -
+3 lib/features/auth/presentation/pages/registro_cliente_page.dart -
+3 lib/features/auth/presentation/widgets/registro_comun.dart +
+4 lib/features/conversation_review/presentation/conversacion_queja_page.dart +
+4 lib/features/conversation_review/presentation/conversacion_queja_page.dart -
+1 lib/features/notifications/presentation/avisos_page.dart +
+1 lib/features/notifications/presentation/avisos_page.dart -
+1 lib/features/payments/presentation/cobros_aliado_page.dart +
+1 lib/features/payments/presentation/cobros_aliado_page.dart -
+1 lib/features/services/eligible_allies/presentation/aliados_elegibles_page.dart -
+1 lib/features/services/ratings/presentation/politica_cancelacion_page.dart +
+1 lib/features/services/ratings/presentation/politica_cancelacion_page.dart -
+2 lib/features/services/tracking/presentation/mis_solicitudes_page.dart -
+2 lib/features/tenant_rules/presentation/reglas_operativas_page.dart +
+2 lib/features/tenant_rules/presentation/reglas_operativas_page.dart -

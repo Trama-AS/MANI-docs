@@ -1,0 +1,66 @@
+QAS-24: como publica imagenes el CI (rama develop de cada repo, 2026-11-22)
+
+== MANI-Node .github/workflows/docker-publish.yml
+3:on:
+4:  push:
+5:    branches:
+6:      - main
+7:      - release
+8:      - develop
+10:      - 'v[0-9]+.[0-9]+.[0-9]+*'
+45:            type=raw,value=latest,enable={{is_default_branch}}
+46:            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/release' }}
+47:            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+
+== MANI-.NET .github/workflows/docker-publish.yml
+3:on:
+4:  push:
+5:    branches:
+6:      - main
+7:      - release
+8:      - develop
+10:      - 'v[0-9]+.[0-9]+.[0-9]+*'
+46:            type=raw,value=latest,enable={{is_default_branch}}
+47:            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/release' }}
+48:            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+
+== MANI-Java .github/workflows/docker-publish.yml
+3:on:
+4:  push:
+5:    branches:
+6:      - main
+7:      - release
+8:      - develop
+10:      - 'v[0-9]+.[0-9]+.[0-9]+*'
+45:            type=raw,value=latest,enable={{is_default_branch}}
+46:            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/release' }}
+47:            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+
+== MANI-APIGateway .github/workflows/docker-publish.yml
+3:on:
+4:  push:
+5:    branches:
+6:      - main
+7:      - release
+8:      - develop
+10:      - 'v[0-9]+.[0-9]+.[0-9]+*'
+45:            type=raw,value=latest,enable={{is_default_branch}}
+46:            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/release' }}
+47:            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+
+== MANI-Flutter .github/workflows/docker-publish.yml
+3:on:
+4:  push:
+5:    branches:
+6:      - main
+7:      - release
+8:      - develop
+10:      - 'v[0-9]+.[0-9]+.[0-9]+*'
+32:            echo "Configuring .env for QA (staging / release)..."
+40:            echo "Configuring .env for DEV (develop)..."
+48:            echo "Configuring .env for PROD (main / default)..."
+74:            type=raw,value=latest,enable={{is_default_branch}}
+75:            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/release' }}
+76:            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+
+Digests en QA (:staging) del 22 nov: ver ../20261122T025500Z_barrido_qas/vm_qa_22nov_0257z.txt. Digests en PROD (:latest): wiki/08-infraestructura/01-mapa-ambientes-y-versiones.md

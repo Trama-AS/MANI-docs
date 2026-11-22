@@ -1,0 +1,232 @@
+== Aliados del tenant 1
+┌─────────┬────────────────────────────────────────┬──────────────────────────────────────────┬─────────────────────┬──────────┐
+│ (index) │ aliado_id                              │ email                                    │ estado_verificacion │ estado   │
+├─────────┼────────────────────────────────────────┼──────────────────────────────────────────┼─────────────────────┼──────────┤
+│ 0       │ '50000000-0000-4000-8000-000000006101' │ 'aliado_broadcast_01.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 1       │ '50000000-0000-4000-8000-000000006102' │ 'aliado_broadcast_02.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 2       │ '50000000-0000-4000-8000-000000006103' │ 'aliado_broadcast_03.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 3       │ '50000000-0000-4000-8000-000000006104' │ 'aliado_broadcast_04.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 4       │ '50000000-0000-4000-8000-000000006105' │ 'aliado_broadcast_05.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 5       │ '50000000-0000-4000-8000-000000006106' │ 'aliado_broadcast_06.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 6       │ '50000000-0000-4000-8000-000000006107' │ 'aliado_broadcast_07.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 7       │ '50000000-0000-4000-8000-000000006108' │ 'aliado_broadcast_08.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 8       │ '50000000-0000-4000-8000-000000006109' │ 'aliado_broadcast_09.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 9       │ '50000000-0000-4000-8000-000000006110' │ 'aliado_broadcast_10.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 10      │ '50000000-0000-4000-8000-000000006111' │ 'aliado_broadcast_11.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 11      │ '50000000-0000-4000-8000-000000006112' │ 'aliado_broadcast_12.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 12      │ '50000000-0000-4000-8000-000000006113' │ 'aliado_broadcast_13.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 13      │ '50000000-0000-4000-8000-000000006114' │ 'aliado_broadcast_14.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 14      │ '50000000-0000-4000-8000-000000006115' │ 'aliado_broadcast_15.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 15      │ '50000000-0000-4000-8000-000000006116' │ 'aliado_broadcast_16.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 16      │ '50000000-0000-4000-8000-000000006117' │ 'aliado_broadcast_17.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 17      │ '50000000-0000-4000-8000-000000006118' │ 'aliado_broadcast_18.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 18      │ '50000000-0000-4000-8000-000000006119' │ 'aliado_broadcast_19.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 19      │ '50000000-0000-4000-8000-000000006120' │ 'aliado_broadcast_20.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 20      │ '50000000-0000-4000-8000-000000006121' │ 'aliado_broadcast_21.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 21      │ '50000000-0000-4000-8000-000000006122' │ 'aliado_broadcast_22.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 22      │ '50000000-0000-4000-8000-000000006123' │ 'aliado_broadcast_23.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 23      │ '50000000-0000-4000-8000-000000006124' │ 'aliado_broadcast_24.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 24      │ '50000000-0000-4000-8000-000000006125' │ 'aliado_broadcast_25.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 25      │ '50000000-0000-4000-8000-000000006126' │ 'aliado_broadcast_26.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 26      │ '50000000-0000-4000-8000-000000006127' │ 'aliado_broadcast_27.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 27      │ '50000000-0000-4000-8000-000000006128' │ 'aliado_broadcast_28.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 28      │ '50000000-0000-4000-8000-000000006129' │ 'aliado_broadcast_29.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 29      │ '50000000-0000-4000-8000-000000006130' │ 'aliado_broadcast_30.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 30      │ '50000000-0000-4000-8000-000000006131' │ 'aliado_broadcast_31.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 31      │ '50000000-0000-4000-8000-000000006132' │ 'aliado_broadcast_32.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 32      │ '50000000-0000-4000-8000-000000006133' │ 'aliado_broadcast_33.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 33      │ '50000000-0000-4000-8000-000000006134' │ 'aliado_broadcast_34.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 34      │ '50000000-0000-4000-8000-000000006135' │ 'aliado_broadcast_35.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 35      │ '50000000-0000-4000-8000-000000006136' │ 'aliado_broadcast_36.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 36      │ '50000000-0000-4000-8000-000000006137' │ 'aliado_broadcast_37.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 37      │ '50000000-0000-4000-8000-000000006138' │ 'aliado_broadcast_38.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 38      │ '50000000-0000-4000-8000-000000006139' │ 'aliado_broadcast_39.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 39      │ '50000000-0000-4000-8000-000000006140' │ 'aliado_broadcast_40.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 40      │ '50000000-0000-4000-8000-000000006141' │ 'aliado_broadcast_41.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 41      │ '50000000-0000-4000-8000-000000006142' │ 'aliado_broadcast_42.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 42      │ '50000000-0000-4000-8000-000000006143' │ 'aliado_broadcast_43.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 43      │ '50000000-0000-4000-8000-000000006144' │ 'aliado_broadcast_44.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 44      │ '50000000-0000-4000-8000-000000006145' │ 'aliado_broadcast_45.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 45      │ '50000000-0000-4000-8000-000000006146' │ 'aliado_broadcast_46.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 46      │ '50000000-0000-4000-8000-000000006147' │ 'aliado_broadcast_47.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 47      │ '50000000-0000-4000-8000-000000006148' │ 'aliado_broadcast_48.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 48      │ '50000000-0000-4000-8000-000000006149' │ 'aliado_broadcast_49.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 49      │ '50000000-0000-4000-8000-000000006150' │ 'aliado_broadcast_50.t1@qa.mani.test'    │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 50      │ '50000000-0000-4000-8000-000000005102' │ 'aliado_empresa.t1@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 51      │ '50000000-0000-4000-8000-000000005301' │ 'aliado_verificacion_01.t1@qa.mani.test' │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 52      │ '50000000-0000-4000-8000-000000005302' │ 'aliado_verificacion_02.t1@qa.mani.test' │ 'RECHAZADO'         │ 'ACTIVO' │
+│ 53      │ 'ace35f04-46e0-4b62-a9e9-4796d1c1d49c' │ 'aliado.qa.final@example.com'            │ 'PENDIENTE'         │ 'ACTIVO' │
+│ 54      │ 'e0755c97-7dfa-447b-a482-737bbf82a0ed' │ 'aliado.qa.test1@example.com'            │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 55      │ '318f47b4-10b7-42bd-a0e3-8cf7330287ed' │ 'aliado.qa.test2@example.com'            │ 'RECHAZADO'         │ 'ACTIVO' │
+│ 56      │ '057956de-20c0-40ec-abc9-9fc82bd460f2' │ 'aliado.qa.verificado@example.com'       │ 'RECHAZADO'         │ 'ACTIVO' │
+│ 57      │ '50000000-0000-4000-8000-000000000011' │ 'aliado.t1@qa.mani.test'                 │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 58      │ '50000000-0000-4000-8000-000000005103' │ 'empleado_directo.t1@qa.mani.test'       │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 59      │ 'eeea10dc-55c6-4c33-b29d-fd707c8839c1' │ 'empleado.26956280@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 60      │ '86684fe9-6057-4844-a669-03a8ca3dbeef' │ 'empleado.28154814@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 61      │ '55bf2a92-27a4-4eba-983d-62398effc5e7' │ 'empleado.28933305@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 62      │ '5f484380-c38b-46e6-ac4f-64946a9087bb' │ 'empleado.31496477@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 63      │ '25a6efa4-4a61-49de-b66f-d28b00f42e7e' │ 'empleado.36529845@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 64      │ 'b279a0a7-b84d-4ef0-b79b-08dc3be065c1' │ 'empleado.38020658@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 65      │ 'f21b13df-e8b2-44b1-a08c-cec0ead82906' │ 'empleado.40007597@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 66      │ 'b0ae161a-6b0b-4c59-a660-0ccdcea08a9d' │ 'empleado.41105632@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 67      │ '7e15bab4-a51d-4838-b965-834bc40116b6' │ 'empleado.51055598@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 68      │ '036f1a8f-cd6e-4afd-aae4-1cb94ac60620' │ 'empleado.53033498@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 69      │ '6cedf550-2bb2-4ed8-ba64-82208805506c' │ 'empleado.94824049@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+│ 70      │ '737ff788-1c54-40a3-acfe-4a62f49b2d4a' │ 'empleado.99020029@qa.mani.test'         │ 'VERIFICADO'        │ 'ACTIVO' │
+└─────────┴────────────────────────────────────────┴──────────────────────────────────────────┴─────────────────────┴──────────┘
+== Categorias por aliado
+┌─────────┬───────────────────────────────────────┬─────────────────────────┬────────────────────────────────────────┐
+│ (index) │ email                                 │ categoria               │ categoria_id                           │
+├─────────┼───────────────────────────────────────┼─────────────────────────┼────────────────────────────────────────┤
+│ 0       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 25355805' │ '1d4e9074-cc6d-4238-92b2-f276b67f13f6' │
+│ 1       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 26956280' │ 'f6e22d95-fe7c-4590-b40e-8688a0e13c94' │
+│ 2       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 28154814' │ '946d5822-d257-493d-becb-9b99bde24184' │
+│ 3       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 28933305' │ '1ae6d74b-4145-456a-8dc2-0448af4d7e02' │
+│ 4       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 31496477' │ '4536b1ec-3848-404c-ade0-77deb850f98d' │
+│ 5       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 36529845' │ '64c46d68-0f42-42a9-80a4-de634d322b77' │
+│ 6       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 38020658' │ 'b489e1ad-c9fe-4efe-9818-adebd96f2d96' │
+│ 7       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 40007597' │ '41793787-d4e2-473f-b9f0-66baf875df38' │
+│ 8       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 41105632' │ '39f53396-1757-41b0-9462-8e4a13bd4271' │
+│ 9       │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 51055598' │ 'f66c263b-4bdb-49ed-aec6-d18bfb22cdcc' │
+│ 10      │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 53033498' │ '50dc521d-8923-4763-a75c-f211649fc062' │
+│ 11      │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 94824049' │ '08721689-2be0-4e7a-a5fa-69468b2638e6' │
+│ 12      │ 'aliado.t1@qa.mani.test'              │ 'Categoria QA 99020029' │ '576b01ad-e1dd-4279-9ce1-9f4e2fe632c6' │
+│ 13      │ 'aliado_empresa.t1@qa.mani.test'      │ 'Cerrajeria'            │ '60000000-0000-4000-8000-000000005101' │
+│ 14      │ 'aliado.t1@qa.mani.test'              │ 'Cerrajeria'            │ '60000000-0000-4000-8000-000000005101' │
+│ 15      │ 'aliado_broadcast_01.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 16      │ 'aliado_broadcast_02.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 17      │ 'aliado_broadcast_03.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 18      │ 'aliado_broadcast_04.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 19      │ 'aliado_broadcast_05.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 20      │ 'aliado_broadcast_06.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 21      │ 'aliado_broadcast_07.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 22      │ 'aliado_broadcast_08.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 23      │ 'aliado_broadcast_09.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 24      │ 'aliado_broadcast_10.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 25      │ 'aliado_broadcast_11.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 26      │ 'aliado_broadcast_12.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 27      │ 'aliado_broadcast_13.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 28      │ 'aliado_broadcast_14.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 29      │ 'aliado_broadcast_15.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 30      │ 'aliado_broadcast_16.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 31      │ 'aliado_broadcast_17.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 32      │ 'aliado_broadcast_18.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 33      │ 'aliado_broadcast_19.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 34      │ 'aliado_broadcast_20.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 35      │ 'aliado_broadcast_21.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 36      │ 'aliado_broadcast_22.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 37      │ 'aliado_broadcast_23.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 38      │ 'aliado_broadcast_24.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 39      │ 'aliado_broadcast_25.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 40      │ 'aliado_broadcast_26.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 41      │ 'aliado_broadcast_27.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 42      │ 'aliado_broadcast_28.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 43      │ 'aliado_broadcast_29.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 44      │ 'aliado_broadcast_30.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 45      │ 'aliado_broadcast_31.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 46      │ 'aliado_broadcast_32.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 47      │ 'aliado_broadcast_33.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 48      │ 'aliado_broadcast_34.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 49      │ 'aliado_broadcast_35.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 50      │ 'aliado_broadcast_36.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 51      │ 'aliado_broadcast_37.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 52      │ 'aliado_broadcast_38.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 53      │ 'aliado_broadcast_39.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 54      │ 'aliado_broadcast_40.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 55      │ 'aliado_broadcast_41.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 56      │ 'aliado_broadcast_42.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 57      │ 'aliado_broadcast_43.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 58      │ 'aliado_broadcast_44.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 59      │ 'aliado_broadcast_45.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 60      │ 'aliado_broadcast_46.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 61      │ 'aliado_broadcast_47.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 62      │ 'aliado_broadcast_48.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 63      │ 'aliado_broadcast_49.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 64      │ 'aliado_broadcast_50.t1@qa.mani.test' │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 65      │ 'aliado.qa.final@example.com'         │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 66      │ 'aliado.qa.test1@example.com'         │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 67      │ 'aliado.qa.test2@example.com'         │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 68      │ 'aliado.qa.verificado@example.com'    │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 69      │ 'aliado.t1@qa.mani.test'              │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 70      │ 'empleado_directo.t1@qa.mani.test'    │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 71      │ 'empleado.26956280@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 72      │ 'empleado.28154814@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 73      │ 'empleado.28933305@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 74      │ 'empleado.31496477@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 75      │ 'empleado.36529845@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 76      │ 'empleado.38020658@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 77      │ 'empleado.40007597@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 78      │ 'empleado.41105632@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 79      │ 'empleado.51055598@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 80      │ 'empleado.53033498@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 81      │ 'empleado.94824049@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+│ 82      │ 'empleado.99020029@qa.mani.test'      │ 'Plomeria'              │ '60000000-0000-4000-8000-000000000011' │
+└─────────┴───────────────────────────────────────┴─────────────────────────┴────────────────────────────────────────┘
+== Cobertura por aliado
+┌─────────┬───────────────────────────────────────┬─────────────┬────────────────────────────────────────┐
+│ (index) │ email                                 │ zona        │ zona_id                                │
+├─────────┼───────────────────────────────────────┼─────────────┼────────────────────────────────────────┤
+│ 0       │ 'aliado_broadcast_01.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 1       │ 'aliado_broadcast_02.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 2       │ 'aliado_broadcast_03.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 3       │ 'aliado_broadcast_04.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 4       │ 'aliado_broadcast_05.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 5       │ 'aliado_broadcast_06.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 6       │ 'aliado_broadcast_07.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 7       │ 'aliado_broadcast_08.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 8       │ 'aliado_broadcast_09.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 9       │ 'aliado_broadcast_10.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 10      │ 'aliado_broadcast_11.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 11      │ 'aliado_broadcast_12.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 12      │ 'aliado_broadcast_13.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 13      │ 'aliado_broadcast_14.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 14      │ 'aliado_broadcast_15.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 15      │ 'aliado_broadcast_16.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 16      │ 'aliado_broadcast_17.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 17      │ 'aliado_broadcast_18.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 18      │ 'aliado_broadcast_19.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 19      │ 'aliado_broadcast_20.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 20      │ 'aliado_broadcast_21.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 21      │ 'aliado_broadcast_22.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 22      │ 'aliado_broadcast_23.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 23      │ 'aliado_broadcast_24.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 24      │ 'aliado_broadcast_25.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 25      │ 'aliado_broadcast_26.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 26      │ 'aliado_broadcast_27.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 27      │ 'aliado_broadcast_28.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 28      │ 'aliado_broadcast_29.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 29      │ 'aliado_broadcast_30.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 30      │ 'aliado_broadcast_31.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 31      │ 'aliado_broadcast_32.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 32      │ 'aliado_broadcast_33.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 33      │ 'aliado_broadcast_34.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 34      │ 'aliado_broadcast_35.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 35      │ 'aliado_broadcast_36.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 36      │ 'aliado_broadcast_37.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 37      │ 'aliado_broadcast_38.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 38      │ 'aliado_broadcast_39.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 39      │ 'aliado_broadcast_40.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 40      │ 'aliado_broadcast_41.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 41      │ 'aliado_broadcast_42.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 42      │ 'aliado_broadcast_43.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 43      │ 'aliado_broadcast_44.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 44      │ 'aliado_broadcast_45.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 45      │ 'aliado_broadcast_46.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 46      │ 'aliado_broadcast_47.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 47      │ 'aliado_broadcast_48.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 48      │ 'aliado_broadcast_49.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 49      │ 'aliado_broadcast_50.t1@qa.mani.test' │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 50      │ 'aliado.t1@qa.mani.test'              │ 'Chapinero' │ '20000000-0000-4000-8000-000000000002' │
+│ 51      │ 'aliado_empresa.t1@qa.mani.test'      │ 'Suba'      │ '20000000-0000-4000-8000-000000000003' │
+│ 52      │ 'aliado.t1@qa.mani.test'              │ 'Suba'      │ '20000000-0000-4000-8000-000000000003' │
+│ 53      │ 'empleado_directo.t1@qa.mani.test'    │ 'Suba'      │ '20000000-0000-4000-8000-000000000003' │
+└─────────┴───────────────────────────────────────┴─────────────┴────────────────────────────────────────┘
+== Sitios de cliente.t1
+┌─────────┬────────────────────────────────────────┬────────┬──────────────────────┬────────────────────────────────────────┬────────────┐
+│ (index) │ sitio_id                               │ nombre │ zona                 │ zona_id                                │ zona_padre │
+├─────────┼────────────────────────────────────────┼────────┼──────────────────────┼────────────────────────────────────────┼────────────┤
+│ 0       │ '70000000-0000-4000-8000-000000000011' │ null   │ 'Chapinero'          │ '20000000-0000-4000-8000-000000000002' │ 'Bogota'   │
+│ 1       │ '95ec8352-ad14-4bed-a613-e22d23a72a3a' │ null   │ 'Niza'               │ '20000000-0000-4000-8000-000000005004' │ 'Suba'     │
+│ 2       │ '205f9723-c164-454c-b281-1be58bc78263' │ null   │ 'Niza'               │ '20000000-0000-4000-8000-000000005004' │ 'Suba'     │
+│ 3       │ 'b92ddb72-e000-4a2a-84d6-bd154a2fdfe4' │ null   │ 'Nueva Granada Bosa' │ '11f6adf2-b206-b5d1-ef8a-376ce5e3347a' │ 'Bosa'     │
+└─────────┴────────────────────────────────────────┴────────┴──────────────────────┴────────────────────────────────────────┴────────────┘

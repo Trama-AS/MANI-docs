@@ -1,0 +1,21 @@
+== MANI-Java release 348f6d9 2026-11-20, 2026-11-22T01:53:27Z
+== mvn -o test -Djacoco.skip=true -DargLine=-Dnet.bytebuddy.experimental=true (JDK local 25; Byte Buddy y JaCoCo del proyecto soportan hasta 23, CI usa su JDK y pasa)
+rc=0
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 s -- in com.trama.mani.rules.ManiRulesApplicationTests
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.241 s -- in com.trama.mani.rules.config.CategoryRulesPropertiesTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.trama.mani.rules.config.RulesCircuitBreakerTest
+Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.116 s -- in com.trama.mani.rules.controller.CategoryRulesControllerTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.074 s -- in com.trama.mani.rules.controller.HealthControllerSmokeTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in com.trama.mani.rules.controller.RatesControllerTest
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.089 s -- in com.trama.mani.rules.controller.RulesControllerTest
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.100 s -- in com.trama.mani.rules.controller.TenantRulesControllerTest
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.trama.mani.rules.service.AllyRankerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.trama.mani.rules.service.CategoryRuleEvaluatorTest$Configurable
+Tests run: 28, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.trama.mani.rules.service.CategoryRuleEvaluatorTest$Create
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.trama.mani.rules.service.CategoryRuleEvaluatorTest$Operate
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.trama.mani.rules.service.CategoryRuleEvaluatorTest$Update
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.trama.mani.rules.service.CategoryRuleEvaluatorTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.trama.mani.rules.service.RateEvaluatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.832 s -- in com.trama.mani.rules.web.UnexpectedErrorTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 s -- in com.trama.mani.rules.web.WebSkeletonTest
+TOTAL tests=142 fallos=0 errores=0

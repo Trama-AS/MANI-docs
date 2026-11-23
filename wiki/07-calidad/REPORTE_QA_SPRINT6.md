@@ -4,7 +4,7 @@
 
 ## 1. Resultado
 
-**Conteo final de los 45 QAS:** Cumple 23 · Parcial 11 · No cumple 8 · No medido 3. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
+**Conteo final de los 45 QAS:** Cumple 24 · Parcial 10 · No cumple 8 · No medido 3. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
 
 Los 3 No medido (05, 18 y 27) dependen de DevOps. Los 8 No cumple tienen causa y responsable en el §5.
 
@@ -26,6 +26,8 @@ La remedición del 22 de noviembre (19:20Z a 00:30Z) se hizo sobre lo promovido 
 | QAS-23 | Cobertura de casos de uso críticos | Parcial | [informe de QAS-23](monitoreo/evidencia/20261122T040500Z_qas23_cobertura/informe_qas23.md) |
 | QAS-24 y 33 con el umbral B | Imagen por ambiente y regla de componentes | 24 No cumple (backend y Gateway); 33 No cumple tras fusionar #152 | [informe del umbral B](monitoreo/evidencia/20261122T180000Z_qas24_qas33_umbral_b/informe_qas24_qas33.md) |
 | T-45 (SCRUM-1682) | 30, 31, 32 | Revisión heurística, opción B aceptada por la SM: 30 **No cumple** (11 de 14 flujos), 31 **Cumple**, 32 **Cumple** tras corregir tres defectos | [lista de chequeo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/lista_chequeo_heuristica.md) |
+| QAS-34 y 35 (23 nov) | Accesibilidad y asistencia al usuario | Siguen **No cumple**. 34: el criterio WCAG 2.2 AA ya existe en Flutter, pero fallan idioma, nombre de campos, zoom en celular y foco visible, y la Landing tiene contraste bajo. 35: 3 de 6 casos no orientan | [revisión del 23 nov](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas34_qas35/revision_qas34_qas35.md) |
+| QAS-38 (23 nov) | Riesgos de las operaciones sensibles | **Cumple**: 12 de 12 en SAD §23.1 (MANI-docs#91), con el control verificado en el código de QA | [operación ↔ riesgo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas38/qas38_operacion_riesgo_23nov.md) |
 
 ## 3. Bugs abiertos (Jira, 23 nov)
 
@@ -89,12 +91,12 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
   - migrar a `ManiButton` y `ManiTextField` las 31 pantallas con nativos (33);
   - botón principal visible en reglas del tenant y en los registros (30);
   - mensaje al redirigir por rol y errores útiles (35);
-  - etiquetas semánticas y escalado de texto (34);
+  - idioma `es-CO`, rótulos de campos, foco visible y prueba de escalado de texto (34);
   - hallazgos de la revisión heurística en el [informe del cierre](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/informe_cierre.md).
+- **Landing:** contraste del botón principal y del texto amarillo, y movimiento reducido (34).
 - **PO y arquitectura:**
-  - nivel WCAG (34);
+  - llevar el criterio WCAG 2.2 AA de `PRODUCT.md` al SDD §7.9 y a la Landing (34);
   - confirmación al aceptar una cotización (hallazgo H5 de T-45);
-  - riesgos de las 8 operaciones sensibles (38);
   - fusionar MANI-docs#81 (06).
 - **QA:**
   - remedir 02, 09, 43 y 44 cuando DevOps habilite cada caso;

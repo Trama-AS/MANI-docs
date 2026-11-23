@@ -1,0 +1,289 @@
+== conectado a la VM; corriendo t27_qa.py (tarda 2 a 4 minutos)
+== SCRUM-1664 T-27 negativos de operaciones criticas en MANI-QA (2026-11-22T19:27:59Z) corrida=ce3f425f
+
+== Revisiones desplegadas
+  mani-api-gateway rev=ee5000c
+  mani-core-service rev=cdebf74
+  mani-dispatch-service rev=ba460e4
+  mani-rules-service rev=348f6d9
+  6 sesiones (cliente, aliado y admin de T1 y T2): ok
+
+== 1. Datos de prueba (operaciones positivas, antes de la huella)
+  s_pend=83abbf83-858d-4f04-b06e-52acaedc8b88 (PENDIENTE); s_cancel=e5e67268-5ef5-4e89-ac8a-57ee70be6932 cancelar=200 
+  s_full=02f1b97e-35af-43fd-90b6-90d90a8afb90: aceptar=200 cotizacion=201 aceptar_cot=200 pagar=201 pago=1409499a-c9c8-4147-8f80-15cb618d2401
+  aliado.t1 estado KYC=VERIFICADO (resuelto=True)
+  tarifa activa=2133a9e8-4b60-4138-b80d-cc73cc617931 v5 (80000.00/150000.00/350000.00, hasta -); reemplazada=a0000000-0000-4000-8000-000000005101; 5 versiones
+
+== 2. Huella antes de los negativos
+  crear_solicitud: 0 solicitudes de T1 creadas desde la huella; 3 de esta corrida
+  aceptar_solicitud: bca505a3667e3f3b9e9f19451f41221c rechazos=0
+  aceptar_cotizacion: ACEPTADA 8cf1c1ce3b68d67a7ee5d71abb9a3a25
+  cancelar_solicitud: ACEPTADA,PENDIENTE,CANCELADA bca505a3667e3f3b9e9f19451f41221c
+  pagar: 1 pagos 86762b4ec73817e1313a1d71a1d03410 retencion ab6d4ebdb21a278c7b5d1486f25d5629
+  aprobar_aliado: db1df36d3fc9c45704fc8346399db2e9
+  cambiar_tarifa: 5 versiones ac57a81b6aada72c5accbb72cd8872e2
+
+== 3. Coleccion Newman
+  33 casos; omitidos por el estado de los datos: ninguno
+newman
+
+SCRUM-1664 T-27 negativos de operaciones criticas (QAS-10)
+
+❏ crear_solicitud
+↳ C-ROL | crear_solicitud | rol
+  POST http://localhost/api/v1/core/solicitudes [403 Forbidden, 908B, 72ms]
+  ✓  C-ROL http 403
+  ✓  C-ROL codigo ^MANI-SOL-403
+
+↳ C-PAY | crear_solicitud | payload
+  POST http://localhost/api/v1/core/solicitudes [422 Unprocessable Entity, 923B, 11ms]
+  ✓  C-PAY http 400/422
+  ✓  C-PAY codigo ^MANI-SOL-422D
+
+↳ C-DUP | crear_solicitud | duplicado
+  POST http://localhost/api/v1/core/solicitudes [200 OK, 1.27kB, 598ms]
+  ✓  C-DUP http 200/201
+
+↳ C-DUP2 | crear_solicitud | duplicado
+  POST http://localhost/api/v1/core/solicitudes [409 Conflict, 911B, 503ms]
+  ✓  C-DUP2 http 409
+  ✓  C-DUP2 codigo ^MANI-SOL-409K
+
+❏ aceptar_solicitud
+↳ A-ROL | aceptar_solicitud | rol
+  POST http://localhost/api/v1/dispatch/requests/83abbf83-858d-4f04-b06e-52acaedc8b88/accept [403 Forbidden, 911B, 24ms]
+  ✓  A-ROL http 403
+  ✓  A-ROL codigo ^MANI-DSP-403
+
+↳ A-TEN | aceptar_solicitud | tenant
+  POST http://localhost/api/v1/dispatch/requests/83abbf83-858d-4f04-b06e-52acaedc8b88/accept [404 Not Found, 938B, 1214ms]
+  ✓  A-TEN http 403/404
+  ✓  A-TEN codigo ^MANI-(DSP|SOL)-40[34]
+
+↳ A-PAY | aceptar_solicitud | payload
+  POST http://localhost/api/v1/dispatch/requests/no-es-uuid/accept [400 Bad Request, 915B, 15ms]
+  ✓  A-PAY http 400/404
+  ✓  A-PAY codigo ^MANI-DSP-40[04]
+
+↳ A-DUP | aceptar_solicitud | duplicado
+  POST http://localhost/api/v1/dispatch/requests/02f1b97e-35af-43fd-90b6-90d90a8afb90/accept [200 OK, 1.02kB, 1200ms]
+  ✓  A-DUP http 200/409
+  ✓  A-DUP codigo ^(MANI-DSP-409|$)
+
+↳ A-EST | aceptar_solicitud | estado
+  POST http://localhost/api/v1/dispatch/requests/e5e67268-5ef5-4e89-ac8a-57ee70be6932/accept [409 Conflict, 894B, 1201ms]
+  ✓  A-EST http 404/409
+  ✓  A-EST codigo ^MANI-(DSP|SOL)-40[49]
+
+❏ aceptar_cotizacion
+↳ Q-ROL | aceptar_cotizacion | rol
+  POST http://localhost/api/v1/core/cotizaciones/42151d18-ddc3-4ce1-9f4c-142a8a3aa353/aceptar [403 Forbidden, 912B, 14ms]
+  ✓  Q-ROL http 403
+  ✓  Q-ROL codigo ^MANI-COT-403
+
+↳ Q-TEN | aceptar_cotizacion | tenant
+  POST http://localhost/api/v1/core/cotizaciones/42151d18-ddc3-4ce1-9f4c-142a8a3aa353/aceptar [404 Not Found, 882B, 506ms]
+  ✓  Q-TEN http 403/404
+  ✓  Q-TEN codigo ^MANI-COT-40[34]
+
+↳ Q-PAY | aceptar_cotizacion | payload
+  POST http://localhost/api/v1/core/cotizaciones/no-es-uuid/aceptar [400 Bad Request, 896B, 20ms]
+  ✓  Q-PAY http 400
+  ✓  Q-PAY codigo ^MANI-COT-400
+
+↳ Q-DUP | aceptar_cotizacion | duplicado
+  POST http://localhost/api/v1/core/cotizaciones/42151d18-ddc3-4ce1-9f4c-142a8a3aa353/aceptar [409 Conflict, 908B, 508ms]
+  ✓  Q-DUP http 200/409
+  ✓  Q-DUP codigo ^(MANI-COT-409|$)
+
+❏ cancelar_solicitud
+↳ X-ROL | cancelar_solicitud | rol
+  PATCH http://localhost/api/v1/core/solicitudes/me/83abbf83-858d-4f04-b06e-52acaedc8b88/cancelar [403 Forbidden, 898B, 16ms]
+  ✓  X-ROL http 403
+  ✓  X-ROL codigo ^MANI-SOL-403
+
+↳ X-TEN | cancelar_solicitud | tenant
+  PATCH http://localhost/api/v1/core/solicitudes/me/83abbf83-858d-4f04-b06e-52acaedc8b88/cancelar [404 Not Found, 880B, 406ms]
+  ✓  X-TEN http 403/404
+  ✓  X-TEN codigo ^MANI-SOL-40[34]
+
+↳ X-PAY | cancelar_solicitud | payload
+  PATCH http://localhost/api/v1/core/solicitudes/me/83abbf83-858d-4f04-b06e-52acaedc8b88/cancelar [422 Unprocessable Entity, 911B, 16ms]
+  ✓  X-PAY http 400/422
+  ✓  X-PAY codigo ^MANI-SOL-422M
+
+↳ X-DUP | cancelar_solicitud | duplicado
+  PATCH http://localhost/api/v1/core/solicitudes/me/e5e67268-5ef5-4e89-ac8a-57ee70be6932/cancelar [409 Conflict, 905B, 413ms]
+  ✓  X-DUP http 200/409
+  ✓  X-DUP codigo ^(MANI-SOL-409C|$)
+
+❏ pagar
+↳ P-ROL | pagar | rol
+  POST http://localhost/api/v1/core/pagos [403 Forbidden, 901B, 21ms]
+  ✓  P-ROL http 403
+  ✓  P-ROL codigo ^MANI-PAG-403
+
+↳ P-TEN | pagar | tenant
+  POST http://localhost/api/v1/core/pagos [404 Not Found, 890B, 626ms]
+  ✓  P-TEN http 403/404
+  ✓  P-TEN codigo ^MANI-PAG-40[34]
+
+↳ P-PAY | pagar | payload
+  POST http://localhost/api/v1/core/pagos [400 Bad Request, 893B, 14ms]
+  ✓  P-PAY http 400
+  ✓  P-PAY codigo ^MANI-PAG-400
+
+↳ P-PAY2 | pagar | payload
+  POST http://localhost/api/v1/core/pagos [400 Bad Request, 954B, 17ms]
+  ✓  P-PAY2 http 400
+  ✓  P-PAY2 codigo ^MANI-PAG-400
+
+↳ P-DUP | pagar | duplicado
+  POST http://localhost/api/v1/core/pagos [200 OK, 1.16kB, 506ms]
+  ✓  P-DUP http 200
+
+↳ P-DUP2 | pagar | duplicado
+  POST http://localhost/api/v1/core/pagos [409 Conflict, 900B, 710ms]
+  ✓  P-DUP2 http 409
+  ✓  P-DUP2 codigo ^MANI-PAG-409A
+
+❏ aprobar_aliado
+↳ V-ROL | aprobar_aliado | rol
+  PATCH http://localhost/api/v1/core/aliados/50000000-0000-4000-8000-000000000011/verificacion [403 Forbidden, 933B, 16ms]
+  ✓  V-ROL http 403
+  ✓  V-ROL codigo ^MANI-VER-403
+
+↳ V-TEN | aprobar_aliado | tenant
+  PATCH http://localhost/api/v1/core/aliados/50000000-0000-4000-8000-000000000011/verificacion [404 Not Found, 877B, 404ms]
+  ✓  V-TEN http 403/404
+  ✓  V-TEN codigo ^MANI-VER-40[34]
+
+↳ V-PAY | aprobar_aliado | payload
+  PATCH http://localhost/api/v1/core/aliados/50000000-0000-4000-8000-000000000011/verificacion [422 Unprocessable Entity, 898B, 15ms]
+  ✓  V-PAY http 400/422
+  ✓  V-PAY codigo ^MANI-VER-422D
+
+↳ V-PAY2 | aprobar_aliado | payload
+  PATCH http://localhost/api/v1/core/aliados/50000000-0000-4000-8000-000000000011/verificacion [422 Unprocessable Entity, 946B, 13ms]
+  ✓  V-PAY2 http 400/422
+  ✓  V-PAY2 codigo ^MANI-VER-422M
+
+↳ V-DUP | aprobar_aliado | duplicado
+  PATCH http://localhost/api/v1/core/aliados/50000000-0000-4000-8000-000000000011/verificacion [409 Conflict, 897B, 410ms]
+  ✓  V-DUP http 409
+  ✓  V-DUP codigo ^MANI-VER-409
+
+❏ cambiar_tarifa
+↳ T-ROL | cambiar_tarifa | rol
+  PUT http://localhost/api/v1/core/tarifas/2133a9e8-4b60-4138-b80d-cc73cc617931 [403 Forbidden, 911B, 21ms]
+  ✓  T-ROL http 403
+  ✓  T-ROL codigo ^MANI-TAR-403
+
+↳ T-TEN | cambiar_tarifa | tenant
+  PUT http://localhost/api/v1/core/tarifas/2133a9e8-4b60-4138-b80d-cc73cc617931 [404 Not Found, 877B, 738ms]
+  ✓  T-TEN http 403/404
+  ✓  T-TEN codigo ^MANI-TAR-404
+
+↳ T-PAY | cambiar_tarifa | payload
+  PUT http://localhost/api/v1/core/tarifas/2133a9e8-4b60-4138-b80d-cc73cc617931 [400 Bad Request, 920B, 15ms]
+  ✓  T-PAY http 400/422
+  ✓  T-PAY codigo ^MANI-TAR-400
+
+↳ T-DUP | cambiar_tarifa | duplicado
+  POST http://localhost/api/v1/core/tarifas [409 Conflict, 951B, 520ms]
+  ✓  T-DUP http 409
+  ✓  T-DUP codigo ^MANI-TAR-409V
+
+↳ T-VER | cambiar_tarifa | duplicado
+  PUT http://localhost/api/v1/core/tarifas/a0000000-0000-4000-8000-000000005101 [409 Conflict, 932B, 408ms]
+  ✓  T-VER http 409
+  ✓  T-VER codigo ^MANI-TAR-409R
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                  33 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                  33 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                  64 │                  0 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 12.1s                                          │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 5.5kB (approx)                                │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 339ms [min: 11ms, max: 1214ms, s.d.: 369ms] │
+└────────────────────────────────────────────────────────────────────┘
+
+== 3b. Resultado por caso (HTTP y codigo MANI)
+PASA  | crear_solicitud | C-ROL (rol) | esperado http 403 codigo ^MANI-SOL-403 | obtenido http 403 codigo MANI-SOL-403C | cid=t27-ce3f425f-C-ROL
+PASA  | crear_solicitud | C-PAY (payload) | esperado http 400/422 codigo ^MANI-SOL-422D | obtenido http 422 codigo MANI-SOL-422D | cid=t27-ce3f425f-C-PAY
+PASA  | crear_solicitud | C-DUP (duplicado) | esperado http 200/201 codigo - | obtenido http 200 codigo - | cid=t27-ce3f425f-C-DUP
+PASA  | crear_solicitud | C-DUP2 (duplicado) | esperado http 409 codigo ^MANI-SOL-409K | obtenido http 409 codigo MANI-SOL-409K | cid=t27-ce3f425f-C-DUP2
+PASA  | aceptar_solicitud | A-ROL (rol) | esperado http 403 codigo ^MANI-DSP-403 | obtenido http 403 codigo MANI-DSP-403 | cid=t27-ce3f425f-A-ROL
+PASA  | aceptar_solicitud | A-TEN (tenant) | esperado http 403/404 codigo ^MANI-(DSP|SOL)-40[34] | obtenido http 404 codigo MANI-SOL-404 | cid=t27-ce3f425f-A-TEN
+PASA  | aceptar_solicitud | A-PAY (payload) | esperado http 400/404 codigo ^MANI-DSP-40[04] | obtenido http 400 codigo MANI-DSP-400 | cid=t27-ce3f425f-A-PAY
+PASA  | aceptar_solicitud | A-DUP (duplicado) | esperado http 200/409 codigo ^(MANI-DSP-409|$) | obtenido http 200 codigo - | cid=t27-ce3f425f-A-DUP
+PASA  | aceptar_solicitud | A-EST (estado) | esperado http 404/409 codigo ^MANI-(DSP|SOL)-40[49] | obtenido http 409 codigo MANI-SOL-409E | cid=t27-ce3f425f-A-EST
+PASA  | aceptar_cotizacion | Q-ROL (rol) | esperado http 403 codigo ^MANI-COT-403 | obtenido http 403 codigo MANI-COT-403 | cid=t27-ce3f425f-Q-ROL
+PASA  | aceptar_cotizacion | Q-TEN (tenant) | esperado http 403/404 codigo ^MANI-COT-40[34] | obtenido http 404 codigo MANI-COT-404 | cid=t27-ce3f425f-Q-TEN
+PASA  | aceptar_cotizacion | Q-PAY (payload) | esperado http 400 codigo ^MANI-COT-400 | obtenido http 400 codigo MANI-COT-400 | cid=t27-ce3f425f-Q-PAY
+PASA  | aceptar_cotizacion | Q-DUP (duplicado) | esperado http 200/409 codigo ^(MANI-COT-409|$) | obtenido http 409 codigo MANI-COT-409R | cid=t27-ce3f425f-Q-DUP
+PASA  | cancelar_solicitud | X-ROL (rol) | esperado http 403 codigo ^MANI-SOL-403 | obtenido http 403 codigo MANI-SOL-403C | cid=t27-ce3f425f-X-ROL
+PASA  | cancelar_solicitud | X-TEN (tenant) | esperado http 403/404 codigo ^MANI-SOL-40[34] | obtenido http 404 codigo MANI-SOL-404 | cid=t27-ce3f425f-X-TEN
+PASA  | cancelar_solicitud | X-PAY (payload) | esperado http 400/422 codigo ^MANI-SOL-422M | obtenido http 422 codigo MANI-SOL-422M | cid=t27-ce3f425f-X-PAY
+PASA  | cancelar_solicitud | X-DUP (duplicado) | esperado http 200/409 codigo ^(MANI-SOL-409C|$) | obtenido http 409 codigo MANI-SOL-409C | cid=t27-ce3f425f-X-DUP
+PASA  | pagar | P-ROL (rol) | esperado http 403 codigo ^MANI-PAG-403 | obtenido http 403 codigo MANI-PAG-403 | cid=t27-ce3f425f-P-ROL
+PASA  | pagar | P-TEN (tenant) | esperado http 403/404 codigo ^MANI-PAG-40[34] | obtenido http 404 codigo MANI-PAG-404 | cid=t27-ce3f425f-P-TEN
+PASA  | pagar | P-PAY (payload) | esperado http 400 codigo ^MANI-PAG-400 | obtenido http 400 codigo MANI-PAG-400 | cid=t27-ce3f425f-P-PAY
+PASA  | pagar | P-PAY2 (payload) | esperado http 400 codigo ^MANI-PAG-400 | obtenido http 400 codigo MANI-PAG-400 | cid=t27-ce3f425f-P-PAY2
+PASA  | pagar | P-DUP (duplicado) | esperado http 200 codigo - | obtenido http 200 codigo - | cid=t27-ce3f425f-P-DUP
+PASA  | pagar | P-DUP2 (duplicado) | esperado http 409 codigo ^MANI-PAG-409A | obtenido http 409 codigo MANI-PAG-409A | cid=t27-ce3f425f-P-DUP2
+PASA  | aprobar_aliado | V-ROL (rol) | esperado http 403 codigo ^MANI-VER-403 | obtenido http 403 codigo MANI-VER-403 | cid=t27-ce3f425f-V-ROL
+PASA  | aprobar_aliado | V-TEN (tenant) | esperado http 403/404 codigo ^MANI-VER-40[34] | obtenido http 404 codigo MANI-VER-404 | cid=t27-ce3f425f-V-TEN
+PASA  | aprobar_aliado | V-PAY (payload) | esperado http 400/422 codigo ^MANI-VER-422D | obtenido http 422 codigo MANI-VER-422D | cid=t27-ce3f425f-V-PAY
+PASA  | aprobar_aliado | V-PAY2 (payload) | esperado http 400/422 codigo ^MANI-VER-422M | obtenido http 422 codigo MANI-VER-422M | cid=t27-ce3f425f-V-PAY2
+PASA  | aprobar_aliado | V-DUP (duplicado) | esperado http 409 codigo ^MANI-VER-409 | obtenido http 409 codigo MANI-VER-409 | cid=t27-ce3f425f-V-DUP
+PASA  | cambiar_tarifa | T-ROL (rol) | esperado http 403 codigo ^MANI-TAR-403 | obtenido http 403 codigo MANI-TAR-403 | cid=t27-ce3f425f-T-ROL
+PASA  | cambiar_tarifa | T-TEN (tenant) | esperado http 403/404 codigo ^MANI-TAR-404 | obtenido http 404 codigo MANI-TAR-404 | cid=t27-ce3f425f-T-TEN
+PASA  | cambiar_tarifa | T-PAY (payload) | esperado http 400/422 codigo ^MANI-TAR-400 | obtenido http 400 codigo MANI-TAR-400 | cid=t27-ce3f425f-T-PAY
+PASA  | cambiar_tarifa | T-DUP (duplicado) | esperado http 409 codigo ^MANI-TAR-409V | obtenido http 409 codigo MANI-TAR-409V | cid=t27-ce3f425f-T-DUP
+PASA  | cambiar_tarifa | T-VER (duplicado) | esperado http 409 codigo ^MANI-TAR-409R | obtenido http 409 codigo MANI-TAR-409R | cid=t27-ce3f425f-T-VER
+PASA  | crear_solicitud | C-DUP misma solicitud | esperado 83abbf83-858d-4f04-b06e-52acaedc8b88 | obtenido 83abbf83-858d-4f04-b06e-52acaedc8b88 | cid=t27-ce3f425f-C-DUP
+PASA  | pagar | P-DUP mismo pago | esperado 1409499a-c9c8-4147-8f80-15cb618d2401 | obtenido 1409499a-c9c8-4147-8f80-15cb618d2401 | cid=t27-ce3f425f-P-DUP
+
+== 4. Estado persistido despues de los negativos
+PASA  | crear_solicitud | estado sin cambios | esperado 0 solicitudes de T1 creadas desde la huella; 3 de esta corrida | obtenido 0 solicitudes de T1 creadas desde la huella; 3 de esta corrida | cid=
+PASA  | aceptar_solicitud | estado sin cambios | esperado bca505a3667e3f3b9e9f19451f41221c rechazos=0 | obtenido bca505a3667e3f3b9e9f19451f41221c rechazos=0 | cid=
+PASA  | aceptar_cotizacion | estado sin cambios | esperado ACEPTADA 8cf1c1ce3b68d67a7ee5d71abb9a3a25 | obtenido ACEPTADA 8cf1c1ce3b68d67a7ee5d71abb9a3a25 | cid=
+PASA  | cancelar_solicitud | estado sin cambios | esperado ACEPTADA,PENDIENTE,CANCELADA bca505a3667e3f3b9e9f19451f41221c | obtenido ACEPTADA,PENDIENTE,CANCELADA bca505a3667e3f3b9e9f19451f41221c | cid=
+PASA  | pagar | estado sin cambios | esperado 1 pagos 86762b4ec73817e1313a1d71a1d03410 retencion ab6d4ebdb21a278c7b5d1486f25d5629 | obtenido 1 pagos 86762b4ec73817e1313a1d71a1d03410 retencion ab6d4ebdb21a278c7b5d1486f25d5629 | cid=
+PASA  | aprobar_aliado | estado sin cambios | esperado db1df36d3fc9c45704fc8346399db2e9 | obtenido db1df36d3fc9c45704fc8346399db2e9 | cid=
+PASA  | cambiar_tarifa | estado sin cambios | esperado 5 versiones ac57a81b6aada72c5accbb72cd8872e2 | obtenido 5 versiones ac57a81b6aada72c5accbb72cd8872e2 | cid=
+
+== 5. Restricciones del motor (mani_core_svc, contexto admin de T1, todo en ROLLBACK)
+PASA  | motor | pago_duplicado | esperado 23505 | obtenido 23505 ux_pago_clave_idempotencia | cid=
+PASA  | motor | retencion_duplicada | esperado 23505 | obtenido 23505 ux_retencion_pago | cid=
+PASA  | motor | tarifa_activa_solapada | esperado 23P01/23505 | obtenido 23P01 ex_tarifa_referencia_vigencia_activa | cid=
+PASA  | motor | tarifa_valores_invertidos | esperado 23514 | obtenido 23514 tarifa_referencia | cid=
+PASA  | motor | solicitud_estado_invalido | esperado 23514/22P02 | obtenido 23514 solicitud | cid=
+PASA  | motor | cotizacion_estado_invalido | esperado 23514/22P02 | obtenido 23514 cotizacion | cid=
+FALLA | motor | pago_estado_invalido | esperado 23514/22P02 | obtenido 42501 permission denied for table pago | cid=
+
+== 5b. Restricciones CHECK y tipo de la columna estado (catalogo, solo lectura)
+  aliado | estado:- | sin CHECK
+  cotizacion | estado:text | ck_cotizacion_estado
+  liquidacion | estado:- | ck_liquidacion_suma, liquidacion_comision_check, liquidacion_monto_bruto_check, liquidacion_monto_neto_check, liquidacion_porcentaje_comision_check
+  pago | estado:text | pago_estado_check, pago_monto_check
+  retencion_fondos | estado:text | ck_retencion_liberada_fecha, retencion_fondos_estado_check, retencion_fondos_monto_check
+  solicitud | estado:text | ck_solicitud_estado, ck_solicitud_penalizacion_no_negativa
+  tarifa_referencia | estado:text | ck_tarifa_referencia_condiciones, ck_tarifa_referencia_estado, ck_tarifa_referencia_moneda, ck_tarifa_referencia_valores, ck_tarifa_referencia_version, ck_tarifa_referencia_vigencia
+
+== 6. Limpieza
+  s_pend cancelada: 200 . Quedan en QA: s_cancel y s_full (02f1b97e-35af-43fd-90b6-90d90a8afb90) con pago simulado RETENIDO.
+
+== T-27 corrida ce3f425f: 48 PASA, 1 FALLA, 0 REVISAR

@@ -218,18 +218,26 @@ Seis filas se cerraron el **2026-11-19** con evidencia que DevOps capturó el **
 **Qué falta.** La consulta a la base de PROD (`tjxueukivwxsgipltqwb`) y la misma contra QA (`hpsxdotaizzclkeufzct`) para poder afirmar o negar paridad:
 
 ```sql
-SELECT rolname, rolbypassrls, rolsuper
+SELECT rolname, rolbypassrls, rolsuper, rolcanlogin
   FROM pg_roles
- WHERE rolname IN ('postgres','service_role','authenticator','authenticated','anon')
+ WHERE rolname IN ('mani_core_svc','mani_dispatch_svc',
+                   'postgres','service_role','authenticator','authenticated','anon')
  ORDER BY rolname;
 
-SELECT count(*) AS migraciones, max(version) AS ultima
-  FROM supabase_migrations.schema_migrations;
+SELECT count(*) AS migraciones,
+       count(*) FILTER (WHERE version LIKE '00__') AS serie_core,
+       count(*) FILTER (WHERE version LIKE '00_')  AS serie_gateway,
+       max(version) FILTER (WHERE version LIKE '00__') AS ultima_core
+  FROM public.schema_migrations;
 
 SELECT count(*) AS politicas_activas FROM pg_policies;
 ```
 
-**Evidencia a pegar:** las tres salidas por ambiente, con su fecha. Comparar el conteo con la serie real `0001`–`0033` de `MANI-Node/db/migrations`. La afirmación «roles sin `BYPASSRLS` en PROD» se sostiene solo si `rolbypassrls` es `f` para `service_role` **y** para `postgres`.
+**Evidencia a pegar:** las tres salidas por ambiente, con su fecha. Valor esperado al 2026-11-22, contado sobre los repositorios: **45 filas** = 37 de `MANI-Node/db/migrations` (`0001`–`0039`, sin `0011` ni `0012`) + 8 de `MANI-APIGateway/database/migrations` (`001`–`008`), con `ultima_core = '0039'`.
+
+> **Corrección del 2026-11-22.** La versión anterior de esta consulta leía `supabase_migrations.schema_migrations` y comparaba contra la serie `0001`–`0033`. Las dos cosas estaban mal: las migraciones del proyecto se registran en la tabla propia `public.schema_migrations` (cada archivo hace `INSERT INTO schema_migrations`), no en la de la CLI de Supabase, y la serie de Core llega hoy a `0039`. Además, `max(version)` sin filtro devolvía `'008'`, porque compara texto y `'008'` > `'0039'`. La afirmación «roles sin `BYPASSRLS` en PROD» se refiere a los **roles de servicio del proyecto**, `mani_core_svc` y `mani_dispatch_svc`, creados en `MANI-Node/db/migrations/0006_contexto_identidad.sql` con `NOBYPASSRLS` (ADR-0032). Se sostiene si `rolbypassrls = f` en **esos dos** roles, en PROD y en QA.
+
+> **Corrección del 2026-11-22.** La versión anterior exigía `f` en `postgres` y `service_role`. En Supabase esos dos roles tienen `BYPASSRLS` **por diseño** (la migración 0006, que lo crea si falta en local, lo declara `BYPASSRLS`), de modo que la fila habría fallado siempre por un motivo falso. Se consultan igual, como dato informativo: lo esperado es `t`. **No existe** `mani_rules_svc`: la migración 0030 deja escrito que no se crea, porque Rules consume por HTTP (ADR-0032 §3).
 
 ## 4. Decisiones tomadas
 

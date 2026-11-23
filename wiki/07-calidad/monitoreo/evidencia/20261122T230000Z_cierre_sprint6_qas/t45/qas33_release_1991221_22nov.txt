@@ -1,0 +1,21 @@
+QAS-33 Involucración, umbral B. Remedición sobre release 1991221 (desplegado en QA 22 nov 22:10Z).
+Regla (SCRUM-1648, README con #149): pantallas nuevas o modificadas sin botones ni campos nativos nuevos.
+Método: diff de cada PR fusionado desde la regla contra su base, solo lib/. Líneas agregadas con
+ElevatedButton, TextButton, OutlinedButton, FilledButton, TextField, TextFormField (y .icon/.tonal) o Cupertino.
+
+PR    merge    pantallas_tocadas  nativos_agregados  mani_agregados
+#148  7a43729   0                  0                  0
+#149  5441e82   2                  0                  2
+#150  f4424f2   0                  0                  0
+#152  5131d34  86                 28                  7     <- incumple la regla (H-33-1 se materializó)
+#154  822434d  10                  1                 25     el nativo es la implementación interna de ManiButton (mani_button.dart): válido
+#155  c1b6c54  48                  1                 74     TextButton.icon en app_shell.dart:671 (entrada del menú lateral, se conservó a propósito)
+
+Estado de release 1991221 (lib/features):
+- Nativos antes de la regla (7a43729): 162. Hoy: 83. ManiButton/ManiTextField hoy: 127.
+- 31 de los 83 archivos de features modificados desde la regla todavía tienen nativos (83 líneas).
+  Mayores: mis_solicitudes_page 11, adiciones_seccion 10, tarifario_page 7, eventos_seccion 5,
+  registro_aliado_empresa_page 5, calificacion_cierre_widgets 4, restablecer_contrasena_page 4, registro_cliente_empresa_page 4.
+
+Lectura: con la medición del umbral B (por PR), #152 se fusionó agregando 28 líneas nativas en pantallas que modificó.
+#154 y #155 migraron buena parte, pero en release siguen 83 nativos en 31 pantallas tocadas desde la regla.

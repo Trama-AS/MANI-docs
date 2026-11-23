@@ -1,0 +1,39 @@
+== Fecha 2026-11-22T19:23:57Z
+== Antes
+-- migraciones registradas (0040 a 0043)
+version | applied_at
+0040 | 2026-11-20 19:16:56.930855+00
+0041 | 2026-11-20 19:16:56.930855+00
+0042 | 2026-11-20 19:16:56.930855+00
+(3 rows)
+-- CHECK de estado (convalidated = validado)
+conname | convalidated
+(0 rows)
+-- estados fuera del catalogo
+tabla | estado | count
+(0 rows)
+== Migracion 0043 en una transaccion, termina en ROLLBACK
+BEGIN
+DO
+DO
+INSERT 0 1
+-- dentro de la transaccion
+registradas
+0043
+(1 row)
+ROLLBACK
+-- ROLLBACK hecho
+== Despues
+-- migraciones registradas (0040 a 0043)
+version | applied_at
+0040 | 2026-11-20 19:16:56.930855+00
+0041 | 2026-11-20 19:16:56.930855+00
+0042 | 2026-11-20 19:16:56.930855+00
+(3 rows)
+-- CHECK de estado (convalidated = validado)
+conname | convalidated
+(0 rows)
+-- estados fuera del catalogo
+tabla | estado | count
+(0 rows)
+== Fin

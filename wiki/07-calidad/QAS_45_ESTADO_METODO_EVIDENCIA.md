@@ -2,7 +2,7 @@
 
 > **Finalidad:** vista operativa del SDD §8 para repetir cada medición. **Fuente de verdad:** la columna Resultado del [SDD §8](../02-arquitectura/SDD.md); si difieren, manda el SDD. **Mantiene:** QA (Santiago Hernández). **Consume:** desarrollo, DevOps, PO y SM. **Se actualiza:** en cada corte de QAS. **Versión:** 1.1, 2026-11-23 (cierre del Sprint 6, remedición del 22 nov y T-45). **HU:** [SCRUM-1692](https://maniservices.atlassian.net/browse/SCRUM-1692).
 
-**Conteo:** Cumple 23 · Parcial 11 · No cumple 8 · No medido 3. QAS-17 cumple con el umbral del acta A/B.
+**Conteo:** Cumple 24 · Parcial 10 · No cumple 8 · No medido 3. QAS-17 cumple con el umbral del acta A/B.
 
 **Ambiente:** salvo que la fila diga otra cosa, la medición es en MANI-QA (`10.43.100.141`). QA confirma QA, no lo promovido a PROD; Sonar analiza `develop` y Prometheus sondea QA y PROD.
 
@@ -47,7 +47,7 @@ La herramienta se infiere del método y del resultado del SDD; el método comple
 | 35 | Asistencia al usuario | No cumple | 2026-11-23 | flutter test, prueba manual, revisión de código | [revisión del 23 nov](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas34_qas35/revision_qas34_qas35.md) | 594 de 594 pruebas de mensajes pasan, pero 3 de 6 casos no orientan: redirección por rol sin mensaje, 5xx con «Algo salió mal» en verificación y asignación, y error de tamaño de archivo sin el límite. | Aviso al redirigir por rol, mensaje de 5xx con qué hacer si persiste y el límite de 10 MB en el error. Responsable: Flutter. |
 | 36 | Auto-descriptividad | Cumple | 2026-11-21 | flutter test, prueba manual, revisión documental | [recorrido en QA](monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas35_qas36_qas39_recorrido_qa.md) | — | — |
 | 37 | Restricción operativa | Cumple | 2026-11-22 | Newman, SQL, matriz de pruebas | [prueba por API](monitoreo/evidencia/20261122T025500Z_barrido_qas/qas11_37_42_api_22nov_0318z.txt) | — | — |
-| 38 | Identificación de riesgos | Parcial | 2026-11-21 | revisión documental | [operación ↔ riesgo](monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas38_operacion_riesgo.md) | 4 de 12 operaciones sensibles tienen análisis de riesgo. | Documentar KYC, cancelación, liquidación, tarifa, reglas del tenant y las demás en SAD §23 o SDD §16. Responsable: Arquitectura. |
+| 38 | Identificación de riesgos | Cumple | 2026-11-23 | revisión documental, revisión de código | [operación ↔ riesgo del 23 nov](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas38/qas38_operacion_riesgo_23nov.md) | — | Observaciones a SAD §23.1: actualizar el timeout de Dispatch de la fila 3 (hoy 10 s) y aclarar en la fila 6 que las fotos de perfil van al bucket de KYC. Responsable: Arquitectura. |
 | 39 | Advertencia de peligro | Cumple | 2026-11-22 | prueba manual en QA | [recorrido](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/qas39_qa_1991221_22nov.txt) | — | — |
 | 40 | Integración segura | Parcial | 2026-11-22 | revisión documental | [revisión de código](monitoreo/evidencia/20261122T025500Z_barrido_qas/revision_codigo_22nov.txt) | Timeouts y validación de respuesta existen, pero el circuit breaker solo está en Rules. | Circuit breaker en Core y Dispatch. Responsable: Core y Dispatch. |
 | 41 | Concurrencia de asignación | Cumple | 2026-11-22 | k6, revisión documental | [rondas](monitoreo/evidencia/20261122T013000Z_t46_concurrencia/qas41_rondas_22nov_0147z.txt) | — | — |

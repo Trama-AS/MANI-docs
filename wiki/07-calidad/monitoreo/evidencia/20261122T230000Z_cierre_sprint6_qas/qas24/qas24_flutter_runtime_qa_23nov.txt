@@ -1,0 +1,11 @@
+# QAS-24 / SCRUM-1649: arranque del contenedor Flutter en MANI-QA (23 nov 2026, ~01:15Z)
+# Comando: docker inspect (revisión e imagen) y docker logs filtrado por [flutter-web]. Solo nombres de variables, sin valores.
+
+== mani-flutter-web
+95a3e4200e54c37434de494f1328dc4bb49013bd ghcr.io/trama-as/mani-flutter:staging
+[flutter-web] /usr/share/nginx/html/assets/.env
+[flutter-web] Tomadas del entorno: SUPABASE_URL SUPABASE_ANON_KEY API_GATEWAY_URL TENANT_SLUG
+[flutter-web] Con el valor empaquetado: ninguna
+[flutter-web] Con el valor por defecto del script: ninguna
+
+# Además: GET http://10.43.100.141:8080/assets/.env -> 200, Cache-Control: no-store, claves SUPABASE_URL SUPABASE_ANON_KEY API_GATEWAY_URL TENANT_SLUG (valores no revisados).

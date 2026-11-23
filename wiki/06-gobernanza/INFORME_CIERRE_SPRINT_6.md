@@ -19,19 +19,19 @@
 
 | Estado | 2026-11-23 | 2026-11-22 | 2026-11-19 |
 |---|---|---|---|
-| **Done** | **57** | 52 | 2 |
-| **In Review** | 12 | 17 | 36 |
+| **Done** | **60** | 52 | 2 |
+| **In Review** | 9 | 17 | 36 |
 | In Progress | 4 | 4 | 32 |
 | Reopened | 3 | 3 | 2 |
 | To Do | 6 | 6 | 9 |
 
-Por tipo: 56 tareas (40 en Done), 19 historias (**14 en Done**), 6 defectos (3 en Done) y 1 épica (sin empezar, fuera del alcance del MVP). Las cinco historias abiertas son SCRUM-1643, 1644, 1647 (en revisión), 1696 (en curso, falta la fila D10) y 1693 (sin empezar).
+Por tipo: 56 tareas (42 en Done), 19 historias (**15 en Done**), 6 defectos (3 en Done) y 1 épica (sin empezar, fuera del alcance del MVP). Las cuatro historias abiertas son SCRUM-1643 y 1647 (en revisión, no se entregan: ver §4.4), 1696 (en curso, falta la fila D10) y 1693 (sin empezar).
 
 ### El dato que manda
 
-**En cuatro días el sprint pasó de 2 a 57 ítems cerrados.** El trabajo ya estaba hecho el 19-nov; lo que faltaba era validarlo. Eso confirma el diagnóstico del primer corte: **el cuello de botella de este sprint no fue construir, fue validar.** Casi toda historia exige un video en QA con token real y el visto bueno del PO, y el *definition of done* lo decide QA. Son reglas buenas, pero concentran el cierre en dos personas al final del sprint.
+**En cuatro días el sprint pasó de 2 a 60 ítems cerrados.** El trabajo ya estaba hecho el 19-nov; lo que faltaba era validarlo. Eso confirma el diagnóstico del primer corte: **el cuello de botella de este sprint no fue construir, fue validar.** Casi toda historia exige un video en QA con token real y el visto bueno del PO, y el *definition of done* lo decide QA. Son reglas buenas, pero concentran el cierre en dos personas al final del sprint.
 
-**Escenarios de calidad, al cierre:** de los 45, **23 cumplen**, 11 cumplen en parte, 8 no cumplen y 3 no se pudieron medir. El detalle de lo que no se entrega está en [§4](#4-lo-no-entregado-en-el-producto-final).
+**Escenarios de calidad, al cierre:** de los 45, **24 cumplen**, 10 cumplen en parte, 8 no cumplen y 3 no se pudieron medir. El detalle de lo que no se entrega está en [§4](#4-lo-no-entregado-en-el-producto-final).
 
 ## 2. Lo que sí se cerró, y vale
 
@@ -91,7 +91,7 @@ La SM pidió varias veces por el grupo información y acciones de cierre, y la r
 
 ## 4. Lo no entregado en el producto final
 
-El producto se entrega el martes 25 de noviembre. Esto es lo que **no queda entregado** a esa fecha, por qué no, y qué pasó en el proceso para que ocurriera. Los escenarios salen de la columna Resultado del SDD §8 al 2026-11-22; las soluciones y los responsables son los que QA dejó en [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md).
+El producto se entrega el martes 25 de noviembre. Esto es lo que **no queda entregado** a esa fecha, por qué no, y qué pasó en el proceso para que ocurriera. Los escenarios salen de la columna Resultado del SDD §8 al 2026-11-23 (con MANI-docs#87 fusionado); las soluciones y los responsables son los que QA dejó en [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md).
 
 ### 4.1 Escenarios de calidad que no se cumplen (8)
 
@@ -100,11 +100,11 @@ El producto se entrega el martes 25 de noviembre. Esto es lo que **no queda entr
 | **03** Comportamiento temporal | `eligible-allies` con 300 usuarios: p95 de 8.212 ms frente a un umbral de 500 ms. Las peticiones esperan al Core | Core | La carga se midió al cierre (§3.5). La optimización ([SCRUM-1652](https://maniservices.atlassian.net/browse/SCRUM-1652)) sigue en revisión |
 | **19** Capacidad | 36,4 req/s sostenidas frente a un objetivo de 50, con p95 de 7 a 12 s. El cuello es la base de datos y el pool | Core y DevOps | La misma causa que QAS-03. Además, escalar el Core depende de QAS-05, que tampoco se pudo medir |
 | **21** Reusabilidad | La validación de reglas del tenant está copiada en Core y en Rules | Core y Rules | La duplicación pasó la revisión de código: ningún PR exigía comprobar que la regla no existiera ya en otro servicio |
-| **24** Adaptabilidad | Backend y Gateway construyen una imagen nueva por rama y no promueven el mismo digest de QA a PROD | DevOps | El umbral nuevo se fijó en el acta del 21-nov. La configuración de Flutter al arrancar ([SCRUM-1649](https://maniservices.atlassian.net/browse/SCRUM-1649)) sigue en revisión |
+| **24** Adaptabilidad | Backend y Gateway construyen una imagen nueva por rama y no promueven el mismo digest de QA a PROD | DevOps | El umbral nuevo se fijó en el acta del 21-nov. La configuración de Flutter al arrancar ya está verificada en QA ([SCRUM-1649](https://maniservices.atlassian.net/browse/SCRUM-1649), cerrada); lo que falta es la promoción del mismo digest, que es de DevOps |
 | **30** Reconocibilidad | La acción principal se ve sin ayuda en 11 de 14 flujos. En reglas del tenant y en los dos registros, el botón de guardar queda fuera de la vista | Flutter | La prueba de usabilidad (T-45) se hizo en el último corte. Lo que encontró ya no tuvo tiempo de corregirse |
 | **33** Involucración | Quedan 83 componentes nativos en 31 pantallas en vez de los del sistema de diseño Mani | Flutter | La migración ([SCRUM-1648](https://maniservices.atlassian.net/browse/SCRUM-1648)) se fusionó parcial y sigue en revisión. La regla de usar el sistema de diseño no se exigía al revisar los PR |
-| **34** Inclusividad | No hay un nivel WCAG definido; pocas etiquetas semánticas y ninguna prueba de escalado de texto | PO y Arquitectura, luego Flutter | **Nunca se fijó el nivel de accesibilidad que había que cumplir.** Sin esa decisión, Flutter no tenía contra qué construir. Es el patrón de §3.1: falta el requisito |
-| **35** Asistencia al usuario | 3 de 5 casos orientan al usuario. Una ruta de otro rol redirige al inicio sin mensaje y un error 500 solo dice «Algo salió mal» | Flutter | Los mensajes de error por código ([SCRUM-1643](https://maniservices.atlassian.net/browse/SCRUM-1643)) siguen en revisión |
+| **34** Inclusividad | El criterio ya es WCAG 2.2 AA, pero no se cumple. **Flutter:** idioma `en-US`, campos nombrados por su ejemplo, zoom bloqueado en celular y foco invisible. **Landing:** contraste de 3,68:1 en el botón principal | Flutter, Landing y Arquitectura | **El nivel de accesibilidad se fijó al final del sprint, y todavía no está escrito en el SDD.** Flutter construyó sin un criterio contra el cual probar. Es el patrón de §3.1: falta el requisito |
+| **35** Asistencia al usuario | 3 de 6 casos de error no orientan al usuario: una ruta de otro rol redirige sin mensaje, los errores 5xx solo dicen «Algo salió mal» y el error de tamaño de archivo no dice el límite | Flutter | Los mensajes de error por código ([SCRUM-1643](https://maniservices.atlassian.net/browse/SCRUM-1643)) siguen en revisión |
 
 ### 4.2 Escenarios que no se pudieron medir (3)
 
@@ -114,7 +114,7 @@ El producto se entrega el martes 25 de noviembre. Esto es lo que **no queda entr
 | **18** Utilización de recursos | cAdvisor solo exporta la serie del host, sin la CPU de cada contenedor | DevOps | Los exporters se dieron por instalados ([SCRUM-1671](https://maniservices.atlassian.net/browse/SCRUM-1671)), pero no se comprobó que entregaran el dato que el escenario necesita. La falla apareció al intentar medir |
 | **27** Coexistencia | La misma causa que QAS-18 | DevOps | La misma que QAS-18 |
 
-### 4.3 Escenarios que se cumplen en parte (11)
+### 4.3 Escenarios que se cumplen en parte (10)
 
 | QAS | Qué falta | Responsable | Qué pasó en el proceso |
 |---|---|---|---|
@@ -125,12 +125,27 @@ El producto se entrega el martes 25 de noviembre. Esto es lo que **no queda entr
 | **22** Analizabilidad | Core y Dispatch escriben logs en texto plano; Gateway y Rules, en JSON | Core y Dispatch | La tarea ([SCRUM-1658](https://maniservices.atlassian.net/browse/SCRUM-1658)) se **reabrió** al validarla en QA, al final del sprint |
 | **23** Capacidad para ser probado | 3 casos de uso críticos con cobertura bajo el 90 %. El Gateway no exige cobertura de código nuevo, y solo su CI corre contract tests | Core, Dispatch y DevOps | La cobertura se midió como resultado, no como condición: los *gates* de CI no la exigían en todos los servicios |
 | **26** Reemplazabilidad | Push tiene dos adaptadores intercambiables; pagos solo tiene `mock` | Core | Un segundo adaptador de pagos no estuvo entre las tareas del Sprint 6 |
-| **38** Identificación de riesgos | En el corte del 22-nov, 4 de 12 operaciones sensibles tenían análisis de riesgo | Arquitectura | **Resuelto después del corte:** las doce están en [`SAD.md`](../02-arquitectura/SAD.md) §23.1 desde el 2026-11-22. Falta que QA vuelva a medir el escenario |
 | **40** Integración segura | El circuit breaker solo está en Rules | Core y Dispatch | La tarea ([SCRUM-1663](https://maniservices.atlassian.net/browse/SCRUM-1663)) se **reabrió** al validarla en QA |
 | **43** TLS | El puerto 443 tiene TLS 1.2 y 1.3, pero QA usa el 8080, que sirve la app y la API por HTTP. PROD no se midió | DevOps | El 8080 quedó abierto por comodidad de pruebas y nadie lo cerró ni lo redirigió |
 | **44** Reversión de despliegue | El rollback tardó 8 s, pero no se forzó un fallo real ni se repitió una petición crítica | DevOps y QA | El simulacro ([SCRUM-1675](https://maniservices.atlassian.net/browse/SCRUM-1675)) midió el tiempo, pero no el escenario completo que pide el SDD |
 
-### 4.4 Fuera del producto, pero no entregado
+### 4.4 Funcionalidades que no se entregan (9 ítems de Jira)
+
+Son los ítems que QA no pudo cerrar al corte del 23-nov, con la causa que dejó Santiago Hernández en el comentario de cada uno.
+
+| Ítem | Qué no se entrega | Por qué | Qué pasó en el proceso |
+|---|---|---|---|
+| [SCRUM-1634](https://maniservices.atlassian.net/browse/SCRUM-1634) Foto de perfil | La foto sube (200), pero no se ve | Core guarda la ruta interna del Storage en lugar de una URL firmada: el navegador recibe 404 y Flutter muestra la ruta como texto bajo el avatar. Además, las fotos se guardan en el bucket `kyc-documentos` ([`SAD.md`](../02-arquitectura/SAD.md) §23.1) | La subida se probó por su código de respuesta, no por lo que ve el usuario. El defecto apareció en la prueba de QA del 23-nov. Hay que corregirlo en Core y en Flutter |
+| [SCRUM-1635](https://maniservices.atlassian.net/browse/SCRUM-1635) Aliados de una solicitud | Ver los aliados de una solicitud sigue sin funcionar | No tiene PR ni avance | Quedó sin trabajar todo el sprint y nadie lo escaló como bloqueo |
+| [SCRUM-1643](https://maniservices.atlassian.net/browse/SCRUM-1643) Mensajes de error con código | El «Código · Ref» solo está en solicitudes ([#132](https://github.com/Trama-AS/MANI-Flutter/pull/132)). Verificación de aliados y asignación siguen mostrando «Algo salió mal» sin código | Implementación parcial (QAS-35) | Se fusionó una pantalla y la historia quedó en revisión con el resto pendiente |
+| [SCRUM-1647](https://maniservices.atlassian.net/browse/SCRUM-1647) Inicio por rol accesible | El inicio por rol entró ([MANI-Flutter#155](https://github.com/Trama-AS/MANI-Flutter/pull/155)), pero no cumple WCAG 2.2 AA | Idioma `en-US`, campos sin rótulo, zoom bloqueado y foco invisible (QAS-34) | El criterio de accesibilidad se fijó cuando la pantalla ya estaba hecha (§3.1) |
+| [SCRUM-1648](https://maniservices.atlassian.net/browse/SCRUM-1648) Sistema de diseño Mani | [#152](https://github.com/Trama-AS/MANI-Flutter/pull/152) migró 28 componentes nativos; quedan 83 en 31 pantallas | Migración parcial (QAS-33) | El Quality Gate no revisa la regla, y la revisión de PR tampoco la exigía |
+| [SCRUM-1652](https://maniservices.atlassian.net/browse/SCRUM-1652) Rendimiento de `eligible-allies` | p95 de 8,2 s bajo carga, frente a una meta de 500 ms | Unas 9 consultas por petición y el pool de la base saturado (QAS-03 y 19) | La carga se midió al cierre (§3.5) |
+| [SCRUM-1657](https://maniservices.atlassian.net/browse/SCRUM-1657) Trazabilidad de acciones | El actor y el correlation ID están en `evento_servicio` y en `pago`, pero la aprobación de aliado no los guarda | Alcance incompleto (QAS-12) | El alcance de la tarea no nombró la aprobación de aliados |
+| [SCRUM-1661](https://maniservices.atlassian.net/browse/SCRUM-1661) Contratos OpenAPI | Los 127 contratos están en el Gateway ([MANI-APIGateway#98](https://github.com/Trama-AS/MANI-APIGateway/pull/98)), pero la documentación no está fusionada | Falta fusionar [MANI-docs#81](https://github.com/Trama-AS/MANI-docs/pull/81) (QAS-06) | El PR quedó retenido en revisión. **Si se fusiona antes del martes, esta tarea se puede cerrar** |
+| [SCRUM-1662](https://maniservices.atlassian.net/browse/SCRUM-1662) Falla inyectable | Los adaptadores con falla inyectable existen ([#137](https://github.com/Trama-AS/MANI-Node/pull/137)), pero no están activos en QA y la falla no se inyectó | Depende de DevOps (QAS-02 y 09) | Activar el adaptador en QA era otra tarea sin responsable |
+
+### 4.5 Fuera del producto, pero no entregado
 
 | Qué | Responsable | Por qué no se entrega |
 |---|---|---|
@@ -139,17 +154,18 @@ El producto se entrega el martes 25 de noviembre. Esto es lo que **no queda entr
 | **Ratificación de ADR-0035 en Mesa** | Mesa de Arquitectura | La Mesa no se convocó en todo el sprint, y la SM no puede ratificar un ADR que ella misma propuso |
 | **Token de SonarQube sin rotar** | Daniel | Es un **riesgo aceptado**, no resuelto: se retiró de los archivos, pero no se invalidó. Ver [`08-infraestructura/02-accesos-y-gestion-secretos.md`](../08-infraestructura/02-accesos-y-gestion-secretos.md) |
 | **RNF-13 y QAS-46 sin aprobar** | PO | Son la base de ADR-0037. Están propuestos, pero la PO no los ha aprobado |
-| **Cierres en Jira sin la evidencia que pide el *definition of done*** | QA y PO | [SCRUM-1697](https://maniservices.atlassian.net/browse/SCRUM-1697) se cerró el 2026-11-22 con la prueba de QA de Santiago, pero **sin el video con el visto bueno de la PO**. [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) se cerró aunque ADR-0035 sigue `Propuesto`. Los dos cuentan en los 57 de §1, y el informe lo dice para que la cifra no se lea como validada por completo |
-| **Ítems que no llegan a Done al corte** | Cada responsable en Jira | En revisión, esperando prueba de QA: SCRUM-1634, 1644, 1649 y 1710. En revisión sin condiciones para cerrar: 1635, 1643, 1647, 1648, 1652, 1657, 1661 y 1662. **Reabiertos** por fallar la validación: 1658, 1660 y 1663. Sin empezar: 1636, 1670, 1677, 1693 y 1698 |
+| **Cierres en Jira sin la evidencia que pide el *definition of done*** | QA y PO | **Ningún ítem cerrado en el último corte tiene el video con el visto bueno de la PO** que exige la definición de terminado. QA cerró con su propia evidencia 1633, 1644, 1645, 1646, 1649, 1650, 1651, 1653, 1654, 1656, 1659, 1710 y 1713, y antes [SCRUM-1697](https://maniservices.atlassian.net/browse/SCRUM-1697). [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) se cerró aunque ADR-0035 sigue `Propuesto`. Todos cuentan en los 60 de §1. Si la PO exige el video, se reabren |
+| **Otros ítems que no llegan a Done** | Cada responsable en Jira | Además de los 9 de §4.4: **reabiertos** por fallar la validación en QA, 1658 (logs JSON), 1660 y 1663 (circuit breaker). En curso: 1684 y 1706. Sin empezar: 1636, 1670, 1677 y 1698 |
 
-### 4.5 Las causas de proceso, agrupadas
+### 4.6 Las causas de proceso, agrupadas
 
-Casi todo lo anterior cae en cuatro patrones, y ninguno es técnico:
+Casi todo lo anterior cae en cinco patrones, y ninguno es técnico:
 
-1. **Validar y medir al final** (QAS-03, 19, 22, 24, 30, 40). Lo que falló se encontró cuando ya no había tiempo de corregirlo (§3.5).
+1. **Validar y medir al final** (QAS-03, 19, 22, 24, 30, 40; SCRUM-1634 y 1652). Lo que falló se encontró cuando ya no había tiempo de corregirlo (§3.5). El caso más claro: la medición de QA del 22-nov descubrió que **el registro de aliado persona natural no funcionaba en QA desde el 7 de octubre** (tres defectos, corregidos el mismo día en MANI-APIGateway#100 y MANI-Flutter#159 y #161). Ninguna prueba automatizada lo había detectado.
 2. **Decisiones sin dueño ni fecha** (QAS-34, el acta A/B y ADR-0035). El trabajo técnico esperó una decisión que nadie tenía comprometida (§3.1).
 3. **Un solo ambiente compartido y el acceso concentrado en DevOps** (QAS-02, 05, 09, 18, 27, 43, 44). QA no podía medir sin pedir permiso o una ventana, y la ventana no llegó.
 4. **Reglas transversales que no se exigían al revisar los PR** (QAS-21, 23, 33). El código cumplía su tarea, pero no la regla común, y nadie lo frenó en la revisión.
+5. **Cerrar sin la evidencia completa del *definition of done*.** La presión del cierre llevó a cerrar con la prueba de QA y sin el video de la PO (§4.5). La regla existe, pero el flujo no tenía tiempo para cumplirla al final del sprint, que es el mismo diagnóstico de §1.
 
 ## 5. Qué llevar a la sustentación, y qué no
 
@@ -158,13 +174,14 @@ Casi todo lo anterior cae en cuatro patrones, y ninguno es técnico:
 - Hay respaldo diario cifrado, con un simulacro de recuperación de 2 segundos.
 - La observabilidad existe y corre en la VM de Calidad.
 - 14 de 15 contradicciones entre documentos están resueltas con evidencia.
-- 23 de los 45 escenarios de calidad se cumplen, con su evidencia enlazada.
-- 57 de los 82 ítems del sprint están cerrados, y 14 de las 19 historias.
+- 24 de los 45 escenarios de calidad se cumplen, con su evidencia enlazada.
+- 60 de los 82 ítems del sprint están cerrados en Jira, y 15 de las 19 historias, con la salvedad de §4.5 sobre el video de la PO.
 
 **No se puede afirmar:**
 - Que el sistema aguanta la carga objetivo: QAS-03 y QAS-19 no cumplen.
 - Que la misma imagen se promueve de QA a PROD.
-- Que la app cumple un nivel de accesibilidad, porque ese nivel no está definido.
+- Que la app cumple WCAG 2.2 AA: QAS-34 no cumple.
+- Que la foto de perfil funciona: SCRUM-1634 no pasó la prueba de QA.
 - Que hay trazas por *spans*.
 - Que los escenarios marcados `supuesto` son exigencias del producto.
 - Que el token expuesto está resuelto: está aceptado como riesgo, que es distinto.
@@ -173,6 +190,6 @@ Casi todo lo anterior cae en cuatro patrones, y ninguno es técnico:
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
-| 2.1 | 2026-11-23 | Corte al 23 de noviembre: 57 de 82 ítems en Done y 14 de 19 historias. §4.4 suma los cierres sin toda la evidencia del *definition of done* (SCRUM-1697 sin el video de la PO; SCRUM-1704 con ADR-0035 aún `Propuesto`) y la lista de ítems que no llegan a Done. La consulta D10 quedó corregida en el PR #90. | Sara Albarracín |
+| 2.1 | 2026-11-23 | Corte al 23 de noviembre: 60 de 82 ítems en Done y 15 de 19 historias. Escenarios de calidad con MANI-docs#87: 24 cumplen, 10 en parte, 8 no cumplen y 3 sin medir (QAS-38 pasa a Cumple). **§4.4 nueva**: las 9 funcionalidades que no se entregan, con su causa y lo que pasó en el proceso. §4.5 suma que ningún cierre del último corte tiene el video de la PO y que SCRUM-1704 se cerró con ADR-0035 `Propuesto`. §4.6 suma un quinto patrón: cerrar sin la evidencia completa del *definition of done*. La consulta D10 quedó corregida en el PR #90. | Sara Albarracín |
 | 2.0 | 2026-11-22 | Corte al 22 de noviembre: 52 de 82 ítems en Done (eran 2) y 13 de 19 historias. §2 recoge las cuatro ratificaciones, el acta A/B firmada y el análisis de riesgo de SAD §23.1. **§4 se reescribe como lo no entregado en el producto final**: los 8 escenarios que no cumplen, los 3 sin medir y los 11 parciales, cada uno con su responsable y lo que pasó en el proceso, más lo no entregado fuera del producto y las cuatro causas de proceso agrupadas. Dos lecciones nuevas: medir al final (3.5) y los pedidos sin un responsable nombrado (3.6). | Sara Albarracín |
 | 1.0 | 2026-11-19 | Informe inicial. Cifras de Jira del mismo día: 81 ítems, 2 en Done, ninguna de las 19 historias cerrada y 36 en revisión. Cuatro lecciones aprendidas y nueve puntos abiertos con su responsable. | Sara Albarracín |

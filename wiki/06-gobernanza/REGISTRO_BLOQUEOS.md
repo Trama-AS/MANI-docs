@@ -9,8 +9,8 @@
 | **Mantiene** | Sara Albarracín (Scrum Master), gestión de impedimentos |
 | **Consume** | El equipo en cada *daily*; el informe de cierre del Sprint 6 ([SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708)); el PO para los bloqueos que escalan a decisión |
 | **Se actualiza** | En cada *daily*: se abre lo nuevo, se cierra lo resuelto y se recalcula el tiempo abierto |
-| **Versión** | 1.3 |
-| **Fecha de corte** | 2026-11-11 |
+| **Versión** | 1.4 |
+| **Fecha de corte** | 2026-11-22. Días hábiles de lunes a viernes, sin el festivo del 16 de noviembre |
 | **Umbral de escalamiento** | **2 días hábiles abierto.** Al cumplirse, el bloqueo se escala con evidencia al rol con autoridad sobre el artefacto ([`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3). |
 
 > **Regla de este registro.** Un bloqueo se registra el día en que se detecta, no el día en que alguien decide que es importante. Si no tiene responsable nombrado, el responsable es la SM hasta que se reasigne: un bloqueo sin dueño no existe para nadie.
@@ -29,25 +29,25 @@ No es un bloqueo: una tarea que avanza despacio, una tarea mal estimada, ni una 
 
 ## 2. Bloqueos abiertos
 
-Ocho bloqueos al 2026-11-11. Las fechas de aparición son las del hecho que los origina, no la de este registro.
+**Dos bloqueos abiertos al 2026-11-22**, de los nueve registrados el 11 de noviembre. Los otros siete se resolvieron entre el 12 y el 21 de noviembre y están en [§3](#3-bloqueos-resueltos).
 
 | ID | Ítem afectado | Tipo | Causa | Responsable de resolverlo | Aparición | Días hábiles | Estado |
 |---|---|---|---|---|---|---|---|
-| **B-01** | [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) (reescribir SDD §7 y §8) | Dependencia | El acta de decisión A/B ([SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684)) está en `To Do` y no existe como documento. El 2026-11-11 se decidió una de sus partes —el RPO/RTO único, fila D4—, pero el acta sigue faltando: nadie ha marcado cada escenario como A o B con su motivo, y la firma es del PO. Reescribir el SDD sin eso sería inventar las cifras | Camila Beltrán (PO) firma; Sara Albarracín facilita | 2026-11-09 | **2** | **Escalado** — en umbral |
-| **B-02** | [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) (SDD §8, Infra V4 §7, Excel) | Dependencia | Doble: espera a B-01 (la tarea declara que va después de la T-48) y espera la fila D8 de HU-VAL-01, que fija si hay observabilidad en QA. **La cifra del enunciado ya está corregida** el 2026-11-11: el título y el criterio decían 82/84 y ahora dicen **84/85**, el conteo de Jira. Queda por corregir el Excel, que es parte de la tarea | Camila Beltrán (PO) y Daniel Ávila; la cifra la corrige Sara | 2026-11-09 | **2** | **Escalado** — en umbral, y con la cifra del enunciado en disputa |
-| **B-03** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696), 7 filas (D1, D5, D6, D7, D8, D9, D10) | Acceso | Las siete exigen sesión SSH en las VMs de DEV, QA y PROD, consulta a Supabase de PROD, o prueba de puertos **desde la red de la universidad**. No son verificables desde los repositorios. El usuario SSH se solicita al DevOps Lead y no está repartido | Daniel Ávila (DevOps), con Santiago para D6 y D10 | 2026-11-10 | **1** | Abierto |
-| **B-04** | [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) (clientes asociados a un tenant) | Decisión | La ficha [ADR-0036](../02-arquitectura/adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) ya está publicada y establece que no es un defecto sino el diseño vigente, pero está en estado `Propuesto`: faltan las respuestas M1 a M4. No se toca código hasta que el ADR esté aprobado | Camila Beltrán (PO); M4 a la Mesa de Arquitectura | 2026-11-05 | **4** | **Escalado** — supera el umbral |
-| **B-05** | [SCRUM-1638](https://maniservices.atlassian.net/browse/SCRUM-1638) (desplegar front v1.0.4 y repetir las 18 rutas) | Dependencia | Está en `To Do`, y es la evidencia que la fila D1 necesita para cerrar. Mientras no se ejecute, la afirmación «PROD en v1.0.4 al 100 %» no tiene respaldo y no puede presentarse como hecho | Daniel Ávila (despliegue) y Camila Beltrán (revisión de rutas) | 2026-11-09 | **2** | **Escalado** — en umbral |
-| **B-06** | [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) (ADR 6A y SAD §7.4) | Decisión | [ADR-0035](../02-arquitectura/adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto` y [ADR-0032](../02-arquitectura/adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) está aprobado en revisión de arquitectura pero **pendiente de acta de Mesa**. La asignación idempotente no está escrita en el SAD | Mesa de Arquitectura (ADR-0003) | 2026-11-09 | **2** | **Escalado** — en umbral |
-| **B-07** | Las ocho HU de wiki, entre ellas [SCRUM-1690](https://maniservices.atlassian.net/browse/SCRUM-1690) y [SCRUM-1711](https://maniservices.atlassian.net/browse/SCRUM-1711) | Decisión | Los criterios comunes exigen **suplente por carpeta**, y ninguna carpeta lo tiene asignado. Es una decisión de equipo, no de la responsable de cada carpeta | El equipo, según [`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3 | 2026-11-09 | **2** | **Escalado** — en umbral, y afecta a ocho historias a la vez |
-| **B-08** | Las ocho HU de wiki | Dependencia | Los criterios comunes exigen que **otro responsable de carpeta revise y apruebe el README**. Ningún README está revisado por un par, así que ninguna de las ocho puede cerrarse aunque su contenido esté completo | Responsables de carpeta, en revisión cruzada | 2026-11-10 | **1** | Abierto |
-| **B-09** | [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) (ADR de cifrado) y con él [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) | Decisión | **No hay requisito que cumplir.** Los RNF vigentes van de RNF-01 a RNF-11 y ninguno exige cifrado en reposo; el SDD tiene QAS-01 y QAS-43 (confidencialidad entre tenants y **en tránsito**) pero **ningún escenario de confidencialidad en reposo**. Sin umbral ni método, cualquier elección de mecanismo sería una cifra inventada. La necesidad sí está documentada: la Ley 1581 de 2012, citada en el SRS | Camila Beltrán (PO): un RNF de protección de datos personales en reposo y un QAS derivado con umbral y método | 2026-11-11 | **0** | Abierto — recién identificado al decidir P-D15a |
+| **B-03** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696), fila **D10** | Acceso | De las siete filas que exigían acceso a los ambientes, seis se cerraron el 2026-11-19 con la evidencia que DevOps publicó en [`08-infraestructura/`](../08-infraestructura/README.md). Queda **D10**: las migraciones aplicadas y `BYPASSRLS` en los roles de servicio, que solo se comprueban con una consulta a Supabase de PROD y de QA. La consulta se corrigió el 2026-11-22 ([`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) §3.1): la versión anterior leía una tabla equivocada y exigía `f` en roles que en Supabase tienen `BYPASSRLS` por diseño | Daniel Ávila o Santiago Hernández, que tienen acceso a los dos proyectos | 2026-11-10 | **7** | **Supera el umbral.** Pendiente de la consulta |
+| **B-06** | [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) (ADR 6A) | Decisión | [ADR-0035](../02-arquitectura/adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto` y [ADR-0032](../02-arquitectura/adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) sigue pendiente de acta. **La Mesa no se convocó en todo el Sprint 6.** La SM ratificó el 2026-11-19 otras cuatro decisiones sin Mesa (ADR-0036, 0037, 0038 y la enmienda de 0006), pero no puede ratificar ADR-0035 porque es su proponente. La asignación idempotente sí está escrita en `SAD.md` §7.2 y §7.4: lo que falta es la firma, no el contenido. SCRUM-1704 se cerró en Jira, pero el bloqueo sigue: el ADR no está ratificado | Mesa de Arquitectura (ADR-0003) | 2026-11-09 | **8** | **Supera el umbral.** Sin respuesta: depende de convocar una sesión, no de una persona |
 
 ## 3. Bloqueos resueltos
 
 | ID | Ítem afectado | Causa | Aparición | Resolución | Días hábiles | Cómo se resolvió |
 |---|---|---|---|---|---|---|
-| **B-00** | [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700) (ADR del tenant de clientes) | Dependencia: el ADR no existía y [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) no podía avanzar sin él | 2026-11-09 | 2026-11-11 | 2 | Se publicó [ADR-0036](../02-arquitectura/adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) en estado `Propuesto`. **El bloqueo de redacción se cierra; el de decisión queda abierto como B-04.** Un bloqueo que cambia de tipo no se cierra sin abrir el que lo sucede |
+| **B-00** | [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700) (ADR del tenant de clientes) | Dependencia: el ADR no existía y [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) no podía avanzar sin él | 2026-11-09 | 2026-11-11 | 2 | Se publicó [ADR-0036](../02-arquitectura/adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) en estado `Propuesto`. **El bloqueo de redacción se cerró; el de decisión siguió abierto como B-04.** Un bloqueo que cambia de tipo no se cierra sin abrir el que lo sucede |
+| **B-08** | Las ocho HU de wiki | Dependencia: revisión del README por otro responsable de carpeta | 2026-11-10 | 2026-11-12 | 2 | **Criterio retirado por la SM**, no cumplido: ninguna carpeta declaraba responsable, así que la figura que el criterio invocaba no existía. Se retiró en vez de darlo por cumplido sin revisión real |
+| **B-07** | Las ocho HU de wiki | Decisión: suplente por carpeta | 2026-11-09 | 2026-11-12 | 3 | En las dos carpetas de la SM: suplencia de la **Mesa de Arquitectura** como órgano en 02-arquitectura (2026-11-11) y de la **PO** en 06-gobernanza (2026-11-12). Las demás carpetas lo resolvieron sus responsables al cerrar su HU |
+| **B-05** | [SCRUM-1638](https://maniservices.atlassian.net/browse/SCRUM-1638) (front v1.0.4 en PROD y las 18 rutas) | Dependencia: la tarea no se había ejecutado y la fila D1 no tenía respaldo | 2026-11-09 | 2026-11-15 | 4 | DevOps capturó la evidencia el 14 y 15-nov: digest de PROD igual al tag `v1.0.4` y `200 OK` en las 18 rutas. Con ella se cerró D1 el 2026-11-19, y la tarea pasó a `Done` el 2026-11-21 |
+| **B-04** | [SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637) (clientes asociados a un tenant) | Decisión: ADR-0036 sin respuestas M1 a M4 | 2026-11-05 | 2026-11-12 | 5 | ADR-0036 v2.0 respondió M1 a M4 y SCRUM-1637 se cerró como «funciona según diseño». La SM ratificó el ADR el 2026-11-19 sin Mesa, y la Mesa puede confirmarlo o revertirlo |
+| **B-09** | [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) y [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) (cifrado) | Decisión: no existía el requisito que el ADR debía cumplir | 2026-11-11 | 2026-11-19 | 5 | Se propusieron RNF-13 y QAS-46 ([`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md)); [ADR-0037](../02-arquitectura/adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) decidió la opción A, con acreditación técnica el 14-nov, y la SM lo ratificó el 19-nov. SCRUM-1383 pasó a `Done` el 21-nov. **Queda abierto, sin bloquear:** la aprobación de RNF-13 y QAS-46 por la PO (M2 del ADR) |
+| **B-02** | [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) (SDD §8, Infra V4 §7, Excel) | Dependencia: esperaba la fila D8 | 2026-11-09 | 2026-11-19 | 7 | Al cerrarse D8 el 2026-11-19, DevOps actualizó `SDD.md` §8 e Infraestructura V4 §7 (`a0bb876`). El Excel salió del alcance el 2026-11-12, porque ninguna de sus 34 hojas tiene el conteo de historias, y el 84/85 ya está en D11. La tarea está en revisión |
+| **B-01** | [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) (reescribir SDD §7 y §8) | Dependencia: el acta A/B no existía | 2026-11-09 | 2026-11-21 | 8 | La PO firmó el [acta A/B](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md) el 2026-11-21 y QA escribió los umbrales en el SDD (`7815d75`). SCRUM-1685 `Done` ese mismo día. **Es el bloqueo que más duró**, y por la causa más evitable: no había una fecha comprometida para firmar el acta |
 
 ## 3.1 Evidencia del escalamiento
 
@@ -67,23 +67,27 @@ El umbral de escalamiento son **2 días hábiles**. Seis bloqueos lo alcanzaron 
 
 **Respuesta recibida, el mismo día.** Confirmó que **no rotó** el token ni las credenciales de las VMs, y dio su justificación: el token tiene como objetivo el propio proyecto, de modo que a su juicio un tercero no podría hacer daño con él; las VMs están todas tras la VPN de la universidad; y cambiar las contraseñas de las VMs obligaría a los siete integrantes a hacerlo con la entrega encima. Lo que sí hizo: retirar las credenciales de los archivos activos y sacar el valor de `HEAD`.
 
-**Resultado.** La SM aceptó el criterio el 2026-11-19 y queda registrado como **riesgo aceptado con justificación**, no como resuelto, en [`08-infraestructura/02-accesos-y-gestion-secretos.md`](../08-infraestructura/02-accesos-y-gestion-secretos.md).
+**Resultado.** La SM aceptó el criterio el 2026-11-19 y queda registrado como **riesgo aceptado con justificación**, no como resuelto, en [`08-infraestructura/02-accesos-y-gestion-secretos.md`](../08-infraestructura/02-accesos-y-gestion-secretos.md). SCRUM-1712 pasó a `Done` el 2026-11-21 con ese alcance: credenciales retiradas de `HEAD`, **sin rotar**.
 
 ### Lo que estos dos escalamientos dejan dicho
 
 Los seis bloqueos que superaron el umbral **se escalaron y obtuvieron respuesta**, de modo que el criterio de aceptación queda cumplido. Pero la respuesta no siempre fue desbloquear: en el caso del token fue **aceptar el riesgo de forma deliberada**, y eso también es una respuesta válida de quien tiene la autoridad. Lo que no sería válido es presentarlo como cerrado.
 
-**Lo que sigue sin escalarse con respuesta** son los bloqueos que esperan a la Mesa de Arquitectura (**B-06**) y al propio equipo (**B-07**), porque dependen de convocar una sesión y no de una persona.
+**Lo que sigue sin escalarse con respuesta** es **B-06**, que espera a la Mesa de Arquitectura y depende de convocar una sesión, no de una persona. B-07 se resolvió el 2026-11-12 sin necesidad de sesión. **B-03** pasó el umbral con la fila D10: la evidencia de su escalamiento se registra aquí cuando Daniel o Santiago respondan.
 
 ## 4. Resumen al corte
 
-| Métrica | Valor al 2026-11-11 |
-|---|---|
-| Bloqueos abiertos | **9** |
-| Bloqueos resueltos | **1** |
-| En o sobre el umbral de 2 días hábiles | **6** de 9 (B-01, B-02, B-04, B-05, B-06, B-07) |
-| Tiempo medio de resolución | **2 días hábiles**, sobre una sola muestra: no es un promedio significativo todavía |
-| Por tipo | Decisión **5** · Dependencia **3** · Acceso **1** |
+| Métrica | Valor al 2026-11-22 | Valor al 2026-11-11 |
+|---|---|---|
+| Bloqueos registrados | **10** (B-00 a B-09) | 10 |
+| Abiertos | **2** (B-03, B-06) | 9 |
+| Resueltos | **8** | 1 |
+| Tiempo medio de resolución | **4,5 días hábiles** sobre 8 muestras (mínimo 2, máximo 8; mediana 4,5) | 2, sobre una sola muestra |
+| Superaron el umbral de 2 días hábiles | **7** de 10: B-01, B-02, B-03, B-04, B-05, B-06 y B-09 | 6 de 9 |
+| Por tipo, los 10 | Decisión **5** · Dependencia **4** · Acceso **1** | — |
+| Por tipo, los 2 abiertos | Decisión **1** (Mesa) · Acceso **1** (Supabase) | — |
+
+**Lo que dicen las cifras.** Los bloqueos de **decisión** se resolvieron en cuanto hubo una sesión o alguien con autoridad que decidiera; el que sigue abierto (B-06) es justamente el único que exige una sesión que nunca se convocó. Los de **dependencia** tardaron más (de 2 a 8 días) porque esperaban un entregable de otra persona sin fecha comprometida: B-01, el más largo, esperó doce días naturales un acta que podía firmarse en una reunión.
 
 **Causas recurrentes y su acción de mejora.** Tres patrones, los tres con acción asociada, como exige el criterio de aceptación:
 
@@ -95,12 +99,15 @@ Los seis bloqueos que superaron el umbral **se escalaron y obtuvieron respuesta*
 
 ## 5. Lo que falta para cerrar SCRUM-1709
 
-| # | Qué falta | De quién depende |
+| # | Criterio | Estado al 2026-11-22 |
 |---|---|---|
-| 1 | ~~Crear la etiqueta `bloqueado` y aplicarla~~ **Hecho el 2026-11-11.** La etiqueta no existía —`labels in (bloqueado, bloqueo, blocked)` y `status = Blocked` daban cero en todo el proyecto— y Jira la creó al usarla. Aplicada a los **diez tickets** que cubren los nueve bloqueos: SCRUM-1685, 1686, 1696, 1637, 1638, 1704, 1690, 1711, 1699 y 1383, más SCRUM-1712. Las etiquetas previas de cada ticket se conservaron | — |
-| 2 | **Revisar los bloqueos abiertos en cada *daily*** y actualizar aquí lo que cambie | El equipo en la *daily* |
-| 3 | **Evidencia del escalamiento** de los seis que están en o sobre el umbral: a quién se escaló, cuándo y con qué respuesta | Sara Albarracín (SM) |
-| 4 | **Resumen de cierre** con el número final, el tiempo medio y las causas recurrentes, para alimentar [SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708) | Sara Albarracín (SM), al cerrar el sprint |
+| 1 | La etiqueta `bloqueado` y la tabla existen | Cumplido, con la salvedad de abajo |
+| 2 | El 100 % de los bloqueos tiene ítem, causa, responsable y fechas | Cumplido: los diez |
+| 3 | Los bloqueos sobre el umbral quedan escalados con evidencia | Cumplido en los resueltos (§3.1). B-06 y B-03 siguen sin respuesta y así se declaran |
+| 4 | Resumen al cierre: número, tiempo medio y causas recurrentes | Cumplido al corte del 2026-11-22 (§4). Se toma la cifra definitiva el día del cierre |
+| 5 | Cada bloqueo recurrente genera acción de mejora o riesgo | Cumplido: tres patrones con su acción |
+
+**Lo único que queda** es repetir el corte el día del cierre del sprint: B-03 se resuelve con la consulta de D10, y B-06 se declara como abierto al cierre si la Mesa no se convoca.
 
 El criterio «la tabla existe antes del inicio del sprint» **no se cumplió**: el registro se crea el 2026-11-11, con el sprint en curso. Queda dicho así, y no como cumplido, porque los ocho bloqueos de §2 ya estaban activos antes de que existiera dónde anotarlos. Para el Sprint 7 la tabla debe crearse vacía en la *planning*.
 
@@ -108,6 +115,7 @@ El criterio «la tabla existe antes del inicio del sprint» **no se cumplió**: 
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 1.4 | 2026-11-22 | Corte al 22 de noviembre con los estados de Jira del día: **siete bloqueos resueltos** (B-01, B-02, B-04, B-05, B-07, B-08 y B-09) con fecha y forma de resolución, y **dos abiertos** (B-03, reducido a la fila D10, y B-06, que espera a la Mesa). Tiempo medio de resolución de 4,5 días hábiles sobre ocho muestras. §5 pasa a tabla de criterios. Anotado el 23-nov: SCRUM-1704 se cerró en Jira, pero B-06 sigue abierto porque ADR-0035 no está ratificado. | Sara Albarracín |
 | 1.3 | 2026-11-19 | Se añade la **evidencia del escalamiento** de los seis bloqueos que superaron el umbral, con las dos conversaciones que la acreditan: la del 10 de noviembre con el PO, que cerró cinco decisiones y desbloqueó dos filas de la validación, y la del 16 con DevOps sobre el token expuesto, cuya respuesta fue aceptar el riesgo con justificación. Con esto queda cumplido el tercer criterio de aceptación de SCRUM-1709. | Sara Albarracín |
 | 1.2 | 2026-11-11 | Se aplica la etiqueta `bloqueado` en Jira a los diez tickets de los nueve bloqueos, con lo que el primer criterio de SCRUM-1709 queda cumplido. B-02 recoge que el título y el criterio de SCRUM-1686 ya dicen 84/85. | Sara Albarracín |
 | 1.1 | 2026-11-11 | Alineación con la v2.0 de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md). Se añade **B-09**: el ADR de cifrado está bloqueado porque no existe el requisito que debería cumplir, ni RNF ni QAS de confidencialidad en reposo. Se matiza B-01: la decisión de D4 cerró el RPO/RTO único, pero el acta A/B sigue faltando. Se añade una tercera causa recurrente —el requisito inexistente— y se recalcula el resumen a nueve bloqueos abiertos. | Sara Albarracín |

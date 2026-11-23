@@ -267,7 +267,7 @@ Sin filas `0011` ni `0012`. Coincide con los archivos de `release` (`cdebf74`).
 
 **Resultado en QA: cumple.** Los dos roles de servicio no tienen `BYPASSRLS`, la serie de migraciones está completa hasta la `0043` y hay 58 políticas activas.
 
-**Observación, no falla.** Las dos políticas `TO public` dejan leer a `anon` el catálogo de tenants y de zonas, y **no vienen de ninguna migración del repositorio**: se crearon a mano. Si es intencional, porque el registro necesita elegir tenant y zona antes de iniciar sesión, hay que dejarlas en una migración nueva; si no, restringirlas a `authenticated`. Responsable: Core. La consulta de PROD debe decir si existen también allí.
+**Hallazgo de aislamiento, fuera de D10.** Las dos políticas `TO public` dejan leer a `anon` **todos** los tenants y todas las zonas, de todas las empresas, y **no vienen de ninguna migración del repositorio**: se crearon a mano. **La app no las usa:** Flutter solo usa Supabase para iniciar sesión, y `test/core/arquitectura/supabase_solo_auth_test.dart` (MANI-Flutter, `develop`) prohíbe `.from()` sobre tablas sin ninguna excepción; los datos, incluido el catálogo público del registro (`src/routes/core/catalog.routes.js`), los sirve Core por el Gateway, conectado como `mani_core_svc`. Como la llave `anon` es pública en la app web, cualquiera puede listar tenants y zonas de otras empresas, lo que contradice el aislamiento por tenant (ADR-0032). **Corrección propuesta:** una migración nueva de Core que haga `DROP POLICY IF EXISTS` de las dos, probada primero en QA. Responsable: Core. La consulta de PROD debe decir si existen también allí.
 
 #### Evidencia de PROD (`tjxueukivwxsgipltqwb`)
 

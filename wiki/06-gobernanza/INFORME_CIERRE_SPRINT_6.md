@@ -150,7 +150,7 @@ Son los ítems que QA no pudo cerrar al corte del 23-nov, con la causa que dejó
 | Qué | Responsable | Por qué no se entrega |
 |---|---|---|
 | **Kafka en PROD** ([SCRUM-1677](https://maniservices.atlassian.net/browse/SCRUM-1677)) | DevOps y Arquitectura | Kafka corre en DEV y QA, pero no en PROD. Está en la épica post-MVP, que según su propio criterio no entra al sprint hasta que la PO la priorice. Los flujos que dependen de eventos asíncronos no funcionan en PROD, y la restricción PROY-10 lo exige |
-| **Fila D10 de la validación** | Daniel y Santiago | Falta la consulta a Supabase de PROD y de QA. Se pidió el 22-nov con la consulta corregida en el PR #90 |
+| **Fila D10 de la validación** | Daniel | **QA verificado el 23-nov** (Santiago): roles de servicio sin `BYPASSRLS`, 49 migraciones hasta la `0043`, 58 políticas. Falta la misma consulta en PROD, que solo Daniel puede correr. Sin ella no se puede afirmar paridad |
 | **Ratificación de ADR-0035 en Mesa** | Mesa de Arquitectura | La Mesa no se convocó en todo el sprint, y la SM no puede ratificar un ADR que ella misma propuso |
 | **Token de SonarQube sin rotar** | Daniel | Es un **riesgo aceptado**, no resuelto: se retiró de los archivos, pero no se invalidó. Ver [`08-infraestructura/02-accesos-y-gestion-secretos.md`](../08-infraestructura/02-accesos-y-gestion-secretos.md) |
 | **RNF-13 y QAS-46 sin aprobar** | PO | Son la base de ADR-0037. Están propuestos, pero la PO no los ha aprobado |

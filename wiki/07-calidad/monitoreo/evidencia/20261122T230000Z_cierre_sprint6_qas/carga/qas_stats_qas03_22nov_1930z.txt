@@ -1,0 +1,60 @@
+19:32:10
+mani-dispatch-service cpu=0.23% mem=23.22%
+mani-core-service cpu=1.24% mem=15.84%
+mani-api-gateway cpu=0.03% mem=5.60%
+mani-rules-service cpu=0.22% mem=14.84%
+19:32:42
+mani-dispatch-service cpu=23.31% mem=25.33%
+mani-core-service cpu=22.79% mem=16.57%
+mani-api-gateway cpu=3.79% mem=6.25%
+mani-rules-service cpu=4.15% mem=14.86%
+19:33:14
+mani-dispatch-service cpu=46.24% mem=28.90%
+mani-core-service cpu=62.34% mem=17.50%
+mani-api-gateway cpu=9.97% mem=13.33%
+mani-rules-service cpu=10.18% mem=14.91%
+19:33:47
+mani-dispatch-service cpu=27.57% mem=32.00%
+mani-core-service cpu=47.61% mem=18.24%
+mani-api-gateway cpu=5.91% mem=16.68%
+mani-rules-service cpu=7.30% mem=14.93%
+19:34:19
+mani-dispatch-service cpu=40.81% mem=32.41%
+mani-core-service cpu=31.90% mem=18.43%
+mani-api-gateway cpu=5.21% mem=16.59%
+mani-rules-service cpu=7.10% mem=15.33%
+19:34:51
+mani-dispatch-service cpu=25.09% mem=32.41%
+mani-core-service cpu=29.77% mem=18.43%
+mani-api-gateway cpu=5.25% mem=16.83%
+mani-rules-service cpu=6.11% mem=15.07%
+19:35:23
+mani-dispatch-service cpu=31.73% mem=25.31%
+mani-core-service cpu=30.18% mem=18.60%
+mani-api-gateway cpu=5.78% mem=17.04%
+mani-rules-service cpu=6.62% mem=15.08%
+19:35:56
+mani-dispatch-service cpu=35.04% mem=25.09%
+mani-core-service cpu=24.41% mem=18.66%
+mani-api-gateway cpu=4.81% mem=17.05%
+mani-rules-service cpu=8.12% mem=15.16%
+19:36:28
+mani-dispatch-service cpu=53.52% mem=25.80%
+mani-core-service cpu=46.83% mem=18.67%
+mani-api-gateway cpu=6.65% mem=17.13%
+mani-rules-service cpu=8.47% mem=15.08%
+19:37:00
+mani-dispatch-service cpu=38.47% mem=25.95%
+mani-core-service cpu=27.15% mem=18.68%
+mani-api-gateway cpu=5.24% mem=17.23%
+mani-rules-service cpu=6.22% mem=15.08%
+19:37:32
+mani-dispatch-service cpu=28.33% mem=26.45%
+mani-core-service cpu=30.52% mem=18.86%
+mani-api-gateway cpu=4.86% mem=17.23%
+mani-rules-service cpu=5.00% mem=15.08%
+19:38:05
+mani-dispatch-service cpu=50.83% mem=26.32%
+mani-core-service cpu=21.54% mem=19.20%
+mani-api-gateway cpu=1.81% mem=17.47%
+mani-rules-service cpu=4.83% mem=15.26%

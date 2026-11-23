@@ -29,6 +29,8 @@ Pools: Core 30 y Dispatch 5 (pooler de Supabase en modo transacción). Despliegu
 | 31 Aprendizabilidad | No medido | **Cumple** | Flujos base: F1 0, F2 0, F3 0 y F7 1 asistencia (rótulos «Backoffice», «KYC»). Umbral ≤ 1. Límite: el evaluador conoce el sistema |
 | 32 Operabilidad | No medido | **Cumple, tras corregir tres defectos** | Tareas críticas ejecutadas: 8 de 8 al cierre (100 %). En el primer intento, el registro de aliado (F7) falló: 7 de 8 (87,5 %). F4 (pagar) no se ejecutó |
 | 33 Involucración | Cumple | **No cumple** | #152 se fusionó con 28 líneas de botones o campos nativos en pantallas que modifica. En `release` quedan 83 nativos en 31 pantallas tocadas desde la regla (antes 162). [`t45/qas33_release_1991221_22nov.txt`](t45/qas33_release_1991221_22nov.txt) |
+| 34 Inclusividad | No cumple | **No cumple** (23 nov) | El criterio ya existe (WCAG 2.2 AA en `PRODUCT.md` de Flutter). Flutter falla idioma (`en-US`), nombre de los campos, zoom en celular y foco visible; contraste de tokens 38 de 38. Landing con 33 textos de contraste bajo. [`qas34_qas35/`](qas34_qas35/revision_qas34_qas35.md) |
+| 35 Asistencia al usuario | No cumple | **No cumple** (23 nov) | 594 de 594 pruebas de mensajes. Orientan 3 de 6 casos; no orientan la redirección por rol, los 5xx de verificación y asignación ni el error de tamaño de archivo. [`qas34_qas35/`](qas34_qas35/revision_qas34_qas35.md) |
 | 39 Advertencia de peligro | Parcial | **Cumple** | Ocultar categoría, cerrar sesión (barra superior, Tu cuenta en celular y tarjeta del inicio), cancelar solicitud y aprobar aliado piden confirmación; «Cancelar» no cambia nada. [`t45/qas39_qa_1991221_22nov.txt`](t45/qas39_qa_1991221_22nov.txt) |
 
 ## Defectos encontrados y corregidos durante la medición

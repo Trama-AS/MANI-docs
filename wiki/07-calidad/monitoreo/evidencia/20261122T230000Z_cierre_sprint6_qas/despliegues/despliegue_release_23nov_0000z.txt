@@ -1,0 +1,70 @@
+cabezas de release: core cdebf74 dispatch ba460e4 flutter 003f57e gateway e454bcf rules 348f6d9
+== Antes (2026-11-23T00:01:01Z)
+  mani-core-service cdebf74
+  mani-dispatch-service ba460e4
+  mani-flutter-web 77cd696
+  mani-api-gateway e454bcf
+  mani-rules-service 348f6d9
+  mani-landing-web a82b94e
+== Comprobaciones sin cambios
+  migraciones de release registradas: ultima 0043
+  CORE_SERVICE_URL de Dispatch: http://core-service:3000
+  pools en el compose: Core 30, Dispatch 5
+  landing ya en release
+== Pull de imagenes :staging
+ Image ghcr.io/trama-as/mani-apigateway:staging Pulled 
+ Image ghcr.io/trama-as/mani-node:staging Pulled 
+ Image ghcr.io/trama-as/mani-dotnet:staging Pulled 
+ Image ghcr.io/trama-as/mani-flutter:staging Pulled 
+  ok  ghcr.io/trama-as/mani-node:staging cdebf74
+  ok  ghcr.io/trama-as/mani-dotnet:staging ba460e4
+  ok  ghcr.io/trama-as/mani-java:staging 348f6d9
+  ok  ghcr.io/trama-as/mani-flutter:staging 003f57e
+  ok  ghcr.io/trama-as/mani-apigateway:staging e454bcf
+== Redespliegue 1/2: core-service
+ Container mani-core-service Running 
+  core: 200
+== Redespliegue 2/2: dispatch-service rules-service flutter-web gateway
+ Container mani-api-gateway Running 
+ Container mani-rules-service Running 
+ Container mani-dispatch-service Running 
+ Container mani-flutter-web Recreate 
+ Container mani-flutter-web Recreated 
+ Container mani-flutter-web Starting 
+ Container mani-flutter-web Started 
+== Espera y salud
+mani-api-gateway | Up 50 minutes
+mani-core-service | Up 5 hours
+mani-dispatch-service | Up 5 hours
+mani-flutter-web | Up 1 second
+mani-kafka | Up 7 days (healthy)
+mani-landing-web | Up 29 hours
+mani-qa-cadvisor | Up 7 days (healthy)
+mani-qa-nginx-exporter | Up 7 days
+mani-qa-nginxlog-exporter | Up 7 days
+mani-qa-node-exporter | Up 7 days
+mani-qa-postgres-exporter | Up 7 days
+mani-qa-promtail | Up 7 days
+mani-rules-service | Up 2 days
+  200 http://localhost/health
+  200 http://localhost/api/v1/core/health
+  200 http://localhost/api/v1/rules/health
+  200 http://localhost/api/v1/dispatch/health
+  200 http://localhost:8080/
+  200 http://localhost:3001/
+== Rol de arranque en logs
+== Verificacion oficial (termina con 'roles y politicas conformes' si cumple)
+DO
+TEC-21: roles y políticas conformes
+psql:<stdin>:65: WARNING:  TEC-21: no hay conexiones de mani_dispatch_svc; revisar la cadena de conexión de Dispatch
+== Pools en los contenedores
+DATABASE_POOL_MAX=30
+Maximum Pool Size=5
+== Revisiones finales
+  mani-core-service cdebf74
+  mani-dispatch-service ba460e4
+  mani-flutter-web 003f57e
+  mani-api-gateway e454bcf
+  mani-rules-service 348f6d9
+  mani-landing-web a82b94e
+== Fin (2026-11-23T00:01:17Z)

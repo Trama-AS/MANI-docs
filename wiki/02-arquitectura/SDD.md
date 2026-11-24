@@ -905,7 +905,7 @@ Evidencia exigida por caso (Políticas DevOps §13.4): reporte de Newman con la 
 
 ## 8.13 Estado de los escenarios
 
-Resultado más reciente de QA para cada escenario, con corte del **24 de noviembre de 2026** en MANI-QA, salvo que la fila diga otra cosa. **Conteo:** Cumple 35 · Parcial 4 · No cumple 5 · No medido 1. La herramienta y la posible solución de cada uno están en [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md).
+Resultado más reciente de QA para cada escenario, con corte del **24 de noviembre de 2026** en MANI-QA, salvo que la fila diga otra cosa. **Conteo:** Cumple 35 · Parcial 5 · No cumple 5 · No medido 0. La herramienta y la posible solución de cada uno están en [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md).
 
 | Estado | Significa |
 |---|---|
@@ -920,7 +920,7 @@ Resultado más reciente de QA para cada escenario, con corte del **24 de noviemb
 | **QAS-02** | Tolerancia a fallos | **Cumple** | 2026-11-24 | [corrida](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/qas02/qas02_tarde_real_24nov_2133z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/informe_remedicion.md) | Límite: Dispatch ofrece en serie y cada elegible suma unos 3,5 s si el push no responde; con muchos elegibles no se midió. |
 | **QAS-03** | Comportamiento temporal | **No cumple** | 2026-11-22 | [carga del cierre](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/carga/qas_carga_22nov_1930z.txt) | Con SCRUM-1651 desplegado ya no hay 5xx, pero `eligible-allies` con 300 VUs tiene p95 de 8.212 ms (umbral 500 ms): las peticiones esperan al Core. Sin carga, 540 ms. |
 | **QAS-04** | Capacidad para ser modificado | **Cumple** | 2026-11-21 | [PR y consumidores](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas04_rules_pr13.txt) | — |
-| **QAS-05** | Escalabilidad | **No medido** | 2026-11-22 | [informe del barrido](../07-calidad/monitoreo/evidencia/20261122T025500Z_barrido_qas/informe_barrido.md) | Escalar con `docker compose --scale` cambia el QA compartido. |
+| **QAS-05** | Escalabilidad | **Parcial** | 2026-11-24 | [informe](../07-calidad/monitoreo/evidencia/20261124T222200Z_qas05/informe_qas05.md), [corrida](../07-calidad/monitoreo/evidencia/20261124T222200Z_qas05/qas05_24nov_2222z.txt) | Core escala de 2 a 6 réplicas con carga: las 6 reciben tráfico, misma imagen y 0 errores en 4.282 peticiones. Faltan Rules (memoria de la VM) y Dispatch (su conexión usa 5432 y no el pooler). Límite: copias con 0,5 CPU por réplica y 10 peticiones/s; no mide rendimiento. |
 | **QAS-06** | Interoperabilidad | **Parcial** | 2026-11-24 | [tabla API ↔ contrato](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas06/tabla_api_contrato.csv) | `/api/v1/dispatch/metrics` y `/api/v1/rules/metrics` se publican sin contrato. |
 | **QAS-07** | Corrección funcional | **Cumple** | 2026-11-22 | [ranking y tarifa en QA](../07-calidad/monitoreo/evidencia/20261122T013000Z_t46_concurrencia/qas07_ranking_vivo_22nov_0155z.txt) | — |
 | **QAS-08** | Protección contra errores de usuario | **Cumple** | 2026-11-21 | [pruebas por escenario](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/flutter_test_interaccion.md) | — |

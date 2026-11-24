@@ -112,7 +112,7 @@ Los diagramas de alto nivel de este documento se dibujan a mano y se mantienen a
 
 | # | Diagrama | Pregunta que responde | Archivo | Dónde se desarrolla |
 |---|---|---|---|---|
-| 1 | **Arquitectura general** | ¿Cómo está construida MANI? | [`01-contexto-alto-nivel.png`](diagrams/AltoNivel/actualizados/01-contexto-alto-nivel.png) | §5, §6 y §7 |
+| 1 | **Arquitectura general** | ¿Cómo está construida MANI? | [`MANI_Arquitectura_SaaS_Multi-Tenant.png`](diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png) | §5, §6 y §7 |
 | 2 | **Infraestructura, CI/CD y operación** | ¿Cómo se desarrolla, despliega y opera MANI? | [`02-despliegue-infraestructura.png`](diagrams/AltoNivel/actualizados/02-despliegue-infraestructura.png) | §16, §17 y §18 |
 | 3 | **Arquitectura de datos** | ¿Qué dominios de datos hay y quién accede a cuáles? | [`03-arquitectura-datos.png`](diagrams/AltoNivel/actualizados/03-arquitectura-datos.png) | §14 |
 | 4 | **Tech Radar** | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | — | [`TECH_RADAR.md`](TECH_RADAR.md) |
@@ -188,9 +188,9 @@ Los tres describen la **arquitectura objetivo**. El estado de cada gate de calid
 
 # 5. Vista de contexto
 
-[![Diagrama de alto nivel de MANI: actores, plataforma y sistemas externos](diagrams/AltoNivel/actualizados/01-contexto-alto-nivel.png)](diagrams/AltoNivel/actualizados/01-contexto-alto-nivel.png)
+[![Arquitectura de alto nivel de MANI: usuarios, aplicación, gateway, servicios, datos e integraciones](diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png)](diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png)
 
-> **Figura 1 — Arquitectura general.** Archivo: [`diagrams/AltoNivel/actualizados/01-contexto-alto-nivel.png`](diagrams/AltoNivel/actualizados/01-contexto-alto-nivel.png). Las vistas C4 de contexto y contenedores están en SDD §4.1 y §4.2.
+> **Figura 1 — Arquitectura de alto nivel.** Archivo: [`diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png`](diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png). Las vistas C4 de contexto y contenedores están en SDD §4.1 y §4.2.
 
 ```text
 Actores

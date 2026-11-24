@@ -10,8 +10,8 @@ Reúne en un solo lugar los ocho entregables de la entrega final y dónde está 
 | 2 | Informe de pruebas | [`07-calidad/README.md`](../07-calidad/README.md), [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md) y [`REPORTE_QA_SPRINT6.md`](../07-calidad/REPORTE_QA_SPRINT6.md) | Disponible; los QAS no medidos se declaran como tales |
 | 3 | Actualización de documento y arquitectura | [`SAD.md`](../02-arquitectura/SAD.md), [`SDD.md`](../02-arquitectura/SDD.md), [`ModeloDatos.md`](../02-arquitectura/ModeloDatos.md) y [`TECH_RADAR.md`](../02-arquitectura/TECH_RADAR.md) | Disponible; los diagramas de alto nivel del SAD están por reemplazar |
 | 4 | Incremento de valor | [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Disponible; falta enlazar los videos aceptados por la PO |
-| 5 | Acta de Cierre | Por redactar en esta carpeta; la firma la PO | Pendiente |
-| 6 | Informe de proyecto: resultados, lecciones aprendidas y conclusiones | Por redactar en esta carpeta, a partir de [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) | Pendiente |
+| 5 | Acta de Cierre | [`ACTA_DE_CIERRE.md`](ACTA_DE_CIERRE.md) | Redactada; faltan fecha, asistencia, decisiones de la sesión y firmas |
+| 6 | Informe de proyecto: resultados, lecciones aprendidas y conclusiones | [`INFORME_DE_PROYECTO.md`](INFORME_DE_PROYECTO.md) | Redactado con cifras al 24-nov; se actualizan el día del cierre |
 | 7 | Presentación de la Entrega | A cargo de la PO | Pendiente |
 | 8 | Versión final de los documentos y productos | Etiqueta de versión en `MANI-docs` y en los repositorios de producto | Pendiente |
 

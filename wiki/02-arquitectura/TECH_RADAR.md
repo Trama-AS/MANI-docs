@@ -1,14 +1,6 @@
 # Tech Radar — MANI
 
-> **La figura se retiró el 2026-11-19, y el archivo no se borró.** La imagen
-> [`diagrams/TechRadar.png`](diagrams/TechRadar.png) **ya no refleja el stack**: no muestra Loki, Promtail,
-> Alertmanager ni los cinco exportadores, y **todavía muestra Datadog**, que se retiró el 2026-11-13. Se deja de
-> mostrar en vez de presentar una imagen que contradice las listas de abajo, que son la fuente. El archivo sigue
-> donde estaba, para quien quiera regenerarlo: basta rehacerlo con estas listas y volver a insertarlo aquí.
-
-**Corte: 2026-11-16.** Este documento lista lo **vigente**: lo que está en uso hoy, lo que está en
-evaluación y lo que se descartó con su motivo. No arrastra versiones anteriores; el historial de
-cambios está en el log de git. La imagen quedó retirada por el mismo motivo, y el aviso está arriba.
+Este documento lista lo **vigente**: lo que está en uso, lo que está en evaluación y lo que se descartó con su motivo. No arrastra versiones anteriores; el historial está en el log de git.
 
 ## Sí o sí
 
@@ -51,11 +43,7 @@ Prometheus, Grafana y los exportadores están **desplegados y documentados** en 
 (ver [`wiki/08-infraestructura/05-monitoreo-y-politicas-devops.md`](../08-infraestructura/05-monitoreo-y-politicas-devops.md)).
 Responden a **PROY-09**, la exigencia de observabilidad propia del proyecto.
 
-**Loki y Promtail están desplegados pero su decisión aún no está ratificada:**
-[ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md) está en estado `Propuesto` y espera
-Mesa de Arquitectura. Figuran aquí como adoptados porque están en operación, no porque la decisión
-esté cerrada. Lo mismo vale para la enmienda que retiró Datadog de
-[ADR-0006](adr/ADR-0006-observabilidad.md), también pendiente de ratificar.
+Loki y Promtail asumen los logs centralizados ([ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md)); la enmienda de [ADR-0006](adr/ADR-0006-observabilidad.md) retiró Datadog.
 
 Las **trazas por spans** quedan fuera: ver «En evaluación».
 
@@ -87,8 +75,8 @@ ADR-0027 y ADR-0030, y habría que decidir si sigue en esta tecnología.
   necesidad de diagnóstico sin instrumentar código. Entrarían solo si un escenario de calidad o la
   Mesa lo aprueban explícitamente.
 - **Kubernetes.** Es la plataforma de orquestación **objetivo** exigida por PROY-08, pero no está
-  adoptada ni desplegada: la decisión sigue abierta como INFRA-01 e INFRA-02 de
-  [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §25 y requiere ADR. Hoy QA y
+  adoptada ni desplegada: el proveedor y la topología del clúster quedan por decidir
+  (ver [infraestructura](../08-infraestructura/README.md)) y requieren ADR. Hoy QA y
   PROD corren con Docker sobre una máquina virtual por ambiente.
 
 ## Mejor no / descartado
@@ -97,8 +85,6 @@ ADR-0027 y ADR-0030, y habría que decidir si sigue en esta tecnología.
 - MongoDB/NestJS como stack primario.
 - GitHub Projects como backlog principal.
 - **Datadog**, para APM, logs y trazas. Estaba en la decisión original de
-  [ADR-0006](adr/ADR-0006-observabilidad.md) y se **retiró el 2026-11-13**: nunca se aprovisionó, no
-  llegó a ningún ambiente y nadie lo operó, de modo que figuraba como decisión vigente siendo una
-  intención. Su función de logs la asumió Grafana Loki.
+  [ADR-0006](adr/ADR-0006-observabilidad.md) y se retiró: nunca llegó a ningún ambiente. Su función de logs la asume Grafana Loki.
 - Lógica de negocio en funciones PL/pgSQL (ADR-0022).
 - Acceso directo del cliente a PostgREST y Storage (ADR-0027).

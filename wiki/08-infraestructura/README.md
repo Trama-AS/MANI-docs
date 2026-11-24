@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-> **Fuente:** [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](../06-gobernanza/DOCUMENTO_INFRAESTRUCTURA_V4.md), [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md), [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) e inventario verificado por SSH el `2026-11-14`.
+> **Fuente:** [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md), [`INFRAESTRUCTURA_MANI.md`](README.md), [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) e inventario verificado por SSH el `2026-11-14`.
 
 Esta carpeta responde a **dónde corre MANI**, **qué versión exacta está desplegada en cada ambiente**, **cómo se accede de forma segura**, **cómo se despliega, revierte, respalda y monitorea** sin depender de una sola persona.
 
@@ -47,7 +47,7 @@ Encadenamiento de referencia:
 
 `Necesidad operativa / continuidad y seguridad → RNF / políticas DevOps (§12, §17, §22) → Atributos de calidad (Disponibilidad, Seguridad, Mantenibilidad en SDD / PROPUESTA_RNF_PROTECCION_Y_RECUPERACION) → ADR (ADR-0006 enmendado, ADR-0028, ADR-0036/0037) → Componentes (MANI-APIGateway/infra, MANI-APIGateway/monitoring, VMs DEV/QA/PROD/Calidad/Backups) → Verificación (check-prod.sh, check-qa.sh, rate-limit.sh, Prometheus /api/v1/status/flags, Newman/Playwright QA)`
 
-- **Gobierno y políticas fuente:** [`06-gobernanza/`](../06-gobernanza/README.md) conserva [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](../06-gobernanza/DOCUMENTO_INFRAESTRUCTURA_V4.md), [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) y [`DOCUMENTO_INFRAESTRUCTURA_V3.md`](../06-gobernanza/DOCUMENTO_INFRAESTRUCTURA_V3.md) (marcado como histórico superado). En esa carpeta, toda referencia previa a credenciales fue redactada (`2c7671a`, [SCRUM-1639](https://maniservices.atlassian.net/browse/SCRUM-1639) / [SCRUM-1712](https://maniservices.atlassian.net/browse/SCRUM-1712)).
+- **Gobierno y políticas fuente:** [`06-gobernanza/`](../06-gobernanza/README.md) conserva [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md), [`INFRAESTRUCTURA_MANI.md`](README.md) y [`DOCUMENTO_INFRAESTRUCTURA_V3.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md) (marcado como histórico superado). En esa carpeta, toda referencia previa a credenciales fue redactada (`2c7671a`, [SCRUM-1639](https://maniservices.atlassian.net/browse/SCRUM-1639) / [SCRUM-1712](https://maniservices.atlassian.net/browse/SCRUM-1712)).
 - **Discrepancias [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) cubiertas aquí:** `D1`, `D5`, `D6`, `D7`, `D8`, `D9` y `D10` quedan documentadas con salida verificada en [`01-mapa-ambientes-y-versiones.md`](01-mapa-ambientes-y-versiones.md#5-resolución-de-discrepancias-hu-val-01-d1-d5-d10).
 
 ## 4. Tareas de Jira vinculadas a `08-infraestructura`

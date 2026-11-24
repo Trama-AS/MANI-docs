@@ -16,7 +16,7 @@ Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`)
 | Carpeta | De qué responde | Empieza por |
 |---|---|---|
 | [`01-producto/`](01-producto/README.md) | Qué se construye y qué no: visión, actores, requisitos, criterios de éxito. Contiene el SRS y el TD | [Visión y alcance](01-producto/vision-y-alcance.md) |
-| [`02-arquitectura/`](02-arquitectura/README.md) | Cómo está construido: estilo, contenedores, reglas, multi-tenancy, datos, contratos. Contiene el SAD, el SDD, los ADR y los diagramas | [Reglas arquitectónicas](02-arquitectura/guia/reglas-arquitectonicas.md) |
+| [`02-arquitectura/`](02-arquitectura/README.md) | Cómo está construido: estilo, contenedores, reglas, multi-tenancy, datos, contratos. Contiene el SAD, el SDD, los ADR y los diagramas | [Reglas arquitectónicas](02-arquitectura/SAD.md#41-principios) |
 | [`03-repositorios/`](03-repositorios/README.md) | Modelo multi-repo, estructura de este repo y versionado | [Multi-repo](03-repositorios/multirepo.md) |
 | [`04-proceso/`](04-proceso/README.md) | Cómo trabaja el equipo: ramas, PR, Jira, roles, DoR/DoD, ambientes, CI/CD, secretos y observabilidad | [Proceso de trabajo](04-proceso/README.md) |
 | [`05-backlog/`](05-backlog/README.md) | Qué se hace y en qué orden. Contiene el backlog único y el libro de módulos y servicios | [Backlog MANI](05-backlog/BACKLOG_MANI.md) |
@@ -31,10 +31,10 @@ Proyecto de **TRAMA · Ingeniería de Software**. Este repositorio (`MANI-Docs`)
 Ninguna persona es dueña de un documento: la autoridad es del **rol** y del **artefacto**, según [`GOBIERNO_DEL_EQUIPO.md`](06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §2.3. Si dos fuentes se contradicen, prevalece la de menor número:
 
 1. **Requerimientos:** [`product/SRS.md`](01-producto/SRS.md).
-2. **Arquitectura y diseño:** [`architecture/SAD.md`](02-arquitectura/SAD.md), [`architecture/SDD.md`](02-arquitectura/SDD.md) y [`architecture/SECUENCIAS.md`](02-arquitectura/SECUENCIAS.md).
+2. **Arquitectura y diseño:** [`architecture/SAD.md`](02-arquitectura/SAD.md), [`architecture/SDD.md`](02-arquitectura/SDD.md) (que incluye las secuencias de los flujos críticos) y [`ModeloDatos.md`](02-arquitectura/ModeloDatos.md).
 3. **Decisiones:** [`adr/`](02-arquitectura/adr/) — una decisión vigente está `Aceptado`; una sustituida está `Superseded`.
 4. **Datos:** [`architecture/ModeloDatos.md`](02-arquitectura/ModeloDatos.md).
-5. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](06-gobernanza/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](06-gobernanza/INFRAESTRUCTURA_MANI.md).
+5. **Proceso y entrega:** [`governance/GOBIERNO_DEL_EQUIPO.md`](06-gobernanza/GOBIERNO_DEL_EQUIPO.md), [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md), [`governance/INFRAESTRUCTURA_MANI.md`](08-infraestructura/README.md).
 6. **Tecnologías vigentes:** [`architecture/TECH_RADAR.md`](02-arquitectura/TECH_RADAR.md).
 7. **Trabajo:** Jira es la fuente del backlog y los sprints; [`05-backlog/BACKLOG_MANI.md`](05-backlog/BACKLOG_MANI.md) es el backlog único: criterios de aceptación, backlog técnico y cobertura incluidos.
 8. **Resultados de prueba:** [`07-calidad/REPORTE_QA_SPRINT4.md`](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md) manda sobre el estado real de cada capacidad y de cada defecto. Un estado en Jira no acredita nada por sí solo.
@@ -55,18 +55,18 @@ Una contradicción no se resuelve en silencio: se reporta en el PR o en el issue
 | Tarea | Lee |
 |---|---|
 | Entender el producto en 5 minutos | [Visión y alcance](01-producto/vision-y-alcance.md) |
-| Implementar una historia | Su RF en [Requisitos](01-producto/requisitos.md), las [reglas arquitectónicas](02-arquitectura/guia/reglas-arquitectonicas.md) y el [DoD](04-proceso/dor-y-dod.md) |
-| Saber qué servicio es dueño de algo | [Estilo y contenedores](02-arquitectura/guia/estilo-y-contenedores.md) |
-| Tocar autenticación, tenant, RLS o Storage | [Multi-tenancy y seguridad](02-arquitectura/guia/multitenancy-y-seguridad.md) y [CI/CD y calidad](04-proceso/cicd-y-calidad.md) |
-| Tocar base de datos o migraciones | [Datos y analítica](02-arquitectura/guia/datos-y-analitica.md) |
+| Implementar una historia | Su RF en [Requisitos](01-producto/requisitos.md), las [reglas arquitectónicas](02-arquitectura/SAD.md#41-principios) y el [DoD](04-proceso/dor-y-dod.md) |
+| Saber qué servicio es dueño de algo | [Estilo y contenedores](02-arquitectura/SAD.md#6-vista-de-contenedores--c4-nivel-2) |
+| Tocar autenticación, tenant, RLS o Storage | [Multi-tenancy y seguridad](02-arquitectura/SAD.md#8-multi-tenancy-y-seguridad) y [CI/CD y calidad](04-proceso/cicd-y-calidad.md) |
+| Tocar base de datos o migraciones | [Datos y analítica](02-arquitectura/ModeloDatos.md) |
 | Crear rama, commit o PR | [Git: ramas y commits](04-proceso/git-ramas-y-commits.md) y [Pull requests](04-proceso/pull-requests.md) |
 | Vincular trabajo con Jira | [Jira y trazabilidad](04-proceso/jira-y-trazabilidad.md) |
-| Desplegar o promover una versión | [Ambientes y promoción](04-proceso/ambientes-y-promocion.md) y [Versionado](03-repositorios/versionado.md) |
-| Proponer una decisión técnica | [Decisiones ADR](02-arquitectura/guia/decisiones-adr.md) y [Roles y decisiones](04-proceso/roles-y-decisiones.md) |
-| Saber qué está sin decidir | [Riesgos y puntos abiertos](02-arquitectura/guia/riesgos-y-puntos-abiertos.md) |
+| Desplegar o promover una versión | [Ambientes y promoción](08-infraestructura/03-despliegue-y-rollback.md) y [Versionado](03-repositorios/versionado.md) |
+| Proponer una decisión técnica | [Decisiones ADR](02-arquitectura/SAD.md#24-registro-de-decisiones-arquitectónicas) y [Roles y decisiones](04-proceso/roles-y-decisiones.md) |
+| Saber qué está sin decidir | [Riesgos y puntos abiertos](02-arquitectura/SAD.md#23-riesgos-arquitectónicos) |
 | Trabajar con un asistente de IA | [Trabajo con asistentes de IA](04-proceso/trabajo-con-ia.md) |
 | Entender cómo quedó la transición V4 | [Backlog §10](05-backlog/BACKLOG_MANI.md#10-registro-de-la-transición-v4) |
-| Ver un diagrama | [Diagramas](02-arquitectura/guia/diagramas.md) |
+| Ver un diagrama | [Diagramas](02-arquitectura/diagrams/README.md) |
 | Saber si una capacidad está verificada de verdad | [Cobertura y verificación](05-backlog/BACKLOG_MANI.md#9-cobertura-de-lo-que-falta-y-verificación-de-lo-que-ya-está) y el [reporte de QA](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md) |
 | Saber el estado de un defecto | [Defectos consolidados](07-calidad/monitoreo/REPORTE_QA_SPRINT4.md#9-defectos-consolidados-del-sprint) |
 | Conocer los criterios de aceptación de una historia | [Backlog §6](05-backlog/BACKLOG_MANI.md#6-criterios-de-aceptación-y-dod-de-las-historias-priorizadas-del-sprint-4) |
@@ -78,6 +78,6 @@ Una contradicción no se resuelve en silencio: se reporta en el PR o en el issue
 
 - **Una página, un tema.** Se enlaza en lugar de duplicar.
 - **Cada página declara su fuente** en la primera línea tras el título. Un dato sin fuente no pertenece a esta wiki.
-- **No se inventan umbrales, rutas, credenciales ni nombres.** Si el dato no está en un documento, la página dice que está abierto y lo registra en [Riesgos y puntos abiertos](02-arquitectura/guia/riesgos-y-puntos-abiertos.md).
+- **No se inventan umbrales, rutas, credenciales ni nombres.** Si el dato no está en un documento, la página dice que está abierto y lo registra en [Riesgos y puntos abiertos](02-arquitectura/SAD.md#23-riesgos-arquitectónicos).
 - Lo marcado como **Aceptado** en un ADR es vinculante; lo **Propuesto** es la recomendación vigente hasta que la Mesa de Arquitectura lo apruebe.
 - El contenido técnico de detalle (DDL, diccionario de datos, C4 nivel 4, umbrales completos) vive en los documentos; la wiki sólo apunta a ellos.

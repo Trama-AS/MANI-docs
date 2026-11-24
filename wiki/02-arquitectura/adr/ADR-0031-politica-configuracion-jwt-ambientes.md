@@ -14,7 +14,7 @@
 
 ## Contexto y Alcance
 
-Durante la auditoría de seguridad y despliegues del Sprint 4 (CFG4-01 y CFG4-04), se realizó una revisión exhaustiva de la cadena de autenticación y autorización entre Supabase Auth, el API Gateway (NGINX) y los microservicios aguas abajo (`MANI-Core-Node`, `MANI-Rules-Java`, `MANI-Dispatch-DotNet`).
+Durante la auditoría de seguridad y despliegues del Sprint 4 (CFG4-01 y CFG4-04), se realizó una revisión exhaustiva de la cadena de autenticación y autorización entre Supabase Auth, el API Gateway (NGINX) y los microservicios aguas abajo (`MANI-Node`, `MANI-Java`, `MANI-.NET`).
 
 La auditoría técnica identificó dos requerimientos esenciales para cumplir los criterios de aceptación y garantizar el aislamiento multi-tenant antes de habilitar el pase a producción (SCRUM-1263):
 
@@ -31,8 +31,8 @@ La auditoría técnica identificó dos requerimientos esenciales para cumplir lo
 - *Desventajas:* Duplicación de lógica en tres stacks tecnológicos distintos, discrepancias en el manejo de algoritmos/formatos de claims, mayor superficie de ataque si un servicio olvida validar `tenant_id` y riesgo de desincronización de secretos.
 
 ### Opción 2: Validación Perimetral en API Gateway con Subrequest Interno a Core Service (Elegida)
-- El API Gateway (NGINX) actúa como frontera de confianza perimetral. Toda petición hacia endpoints protegidos (`/api/v1/core/*`, `/api/v1/rules/*`, `/api/v1/dispatch/*`) ejecuta una directiva `auth_request /_auth_validate` hacia `MANI-Core-Node` (`/api/v1/auth/validate-token`).
-- `MANI-Core-Node` valida estrictamente la firma criptográfica (HS256 con el secreto del ambiente o JWKS de Supabase) y la presencia del claim obligatorio `app_metadata.tenant_id`.
+- El API Gateway (NGINX) actúa como frontera de confianza perimetral. Toda petición hacia endpoints protegidos (`/api/v1/core/*`, `/api/v1/rules/*`, `/api/v1/dispatch/*`) ejecuta una directiva `auth_request /_auth_validate` hacia `MANI-Node` (`/api/v1/auth/validate-token`).
+- `MANI-Node` valida estrictamente la firma criptográfica (HS256 con el secreto del ambiente o JWKS de Supabase) y la presencia del claim obligatorio `app_metadata.tenant_id`.
 - Si el token es válido, responde `HTTP 200` y emite los encabezados HTTP seguros (`X-Tenant-Id`, `X-User-Role`, `X-User-Id`). NGINX los intercepta (`auth_request_set`) y los inyecta en la petición hacia el microservicio upstream. Si el token es inválido o no incluye tenant, NGINX corta la conexión inmediatamente con `HTTP 401 Unauthorized` o `HTTP 403 Forbidden`.
 - *Ventajas:* Principio de defensa en profundidad, desacoplamiento de Rules (Java) y Dispatch (.NET) de la criptografía de autenticación, control perimetral estricto de acceso y garantía de que ninguna petición sin tenant_id alcanza a los microservicios de negocio.
 
@@ -41,12 +41,12 @@ La auditoría técnica identificó dos requerimientos esenciales para cumplir lo
 ## Decisión de Arquitectura y Configuración
 
 ### 1. Cadena de Emisión y Ciclo de Vida
-- **Emisor (Issuer):** Supabase Auth (GoTrue) en ambientes integrados; endpoint interno controlado `/api/v1/auth/dev-token` en `MANI-Core-Node` exclusivamente para pruebas automatizadas y CI/CD.
+- **Emisor (Issuer):** Supabase Auth (GoTrue) en ambientes integrados; endpoint interno controlado `/api/v1/auth/dev-token` en `MANI-Node` exclusivamente para pruebas automatizadas y CI/CD.
 - **Algoritmos (lista blanca, SCRUM-1362):** la verificación acepta exactamente dos algoritmos, y cada uno se verifica solo con su propia clave, así un token no puede elegir con qué se verifica (*alg confusion*):
   - `ES256`: tokens de usuario de Supabase Auth en todos los ambientes integrados. Clave pública del JWKS del proyecto del ambiente (`<SUPABASE_URL>/auth/v1/.well-known/jwks.json`) elegida por `kid`. Exige `aud = authenticated` e `iss = <SUPABASE_URL>/auth/v1`. El JWKS se cachea; un `kid` desconocido o un JWKS inalcanzable se rechazan (falla cerrado).
   - `HS256`: secreto del ambiente (`SUPABASE_JWT_SECRET`), para el secreto legado de Supabase, `/api/v1/auth/dev-token` (solo desarrollo y pruebas) y los tokens sintéticos de las suites Newman.
   - Cualquier otro algoritmo (`none`, `HS512`, `RS256`, etc.) se rechaza con `HTTP 401`.
-- **Dónde se aplica:** `validate-token` de `MANI-Core-Node` (el `auth_request` del Gateway) y `TokenService` de Core usan el mismo verificador. `MANI-Dispatch-DotNet` vuelve a verificar el token en sus controladores, así que aplica la misma política y necesita `SUPABASE_URL` y `SUPABASE_JWT_SECRET` en cada ambiente. `MANI-Rules-Java` confía en los encabezados que inyecta el Gateway.
+- **Dónde se aplica:** `validate-token` de `MANI-Node` (el `auth_request` del Gateway) y `TokenService` de Core usan el mismo verificador. `MANI-.NET` vuelve a verificar el token en sus controladores, así que aplica la misma política y necesita `SUPABASE_URL` y `SUPABASE_JWT_SECRET` en cada ambiente. `MANI-Java` confía en los encabezados que inyecta el Gateway.
 - **Audience (`aud`):** `authenticated`.
 - **Tiempo de Expiración (`exp`):** Tokens con TTL estándar de 3600 segundos (1 hora). La renovación se ejecuta mediante refresh tokens gestionados exclusivamente entre el cliente Flutter y Supabase Auth / Core.
 
@@ -94,9 +94,9 @@ sequenceDiagram
     autonumber
     actor Cliente as Cliente (Flutter / Web)
     participant Gateway as MANI-APIGateway (NGINX)
-    participant Core as MANI-Core-Node (/auth/validate-token)
-    participant Rules as MANI-Rules-Java (:8080)
-    participant Dispatch as MANI-Dispatch-DotNet (:5000)
+    participant Core as MANI-Node (/auth/validate-token)
+    participant Rules as MANI-Java (:8080)
+    participant Dispatch as MANI-.NET (:5000)
 
     Cliente->>Gateway: POST /api/v1/rules/evaluate-rate<br/>Header: Authorization: Bearer <JWT>
     Note over Gateway: Intercepta directiva auth_request

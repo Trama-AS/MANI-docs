@@ -274,7 +274,6 @@ MANI-Docs/
 ├── architecture/
 │   ├── SAD.md
 │   ├── SDD.md
-│   ├── SECUENCIAS.md
 │   ├── ModeloDatos.md
 │   └── TECH_RADAR.md
 ├── adr/
@@ -303,7 +302,6 @@ MANI-Docs/
 │   ├── despliegue/       despliegue-prod e infraestructura
 │   ├── flujos/           flujos de negocio y dinamicos/ (vistas dinamicas y secuencias)
 │   ├── MOCKUPS/          mockups de interfaz, fuera del alcance de ADR-0008
-│   └── TechRadar.png     priorizacion tecnologica, fuera del alcance de ADR-0008
 ├── wiki/                    consulta por tema; no añade reglas propias
 └── Entregas/                entregables academicos por corte
 ```
@@ -316,7 +314,6 @@ MANI-Docs/
 | Backlog | [`backlog/BACKLOG_MANI.md`](wiki/05-backlog/BACKLOG_MANI.md) |
 | Arquitectura | [`architecture/SAD.md`](wiki/02-arquitectura/SAD.md) |
 | Diseño detallado y vistas C4 | [`architecture/SDD.md`](wiki/02-arquitectura/SDD.md) |
-| Diagramas de secuencia de los flujos críticos | [`architecture/SECUENCIAS.md`](wiki/02-arquitectura/SECUENCIAS.md) |
 | Modelo de datos, DDL y diccionario | [`architecture/ModeloDatos.md`](wiki/02-arquitectura/ModeloDatos.md) |
 | Decisiones arquitectónicas | [`adr/`](wiki/02-arquitectura/adr/) |
 | Modelo C4 | [`diagrams/c4/workspace.dsl`](wiki/02-arquitectura/diagrams/c4/workspace.dsl) |

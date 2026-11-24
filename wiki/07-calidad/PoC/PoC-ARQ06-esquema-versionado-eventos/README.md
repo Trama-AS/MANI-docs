@@ -1,6 +1,6 @@
 # PoC-ARQ06 — Verificación ejecutable de esquemas y versionado de eventos (`SCRUM-1237`)
 
-Este directorio contiene los esquemas formales **JSON Schema (Draft 2020-12)** y el verificador ejecutable para los cuatro eventos de negocio definidos en [`architecture/CONTRATOS_EVENTOS.md`](../../../02-arquitectura/CONTRATOS_EVENTOS.md):
+Este directorio contiene los esquemas formales **JSON Schema (Draft 2020-12)** y el verificador ejecutable para los cuatro eventos de negocio definidos en [SDD §20](../../../02-arquitectura/SDD.md#20-contratos-y-versionado-de-eventos-de-negocio):
 
 1. `schemas/event-envelope.v1.schema.json` — Sobre común obligatorio (`event_id`, `event_type`, `event_version`, `occurred_at`, `tenant_id`, `correlation_id`, `partition_key`, `data`).
 2. `schemas/solicitud-creada.v1.schema.json` — `SolicitudCreada` (`v1`, Core Service → `servicio.outbox`).

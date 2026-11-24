@@ -356,7 +356,7 @@ Compose. DEV corre en las máquinas personales del equipo.
 
 Kubernetes es el orquestador exigido como objetivo por PROY-08, pero **la decisión está abierta**:
 no está elegida la plataforma, ni el proveedor, ni la topología. Son INFRA-01 e INFRA-02 de
-[`INFRAESTRUCTURA_MANI.md`](INFRAESTRUCTURA_MANI.md) §25 y requieren ADR.
+[`INFRAESTRUCTURA_MANI.md`](../08-infraestructura/README.md) §25 y requieren ADR.
 
 No se asume AKS ni Azure.
 

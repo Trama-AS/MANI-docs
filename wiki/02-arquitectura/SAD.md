@@ -7,8 +7,7 @@
 **Despliegue:** Docker + Kubernetes  
 **Ambientes:** DEV → QA → PROD  
 **Estrategia de repositorios:** Multi-repo  
-**Diagramas de este documento:** los tres de alto nivel, hoy repartidos en la estructura de [ADR-0008](adr/ADR-0008-diagramacion-tecnica.md) e inventariados en §4.2. Las doce vistas del modelo Structurizr las documenta [`SDD.md`](SDD.md) §4.0  
-**Modelo C4 formal:** [`workspace.dsl`](diagrams/c4/workspace.dsl), documentado vista por vista en [`SDD.md`](SDD.md) §4  
+**Diagramas de este documento:** los de alto nivel, inventariados en §4.2. Las vistas C4 las documenta [`SDD.md`](SDD.md) §4  
 
 ---
 
@@ -109,22 +108,17 @@ MANI adopta una **arquitectura SOA distribuida**, con un **API Gateway** como fr
 
 ## 4.2 Inventario de diagramas de alto nivel
 
-Los tres diagramas de alto nivel se ubican según [ADR-0008](adr/ADR-0008-diagramacion-tecnica.md): el de arquitectura en [`diagrams/c4/contexto/`](diagrams/c4/contexto/), el de infraestructura en [`diagrams/despliegue/`](diagrams/despliegue/) y el Tech Radar en [`diagrams/TechRadar.png`](diagrams/TechRadar.png) por no ser diagrama de arquitectura. **No se generan desde
-el modelo Structurizr**: a diferencia de las doce vistas de [`SDD.md`](SDD.md) §4.0, se dibujan a
-mano y se mantienen a mano. Si uno contradice a este documento, manda el documento.
+Los diagramas de alto nivel de este documento se dibujan a mano y se mantienen a mano. Las vistas C4 (contexto, contenedores, componentes, código, dinámicas y despliegue) viven en [`SDD.md`](SDD.md) §4. Si un diagrama contradice a este documento, manda el documento.
 
 | # | Diagrama | Pregunta que responde | Archivo | Dónde se desarrolla |
 |---|---|---|---|---|
-| 1 | **DHL-ARQ** — arquitectura general | ¿Cómo está construida MANI? | [`DHL.png`](diagrams/c4/contexto/alto-nivel-arquitectura.png) | §5, §6 y §7 |
-| 2 | **DHL-INFRA** — infraestructura, CI/CD y operación | ¿Cómo se desarrolla, despliega y opera MANI? | [`Infra.png`](diagrams/despliegue/infraestructura.png) | §16, §17 y §18 |
-| 3 | **TECHRADAR** — priorización tecnológica | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | [`TechRadar.png`](diagrams/TechRadar.png) | [`TECH_RADAR.md`](TECH_RADAR.md) |
+| 1 | **Arquitectura general** | ¿Cómo está construida MANI? | [`alto-nivel-arquitectura.png`](diagrams/c4/contexto/alto-nivel-arquitectura.png) | §5, §6 y §7 |
+| 2 | **Infraestructura, CI/CD y operación** | ¿Cómo se desarrolla, despliega y opera MANI? | [`infraestructura.png`](diagrams/despliegue/infraestructura.png) | §16, §17 y §18 |
+| 3 | **Tech Radar** | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | — | [`TECH_RADAR.md`](TECH_RADAR.md) |
 
-**Todas las figuras de este documento son clicables** y abren la imagen a resolución completa. Los
-tres diagramas de alto nivel son densos: conviene abrirlos en lugar de leerlos al ancho de la
-página. Cada figura va acompañada del contenido en texto, que es el que manda si la imagen y el
-documento no coinciden.
+**Las figuras son clicables** y abren la imagen a resolución completa. Cada figura va acompañada del contenido en texto, que es el que manda si imagen y documento no coinciden.
 
-### 4.2.1 DHL-ARQ — arquitectura general
+### 4.2.1 Arquitectura general
 
 Representa la arquitectura lógica de MANI: una plataforma SaaS multi-tenant que gestiona
 solicitudes, cotizaciones, asignaciones y ejecución de servicios entre clientes y aliados.
@@ -146,14 +140,14 @@ La persistencia es **Supabase sobre PostgreSQL**, con separación por esquemas d
 Row-Level Security por tenant, almacenamiento privado de archivos y transporte de eventos en tiempo
 real. Se completa con integraciones externas de notificación y de pagos, y con observabilidad.
 
-Dos precisiones donde el dibujo se queda corto frente a este documento:
+Dos precisiones sobre el reparto de responsabilidades:
 
 - **La elegibilidad de aliados la resuelve el Core Service, no el Rules Service.** Es la conjunción
   de categoría declarada, zona de cobertura y franja de agenda (§7.3 y §10); Rules aporta el
   **orden** del listado, no quién es elegible.
-- **Las solicitudes pertenecen a Dispatch**, no al Core. El Core aporta la elegibilidad por API.
+- **Core crea la solicitud y escribe su estado; Dispatch orquesta el reparto** y decide quién acepta (§7.4). El Core aporta además la elegibilidad por API.
 
-### 4.2.2 DHL-INFRA — infraestructura, CI/CD y operación
+### 4.2.2 Infraestructura, CI/CD y operación
 
 Representa el modelo operativo, desde la gestión del trabajo hasta la construcción, validación,
 publicación y despliegue.
@@ -166,18 +160,9 @@ preserva la imagen validada (§18).
 
 Los ambientes son **tres: DEV → QA → PROD** (§16). Supabase aporta PostgreSQL, Auth, Storage y
 Realtime gestionados, y la operación se completa con Prometheus y Grafana para métricas y tableros (§19).
-**Datadog se retiró el 2026-11-13** (enmienda de ADR-0006). Los **logs centralizados** pasaron a
-**Grafana Loki** con Promtail como recolector el 2026-11-14 ([ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md),
-`Propuesto`), correlacionados por `X-Correlation-ID`. Las **trazas por spans** (OpenTelemetry o Tempo)
-quedan **fuera de esta fase** y registradas como evolución futura.
+Las métricas van a Prometheus y los tableros a Grafana; los **logs centralizados** a **Grafana Loki** con Promtail como recolector, correlacionados por `X-Correlation-ID` ([ADR-0006](adr/ADR-0006-observabilidad.md), [ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md)). Las trazas por spans (OpenTelemetry o Tempo) no forman parte de esta arquitectura.
 
-Una precisión importante sobre este diagrama:
-
-> **El diagrama muestra Kubernetes, y Kubernetes no es el estado actual.** Es la plataforma de
-> orquestación **objetivo** exigida por PROY-08, pero su proveedor y topología siguen abiertos como
-> INFRA-01 e INFRA-02. Hoy QA y PROD corren con **Docker sobre una máquina virtual por ambiente**, y
-> DEV en las máquinas personales del equipo (§16.4). Mientras esa decisión no se cierre, el diagrama
-> se lee como objetivo y no como inventario.
+**Kubernetes** es la plataforma de orquestación objetivo (PROY-08). El mecanismo de despliegue operativo es Docker Compose sobre una máquina virtual por ambiente (§16.4).
 
 ### 4.2.3 TECHRADAR — priorización tecnológica
 
@@ -192,32 +177,19 @@ La base adoptada incluye Flutter y Dart, Node.js, Java, .NET, PostgreSQL, Supaba
 Docker, GitHub Actions, GHCR, SonarQube, OWASP ZAP, Newman, k6, OpenAPI, Prometheus, Grafana
 y Jira.
 
-> **Kubernetes figura en el radar como objetivo, no como adoptado.** [`TECH_RADAR.md`](TECH_RADAR.md)
-> lo mantiene **en evaluación** por la misma razón que §16.4: la decisión de orquestación está
-> abierta. Si el diagrama lo muestra en «Sí o sí», manda el documento.
+Kubernetes figura en el radar como objetivo, **en evaluación** ([`TECH_RADAR.md`](TECH_RADAR.md)).
 
-### 4.2.4 Los tres diagramas describen arquitectura objetivo
+### 4.2.4 Alcance de los diagramas
 
-Conviene leerlos distinguiendo lo implementado de lo planificado. En particular: **que SonarQube,
-OWASP ZAP, Newman y los controles de calidad aparezcan en el diagrama de infraestructura no
-demuestra que esos procesos estén operativos** en los repositorios.
-
-El estado real de cada gate se registra aparte, no en el dibujo:
-
-- el estado del análisis de SonarCloud por repositorio, en
-  [`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §24.1;
-- la regla para considerar un gate **vinculante** —check obligatorio en un ruleset activo y evidencia
-  de un PR bloqueado—, en
-  [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6.2.
+Los tres describen la **arquitectura objetivo**. El estado de cada gate de calidad por repositorio y las reglas para considerarlo vinculante están en [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6.2.
 
 ---
 
-# 5. Vista de contexto — C4 Nivel 1
+# 5. Vista de contexto
 
-[![Diagrama de alto nivel (DHL) de MANI: actores, plataforma y sistemas externos](diagrams/c4/contexto/alto-nivel-arquitectura.png)](diagrams/c4/contexto/alto-nivel-arquitectura.png)
+[![Diagrama de alto nivel de MANI: actores, plataforma y sistemas externos](diagrams/c4/contexto/alto-nivel-arquitectura.png)](diagrams/c4/contexto/alto-nivel-arquitectura.png)
 
-> **Figura 1 — Diagrama de alto nivel (DHL).** Archivo: [`diagrams/c4/contexto/alto-nivel-arquitectura.png`](diagrams/c4/contexto/alto-nivel-arquitectura.png).
-> La vista C4 formal correspondiente es `contexto` en [`workspace.dsl`](diagrams/c4/workspace.dsl), documentada en SDD §4.1.
+> **Figura 1 — Arquitectura general.** Archivo: [`diagrams/c4/contexto/alto-nivel-arquitectura.png`](diagrams/c4/contexto/alto-nivel-arquitectura.png). Las vistas C4 de contexto y contenedores están en SDD §4.1 y §4.2.
 
 ```text
 Actores
@@ -232,13 +204,9 @@ Sistemas externos
 
 ---
 
-# 6. Vista de contenedores — C4 Nivel 2
+# 6. Vista de contenedores
 
-[![Vista de contenedores de MANI: cliente, Gateway, los tres servicios de negocio, Supabase e integraciones](diagrams/c4/contenedores/contenedores.png)](diagrams/c4/contenedores/contenedores.png)
-
-> **Figura 2 — Contenedores.** Generada desde la vista `contenedores` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/contenedores/contenedores.png`](diagrams/c4/contenedores/contenedores.png), documentada en SDD §4.2. **Clic para abrirla a tamaño completo.**
->
-> Antes esta figura reutilizaba `DHL.png`, la misma imagen de la Figura 1: el documento mostraba el diagrama de contexto dos veces y no llegaba a mostrar nunca los contenedores.
+La Figura 1 muestra los contenedores. Su vista C4 formal está en SDD §4.2.
 
 ```text
 Visitante sin sesión
@@ -305,7 +273,7 @@ En módulos de alta complejidad puede dividirse internamente por dominios sin co
 
 ### 7.3.1 Dominios internos de Core
 
-Inventario de SCRUM-1447 (HU-M13-05, RNF-02, [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md)), verificado sobre MANI-Node `develop` `ed5b0fc` (27 oct 2026). Core sigue siendo **un solo servicio desplegable**: cada dominio es un límite interno, con su archivo de rutas (`src/routes/core/<dominio>.routes.js`) y su carpeta de casos de uso (`src/application/useCases/<dominio>/`), no un servicio por CRUD. El detalle (rutas, tablas, persistencia, verificación y hallazgos completos) está en `MANI-Node/docs/arquitectura/MODULOS_CORE.md`.
+Dominios internos según [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md) y RNF-02. Core sigue siendo **un solo servicio desplegable**: cada dominio es un límite interno, con su archivo de rutas (`src/routes/core/<dominio>.routes.js`) y su carpeta de casos de uso (`src/application/useCases/<dominio>/`), no un servicio por CRUD. El detalle (rutas, tablas, persistencia, verificación y hallazgos completos) está en `MANI-Node/docs/arquitectura/MODULOS_CORE.md`.
 
 | Dominio | Requisitos | Rutas principales (`/api/v1/core/…`) | Datos de Core que escribe |
 |---|---|---|---|
@@ -332,17 +300,9 @@ Inventario de SCRUM-1447 (HU-M13-05, RNF-02, [ADR-0022](adr/ADR-0022-logica-de-n
 - Los casos de uso no se importan entre sí: comparten repositorios inyectados desde `container.js`. No hay dependencias circulares.
 - La modularización no cambió ninguna ruta pública, ningún middleware de autenticación o rol ni ningún contrato OpenAPI: las 157 rutas de antes siguen registradas igual.
 
-**Pendientes de los dominios**, cada uno con su historia y su regresión:
-
-- Cinco repositorios `pg` de clientes, sitios y aliado todavía consultan sin `runInTenantContext` ([ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md)); su aislamiento depende del filtro `tenant_id` de cada consulta. Los repositorios de Supabase usan la *service-role key* y no pasan por RLS.
-- Tres accesos distintos a `cliente` y `sitio` (Supabase, `pg` y cliente empresa) que hay que unificar en un puerto por tabla.
-- `useCases/dispatch/` mezcla elegibilidad, contexto de solicitud y notificaciones; las notificaciones deben pasar a `useCases/notifications/`.
-- `container.js` arma todos los dominios en un solo constructor; el paso siguiente es una composición por dominio.
-- Falta confirmar con DevOps con qué rol se conecta `DATABASE_URL`: si no hereda `mani_core_svc`, RLS no filtra.
-
 ## 7.4 Límites entre servicios
 
-Esta sección precisa los límites de §7.1–§7.3 para que persistencia (SCRUM-1233), contratos HTTP (SCRUM-1234) y mensajería (SCRUM-1235) partan de la misma base. No reasigna requisitos: hace explícito qué datos es dueño cada servicio y qué no hace. Aplica el principio 7 de §4.1: ningún servicio escribe en datos privados de otro dominio.
+Esta sección precisa los límites de §7.1–§7.3 para que persistencia, contratos HTTP y mensajería partan de la misma base. No reasigna requisitos: hace explícito qué datos es dueño cada servicio y qué no hace. Aplica el principio 7 de §4.1: ningún servicio escribe en datos privados de otro dominio.
 
 ### Dueño de los datos
 
@@ -372,9 +332,9 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 
 ### Decidido
 
-**Quién crea la solicitud (RF-12): Core.** Decisión del 17 de octubre de 2026, acordada entre la Product Owner y la Scrum Master, y registrada en SCRUM-1232 y SCRUM-1234. Core crea y persiste la solicitud; Dispatch orquesta el reparto a partir de ella. El backlog ya era consistente con esto (SCRUM-1072 ubica la creación en Core Node separada de la orquestación, y SCRUM-1073 deja la orquestación en Dispatch .NET); lo desactualizado era §7.2, cuya corrección se ejecuta en DOC4-03 (SCRUM-1246).
+**Quién crea la solicitud (RF-12): Core.** Acordado entre la Product Owner y la Scrum Master. Core crea y persiste la solicitud; Dispatch orquesta el reparto a partir de ella.
 
-**Quién es dueño del estado del servicio después de la asignación: Core (decisión 6A).** Decisión de la Scrum Master del 26 de octubre de 2026, que cierra el pendiente P1. Core Node es el **único propietario y escritor** del estado canónico del servicio, desde la creación y también después de la asignación. Dispatch .NET conserva la elegibilidad, la oferta y la decisión de asignación, y comunica el resultado a Core mediante un contrato idempotente. Queda **prohibida la escritura directa por Dispatch** de las tablas de estado del dominio de Core.
+**Quién es dueño del estado del servicio después de la asignación: Core (decisión 6A).** Decisión de la Scrum Master. Core Node es el **único propietario y escritor** del estado canónico del servicio, desde la creación y también después de la asignación. Dispatch .NET conserva la elegibilidad, la oferta y la decisión de asignación, y comunica el resultado a Core mediante un contrato idempotente. Queda **prohibida la escritura directa por Dispatch** de las tablas de estado del dominio de Core.
 
 #### Contrato de asignación Dispatch → Core
 
@@ -390,9 +350,7 @@ Core: cotización del aliado → Rules: validación contra tarifario (alerta RF-
 | No encontrada (404) | `MANI-SOL-404`, sin distinguir si la solicitud no existe o es de otro tenant. |
 | Dependencia no disponible (503) | Core responde 503 cuando falta la dependencia y **no sustituye el resultado por lógica local** (criterio T2). El acceso falla cerrado. |
 
-La implementación de este contrato corresponde a SCRUM-1403 (HU-M05-07), con SCRUM-1402 y SCRUM-1404; la frontera en base de datos la aplica la migración `0019_frontera_asignacion_6a.sql` de MANI-Node, que revoca `UPDATE` sobre `solicitud` al rol de Dispatch y retira la política que permitía la escritura directa.
-
-**Estado de la implementación (28 oct 2026).** El contrato está fusionado en `develop` de los cuatro repositorios: MANI-Node#80 (comando, bandeja de Core y migración `0019`), MANI-.NET#16 (Dispatch deja de escribir `solicitud`), MANI-APIGateway#41 (bloqueo de la ruta interna y `core-internal.yaml` 0.2.0) y MANI-Flutter#76 (la app acepta, rechaza y lista por el Gateway). Fusionado en `develop` no significa desplegado: la certificación en el ambiente QA sigue pendiente (TEC-16, SCRUM-1463). La propuesta de ADR que formaliza la decisión es [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md).
+La frontera en base de datos la aplica la migración `0019_frontera_asignacion_6a.sql` de Core, que revoca `UPDATE` sobre `solicitud` al rol de Dispatch y retira la política que permitía la escritura directa. La tabla `solicitud` está físicamente en el esquema `despacho` aunque Core es su único dueño y escritor ([`ModeloDatos.md`](ModeloDatos.md) §6.1).
 
 #### Lo que queda del lado de Dispatch
 
@@ -404,114 +362,7 @@ La implementación de este contrato corresponde a SCRUM-1403 (HU-M05-07), con SC
 | Bandeja del aliado | `GET /api/v1/dispatch/offers/me` lee la bandeja de Core (`GET /allies/me/offers`, interna) y quita lo que el aliado rechazó. Sin la dirección de solicitudes ajenas. |
 | Falla cerrada | Si Core no responde o responde algo inesperado, Dispatch responde `503 CORE_SERVICE_UNAVAILABLE` y no da nada por asignado. |
 
-Contratos: `core-internal.yaml` y `dispatch.yaml` en MANI-APIGateway. El orden de los elegibles por Rules (RF-13) está en borrador en `dispatch.yaml` 0.2.0 (SCRUM-1401 / SCRUM-1462): sin una evaluación real de Rules, Dispatch responde `ranking.estado = NO_DISPONIBLE` y nunca presenta un puntaje simulado como orden real.
-
-### Pendientes
-
-P1 se cerró con la decisión 6A del 26 de octubre de 2026; queda registrada arriba, en «Decidido».
-
-| ID | Qué falta definir | Responsable | Fecha límite | Impacto mientras siga abierto |
-|---|---|---|---|---|
-| P2 | Qué servicio escribe la configuración por tenant de RF-02 y el tarifario de RF-22; §7.1 indica que Rules los lee desde persistencia. | Equipos de Rules y Core | 20 oct 2026 | Afecta los contratos de administración del tenant (SCRUM-1234). |
-| P3 | Qué interacciones entre servicios son síncronas (HTTP) y cuáles por eventos. | Sara, en el ADR de SCRUM-1235 | Según SCRUM-1235 | Los contratos de SCRUM-1234 se definen primero para las llamadas síncronas del flujo anterior. |
-| P4 | Qué servicio emite la notificación push del broadcast a los aliados. | Equipos de Dispatch y Core | 20 oct 2026 | Afecta la integración con FCM/APNs (§12). |
-| P5 | Ubicación física de la tabla `solicitud`, hoy bajo el esquema `despacho` aunque Core es su único dueño y escritor. Mover el esquema afecta DDL ya aplicado. Declarado en [`ModeloDatos.md`](ModeloDatos.md) §6.1. | Dueño de la serie de migraciones ([ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §1) | — | La propiedad del dato no cambia; lo que queda inconsistente es el esquema que lo aloja. |
-| P6 | Los seis roles de base de datos y sus `GRANT` están especificados en [`ModeloDatos.md`](ModeloDatos.md) §6.3, pero falta emitirlos como migración de la serie de Core y verificarlos en DEV y QA. | Equipo de Core | — | Mientras no se apliquen, la frontera de datos descansa en el acuerdo y no en el motor. |
-| P7 | Ratificación en Mesa de Arquitectura de ADR-0016, ADR-0022 y ADR-0030, que pasaron a `Aceptado` sin sesión registrada. Material en [Decisiones ADR](guia/decisiones-adr.md#qué-tiene-que-decidir-la-mesa--material-de-tec-12). | Mesa de Arquitectura, vía TEC-12 (SCRUM-1459) | — | El código fusionado ya cumple las tres; revertirlas obligaría a rehacer la frontera de datos y la aceptación atómica. |
-| P8 | Consumidores de los cuatro eventos de negocio: la columna de consumidores previstos refleja el diseño, no un compromiso. | ARQ-08 (SCRUM-1239), diferida al Sprint 5 | — | Depende de que exista el broker (ARQ-05); hasta entonces §12.2 solo compromete la escritura al outbox. |
-| P9 | Evidencia de QA de la frontera de la decisión 6A en un ambiente desplegado. Lo verificado hasta ahora es código y migración. | QA, con la subtarea de TEC-01 (SCRUM-1448) | — | La decisión está documentada e implementada, pero no acreditada en DEV ni en QA. |
-
-**Sobre P4, para decidir.** Lo implementado en el Bloque 2 de M-05 (MANI-Node#80 y MANI-.NET#16) ya toma una forma: Dispatch decide a quién ofrecer y le pide a Core la oferta con `POST /notifications` (interna); Core persiste la notificación `OFERTA_DESPACHO`, una por aliado y solicitud, y es quien entrega el push. Si el equipo lo confirma, P4 se cierra con «Core emite el push; Dispatch lo solicita».
-
-
-## 7.5 Inventario funcional por servicio
-
-Estado real de cada capacidad en la arquitectura vigente al 19 de octubre de 2026 (SCRUM-1260). Una historia cerrada con la arquitectura anterior no acredita la arquitectura vigente: el estado lo da su historia de migración (BACKLOG_MANI §3.1). **Ninguna capacidad está verificada todavía por QA en la arquitectura vigente:** la matriz de pruebas del Sprint 4 (SCRUM-1264) está diseñada, pero sus casos no se han ejecutado.
-
-Estados: **Migrado** (implementado en el servicio, sin regresión de QA) · **Migración en curso** (existe en la arquitectura anterior; su migración está en curso o bloqueada) · **En desarrollo** · **No iniciado** · **Sin historia** · **Incremento 2**.
-
-| Servicio | Capacidad | RF | Estado | Historias |
-|---|---|---|---|---|
-| Core — Node.js | Gestión de tenants | RF-01 | Sin historia | — |
-| Core — Node.js | Autenticación | RF-03 | Migrado | SCRUM-1061 |
-| Core — Node.js | Recuperación de contraseña | RF-04 | Sin historia | — |
-| Core — Node.js | Registro de aliado persona natural | RF-05 | Migrado | SCRUM-1065 |
-| Core — Node.js | Registro de aliado empresa | RF-05 | Migrado en Core; la pantalla de la app está bloqueada | SCRUM-1063, SCRUM-1060 |
-| Core — Node.js | Registro de empleado directo | RF-05 | En desarrollo | SCRUM-850 |
-| Core — Node.js | Aprobar o rechazar aliados | RF-06 | Migración en curso | SCRUM-1066 |
-| Core — Node.js | Zonas de cobertura | RF-07 | Migración en curso | SCRUM-1068, SCRUM-1067 |
-| Core — Node.js | Registro de cliente persona natural | RF-08 | Migrado | SCRUM-1064 |
-| Core — Node.js | Cliente empresa con sitios y reglas del sitio | RF-08, RF-09 | En desarrollo | SCRUM-852, SCRUM-853 |
-| Core — Node.js | Crear categorías y asociar aliados | RF-10, RF-11 | Migrado | SCRUM-1069, SCRUM-1071 |
-| Core — Node.js | Desactivar categoría | RF-10 | No iniciado (bloqueada) | SCRUM-858 |
-| Core — Node.js | Crear solicitud | RF-12 | Migración en curso | SCRUM-1072 |
-| Core — Node.js | Disponibilidad del aliado, perfil y términos | RF-29, RF-30, RF-31 | En desarrollo | SCRUM-855, SCRUM-854, SCRUM-856 |
-| Core — Node.js | Cotización, ejecución, evidencias y calificación | RF-15, RF-17..RF-19, RF-34, RF-35 | No iniciado | SCRUM-865, 867 a 870, 872 a 875 |
-| Core — Node.js | Mensajería, notificaciones y reportes | RF-20, RF-21, RF-23 | No iniciado | SCRUM-881 a 884, SCRUM-887 |
-| Core — Node.js | Cancelación e historial | RF-32, RF-33, RF-36 | No iniciado | SCRUM-877 a 880 |
-| Rules — Java | Reglas de categoría por tenant | RF-02 | Migrado | SCRUM-1070 |
-| Rules — Java | Ranking de aliados | RF-13 | No iniciado | SCRUM-864, SCRUM-876 |
-| Rules — Java | Validación contra tarifario y tarifario | RF-16, RF-22 | No iniciado | SCRUM-866, SCRUM-885, SCRUM-886 |
-| Dispatch — .NET | Orquestación del despacho | RF-12 | Migración en curso | SCRUM-1073 |
-| Dispatch — .NET | Ver y filtrar aliados válidos | RF-12 | En desarrollo | SCRUM-861, SCRUM-862 |
-| Dispatch — .NET | Aceptar sin doble asignación | RF-14 | Migración en curso | SCRUM-1074 |
-| Todos | Pagos, quejas, comercialización y métricas | RF-24..RF-28 | Incremento 2 | SCRUM-888 a 901 |
-| Todos | Rastreo del aliado en vivo | — | Incremento 2 (fuera del MVP) | SCRUM-871 |
-
-Los historiales y el estado por historia se consultan en Jira; el SRS §7.2 resume el mismo inventario por capacidad de negocio.
-
-## 7.6 Conformidad del código con §7.4
-
-Auditoría de solo lectura del 2026-10-20, contra `main`, `develop` y `release` de `MANI-Node` y
-`MANI-.NET`, comprobando con `git merge-base --is-ancestor` que los PR verificados estén en las dos
-ramas que se despliegan. Dice si el código cumple los límites de §7.4, no si una historia está
-cerrada. §7.5 ya advierte que **ninguna capacidad está verificada por QA** en la arquitectura
-vigente, y eso no cambia con esta auditoría: lo verificado es código, no comportamiento desplegado.
-
-**Conforme:** la elegibilidad por categoría, zona y disponibilidad vive en Core; Dispatch la consume
-por HTTP con `CoreAllyClient` y **no existe `PostgresAllyRepository`**; el contexto de la solicitud y
-el perfil del aliado autenticado los sirve Core; la notificación al usuario final sale por Core; y
-toda la DDL vive en `MANI-Node/db/migrations/` —el `schema_and_seed_dotnet.sql` que ADR-0030
-prohibía nunca entró—. La aceptación concurrente usa un `UPDATE` condicional atómico correcto como
-sentencia, y el `ConcurrentDictionary` que se había reportado existe solo en dobles de prueba.
-También quedaron descartados dos hallazgos heredados: `DistanceKm` no existe en las ramas que se
-despliegan, y el valor canónico de verificación ya es uno solo (`VERIFICADO`), sin el `OR 'aprobado'`
-que citaba ADR-0030.
-
-**Cerrado desde la auditoría:** su defecto D-1 señalaba que §7.2 y la decisión de ADR-0022 seguían
-asignando las solicitudes a Dispatch, contra §7.4 y contra el código. Las dos correcciones ya están
-aplicadas: §7.2 lo arregló DOC4-03 (SCRUM-1246) y la decisión de ADR-0022 declara hoy que Dispatch
-no escribe el estado de la solicitud. Igual que su P-3, que pedía ratificar ADR-0022 «hoy
-Propuesto»: pasó a `Aceptado` el 2026-10-23, con la ratificación pendiente de Mesa que registra P7.
-
-**Desviaciones abiertas**, cada una con el escenario de fallo y el criterio con el que se cierra:
-
-| ID | Desviación | Escenario de fallo | Criterio de cierre |
-|---|---|---|---|
-| D-2 | **Dispatch nunca fija el contexto de identidad en la base.** La migración `0007_politicas_por_tenant.sql` le concede `EXECUTE` de `app.set_context` para que lo invoque como primera sentencia de cada transacción, y en `MANI-.NET` hay **cero** apariciones de `set_config`, `app.set_context`, `SET LOCAL` o `mani_dispatch_svc` | Con el rol previsto, `app.tenant_id()` es `NULL`, ninguna política deja pasar filas y toda aceptación responde «no encontrada» o conflicto. Con `service_role` o `postgres` funciona, pero RLS queda como documentación, contra ADR-0012 | Abrir transacción, invocar `app.set_context(tenant, usuario, 'aliado')` y ejecutar el `UPDATE` dentro de ella, con una prueba de integración conectada como `mani_dispatch_svc` (`NOBYPASSRLS`) que acepte una solicitud y falle al intentar la de otro tenant |
-| D-3 | **La política de `solicitud_rechazo` exige leer `aliado`, tabla sin permiso para Dispatch.** `0007` crea la política con una subconsulta sobre `aliado` y el mismo archivo no le concede `SELECT` sobre esa tabla. El defecto está en la migración de Core, no en Dispatch | Con el contexto ya corregido, el `INSERT` de rechazo falla con «permission denied for table aliado» | Decidir entre conceder un `SELECT` restringido sobre `aliado` o reescribir la política sin tocarla, p. ej. comparando contra un claim. Cambia la superficie de lectura cruzada que ADR-0030 limita, así que es decisión, no arreglo |
-| D-4 | **El broadcast se corta en 50 aliados y un fallo a mitad queda congelado.** `OrchestrateDispatchUseCase` fija `PageSize = 50`, no recorre páginas y descarta el `totalCount` que Core devuelve; la guarda de idempotencia es «hay alguna oferta» | Con 51 elegibles, 1 no recibe oferta y la respuesta anuncia el despacho como exitoso. Si el proceso muere tras publicar 10 de 40, el reintento ve 10 ofertas y responde «ya transmitido», dejando 30 aliados sin oferta de forma permanente | Recorrer hasta cubrir `totalCount` y comparar el conjunto de ofertas existentes contra el de elegibles, publicando solo las faltantes; prueba que simule un corte a mitad y verifique que el reintento completa el resto sin duplicar |
-| D-5 | **Dispatch no consulta a Rules para el orden del listado**, que §7.4 y ADR-0030 §2 ponen en Rules. No hay cliente de Rules ni referencia alguna, y el `ServiceUrls:RulesService` de `appsettings.json` nadie lo lee | El orden efectivo es el de Core, por `id`: RF-13 no se cumple | Es capacidad faltante, no defecto de implementación: requiere historia propia. Coincide con el estado «No iniciado» de RF-13 en §7.5 |
-| D-6 | **Una solicitud que no está `PENDIENTE` se reporta como «asignada a otro profesional».** Si la fila existe con `aliado_id IS NULL` pero el estado es otro, p. ej. `CANCELADA`, el `UPDATE` no afecta filas y el método devuelve conflicto con `AssignedAllyId = null` | El cliente recibe un 409 que describe un hecho falso | Distinguir el conflicto de asignación del conflicto de estado, como ya hace Core con `MANI-SOL-409` y `MANI-SOL-409E` |
-| D-7 | **`CORE_SERVICE_URL` no está declarada en ningún manifiesto versionado.** El código la lee de la configuración, `appsettings.json` declara un `ServiceUrls:CoreService` que nadie lee, el compose solo carga un `.env` no versionado y no hay `.env.example` | Sin esa variable, todo el flujo de despacho responde 503. Es compatible con el historial de imágenes desactualizadas en QA | Leer como respaldo la clave que ya existe en `appsettings.json`, o declarar la variable en el compose y en un `.env.example` |
-| D-8 | **Dispatch acepta tokens que Core rechaza y no valida tokens asimétricos.** Su `JwtAuthHelper` valida solo HS256 y, si no encuentra los claims en `app_metadata`, cae a `tenant_id`/`tenantId`/`user_role` planos; el `TokenService` de Core declara que **no** hay *fallback* a la raíz y contempla ES256 | Dos políticas de token distintas en el mismo flujo, contra ADR-0031. Si el proyecto emite claves asimétricas, Dispatch devuelve 401 mientras Core autentica bien | Una sola política de validación en los dos servicios, la de ADR-0031 §1 y §5 |
-| D-9 | **Hueco de autorización declarado en el PR de Core y cerrado fuera de él.** El propio PR dice que `/allies/eligible`, `/solicitudes/*/context` y `/notifications` quedan alcanzables con un JWT de cliente, y que los cierra `MANI-APIGateway#11` | El PR de Core ya está en `release`; si el del Gateway no entró, las tres rutas están expuestas a cualquier rol autenticado | Verificar en el Gateway antes de promover. La auditoría no revisó ese repositorio en este pase |
-| D-10 | **Hueco en la numeración de migraciones:** `MANI-Node/db/migrations/` salta de `0010` a `0013` en develop y release. Los números 0011 y 0012 los consumieron ramas cuyos PR se cerraron sin fusionar | ADR-0030 §1 exige numeración incremental e inmutable con registro en `schema_migrations`; un despliegue puede buscar migraciones que no existen | Dejar constancia de por qué faltan, para que ningún despliegue las espere |
-
-Las decisiones que la auditoría señaló como bloqueantes antes de refactorizar son las de
-«Pendientes» de §7.4: la ratificación en Mesa de ADR-0016, ADR-0022 y ADR-0030 (P7), la ubicación
-de `solicitud` (P5), la aplicación de los roles de base (P6) y la ratificación de ADR-0032 con el
-rol concreto de conexión de Dispatch, de la que depende el criterio de cierre de D-2.
-
-**Pruebas que existen hoy.** `MANI-.NET` tiene `PostgresSolicitudAssignmentRepositoryIntegrationTests`
-contra PostgreSQL —asignación, estado resultante, concurrencia con un único ganador y rechazo— y
-`MANI-Node` cubre elegibilidad (verificados, ausencia vigente, rechazo, tipo, paginación, zona padre
-y aislamiento de tenant) y creación de la solicitud (idempotencia, concurrencia y tenant cruzado).
-**No cubren** el contexto de identidad con `mani_dispatch_svc` (D-2), la inserción de rechazo bajo la
-política real (D-3), el broadcast con más de 50 elegibles ni el reintento parcial (D-4), ni la
-aceptación con un estado distinto de `PENDIENTE` (D-6).
-
----
+Contratos: `core-internal.yaml` y `dispatch.yaml` en MANI-APIGateway. El orden de los elegibles lo calcula Rules (RF-13): sin una evaluación real de Rules, Dispatch responde `ranking.estado = NO_DISPONIBLE` y nunca presenta un puntaje simulado como orden real.
 
 # 8. Multi-tenancy y seguridad
 
@@ -571,50 +422,6 @@ cualquier otra lectura de negocio. Esto materializa
 [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md) y
 [ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md).
 
-### 8.3.1 Estado de cumplimiento en MANI-Flutter
-
-La regla de arriba es la decidida; esto es lo que el cliente hace hoy. Inventariado en SCRUM-1619
-(ARQ-ADR0027) sobre `MANI-Flutter` `develop` @ `3b28b76`, al corte del 2026-10-28. `main` sigue en
-el corte del 21-oct y no tiene ninguno de los retiros del Sprint 5.
-
-`supabase_flutter` se importa en 19 archivos de `lib/`. Diecisiete usan solo Auth —
-`Supabase.initialize`, `signInWithPassword`, `signOut`, `currentSession`, `currentUser`,
-`onAuthStateChange` y los tipos `User`, `Session` y `GoTrueClient` — o son residuos sin acceso: un
-`catch` de `PostgrestException` o `StorageException` en un repositorio cuyo datasource ya va por el
-Gateway, que no llama a Supabase y cuya limpieza es opcional. **No hay ningún uso de `.from('tabla')`,
-`.storage`, `.functions` ni `.channel(`.**
-
-Quedan **dos accesos prohibidos**, ambos `.rpc()`, con su historia de retiro asignada:
-
-| Archivo (`lib/…`) | RPC vivas | Historia que lo retira | Qué falta |
-|---|---|---|---|
-| `features/profile_categories/data/datasources/categories_remote_datasource.dart` | `listar_categorias_tenant`, `obtener_mis_categorias`, `guardar_mis_categorias` | SCRUM-1392 (HU-M04-03) | Core ya tiene los tres equivalentes (`GET /profiles/me/categories/available`, `GET /profiles/me/categories`, `PUT /profiles/me/categories`), pero **no están declarados en `core.yaml`** del Gateway (criterio T8). Declararlos y pasar el datasource al `GatewayClient` |
-| `features/profiles/coverage/data/datasources/cobertura_remote_datasource.dart` (y su `cobertura_injection.dart`) | `listar_zonas`, `buscar_zonas`, `obtener_mi_cobertura`, `declarar_cobertura` | SCRUM-1385 (HU-M03-02) | Las dos primeras ya tienen `GET /catalog/zones` en el Gateway. Las dos de cobertura **no tienen endpoint**: falta decidir el servicio dueño (SCRUM-1068, en `blocked`) |
-
-Dos hallazgos del mismo examen:
-
-- Las RPC `listar_zonas`, `obtener_mi_cobertura` y `declarar_cobertura` **no están versionadas** en
-  ninguna migración, ni en `MANI-Node/db/migrations` ni en `MANI-APIGateway/database`: se crearon a
-  mano en Supabase, así que un ambiente nuevo no las tiene.
-- La cobertura del aliado es el único caso en que no basta conectar el front a un endpoint
-  existente, porque falta la decisión del servicio dueño. Es el candidato más probable a desviación
-  aceptada; una desviación necesita aprobación de la Scrum Master y fecha de retiro, y hasta hoy no
-  se ha registrado ninguna.
-
-La búsqueda que acredita el cumplimiento, desde la raíz de `MANI-Flutter` con `develop` actualizado:
-
-```bash
-git fetch origin
-git grep -n -E '\.rpc\(|\.storage\b|\.from\(\s*['"'"'"]|\.functions\b|\.channel\(' origin/develop -- 'lib/**' \
-  | grep -v -E '^[^:]+:[^:]+:[0-9]+:\s*//'
-```
-
-La segunda línea descarta comentarios; sin ella, un comentario de `auth_remote_data_source.dart`
-aparece como falso positivo. El patrón exige comilla después de `.from(` para no capturar
-`Map<String, dynamic>.from(…)`, y no cuenta `Supabase.instance` como acceso a datos, porque también
-es la forma de leer la sesión. **Para acreditar ADR-0027 el resultado debe ser cero líneas**; al
-2026-10-28 devuelve 2, los métodos `_rpc` de los dos archivos de la tabla.
-
 El detalle, con la tabla de dependencias permitidas y prohibidas, está en
 [`SDD.md`](SDD.md) §2.2 y §14.
 
@@ -640,37 +447,34 @@ Esto responde a RF-05, RF-06 y REST-02.
 
 ## 8.5 Vista de interfaz del registro y la verificación de aliados
 
-Las historias migradas de `EP-02` tienen mockup aprobado en Figma (`PO-06`, `SCRUM-1093`). El archivo fuente es
+Las pantallas de registro y verificación de aliados tienen mockup aprobado en Figma. El archivo fuente es
 [MANI — Figma Make](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link) y las exportaciones
-versionadas viven en [`diagrams/MOCKUPS/`](diagrams/MOCKUPS/). Las dos figuras siguientes ilustran cómo la
+versionadas viven en [`../01-producto/MOCKUPS/`](../01-producto/MOCKUPS/). Las dos figuras siguientes ilustran cómo la
 interfaz materializa los controles de esta sección: la carga de documentos KYC definidos por el tenant y una
 bandeja de verificación limitada a la empresa del administrador.
 
-[![Figura 8.1 — Registro de aliado persona natural](diagrams/MOCKUPS/registro-aliado-persona-natural.png)](diagrams/MOCKUPS/registro-aliado-persona-natural.png)
+[![Figura 8.1 — Registro de aliado persona natural](../01-producto/MOCKUPS/registro-aliado-persona-natural.png)](../01-producto/MOCKUPS/registro-aliado-persona-natural.png)
 
 **Figura 8.1 — Registro de aliado (persona natural).** Selector de tipo de aliado, datos de identificación y
-sección de documentos requeridos, cuya lista la configura cada tenant (RF-02, RNF-10). Ilustra `US-02.1.1`
-Registro aliado persona natural (`SCRUM-846`), migrada en `US-02.1.1-M2` (`SCRUM-1065`); la variante de empresa
-corresponde a `US-02.1.2` (`SCRUM-847`). Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
+sección de documentos requeridos, cuya lista la configura cada tenant (RF-02, RNF-10). La variante de empresa es una pantalla aparte. Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
 
-[![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](diagrams/MOCKUPS/backoffice-verificacion-aliados.png)](diagrams/MOCKUPS/backoffice-verificacion-aliados.png)
+[![Figura 8.2 — Bandeja de verificación de aliados en el Backoffice](../01-producto/MOCKUPS/backoffice-verificacion-aliados.png)](../01-producto/MOCKUPS/backoffice-verificacion-aliados.png)
 
 **Figura 8.2 — Bandeja de verificación del Backoffice.** El administrador ve solo los aliados pendientes de su
-tenant, consulta sus documentos y aprueba o rechaza; el rechazo exige un motivo. Ilustra `US-02.1.3`
-Aprobar/rechazar registro de aliado (`SCRUM-848`), migrada en `US-02.1.3-M2` (`SCRUM-1066`), y responde a RF-06 y
+tenant, consulta sus documentos y aprueba o rechaza; el rechazo exige un motivo. Responde a RF-06 y
 RNF-01. Fuente: [Figma](https://www.figma.com/make/VsrVQhwNp6r9t0WEpcpX8s/Review-design-link).
 
-Exportaciones disponibles en `diagrams/MOCKUPS/`:
+Exportaciones disponibles en `../01-producto/MOCKUPS/`:
 
-| Archivo | Pantalla | Historia |
-|---|---|---|
-| `perfil-acceso-registros.png` | Acceso a los registros desde el perfil | `US-02.1.1`, `US-02.2.1` |
-| `registro-aliado-persona-natural.png` | Registro de aliado persona natural | `US-02.1.1` (`SCRUM-846`) |
-| `registro-aliado-empresa.png` | Registro de aliado empresa | `US-02.1.2` (`SCRUM-847`) |
-| `registro-aliado-confirmacion.png` | Confirmación: registro pendiente de verificación | `US-02.1.1`, `US-02.1.2` |
-| `backoffice-verificacion-aliados.png` | Bandeja de verificación de aliados | `US-02.1.3` (`SCRUM-848`) |
-| `backoffice-aliado-aprobado.png` | Aliado aprobado en la bandeja | `US-02.1.3` (`SCRUM-848`) |
-| `registro-cliente.png` | Registro de cliente persona natural | `US-02.2.1` (`SCRUM-851`) |
+| Archivo | Pantalla |
+|---|---|
+| `perfil-acceso-registros.png` | Acceso a los registros desde el perfil |
+| `registro-aliado-persona-natural.png` | Registro de aliado persona natural |
+| `registro-aliado-empresa.png` | Registro de aliado empresa |
+| `registro-aliado-confirmacion.png` | Confirmación: registro pendiente de verificación |
+| `backoffice-verificacion-aliados.png` | Bandeja de verificación de aliados |
+| `backoffice-aliado-aprobado.png` | Aliado aprobado en la bandeja |
+| `registro-cliente.png` | Registro de cliente persona natural |
 
 ---
 
@@ -771,13 +575,9 @@ Esto evita que una reconexión implique pérdida del estado del servicio.
 
 Realtime es un transporte hacia un usuario conectado: no garantiza entrega a un consumidor
 desconectado, no reintenta y no ordena por agregado. **No es el bus de integración entre
-servicios.** Esa integración se decide en ADR-0029: bus de eventos con **Apache Kafka**. El broker ya está
-**operativo en DEV y QA** (Kafka 3.8.0 en modo KRaft, tópicos canónicos, smoke test y monitoreo:
-[`ARQ-05-despliegue-kafka-dev-qa.md`](ARQ-05-despliegue-kafka-dev-qa.md), SCRUM-1236); la
-publicación confiable desde el outbox (ARQ-07) y los consumidores idempotentes (ARQ-08) siguen
-**diferidos al Sprint 5**. Durante el Sprint 4 la integración entre servicios es
-exclusivamente HTTP sincrónico por la red interna, con falla cerrado —`503` hacia el llamador, sin
-degradar a lógica local— según el patrón que fija ADR-0030 §2.
+servicios.** Esa integración la decide ADR-0029: bus de eventos con **Apache Kafka**, con la configuración del capítulo 22 del SDD. La publicación confiable desde el outbox y los consumidores idempotentes siguen el patrón del capítulo 20 del SDD.
+
+Entre servicios, las llamadas síncronas son HTTP por la red interna y fallan cerrado —`503` hacia el llamador, sin degradar a lógica local— según el patrón que fija ADR-0030 §2.
 
 Cuatro eventos de negocio, cada uno con un único productor, que es el servicio dueño de la capacidad
 (ADR-0022, SAD §7.4):
@@ -785,20 +585,20 @@ Cuatro eventos de negocio, cada uno con un único productor, que es el servicio 
 | Evento | Productor | Se emite cuando |
 |---|---|---|
 | `SolicitudCreada` | Core Service | la solicitud queda persistida y lista para repartirse (RF-12) |
-| `AliadoAsignado` | Dispatch Service | la actualización condicional de ADR-0016 confirma la asignación |
+| `AliadoAsignado` | Core Service (decisión 6A) | la actualización condicional de ADR-0016 confirma la asignación |
 | `CotizacionAceptada` | Core Service | el cliente acepta una cotización validada contra el tarifario |
 | `ServicioFinalizado` | Core Service | la ejecución del servicio concluye y la solicitud pasa a `FINALIZADA` (RF-18, RF-19) |
 
 Ningún servicio emite un evento de un dominio ajeno. Todo evento viaja con el sobre obligatorio de
 ADR-0029 §2 —`event_id`, `event_type`, `event_version`, `occurred_at`, `tenant_id`,
 `correlation_id`, `partition_key`, `data`— y su esquema formal `v1` junto con las reglas de
-versionado se especifican en [`CONTRATOS_EVENTOS.md`](CONTRATOS_EVENTOS.md) (ARQ-06). `tenant_id`
+versionado se especifican en el capítulo 20 del [SDD](SDD.md). `tenant_id`
 es obligatorio porque el aislamiento multi-tenant (RNF-01) también aplica a los eventos, y
 `correlation_id` continúa el `X-Correlation-ID` del Gateway para seguir una transacción de extremo a
 extremo atravesando el bus (RNF-07).
 
 La publicación usa **transactional outbox** desde la primera implementación, nunca doble escritura:
-el servicio escribe el evento en `servicio.outbox` o `despacho.outbox` dentro de la misma
+el servicio escribe el evento en `outbox_evento` dentro de la misma
 transacción que cambia el estado, y un relay aparte lo publica y lo marca enviado
 (`ModeloDatos.md` §6.3, §7 y §8). El consumidor es idempotente por `event_id`. La razón es
 concreta: con doble escritura, una caída entre el `COMMIT` y la publicación deja una solicitud
@@ -847,7 +647,7 @@ El detalle conceptual, lógico, físico, DDL y diccionario vive en `ModeloDatos.
 **especificación normativa** del modelo. El **DDL ejecutable** es una sola serie de migraciones
 propiedad de Core Service, con numeración incremental e inmutable y registro en
 `schema_migrations`; Rules y Dispatch no versionan DDL y abren PR de migración contra esa serie.
-`MANI-API-Gateway/database/` y `MANI-Frontend/database/` quedan congelados como histórico y no son
+`MANI-APIGateway/database/` y `MANI-Flutter/database/` quedan congelados como histórico y no son
 la fuente ([ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §1).
 
 Los permisos por esquema que hacen exigible esa frontera —un rol por servicio, sin `SELECT` sobre
@@ -875,8 +675,7 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 
 [![Vista de alto nivel de la infraestructura de MANI por ambiente](diagrams/despliegue/infraestructura.png)](diagrams/despliegue/infraestructura.png)
 
-> **Figura 3 — Infraestructura de alto nivel.** Archivo: [`diagrams/despliegue/infraestructura.png`](diagrams/despliegue/infraestructura.png).
-> La vista C4 de despliegue formal es `despliegue-prod` en [`workspace.dsl`](diagrams/c4/workspace.dsl), documentada en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
+> **Figura 2 — Infraestructura de alto nivel.** Archivo: [`diagrams/despliegue/infraestructura.png`](diagrams/despliegue/infraestructura.png). La vista C4 de despliegue está en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
 
 MANI mantiene tres ambientes:
 
@@ -890,7 +689,7 @@ No se define STAGING como cuarto ambiente.
 
 - desarrollo e integración;
 - Docker local cuando aplique;
-- Kubernetes para la validación del modelo de despliegue cuando corresponda — **Abierto, pendiente de DevOps (INFRA-01, INFRA-02; issue #…)**: hoy DEV corre en máquinas personales con Docker local (INFRAESTRUCTURA_MANI §25);
+- Kubernetes para la validación del modelo de despliegue cuando corresponda
 - datos sintéticos;
 - sin datos reales de usuarios o KYC.
 
@@ -927,18 +726,16 @@ La solución mantiene una estrategia **multi-repo**:
 
 | Repositorio | Tecnología | Responsabilidad principal |
 |---|---|---|
-| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
-| `MANI-API-Gateway` | NGINX | Punto de entrada y enrutamiento de APIs |
-| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
-| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
-| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Flutter` | Flutter / Dart | Cliente web y móvil |
+| `MANI-APIGateway` | NGINX | Punto de entrada y enrutamiento de APIs |
+| `MANI-Java` | Java | Reglas de negocio por tenant |
+| `MANI-.NET` | .NET | Solicitudes, despacho y asignación |
+| `MANI-Node` | Node.js | Servicios core y disponibilidades |
 | `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
-| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
+| `MANI-docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
 Son **siete repositorios** y seis desplegables ([ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md)).
-No existe `MANI-Availability` —la disponibilidad es un dominio del Core— ni `MANI-Infra`, que DevOps
-borró: la infraestructura de datos y el stack local viven en `MANI-API-Gateway` (ADR-0004, enmienda
-del 2026-10-07).
+No existe `MANI-Availability` —la disponibilidad es un dominio del Core— ni `MANI-Infra`: la infraestructura de datos y el stack local viven en `MANI-APIGateway` (ADR-0004).
 
 Cada unidad desplegable mantiene:
 
@@ -949,7 +746,7 @@ Cada unidad desplegable mantiene:
 - pipeline;
 - artefacto contenerizado.
 
-`MANI-Docs` mantiene SDD, ADR, modelo de datos y diagramas técnicos.
+`MANI-docs` mantiene SDD, ADR, modelo de datos y diagramas técnicos.
 
 ---
 
@@ -1028,9 +825,8 @@ El umbral de 401 es una tasa, no un contador: busca fuerza bruta o expiración m
 aislado. La segunda alerta no tiene umbral porque un solo token sin `tenant_id` o sin `user_role`
 ya es un intento de evadir el aislamiento.
 
-Esta sección documenta el contrato de observabilidad; la evidencia de que está implementado y
-verificado (TEC-14) son las pruebas `tests/integration/routes/metrics.routes.test.js` de
-`MANI-Node`, el guion `tests/gateway/ruta-publica-metrics.sh` del Gateway y su ejecución en
+Esta sección documenta el contrato de observabilidad; las pruebas que lo acreditan son `tests/integration/routes/metrics.routes.test.js` de
+`MANI-Node` y el guion `tests/gateway/ruta-publica-metrics.sh` del Gateway, ejecutados en
 `.github/workflows/ci.yml`.
 
 ---
@@ -1145,13 +941,6 @@ Aplicable a:
 **Riesgo:** duplicación, exposición de reglas y clientes inconsistentes.  
 **Control:** mover lógica al backend.
 
-> **Calibración, verificada el 2026-10-20.** La lógica no está en Flutter: vive en funciones
-> PL/pgSQL de `MANI-Flutter/database/` (entre ellas `crear_solicitud`, `aceptar_solicitud`,
-> `_sol_aliado_elegible`), y lo que Flutter contiene son casos de uso que las invocan por RPC
-> (19 `.from(` y 13 `.rpc(` en `MANI-Flutter/lib`). El riesgo real es ese, y retirarlo del cliente
-> es lo que propone [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md), en estado
-> `Propuesto`. Corregir este riesgo y su control es la tarea `DOC-28`.
-
 ## Acceso directo indiscriminado a Supabase
 
 **Riesgo:** bypass de controles y acoplamiento.  
@@ -1194,118 +983,78 @@ Aplicable a:
 
 ## 23.1 Riesgos de las operaciones sensibles de negocio
 
-Los riesgos anteriores son de estructura. Esta sección recorre las **operaciones de negocio** que mueven dinero, cambian reglas o deciden sobre una persona, como pide [QAS-38](SDD.md) («cada operación sensible aparece en el análisis con su mitigación»). La lista de las doce operaciones es la que QA levantó del backlog en el corte del 2026-11-21 ([operación ↔ riesgo](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas38_operacion_riesgo.md)).
+Los riesgos anteriores son de estructura. Esta sección recorre las **operaciones de negocio** que mueven dinero, cambian reglas o deciden sobre una persona, como pide [QAS-38](SDD.md) («cada operación sensible aparece en el análisis con su mitigación»).
 
-Cada control se describe como está en el código de `develop` al 2026-11-22 (MANI-Node `a01fe96`), no como se diseñó. Donde el control no cubre todo el riesgo, la columna **Riesgo residual** lo dice y nombra el escenario de calidad que lo mide.
+Cada control se describe como está en el código. Donde el control no cubre todo el riesgo, la columna **Riesgo residual** lo dice y nombra el escenario de calidad que lo mide.
 
 | # | Operación (historia) | Riesgo | Control implementado | Riesgo residual |
 |---|---|---|---|---|
-| 1 | Pago al aceptar cotización (SCRUM-888) | Cobro duplicado por reintento o doble clic | Clave de idempotencia con huella del cuerpo: la misma clave con otro cuerpo devuelve `409` (SCRUM-1653, migración `0041`); el backend rechaza un segundo pago aprobado sobre la misma cotización | La pantalla sigue mostrando «Pagar (sandbox)» después de pagar (observación de la PO, 2026-11-21); el backend sí bloquea |
-| 2 | Retención y liberación de fondos (SCRUM-891, 892) | Captación de dineros del público sin autorización | Custodia en operador regulado (ADR-0024); en el MVP el pago es simulado. La liberación bloquea las retenciones con `FOR UPDATE` y ocurre al finalizar el servicio (decisión de la PO, SCRUM-1687) | El flujo financiero real no existe en el MVP; la integración con un operador queda fuera de lo entregado |
-| 3 | Aceptar solicitud / asignación (SCRUM-863, 1403) | Doble asignación | Exclusión atómica en PostgreSQL y frontera de asignación 6A (ADR-0035): Dispatch decide, Core escribe; `409` al segundo aceptante | Bajo carga, `eligible-allies` tiene un p95 de 8,2 s frente a 500 ms (QAS-03, QAS-19). Dispatch espera hasta 10 s la respuesta de Core, alineado con la espera del pool de Core (SCRUM-1651, `MANI-.NET/Infrastructure/Core/ClientesDeCore.cs`) |
-| 4 | Aislamiento entre tenants (transversal, SCRUM-1364) | Exposición de datos entre empresas | JWT ES256 + autorización por rol en cada caso de uso + RLS con roles de servicio sin `BYPASSRLS` (ADR-0032) | Fila D10 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) pendiente de evidencia en PROD |
-| 5 | Aprobar o rechazar aliado, KYC (SCRUM-848, 1066, 1384) | Aprobar a alguien sin verificar; dos administradores deciden distinto a la vez; decisión sin responsable | `ResolveAllyVerificationUseCase`: solo `ADMIN` del tenant; no aprueba sin documentos KYC (`MANI-VER-422K`); el rechazo exige motivo de 10 a 500 caracteres (`MANI-VER-422M`); solo resuelve un aliado `PENDIENTE` y el segundo administrador recibe `409` (`MANI-VER-409`); guarda `verificado_por` y la fecha | La auditoría con `correlation_id` se escribe en el log, no en una tabla (QAS-12, Parcial). La verificación KYC es simulada: no consulta fuentes externas de identidad |
-| 6 | Carga y consulta de documentos KYC (SCRUM-1372, 1066) | Acceso a documentos de identidad por quien no debe, dentro o fuera del tenant | `GetKycDocumentSignedUrlUseCase`: solo `ADMIN`; el documento debe pertenecer al aliado y al tenant del token (`MANI-VER-404` si no); URL firmada con vencimiento máximo de 900 s. Bucket privado con políticas por tenant. Cifrado en reposo del disco y los respaldos (ADR-0037) | Un rol de base de datos con lectura ve los metadatos en claro (exclusión aceptada por la PO el 2026-11-21, ADR-0037). La foto de perfil se sube al mismo bucket `kyc-documentos`: `UpdateOwnProfileUseCase` no indica bucket y toma el de omisión. Ninguna decisión documentada lo justifica. Además Core guarda la ruta interna y no una URL firmada, por eso la foto no se ve (SCRUM-1634, no entregado) |
-| 7 | Cancelar solicitud y penalización (SCRUM-877, 878) | Cancelar algo ya en ejecución; carrera con la aceptación; cobrar una penalización que nadie configuró | Solo el cliente dueño cancela (`MANI-SOL-403C`). La fila se bloquea con `FOR UPDATE` en la misma transacción que la aceptación; fuera de los estados cancelables responde `409` (`MANI-SOL-409C`, también al cancelar dos veces, SCRUM-1654). La penalización sale de la política del tenant; sin política activa o con valor 0 **no se cobra** (falla seguro) | — |
-| 8 | Liquidación al aliado con comisión (SCRUM-893) | Liquidar dos veces o con una comisión equivocada; errores de redondeo | La comisión tiene una sola fuente: la regla vigente del tenant (SCRUM-1366); una regla inválida **no liquida**. Cálculo en centavos (bruto = comisión + neto). Retenciones bloqueadas con `FOR UPDATE`. El rol de servicio solo tiene `SELECT, INSERT` sobre `liquidacion`: una liquidación no se edita (migración `0029`). Verificado en PROD por la PO: bruto $30.000, comisión 10 %, neto $27.000 | — |
-| 9 | Cambiar tarifa de referencia (SCRUM-885) | Cambio silencioso de la referencia de precios; rangos incoherentes | Solo `ADMIN` del tenant. Validación `valorMin ≤ valorTipico ≤ valorMax`, moneda ISO 4217 y vigencia coherente. **Cada versión es inmutable**: editar crea una versión nueva y un disparador impide modificar o borrar (`MANI-TAR-409I`, migración `0030`); hay historial | — |
-| 10 | Configurar reglas operativas del tenant (SCRUM-1366) | Reglas inválidas que dañan comisiones, penalizaciones o ventanas; dos administradores se pisan | Solo `ADMIN` del tenant. Validación local y en el motor Rules; si Rules no responde, **falla cerrado** con `503`. Concurrencia optimista con `expectedVersion` (`MANI-RGL-409C`). Cada versión es inmutable (disparador, migración `0031`) | La validación está duplicada en Core y en Rules (QAS-21, No cumple): si se cambia en un lado y no en el otro, divergen |
-| 11 | Adición de monto por imprevisto (SCRUM-872) | Inflar el precio después de aceptar; dos adiciones simultáneas | Solo el aliado asignado pide y solo el cliente decide. Solo con el servicio en ejecución (`MANI-ADI-409E`); una pendiente a la vez (`MANI-ADI-409P`); tope del 50 % de la cotización aceptada (`MANI-ADI-400T`), comprobado de nuevo al aceptar; la solicitud se bloquea con `FOR UPDATE` | — |
-| 12 | Registro inmutable de transacciones (SCRUM-889) | Alterar o borrar el rastro de un pago | `transaccion_evento` no admite `UPDATE`, `DELETE` ni `TRUNCATE` (disparadores, migración `0020`); lo mismo `evento_servicio` (migración `0042`, SCRUM-1656), con actor y correlation ID en cada cambio (SCRUM-1657) | — |
+| 1 | Pago al aceptar cotización | Cobro duplicado por reintento o doble clic | Clave de idempotencia con huella del cuerpo: la misma clave con otro cuerpo devuelve `409` (migración `0041`); el backend rechaza un segundo pago aprobado sobre la misma cotización | La pantalla sigue mostrando «Pagar (sandbox)» después de pagar (observación de la PO, 2026-11-21); el backend sí bloquea |
+| 2 | Retención y liberación de fondos | Captación de dineros del público sin autorización | Custodia en operador regulado (ADR-0024); en el MVP el pago es simulado. La liberación bloquea las retenciones con `FOR UPDATE` y ocurre al finalizar el servicio (decisión de la PO) | El flujo financiero real no existe en el MVP; la integración con un operador queda fuera de lo entregado |
+| 3 | Aceptar solicitud / asignación | Doble asignación | Exclusión atómica en PostgreSQL y frontera de asignación 6A (ADR-0035): Dispatch decide, Core escribe; `409` al segundo aceptante | Bajo carga, `eligible-allies` tiene un p95 de 8,2 s frente a 500 ms (QAS-03, QAS-19). Dispatch espera hasta 10 s la respuesta de Core, alineado con la espera del pool de Core (`MANI-.NET/Infrastructure/Core/ClientesDeCore.cs`) |
+| 4 | Aislamiento entre tenants (transversal) | Exposición de datos entre empresas | JWT ES256 + autorización por rol en cada caso de uso + RLS con roles de servicio sin `BYPASSRLS` (ADR-0032) | Fila D10 de [HU-VAL-01](../06-gobernanza/VALIDACION_HU-VAL-01.md) pendiente de evidencia en PROD |
+| 5 | Aprobar o rechazar aliado, KYC | Aprobar a alguien sin verificar; dos administradores deciden distinto a la vez; decisión sin responsable | `ResolveAllyVerificationUseCase`: solo `ADMIN` del tenant; no aprueba sin documentos KYC (`MANI-VER-422K`); el rechazo exige motivo de 10 a 500 caracteres (`MANI-VER-422M`); solo resuelve un aliado `PENDIENTE` y el segundo administrador recibe `409` (`MANI-VER-409`); guarda `verificado_por` y la fecha | La auditoría con `correlation_id` se escribe en el log, no en una tabla (QAS-12). La verificación KYC es simulada: no consulta fuentes externas de identidad |
+| 6 | Carga y consulta de documentos KYC | Acceso a documentos de identidad por quien no debe, dentro o fuera del tenant | `GetKycDocumentSignedUrlUseCase`: solo `ADMIN`; el documento debe pertenecer al aliado y al tenant del token (`MANI-VER-404` si no); URL firmada con vencimiento máximo de 900 s. Bucket privado con políticas por tenant. Cifrado en reposo del disco y los respaldos (ADR-0037) | Un rol de base de datos con lectura ve los metadatos en claro (exclusión aceptada por la PO el 2026-11-21, ADR-0037). La foto de perfil se sube al mismo bucket `kyc-documentos`: `UpdateOwnProfileUseCase` no indica bucket y toma el de omisión. Ninguna decisión documentada lo justifica. Además Core guarda la ruta interna y no una URL firmada, por eso la foto no se ve (no entregado) |
+| 7 | Cancelar solicitud y penalización | Cancelar algo ya en ejecución; carrera con la aceptación; cobrar una penalización que nadie configuró | Solo el cliente dueño cancela (`MANI-SOL-403C`). La fila se bloquea con `FOR UPDATE` en la misma transacción que la aceptación; fuera de los estados cancelables responde `409` (`MANI-SOL-409C`, también al cancelar dos veces). La penalización sale de la política del tenant; sin política activa o con valor 0 **no se cobra** (falla seguro) | — |
+| 8 | Liquidación al aliado con comisión | Liquidar dos veces o con una comisión equivocada; errores de redondeo | La comisión tiene una sola fuente: la regla vigente del tenant; una regla inválida **no liquida**. Cálculo en centavos (bruto = comisión + neto). Retenciones bloqueadas con `FOR UPDATE`. El rol de servicio solo tiene `SELECT, INSERT` sobre `liquidacion`: una liquidación no se edita (migración `0029`). Verificado en PROD por la PO: bruto $30.000, comisión 10 %, neto $27.000 | — |
+| 9 | Cambiar tarifa de referencia | Cambio silencioso de la referencia de precios; rangos incoherentes | Solo `ADMIN` del tenant. Validación `valorMin ≤ valorTipico ≤ valorMax`, moneda ISO 4217 y vigencia coherente. **Cada versión es inmutable**: editar crea una versión nueva y un disparador impide modificar o borrar (`MANI-TAR-409I`, migración `0030`); hay historial | — |
+| 10 | Configurar reglas operativas del tenant | Reglas inválidas que dañan comisiones, penalizaciones o ventanas; dos administradores se pisan | Solo `ADMIN` del tenant. Validación local y en el motor Rules; si Rules no responde, **falla cerrado** con `503`. Concurrencia optimista con `expectedVersion` (`MANI-RGL-409C`). Cada versión es inmutable (disparador, migración `0031`) | La validación está duplicada en Core y en Rules (QAS-21, No cumple): si se cambia en un lado y no en el otro, divergen |
+| 11 | Adición de monto por imprevisto | Inflar el precio después de aceptar; dos adiciones simultáneas | Solo el aliado asignado pide y solo el cliente decide. Solo con el servicio en ejecución (`MANI-ADI-409E`); una pendiente a la vez (`MANI-ADI-409P`); tope del 50 % de la cotización aceptada (`MANI-ADI-400T`), comprobado de nuevo al aceptar; la solicitud se bloquea con `FOR UPDATE` | — |
+| 12 | Registro inmutable de transacciones | Alterar o borrar el rastro de un pago | `transaccion_evento` no admite `UPDATE`, `DELETE` ni `TRUNCATE` (disparadores, migración `0020`); lo mismo `evento_servicio` (migración `0042`), con actor y correlation ID en cada cambio | — |
 
-**Lectura.** Las doce operaciones tienen riesgo y control identificados. Seis no dejan riesgo residual conocido. Las otras seis lo dejan y está medido en otro escenario: QAS-03 y 19 (rendimiento de la asignación), QAS-12 (auditoría persistida de la aprobación de aliado), QAS-21 (validación duplicada de reglas), la fila D10 (evidencia en PROD) y las exclusiones aceptadas del ADR-0024 y el ADR-0037.
+**Lectura.** Las doce operaciones tienen riesgo y control identificados. Seis no dejan riesgo residual conocido. Las otras seis lo dejan y está medido en otro escenario: QAS-03 y 19 (rendimiento de la asignación), QAS-12 (auditoría persistida de la aprobación de aliado), QAS-21 (validación duplicada de reglas) y las exclusiones aceptadas del ADR-0024 y el ADR-0037.
 
 ---
 
-# 24. Matriz de trazabilidad SRS → Arquitectura
+# 24. Registro de decisiones arquitectónicas
 
-## 24.1 MVP
+Cada decisión que ata al equipo vive en un ADR en [`adr/`](adr/). Un ADR `Aceptado` es vinculante y prevalece sobre cualquier descripción de este documento; uno `Rechazado` documenta una alternativa evaluada y descartada que no se reintroduce sin una decisión nueva; uno `Propuesto` aún no vincula.
 
-| Requisito | Componente principal | Mecanismo |
+Las decisiones las toma la Mesa de Arquitectura ([ADR-0003](adr/ADR-0003-mesa-arquitectura.md)): ficha previa, al menos dos alternativas reales, quórum de 5 de 7 integrantes, una persona que argumente en contra de la opción preferida y disenso documentado. Un ADR absorbido por otro se retira del registro y su número no se reutiliza. Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR no constituyen una decisión arquitectónica.
+
+| ADR | Tema | Estado |
 |---|---|---|
-| RF-01 | Core | tenant |
-| RF-02 | Rules/Core | configuración dinámica |
-| RF-03 | Gateway + Auth + servicios + RLS | JWT multi-tenant |
-| RF-04 | Supabase Auth/Core | recuperación segura |
-| RF-05 | Core + Storage | registro + KYC |
-| RF-06 | Core | workflow de aprobación |
-| RF-07 | Core | cobertura por zonas |
-| RF-08 | Core | clientes y sitios |
-| RF-09 | Core | sitio + zona + condiciones |
-| RF-10 | Core | categorías |
-| RF-11 | Core | aliado-categoría |
-| RF-12 | Dispatch + Core | solicitud y aliados válidos |
-| RF-13 | Rules | ranking |
-| RF-14 | Dispatch | broadcast + exclusión atómica |
-| RF-15 | Core/Dispatch | cotización |
-| RF-16 | Rules | validación tarifaria |
-| RF-17 | Core | aceptar/rechazar/ajustar |
-| RF-18 | Core | historial de ejecución |
-| RF-19 | Core | calificación bidireccional y cierre |
-| RF-20 | Core + Realtime + FCM/APNs | mensajería/notificación |
-| RF-21 | Core + persistencia | consulta de conversaciones |
-| RF-22 | Rules/Core | tarifario por tenant |
-| RF-23 | Core + Data Warehouse/Reporting | reporte de cotizaciones |
+| [ADR-0001](adr/ADR-0001-gestion-documental.md) | Gestión documental del proyecto | Aceptado |
+| [ADR-0002](adr/ADR-0002-jira-github.md) | Jira para gestión, GitHub para desarrollo técnico | Aceptado |
+| [ADR-0003](adr/ADR-0003-mesa-arquitectura.md) | Gobierno mediante Mesa de Arquitectura | Aceptado |
+| [ADR-0004](adr/ADR-0004-cicd-multirepo-ambientes.md) | CI/CD multi-repositorio y promoción de ambientes | Aceptado |
+| [ADR-0005](adr/ADR-0005-devsecops.md) | DevSecOps con SAST, DAST y pruebas de API | Aceptado |
+| [ADR-0006](adr/ADR-0006-observabilidad.md) | Observabilidad distribuida y gestión de incidentes | Aceptado |
+| [ADR-0008](adr/ADR-0008-diagramacion-tecnica.md) | Organización y versionado de diagramas técnicos — *absorbe el antiguo ADR-0020* | Aceptado |
+| [ADR-0011](adr/ADR-0011-cobertura-geografica.md) | Cobertura geográfica por zonas | Aceptado |
+| [ADR-0012](adr/ADR-0012-persistencia-multitenant.md) | Persistencia operacional y aislamiento multi-tenant | Aceptado |
+| [ADR-0013](adr/ADR-0013-storage-kyc.md) | Almacenamiento de documentos KYC | Aceptado |
+| [ADR-0015](adr/ADR-0015-pruebas-aislamiento-multitenant.md) | Pruebas automatizadas de aislamiento multi-tenant | Aceptado |
+| [ADR-0016](adr/ADR-0016-despacho-concurrencia.md) | Despacho broadcast y exclusión concurrente — *absorbe el antiguo ADR-0021; evidencia en PoC-001* | Aceptado |
+| [ADR-0017](adr/ADR-0017-realtime-notificaciones.md) | Mensajería en tiempo real y notificaciones push | Aceptado |
+| [ADR-0018](adr/ADR-0018-identificacion-tenant.md) | Identificación y propagación segura del tenant | Aceptado |
+| [ADR-0019](adr/ADR-0019-arquitectura-soa-poliglota.md) | Arquitectura SOA distribuida, multi-tenant y políglota | Aceptado |
+| [ADR-0022](adr/ADR-0022-logica-de-negocio-en-servicios.md) | La lógica de negocio vive en los servicios; se retira de Flutter y de las funciones PL/pgSQL | Aceptado |
+| [ADR-0024](adr/ADR-0024-modelo-custodia-pagos.md) | Modelo de custodia de pagos: el dinero lo custodia un operador regulado y MANI gestiona el estado — *absorbe el antiguo ADR-0023, con su análisis regulatorio* | Aceptado |
+| [ADR-0025](adr/ADR-0025-integracion-jira-github.md) | Integración Jira–GitHub con GitHub for Atlassian y convención `[SCRUM-<id>]` | Aceptado |
+| [ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md) | Alcance de `supabase_flutter`: solo Auth y Realtime; retiro de PostgREST, RPC y Storage | Aceptado |
+| [ADR-0028](adr/ADR-0028-nombres-repositorios-y-ambientes.md) | Nombres de los repositorios y de los ambientes | Aceptado |
+| [ADR-0029](adr/ADR-0029-comunicacion-asincrona-kafka.md) | Comunicación asíncrona con Kafka | Aceptado |
+| [ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) | Propiedad del esquema y frontera de datos entre servicios | Aceptado |
+| [ADR-0031](adr/ADR-0031-politica-configuracion-jwt-ambientes.md) | Configuración, validación perimetral y propagación de JWT por ambiente | Aceptado |
+| [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) | Identidad de servicio en base de datos | Aceptado |
+| [ADR-0034](adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones | Aceptado |
+| [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md) | Frontera de la asignación: Dispatch decide y Core escribe (decisión 6A) | Aceptado |
+| [ADR-0036](adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) | Pertenencia del cliente a un tenant | Aceptado |
+| [ADR-0037](adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) | Cifrado de datos personales en reposo | Aceptado |
+| [ADR-0038](adr/ADR-0038-logs-centralizados-y-trazas-loki.md) | Logs centralizados y trazabilidad por `correlation_id` con Grafana Loki | Aceptado |
+| [ADR-0014](adr/ADR-0014-feature-toggle.md) | Feature Toggle como mecanismo de diferencias por tenant | | Rechazado |
+| [ADR-0014](adr/ADR-0014-feature-toggle.md) | Feature Toggle como mecanismo de diferencias por tenant | Rechazado |
 
-## 24.2 Segundo incremento
-
-| Requisito | Evolución prevista |
-|---|---|
-| RF-24 | Adapter a operador de pagos |
-| RF-25 | módulo de liquidación/comisión |
-| RF-26 | módulo de quejas |
-| RF-27 | consola de tenant |
-| RF-28 | Data Warehouse + BI |
-
----
-
-# 25. Verificación de cobertura frente al SRS
-
-## Cubierto por el diseño
-
-La arquitectura contempla explícitamente:
-
-- aislamiento de tenants;
-- reglas configurables;
-- autenticación;
-- KYC;
-- cobertura por zonas;
-- categorías;
-- solicitud;
-- ranking;
-- despacho concurrente;
-- cotizaciones;
-- tarifarios;
-- ejecución;
-- calificación;
-- mensajería;
-- notificaciones;
-- reportes;
-- extensibilidad para el segundo incremento.
-
-## Ajustes incorporados respecto al SAD anterior
-
-1. Se elimina Serverpod como backend principal.
-2. Se consolida Java + .NET + Node.js.
-3. Se incorpora API Gateway.
-4. Se mantiene Supabase, aclarando que PostgreSQL es su motor.
-5. Se fija multi-repo.
-6. Se fijan tres ambientes: DEV, QA y PROD.
-7. Se elimina STAGING como cuarto ambiente.
-8. Se mantiene Kubernetes como orquestador.
-9. Se incorpora explícitamente el dominio de disponibilidad (RF-07, RF-12) dentro de Core Service.
-10. Se incorpora trazabilidad completa RF/RNF → componente.
-11. Se incorpora Data Warehouse para RF-28 y analítica.
-12. Se amplía el diseño para RF-19, RF-20, RF-21, RF-22 y RF-23, que no deben quedar implícitos.
+Los números no son contiguos y no se reutilizan: 0007, 0009, 0010, 0020, 0021, 0023 y 0033 se retiraron porque otro ADR absorbió su contenido o porque no llegaron a decidirse, y 0026 nunca se emitió. El siguiente número libre es ADR-0039.
 
 ---
 
-# 26. Documentos relacionados
+# 25. Documentos relacionados
 
 - `SRS_MANI.md` — fuente de verdad de requerimientos.
-- `ModeloDatos.md` — diseño conceptual, lógico, físico y analítico.
-- `SDD.md` — descripción detallada de diseño de software.
-- `/docs/adr/` — decisiones arquitectónicas.
-- [`workspace.dsl`](diagrams/c4/workspace.dsl) — modelo C4 en Structurizr DSL: vistas `panorama`, `contexto`, `contenedores`, `componentes-*`, `dinamico-*` y `despliegue-prod`.
-- [`diagrams/c4/contexto/alto-nivel-arquitectura.png`](diagrams/c4/contexto/alto-nivel-arquitectura.png) y [`diagrams/despliegue/infraestructura.png`](diagrams/despliegue/infraestructura.png) — diagramas de alto nivel (DHL) e infraestructura ilustrativa que referencia este SAD.
-- [`diagrams/MOCKUPS/`](diagrams/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.5.
+- [`SDD.md`](SDD.md) — diseño de bajo nivel: vistas C4, calidad, despliegue, contratos de eventos, secuencias y módulos.
+- [`ModeloDatos.md`](ModeloDatos.md) — diseño conceptual, lógico, físico y analítico.
+- [`TECH_RADAR.md`](TECH_RADAR.md) — tecnologías adoptadas, en evaluación y descartadas.
+- [`adr/`](adr/) — decisiones arquitectónicas.
+- [`../01-producto/MOCKUPS/`](../01-producto/MOCKUPS/) — mockups de interfaz exportados desde Figma que referencia la §8.5.

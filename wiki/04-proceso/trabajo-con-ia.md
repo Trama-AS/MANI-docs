@@ -25,7 +25,7 @@ Se permite IA para apoyo de código, pruebas, documentación, diagramas y explor
 6. una decisión relevante debe pasar por el proceso de gobierno correspondiente;
 7. **la autoría del entregable es de la persona que lo firma:** no se añaden atribuciones a herramientas de IA.
 
-La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o QA** ([Ambientes y promoción](ambientes-y-promocion.md)). Tampoco se pegan en una herramienta de IA.
+La regla 3 se cruza con una prohibición de infraestructura: **no se copian datos KYC ni datos personales reales a DEV o QA** ([Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md)). Tampoco se pegan en una herramienta de IA.
 
 ## Cómo se aplica en este repositorio
 
@@ -44,7 +44,7 @@ Derivado de las reglas anteriores y de la jerarquía de fuentes, no de preferenc
 - **no decide arquitectura** ni «cierra» un punto abierto: `INFRA-01` e `INFRA-02` se resuelven en Mesa de Arquitectura y producen ADR, como se hizo con `SP-05` y `ADR-0022`;
 - **no edita un documento fuente para que coincida con el código**: una contradicción se reporta en el PR o en el issue y se resuelve en el documento correspondiente;
 - no inventa umbrales, rutas, credenciales, nombres de tabla, endpoints ni versiones: si el dato no está documentado, pregunta;
-- no introduce dependencias prohibidas ([Reglas arquitectónicas](../02-arquitectura/guia/reglas-arquitectonicas.md));
+- no introduce dependencias prohibidas ([Reglas arquitectónicas](../02-arquitectura/SAD.md#41-principios));
 - no marca algo como terminado sin el [DoD](dor-y-dod.md) completo;
 - no sustituye la revisión humana: el punto 1 de la política es explícito;
 - **no se atribuye el trabajo.** No agrega `Co-Authored-By` de una herramienta, ni pies del tipo «generado con», ni emojis de robot, en ningún commit, PR, documento, archivo de código o comentario. Tampoco firma documentos como autor: el campo **Autor** de un ADR o de un documento lleva el nombre de la persona responsable. Si encuentra una atribución de ese tipo en un archivo que ya está editando, la quita.

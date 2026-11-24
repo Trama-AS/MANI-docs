@@ -24,7 +24,7 @@ historia en Jira (SCRUM-<id>)
                       └─ release → main  ── etiqueta vX.Y.Z y la misma imagen promovida a PROD
 ```
 
-DEV no es un ambiente desplegado: el pipeline promueve de QA a PROD ([Ambientes y promoción](../04-proceso/ambientes-y-promocion.md)).
+DEV no es un ambiente desplegado: el pipeline promueve de QA a PROD ([Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md)).
 
 - **Nunca se abre un PR de una rama de trabajo directo a `main`**, ni a `release`. A `main` solo llega `release`, y a `release` solo llega `develop`.
 - Un cambio que toca varios repositorios se parte en **un PR por repositorio**, cada uno con la misma clave de Jira y enlazado a los demás. Si uno depende de otro, el PR lo dice y dice el **orden de despliegue**.

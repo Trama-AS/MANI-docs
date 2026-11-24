@@ -17,9 +17,9 @@ MANI necesita una fuente de verdad clara para documentación técnica y document
 
 ## Decisión
 
-La documentación técnica oficial vive en GitHub, dentro de `MANI-Docs`; OneDrive se reserva para documentación formal, administrativa y académica.
+La documentación técnica oficial vive en GitHub, dentro de `MANI-docs`; OneDrive se reserva para documentación formal, administrativa y académica.
 
-En `MANI-Docs` deben vivir como mínimo:
+En `MANI-docs` deben vivir como mínimo:
 - `architecture/SDD.md`;
 - `architecture/SAD.md`;
 - `architecture/ModeloDatos.md`;

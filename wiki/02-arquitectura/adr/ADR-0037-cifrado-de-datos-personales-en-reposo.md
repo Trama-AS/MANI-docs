@@ -18,7 +18,7 @@
 
 Lo que sí está documentado es la **necesidad**: la **Ley 1581 de 2012**, citada en [`SRS.md`](../../01-producto/SRS.md) como el marco que obligó a ADR-0024 en pagos. Los cinco campos son datos personales bajo esa misma ley.
 
-Por eso este ADR va acompañado de **RNF-13** y **QAS-46**, redactados en [`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](../../06-gobernanza/PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md) y pendientes de aprobación del PO.
+Por eso este ADR va acompañado de **RNF-13** y **QAS-46**, que se incorporan al SRS y al SDD cuando el PO los apruebe.
 
 ## Alternativas
 

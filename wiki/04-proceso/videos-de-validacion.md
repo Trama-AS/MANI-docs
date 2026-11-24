@@ -31,7 +31,7 @@ Textual, de los criterios del Sprint 6:
 
 ## 3. Paso a paso
 
-1. **Confirmar que el cambio está en QA.** Un PR integrado en `develop` no está en QA hasta que DevOps lo despliega ([Ambientes y promoción](ambientes-y-promocion.md)). Si no está, la tarea se queda en «En revisión» y se dice en un comentario qué despliegue falta.
+1. **Confirmar que el cambio está en QA.** Un PR integrado en `develop` no está en QA hasta que DevOps lo despliega ([Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md)). Si no está, la tarea se queda en «En revisión» y se dice en un comentario qué despliegue falta.
 2. **Preparar la sesión.** Una ventana privada por usuario y, si el caso tiene dos usuarios, cada uno en un navegador distinto ([Reporte de fallas §2](reporte-de-fallas.md#2-reglas-acordadas-para-probar)).
 3. **Entrar por la aplicación de QA**, con una cuenta de prueba real. Así la petición pasa por el Gateway y el token es el ES256 que emite la autenticación de QA. No se usan tokens fabricados ni llamadas directas a un servicio.
 4. **Grabar el cambio de principio a fin**, un criterio de aceptación a la vez, diciendo o mostrando cuál se está probando.

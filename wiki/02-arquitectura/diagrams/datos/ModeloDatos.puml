@@ -1,0 +1,312 @@
+@startuml ModeloDatos
+' Modelo de datos de MANI — generado desde el catálogo de la base tras aplicar las migraciones. Solo PK y FK.
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+skinparam dpi 120
+skinparam defaultFontName Helvetica
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #3D85C6
+title MANI — Modelo de datos (esquema public)
+package "Identidad y acceso" #E8EEF7 {
+  entity tenant {
+    *id : uuid <<PK>>
+    --
+  }
+  entity usuario {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+  }
+  entity aliado {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    usuario_id : uuid <<FK>>
+    verificado_por : uuid <<FK>>
+  }
+  entity documento_kyc {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+  entity cliente {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    usuario_id : uuid <<FK>>
+  }
+  entity sitio {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    cliente_id : uuid <<FK>>
+    zona_id : uuid <<FK>>
+  }
+  entity documento_legal {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+  }
+  entity consentimiento_usuario {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    usuario_id : uuid <<FK>>
+    documento_legal_id : uuid <<FK>>
+  }
+  entity tenant_estado_cambio {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+  }
+}
+package "Catálogo, cobertura y reglas" #E6F4EA {
+  entity zona {
+    *id : uuid <<PK>>
+    --
+    zona_padre_id : uuid <<FK>>
+  }
+  entity geometria_territorial {
+    *id : uuid <<PK>>
+    --
+    zona_id : uuid <<FK>>
+  }
+  entity categoria_servicio {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    creado_por : uuid <<FK>>
+  }
+  entity aliado_categoria {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+    categoria_id : uuid <<FK>>
+  }
+  entity cobertura_aliado {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+    zona_id : uuid <<FK>>
+  }
+  entity aliado_ausencia {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+  entity tarifa_referencia {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    categoria_id : uuid <<FK>>
+    reemplaza_id : uuid <<FK>>
+  }
+  entity regla_tenant {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+  }
+  entity politica_cancelacion_tenant {
+    *tenant_id : uuid <<PK>>
+    --
+    updated_by : uuid <<FK>>
+  }
+}
+package "Ciclo del servicio" #FFF8E1 {
+  entity solicitud {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    cliente_id : uuid <<FK>>
+    sitio_id : uuid <<FK>>
+    categoria_id : uuid <<FK>>
+    zona_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+  entity solicitud_foto {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+  }
+  entity solicitud_rechazo {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+  entity cotizacion {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+  entity adicion_servicio {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    cotizacion_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+    respondida_por : uuid <<FK>>
+  }
+  entity evento_servicio {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    actor_id : uuid <<FK>>
+  }
+  entity calificacion {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    autor_id : uuid <<FK>>
+    destinatario_id : uuid <<FK>>
+  }
+}
+package "Comunicaciones" #FDE7E7 {
+  entity mensaje {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    remitente_id : uuid <<FK>>
+  }
+  entity consulta_conversacion {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+  }
+  entity notificacion {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    usuario_id : uuid <<FK>>
+  }
+  entity queja {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    cliente_id : uuid <<FK>>
+  }
+  entity queja_transicion {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    queja_id : uuid <<FK>>
+  }
+}
+package "Pagos" #EDE7FA {
+  entity pago {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    cotizacion_id : uuid <<FK>>
+    cliente_id : uuid <<FK>>
+  }
+  entity transaccion_evento {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    pago_id : uuid <<FK>>
+  }
+  entity retencion_fondos {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    pago_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+  entity comision_tenant {
+    *tenant_id : uuid <<PK>>
+    --
+  }
+  entity liquidacion {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+    retencion_id : uuid <<FK>>
+    pago_id : uuid <<FK>>
+    solicitud_id : uuid <<FK>>
+    aliado_id : uuid <<FK>>
+  }
+}
+package "Integración y control" #F3F3F3 {
+  entity outbox_evento {
+    *id : uuid <<PK>>
+    --
+    tenant_id : uuid <<FK>>
+  }
+  entity schema_migrations {
+    *version : varchar <<PK>>
+    --
+  }
+}
+aliado ||--o{ adicion_servicio
+cotizacion ||--o{ adicion_servicio
+usuario ||--o{ adicion_servicio
+solicitud ||--o{ adicion_servicio
+usuario ||--o{ aliado
+usuario ||--o{ aliado
+aliado ||--o{ aliado_ausencia
+aliado ||--o{ aliado_categoria
+categoria_servicio ||--o{ aliado_categoria
+usuario ||--o{ calificacion
+usuario ||--o{ calificacion
+solicitud ||--o{ calificacion
+usuario ||--o{ categoria_servicio
+usuario ||--o{ cliente
+aliado ||--o{ cobertura_aliado
+zona ||--o{ cobertura_aliado
+documento_legal ||--o{ consentimiento_usuario
+usuario ||--o{ consentimiento_usuario
+solicitud ||--o{ consulta_conversacion
+aliado ||--o{ cotizacion
+solicitud ||--o{ cotizacion
+aliado ||--o{ documento_kyc
+usuario ||--o{ evento_servicio
+solicitud ||--o{ evento_servicio
+zona ||--o{ geometria_territorial
+aliado ||--o{ liquidacion
+pago ||--o{ liquidacion
+retencion_fondos ||--o{ liquidacion
+solicitud ||--o{ liquidacion
+usuario ||--o{ mensaje
+solicitud ||--o{ mensaje
+usuario ||--o{ notificacion
+cliente ||--o{ pago
+cotizacion ||--o{ pago
+usuario ||--o{ politica_cancelacion_tenant
+cliente ||--o{ queja
+solicitud ||--o{ queja
+queja ||--o{ queja_transicion
+aliado ||--o{ retencion_fondos
+pago ||--o{ retencion_fondos
+solicitud ||--o{ retencion_fondos
+cliente ||--o{ sitio
+zona ||--o{ sitio
+aliado ||--o{ solicitud
+categoria_servicio ||--o{ solicitud
+cliente ||--o{ solicitud
+sitio ||--o{ solicitud
+zona ||--o{ solicitud
+solicitud ||--o{ solicitud_foto
+aliado ||--o{ solicitud_rechazo
+solicitud ||--o{ solicitud_rechazo
+categoria_servicio ||--o{ tarifa_referencia
+tarifa_referencia ||--o{ tarifa_referencia
+pago ||--o{ transaccion_evento
+zona ||--o{ zona
+@enduml

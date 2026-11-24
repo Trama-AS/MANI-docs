@@ -2,7 +2,7 @@
 
 [← Índice de la wiki](../Home.md)
 
-Esta carpeta responde a **qué se probó, cómo, en qué ambiente y con qué resultado**, de modo que cualquier persona pueda repetir una prueba y entender su resultado. La estrategia de pruebas vive en [`01-producto/TD.md`](../01-producto/TD.md); aquí están su ejecución y su evidencia.
+Esta carpeta responde a **qué se probó, cómo, en qué ambiente y con qué resultado**, de modo que cualquier persona pueda repetir una prueba y entender su resultado. La estrategia de pruebas vive en [`01-producto/TD.md`](TD.md); aquí están su ejecución y su evidencia.
 
 > **Regla que manda sobre el tablero.** Una historia no se considera aprobada por su estado en Jira, sino por su ejecución en QA con evidencia versionada. Un escenario cuya herramienta o dependencia no está disponible se reporta como No medido, nunca como cumplido.
 
@@ -22,7 +22,7 @@ Esta carpeta responde a **qué se probó, cómo, en qué ambiente y con qué res
 
 | # | Documento | Para qué sirve | Mantiene | Consume | Se actualiza |
 |---|---|---|---|---|---|
-| 1 | [`01-producto/TD.md`](../01-producto/TD.md) | Estrategia de pruebas: niveles, herramientas y criterios | QA | Todo el equipo | Cuando cambia la estrategia |
+| 1 | [`01-producto/TD.md`](TD.md) | Estrategia de pruebas: niveles, herramientas y criterios | QA | Todo el equipo | Cuando cambia la estrategia |
 | 2 | [`guias/GUIA_PRUEBA_MANUAL_S5_CORTE2.md`](guias/GUIA_PRUEBA_MANUAL_S5_CORTE2.md) | Guía para repetir a mano el recorrido de un corte | QA | QA de apoyo | En cada corte manual |
 | 3 | [`REPORTE_QA_SPRINT6.md`](REPORTE_QA_SPRINT6.md) | **Reporte vigente.** Qué se midió en el Sprint 6, bugs abiertos, Quality Gate y pendientes | QA | PO, SM, equipos | Al cierre del sprint |
 | 3a | [`REPORTE_QA_SPRINT5.md`](REPORTE_QA_SPRINT5.md) | Reporte del Sprint 5, corte 2 (histórico) | QA | Consulta | Congelado |

@@ -2,7 +2,7 @@
 
 [← 04 · Proceso](README.md) · [Índice](../Home.md)
 
-**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §17 · [`architecture/SAD.md`](../02-arquitectura/SAD.md) §19 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §20 · [`adr/ADR-0006`](../02-arquitectura/adr/ADR-0006-observabilidad.md).
+**Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §17 · [`architecture/SAD.md`](../02-arquitectura/SAD.md) §19 · [`governance/INFRAESTRUCTURA_MANI.md`](README.md) §20 · [`adr/ADR-0006`](../02-arquitectura/adr/ADR-0006-observabilidad.md).
 
 | Campo | Valor |
 |---|---|

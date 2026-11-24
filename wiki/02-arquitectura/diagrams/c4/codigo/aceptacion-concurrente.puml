@@ -1,9 +1,8 @@
 @startuml aceptacion-concurrente
 ' C4 Nivel 4 (Code) — MANI · Dispatch Service
-' Generado a mano desde el codigo real de MANI-.NET (rama main, 2026-11-05).
-' Vista declarada en diagrams/c4/workspace.dsl como la vista de imagen "codigo-aceptacion".
+' Escrito a mano desde el código de MANI-.NET (rama develop). Decisión 6A: Dispatch decide, Core escribe.
 
-title C4 Nivel 4 — Codigo: aceptacion de una solicitud en Dispatch Service (.NET)
+title C4 Nivel 4 — Código: aceptación de una solicitud en Dispatch Service (.NET)
 
 skinparam dpi 160
 skinparam shadowing false
@@ -19,7 +18,6 @@ package "Controllers" {
   class DispatchController {
     - AcceptDispatchOfferUseCase _acceptDispatchOfferUseCase
     - RejectDispatchOfferUseCase _rejectDispatchOfferUseCase
-    + MatchProfessionals(MatchRequestDto) : IActionResult
     + OrchestrateDispatch(OrchestrateRequestDto) : IActionResult
   }
 }
@@ -28,25 +26,32 @@ package "Application.UseCases" {
   class AcceptDispatchOfferUseCase {
     - ISolicitudAssignmentRepository _assignmentRepository
     - IAllyRepository _allyRepository
-    + ExecuteAsync(requestId, tenantId, usuarioId) : Task<AssignmentResult>
+    - ICoreAssignmentClient _coreAssignmentClient
+    + ExecuteAsync(requestId, tenantId, usuarioId, idempotencyKey, correlationId) : Task<AssignmentResult>
   }
 }
 
 package "Application.Interfaces" {
   interface ISolicitudAssignmentRepository {
-    + AcceptRequestAsync(requestId, tenantId, aliadoId) : Task<AssignmentResult>
-    + RejectRequestAsync(requestId, tenantId, aliadoId, motivo) : Task<bool>
-    + GetAssignedRequestIdsAsync(tenantId, aliadoId) : Task<IReadOnlyList<Guid>>
+    + RejectRequestAsync(requestId, tenantId, usuarioId, aliadoId, motivo, detalle) : Task<bool>
+    + HasRejectedAsync(requestId, tenantId, usuarioId, aliadoId) : Task<bool>
+    + GetRejectedRequestIdsAsync(tenantId, usuarioId, aliadoId) : Task
+    + GetRejectedAllyIdsAsync(requestId, tenantId, usuarioId, role) : Task
   }
   interface IAllyRepository {
     + GetEligibleAlliesAsync(MatchCriteria) : Task
     + GetSolicitudContextAsync(requestId, tenantId) : Task<SolicitudContext>
     + GetAllyProfileAsync(usuarioId, tenantId) : Task<AllyProfile>
   }
+  interface ICoreAssignmentClient {
+    + AssignAsync(requestId, tenantId, idempotencyKey, correlationId) : Task<AssignmentResult>
+    + GetOwnOffersAsync(tenantId, correlationId) : Task
+  }
   class AssignmentResult <<record>> {
     + AssignmentStatus Status
     + Guid? AssignedAllyId
     + string? Message
+    + string? Code
   }
   enum AssignmentStatus {
     Assigned
@@ -54,6 +59,8 @@ package "Application.Interfaces" {
     Conflict
     NotFound
     InvalidState
+    Forbidden
+    RejectedBefore
   }
   class AllyProfile <<record>> {
     + Guid Id
@@ -66,15 +73,20 @@ package "Application.Interfaces" {
 package "Infrastructure" {
   class PostgresSolicitudAssignmentRepository {
     - string _connectionString
-    + AcceptRequestAsync(...) : Task<AssignmentResult>
-    .. exclusion concurrente ..
-    UPDATE solicitud SET aliado_id = @AliadoId
-    WHERE estado = 'PENDIENTE' AND aliado_id IS NULL
+    .. rol mani_dispatch_svc, RLS ..
+    Solo rechazos (solicitud_rechazo):
+    no escribe solicitud
   }
   class CoreAllyClient {
     - HttpClient _httpClient
     + GetAllyProfileAsync(usuarioId, tenantId) : Task<AllyProfile>
-    - SendAsync(url, tenantId, correlationId) : Task
+  }
+  class CoreAssignmentClient {
+    - HttpClient _httpClient
+    + AssignAsync(...) : Task<AssignmentResult>
+    .. POST /solicitudes/{id}/asignacion ..
+    Reenvía el JWT del aliado y la clave
+    de idempotencia
   }
 }
 
@@ -86,18 +98,23 @@ package "Domain" {
 
 DispatchController --> AcceptDispatchOfferUseCase : invoca
 AcceptDispatchOfferUseCase --> IAllyRepository : exige perfil VERIFICADO
-AcceptDispatchOfferUseCase --> ISolicitudAssignmentRepository : asignacion atomica
+AcceptDispatchOfferUseCase --> ISolicitudAssignmentRepository : ¿ya rechazó? (409R)
+AcceptDispatchOfferUseCase --> ICoreAssignmentClient : comando de asignación
 AcceptDispatchOfferUseCase ..> AssignmentResult : devuelve
 ISolicitudAssignmentRepository <|.. PostgresSolicitudAssignmentRepository
 IAllyRepository <|.. CoreAllyClient : HTTP a Core (ADR-0030),\nnunca SQL contra tablas ajenas
+ICoreAssignmentClient <|.. CoreAssignmentClient : HTTP a Core (decisión 6A)
 CoreAllyClient ..> AllyProfile : deserializa
 CoreAllyClient ..> CoreServiceUnavailableException : 503 si Core no responde
+CoreAssignmentClient ..> CoreServiceUnavailableException : 503 si Core no responde
+CoreAssignmentClient ..> AssignmentResult : 200 / 403 / 404 / 409
 AssignmentResult --> AssignmentStatus
-PostgresSolicitudAssignmentRepository ..> AssignmentResult : Assigned / AlreadyAssigned / Conflict
 
-note bottom of PostgresSolicitudAssignmentRepository
-  La garantia de no doble asignacion es del motor:
-  la segunda aceptacion no afecta filas y recibe 409.
-  No depende del numero de replicas (RNF-05, ADR-0016).
+note bottom of CoreAssignmentClient
+  La exclusión concurrente la aplica Core: bloquea la fila de la
+  solicitud (FOR UPDATE) y repite el predicado
+  estado = 'PENDIENTE' AND aliado_id IS NULL en el UPDATE.
+  La segunda aceptación recibe 409 y no depende del número
+  de réplicas (RNF-05, ADR-0016, ADR-0035).
 end note
 @enduml

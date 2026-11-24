@@ -26,22 +26,17 @@ MANI-Docs/
     ├── Home.md                    índice de la wiki
     ├── 01-producto/               SRS.md (fuente de verdad), visión, requisitos, actores
     ├── 02-arquitectura/
-    │   ├── SAD.md                 arquitectura; referencia los diagramas DHL
-    │   ├── SDD.md                 diseño detallado; referencia las vistas C4
+    │   ├── SAD.md                 arquitectura de alto nivel y registro de ADR
+    │   ├── SDD.md                 diseño de bajo nivel: C4, calidad, contratos, secuencias y módulos
     │   ├── ModeloDatos.md         conceptual, lógico, físico, DDL, diccionario y DW
-    │   ├── SECUENCIAS.md          secuencias de los flujos principales
-    │   ├── CONTRATOS_EVENTOS.md   esquemas y versionado de los eventos de negocio
-    │   ├── COMUNICACION_SERVICIOS_GATEWAY.md  enrutamiento y reglas servicio ↔ servicio
     │   ├── TECH_RADAR.md          tecnologías adoptadas, en evaluación y descartadas
-    │   ├── guia/                  páginas de lectura que ordenan los documentos
     │   ├── adr/                   26 ADR, ADR-0001 a ADR-0034 con huecos
     │   └── diagrams/              estructura de ADR-0008
     │       ├── c4/                workspace.dsl + contexto/ contenedores/ componentes/ codigo/
     │       ├── datos/             ModeloDatos.png
     │       ├── despliegue/        despliegue-prod.png · infraestructura.png
     │       ├── flujos/            flujos de negocio y dinamicos/
-    │       ├── MOCKUPS/           mockups de interfaz — fuera de ADR-0008
-    │       └── TechRadar.png      lo referencia el TECH_RADAR — fuera de ADR-0008
+    │       └── MOCKUPS/           mockups de interfaz — fuera de ADR-0008
     ├── 03-repositorios/           multirepo, ramas y protección, versionado y esta página
     ├── 04-proceso/                ramas, PR, CI/CD, ambientes, DoR/DoD, trabajo con IA
     ├── 05-backlog/                BACKLOG_MANI.md y el libro de módulos
@@ -77,6 +72,6 @@ Las cuatro capas de `02-arquitectura/` y la regla de qué va en cada una están 
 ## Qué no se hace aquí
 
 - No se duplican decisiones completas entre SRS, SAD, SDD, ADR, políticas e infraestructura (`README.md` §16).
-- Una decisión que cambia produce un ADR nuevo y el anterior pasa a `Superseded`, y se mantiene hasta que su contenido se absorba. Desde la enmienda del 2026-10-23 a las reglas 8 y 9 de la Mesa, un ADR absorbido por otro **sí** se retira del registro: su decisión vive íntegra en el que lo absorbe, que lo declara en su cabecera, y su número no se reutiliza ([Decisiones ADR](../02-arquitectura/guia/decisiones-adr.md)).
+- Una decisión que cambia produce un ADR nuevo y el anterior pasa a `Superseded`, y se mantiene hasta que su contenido se absorba. Desde la enmienda del 2026-10-23 a las reglas 8 y 9 de la Mesa, un ADR absorbido por otro **sí** se retira del registro: su decisión vive íntegra en el que lo absorbe, que lo declara en su cabecera, y su número no se reutiliza ([Decisiones ADR](../02-arquitectura/SAD.md#24-registro-de-decisiones-arquitectónicas)).
 - La wiki no introduce reglas propias: si un dato no está en un documento, no se documenta como vigente ([Home](../Home.md) §4).
 

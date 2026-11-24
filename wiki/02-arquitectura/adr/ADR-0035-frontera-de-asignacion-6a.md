@@ -64,7 +64,7 @@ Se adopta la alternativa **B**.
 4. **La oferta la guarda Core**, una por aliado y solicitud (índice único `ux_notificacion_oferta_despacho`), cuando
    Dispatch se la pide con `POST /notifications`.
 5. **`AliadoAsignado` lo produce Core** desde `servicio.outbox`, en la misma transacción del `UPDATE`
-   (`CONTRATOS_EVENTOS.md` §2 y §4.2). Esto reemplaza, para ese evento, la fila de ADR-0029 §1 que lo atribuía a
+   (SDD §20.2 y §20.4.2). Esto reemplaza, para ese evento, la fila de ADR-0029 §1 que lo atribuía a
    Dispatch.
 
 ## Consecuencias

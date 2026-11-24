@@ -30,7 +30,7 @@ Esta página no trae reglas nuevas: es el orden en que conviene leer y hacer lo 
 | 1 | Entender el producto en cinco minutos | [Visión y alcance](../01-producto/vision-y-alcance.md) y [Actores y ciclo del servicio](../01-producto/actores-y-ciclo-del-servicio.md) |
 | 2 | Saber qué fuente manda cuando dos se contradicen | [Jerarquía de fuentes](../Home.md#2-jerarquía-de-fuentes) |
 | 3 | Saber quién decide qué | [Roles y decisiones](roles-y-decisiones.md) |
-| 4 | Conocer las reglas que no se negocian | [Reglas arquitectónicas](../02-arquitectura/guia/reglas-arquitectonicas.md) y [Multi-tenancy y seguridad](../02-arquitectura/guia/multitenancy-y-seguridad.md) |
+| 4 | Conocer las reglas que no se negocian | [Reglas arquitectónicas](../02-arquitectura/SAD.md#41-principios) y [Multi-tenancy y seguridad](../02-arquitectura/SAD.md#8-multi-tenancy-y-seguridad) |
 | 5 | Conocer los repositorios y cuál es dueño de qué | [Multi-repo](../03-repositorios/multirepo.md) |
 | 6 | Leer las reglas de trabajo, en el [orden de lectura](README.md#1-orden-de-lectura) de esta carpeta | Esta carpeta |
 
@@ -40,7 +40,7 @@ Esta página no trae reglas nuevas: es el orden en que conviene leer y hacer lo 
 |---|---|---|
 | Organización `Trama-AS` en GitHub | DevOps | Las ramas compartidas están protegidas: todo entra por PR |
 | Tablero `SCRUM` en Jira | Scrum Master | Sin ítem de Jira no hay trabajo que hacer |
-| Canales del equipo | Scrum Master | Lista en [Ceremonias y tiempos](ceremonias-y-tiempos.md) |
+| Canales del equipo | Scrum Master | Lista en [Ceremonias y tiempos](../06-gobernanza/ceremonias-y-tiempos.md) |
 | Variables de entorno de DEV y cuentas de prueba de QA | DevOps | Se piden como dice [Accesos y gestión de secretos](../08-infraestructura/02-accesos-y-gestion-secretos.md). Nunca se pegan en un chat, un commit ni un documento ([Secretos](secretos.md)) |
 
 ## 4. Dejar un repositorio corriendo

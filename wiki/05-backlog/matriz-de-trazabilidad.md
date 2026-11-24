@@ -33,7 +33,7 @@
 | Tipo | Historia, Tarea, Error o Epic | Jira |
 | Origen | Lo que motivó el ítem: un hallazgo de QA, un informe, una decisión o una propuesta | Campo «Fuente» u «Origen» de la descripción, recortado a 110 caracteres |
 | QAS | Atributo de calidad que motiva el ítem | Menciones `QAS-nn` de la descripción ([SDD §8](../02-arquitectura/SDD.md)) |
-| ADR | Decisión de arquitectura que lo gobierna | Menciones `ADR-nnnn` de la descripción ([registro](../02-arquitectura/guia/decisiones-adr.md)) |
+| ADR | Decisión de arquitectura que lo gobierna | Menciones `ADR-nnnn` de la descripción ([registro](../02-arquitectura/SAD.md#24-registro-de-decisiones-arquitectónicas)) |
 | Prueba o evidencia | Prueba automatizada o evidencia que lo verifica | PR y archivos de prueba; *por completar* hasta que el PR se fusiona |
 
 ## Matriz

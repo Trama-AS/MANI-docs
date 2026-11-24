@@ -70,7 +70,7 @@ Cuando un ítem no puede avanzar hasta que otro termine, se enlazan en Jira con 
 
 ## Registro de un bloqueo
 
-Un issue bloqueante debe registrar: causa · impacto · responsable requerido · acción esperada · estado · resolución (`GOBIERNO_DEL_EQUIPO.md` §6.2). Plazos en [Ceremonias y tiempos](ceremonias-y-tiempos.md).
+Un issue bloqueante debe registrar: causa · impacto · responsable requerido · acción esperada · estado · resolución (`GOBIERNO_DEL_EQUIPO.md` §6.2). Plazos en [Ceremonias y tiempos](../06-gobernanza/ceremonias-y-tiempos.md).
 
 ## Reglas de la transición vigente
 

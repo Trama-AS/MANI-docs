@@ -67,7 +67,7 @@ Todo evento viaja con un sobre obligatorio:
 - `tenant_id` es obligatorio: el aislamiento multi-tenant (RNF-01) también aplica a los eventos, y un consumidor no puede inferir el tenant del contenido.
 - `correlation_id` continúa el `X-Correlation-ID` que el Gateway ya propaga, para que una transacción se pueda seguir de extremo a extremo atravesando el bus (RNF-07).
 - `partition_key` fija `id_solicitud` como clave de partición común de los cuatro eventos para garantizar orden causal por solicitud.
-- `event_version` se incrementa solo ante cambios incompatibles; un cambio compatible agrega campos opcionales. El esquema formal `v1` de cada evento y la política de versionado se especifican en [`architecture/CONTRATOS_EVENTOS.md`](../CONTRATOS_EVENTOS.md) (ARQ-06 / SCRUM-1237).
+- `event_version` se incrementa solo ante cambios incompatibles; un cambio compatible agrega campos opcionales. El esquema formal `v1` de cada evento y la política de versionado se especifican en [SDD §20](../SDD.md#20-contratos-y-versionado-de-eventos-de-negocio).
 
 ### 3. La publicación usa transactional outbox, obligatorio desde la primera implementación
 

@@ -1,6 +1,6 @@
 # ADR-0034 — Contrato y política comunes para proveedores externos de pagos y notificaciones
 
-- **Estado:** Propuesto
+- **Estado:** `Aceptado` · **ratificado por la Scrum Master (Sara Albarracín) el 2026-11-24**, sin sesión de Mesa de Arquitectura, con la misma salvedad que ADR-0035 a ADR-0038: la Mesa puede confirmarlo o revertirlo cuando se reúna.
 - **Decisión de:** integración con terceros y resiliencia
 - **Autor:** Jose Nicolas Alvarez Mesa
 - **Fecha:** 2026-10-27

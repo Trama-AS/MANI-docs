@@ -25,7 +25,7 @@ Responde cuatro preguntas: **qué hay que hacer** (backlog vigente), **con qué 
 |---|---|---|
 | **Agregar** | Cualquier integrante propone; QA registra los defectos que encuentra y la Scrum Master registra las tareas y decisiones pendientes | Los defectos `SCRUM-1633` a `1637` los abrió QA; las tareas del 9-nov, la SM |
 | **Priorizar** | **Product Owner**, con la Scrum Master consultada | [Criterios de priorización](criterios-de-priorizacion.md) |
-| **Facilitar** | **Scrum Master**: ceremonias, bloqueos, reglas de proceso | [Ceremonias y tiempos](../04-proceso/ceremonias-y-tiempos.md) |
+| **Facilitar** | **Scrum Master**: ceremonias, bloqueos, reglas de proceso | [Ceremonias y tiempos](../06-gobernanza/ceremonias-y-tiempos.md) |
 | **Estimar** | Desarrollo | Puntos de historia con Fibonacci |
 | **Cerrar** | **QA**: decide el DoD y cierra con la subtarea `QA-…`; ningún ítem pasa a Done por sí mismo | [DoR y DoD](../04-proceso/dor-y-dod.md) y [plantillas](plantillas.md) |
 

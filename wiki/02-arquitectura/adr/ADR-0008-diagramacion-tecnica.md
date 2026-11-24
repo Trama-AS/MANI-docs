@@ -14,7 +14,7 @@ Los diagramas deben ser localizables, versionables y coherentes con la documenta
 
 1. **Solo herramientas externas.** Descartada por falta de respaldo versionado.
 2. **Imágenes sueltas sin fuente editable.** Descartada por baja mantenibilidad.
-3. **Fuentes y exportaciones dentro de `MANI-Docs`.** Elegida.
+3. **Fuentes y exportaciones dentro de `MANI-docs`.** Elegida.
 
 ## Decisión
 

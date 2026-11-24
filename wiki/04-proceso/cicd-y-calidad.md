@@ -41,10 +41,10 @@ Push / Pull Request
 | Unitarias | Las del runtime de cada repositorio |
 | Integración | Gateway, servicios, persistencia e integraciones externas simuladas o controladas |
 | API y contratos | Postman / Newman: funcionales, contratos, regresión |
-| **Aislamiento multi-tenant** | Newman, obligatorio en todo cambio de autenticación, tenant, RLS, endpoints de datos o Storage — los seis casos de [Multi-tenancy y seguridad](../02-arquitectura/guia/multitenancy-y-seguridad.md) |
+| **Aislamiento multi-tenant** | Newman, obligatorio en todo cambio de autenticación, tenant, RLS, endpoints de datos o Storage — los seis casos de [Multi-tenancy y seguridad](../02-arquitectura/SAD.md#8-multi-tenancy-y-seguridad) |
 | Rendimiento | k6 cuando el escenario lo requiera: concurrencia, aceptación simultánea, endpoints críticos, mensajería, disponibilidad |
 
-Los umbrales funcionales provienen del SRS/SAD/SDD y **no se inventan** en el pipeline ni en la documentación de DevOps (Políticas §13.5). Están en [Atributos de calidad](../02-arquitectura/guia/atributos-de-calidad.md).
+Los umbrales funcionales provienen del SRS/SAD/SDD y **no se inventan** en el pipeline ni en la documentación de DevOps (Políticas §13.5). Están en [Atributos de calidad](../02-arquitectura/SDD.md#7-atributos-de-calidad--isoiec-250102023).
 
 ## Gates de seguridad
 

@@ -6,6 +6,8 @@
 - **Relacionado con:** ADR-0004, ADR-0019, ADR-0024, PROY-07, PROY-08
 - **Ratificación:** pasó de `Propuesto` a `Aceptado` el 2026-10-23, por decisión de la Scrum Master (Sara Albarracín) en la consolidación documental. **No hay sesión de Mesa de Arquitectura registrada para esta ratificación**, que el apartado «Decisión» de ADR-0003 exige para una decisión estructural: queda anotado aquí para que la Mesa lo confirme o lo revierta.
 
+- **Enmienda (2026-11-24):** la decisión original fijaba nombres por capacidad (`MANI-Core-Service`, `MANI-Frontend`, `MANI-API-Gateway`). Los repositorios no se renombraron, así que, según la condición de revisión de este ADR, **manda el nombre real** y la tabla de la decisión §1 se reescribió con él. Se retira la regla «todo servicio termina en `-Service`» y la prohibición de las formas `MANI-Node`, `MANI-Java` y similares.
+
 ---
 
 ## Contexto
@@ -58,29 +60,24 @@ cuatro filas.
 
 | Repositorio | Tecnología | Responsabilidad principal |
 |---|---|---|
-| `MANI-Frontend` | Flutter / Dart | Cliente web y móvil |
-| `MANI-API-Gateway` | NGINX | Punto de entrada y enrutamiento de APIs |
-| `MANI-Rules-Service` | Java | Reglas de negocio por tenant |
-| `MANI-Dispatch-Service` | .NET | Solicitudes, despacho y asignación |
-| `MANI-Core-Service` | Node.js | Servicios core y disponibilidades |
+| `MANI-Flutter` | Flutter / Dart | Cliente web y móvil |
+| `MANI-APIGateway` | NGINX | Punto de entrada y enrutamiento de APIs |
+| `MANI-Java` | Java | Rules Service: reglas de negocio por tenant |
+| `MANI-.NET` | .NET | Dispatch Service: solicitudes, despacho y asignación |
+| `MANI-Node` | Node.js | Core Service: servicios core y disponibilidades |
 | `MANI-Landing` | React 19 + Vite 8, servida por NGINX | Página comercial pública: entrada a la plataforma |
-| `MANI-Docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
+| `MANI-docs` | Markdown / diagramas / ADR | Documentación arquitectónica y técnica |
 
-Seis son desplegables; `MANI-Docs` no se despliega. **No existe otro nombre válido** para estos
-repositorios en ningún documento, diagrama, pipeline o tarea.
+Seis son desplegables; `MANI-docs` no se despliega. **No existe otro nombre válido** para estos
+repositorios en ningún documento, diagrama, pipeline o tarea. Son los nombres con los que existen
+los repositorios en la organización.
 
-Tres reglas de nomenclatura, para que la lista no vuelva a divergir:
+Dos reglas de nomenclatura, para que la lista no vuelva a divergir:
 
-1. **Todo servicio termina en `-Service`.** `MANI-Core-Service`, `MANI-Rules-Service`,
-   `MANI-Dispatch-Service`. No se admiten formas cortas como `MANI-Core`, `MANI-Node` o
-   `MANI-Java`, ni en prosa ni en diagramas: en texto corrido se escribe «Core Service», «Rules
-   Service» y «Dispatch Service».
-2. **El nombre dice la capacidad, no el runtime:** `-Service`, no `-Java` ni `-DotNet`. El runtime
-   se documenta en la tabla, no en el nombre del repositorio.
-3. **Las palabras se separan con guion:** `MANI-API-Gateway`, no `MANI-APIGateway`.
-
-`MANI-Frontend`, `MANI-Landing` y `MANI-Docs` no llevan `-Service` porque no son servicios: el
-primero es el cliente, el segundo la página comercial y el tercero documentación.
+1. **El nombre del repositorio es el real**, con el runtime como sufijo: `MANI-Node`, `MANI-Java`,
+   `MANI-.NET`, `MANI-Flutter`. En texto corrido, el servicio se llama por su rol: «Core Service»,
+   «Rules Service» y «Dispatch Service»; el repositorio, por su nombre.
+2. **Gateway sin guion intermedio:** `MANI-APIGateway`, no `MANI-API-Gateway` ni `MANI-Gateway`.
 
 #### `MANI-Landing` (incorporado el 2026-10-19, SCRUM-1343)
 
@@ -88,7 +85,7 @@ Este ADR es la fuente única del registro del repositorio; los demás documentos
 
 - **Propósito.** Página pública para quien todavía no tiene sesión: catálogo de categorías con
   tarifas base de referencia, estimador de rango que se declara como no-cotización y redirección
-  al login de `MANI-Frontend` Web (SCRUM-1335). No accede a datos, no llama al Gateway ni a los
+  al login de `MANI-Flutter` Web (SCRUM-1335). No accede a datos, no llama al Gateway ni a los
   servicios y no comparte código con otro repositorio, así que queda fuera del alcance de
   ADR-0027 y ADR-0030.
 - **Artefacto.** Imagen `ghcr.io/trama-as/mani-landing`, construida por el workflow propio del
@@ -97,14 +94,14 @@ Este ADR es la fuente única del registro del repositorio; los demás documentos
   (rama `develop`) en DEV, `:staging` (rama `release`) en QA y `:latest` (rama `main`) en PROD.
   `staging` es solo el nombre del tag de imagen, no un ambiente. En cada host corre como el
   contenedor `mani-landing-web`, publicado en el puerto 3001
-  ([`DOCUMENTO_INFRAESTRUCTURA_V3.md`](../../06-gobernanza/DOCUMENTO_INFRAESTRUCTURA_V3.md) §3).
+  ([`DOCUMENTO_INFRAESTRUCTURA_V4.md`](../../08-infraestructura/DOCUMENTO_INFRAESTRUCTURA_V4.md)).
 - **Detalle técnico.** Vive en el propio repositorio: `MANI-Landing/docs/ARQUITECTURA_E_INTEGRACION.md`.
-- **Nombre.** Cumple las tres reglas: dice la capacidad, no el runtime, y no es un servicio.
+- **Nombre.** `MANI-Landing`: no es un servicio ni lleva sufijo de runtime.
 
 ### 2. Se retiran `MANI-Availability` y `MANI-Infra` del inventario
 
 - **`MANI-Availability`** no se crea. La cobertura y la disponibilidad son un dominio del
-  `MANI-Core-Service`, decisión ya reflejada en el modelo de vistas.
+  `MANI-Node` (Core Service), decisión ya reflejada en el modelo de vistas.
 - **`MANI-Infra`** no existe: DevOps lo borró el 6 de octubre de 2026 y la enmienda de ADR-0004 ya
   trasladó la infraestructura de datos y el stack local al repositorio del Gateway. Esta decisión
   solo termina de sacarlo del inventario de `SAD`, `SDD`, `README` y las políticas, que era el
@@ -129,7 +126,7 @@ flujo es `DEV → QA → PROD` y son exactamente tres: el entorno de la máquina
 
 ## Justificación
 
-El costo de esta decisión es un renombrado mecánico que hay que hacer una sola vez. El costo de no
+El costo de esta decisión es alinear la documentación con los nombres reales una sola vez. El costo de no
 tomarla es permanente: cada documento nuevo elige una grafía, cada búsqueda devuelve resultados
 parciales y cada revisión de PR gasta tiempo decidiendo si dos nombres son el mismo repositorio.
 
@@ -168,8 +165,7 @@ los sufijos de tecnología. No revierte nada de lo que esa enmienda decidió.
 
 Revisar si:
 
-- el equipo decide no renombrar los repositorios reales, caso en el que manda el nombre real y esta
-  decisión se revierte en lugar de dejar la documentación divergente otra vez;
+- se renombran los repositorios reales: la tabla de la decisión §1 se actualiza con ellos (esta condición ya se aplicó el 2026-11-24 en sentido contrario: no se renombraron);
 - una capacidad se extrae del Core como desplegable propio, lo que añade un repositorio a la lista
   (como ocurrió, por otra vía, con `MANI-Landing`: no salió del Core, se agregó como pieza nueva);
 - se cierra INFRA-01 o INFRA-02 y aparece un repositorio para los manifests de orquestación.

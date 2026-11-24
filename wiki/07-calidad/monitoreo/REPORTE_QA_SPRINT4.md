@@ -7,7 +7,7 @@
 | Fecha de corte | 21 de octubre de 2026 |
 | Ambientes | DEV `10.43.98.232` (rama `develop`), QA `10.43.100.141` (rama `release`, Supabase `MANI-QA`) y Calidad `10.43.98.196` (SonarQube, runners y k6) |
 | Estado | Borrador para revisión de la Scrum Master y aceptación de la PO |
-| Relación con el TD | [`product/TD.md`](../../01-producto/TD.md) (TD V2, SCRUM-1250) es el documento de pruebas del producto y resume este reporte. Aquí está el detalle de QA del sprint |
+| Relación con el TD | [`product/TD.md`](../TD.md) (TD V2, SCRUM-1250) es el documento de pruebas del producto y resume este reporte. Aquí está el detalle de QA del sprint |
 | Umbrales | No se definen aquí: viven en el [SDD](../../02-arquitectura/SDD.md) §7 y §8 y en [ADR-0005](../../02-arquitectura/adr/ADR-0005-devsecops.md) |
 
 Este documento reúne en un solo archivo los siete documentos de QA que estaban sueltos en `qa/`. El contenido de cada uno se conserva en la sección indicada, y la versión completa sigue disponible en el historial de git (commit `d970013`).
@@ -149,7 +149,7 @@ flowchart TD
 - SonarQube Community Build 26.10 con PostgreSQL 15 persistente (`/opt/quality/sonarqube/docker-compose.yml`). Parámetros de kernel para Elasticsearch en `/etc/sysctl.d/99-sonarqube.conf` (`vm.max_map_count=262144`, `fs.file-max=65536`).
 - Salud: `curl -s http://10.43.98.196:9000/api/system/status` → `"status":"UP"`.
 - Credenciales en `/opt/quality/.env.quality` con permisos 600, fuera del repositorio. La contraseña por defecto se cambió y se generó un token global de análisis.
-- **Runner self-hosted (QA4-02, SCRUM-1265):** `nbig02-calidad`, registrado en la organización `Trama-AS`, grupo `calidad`, label `calidad`. Instalado en `/home/estudiante/actions-runner` como servicio systemd. `SONAR_TOKEN` es secreto de la organización y `SONAR_HOST_URL` variable de la organización. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../../06-gobernanza/INFRAESTRUCTURA_MANI.md#241-estado-del-análisis-sonarqube-por-repositorio).
+- **Runner self-hosted (QA4-02, SCRUM-1265):** `nbig02-calidad`, registrado en la organización `Trama-AS`, grupo `calidad`, label `calidad`. Instalado en `/home/estudiante/actions-runner` como servicio systemd. `SONAR_TOKEN` es secreto de la organización y `SONAR_HOST_URL` variable de la organización. Detalle por repositorio en [`INFRAESTRUCTURA_MANI.md` §24.1](../../08-infraestructura/README.md#241-estado-del-análisis-sonarqube-por-repositorio).
 
 ```bash
 # Estado y reinicio del runner

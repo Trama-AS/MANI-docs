@@ -8,9 +8,9 @@
 | **Documento** | Documento de Infraestructura V4 (Vista Física del modelo 4+1) |
 | **Versión** | 4.0 — Entrega 5 (Sprint 5, último sprint) |
 | **Fecha** | 5 de noviembre de 2026 |
-| **Estado** | **Vigente** desde el 2026-11-19. Era borrador porque varios datos exigían verificación en las máquinas virtuales; esa evidencia se capturó el 14 y 15 de noviembre y cerró seis filas de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md). **Queda una reserva:** la fila D10 (migraciones y `BYPASSRLS` en PROD) sigue sin verificar, de modo que lo que este documento diga sobre migraciones o roles de base de datos **no está acreditado** y así debe leerse. |
+| **Estado** | **Vigente** desde el 2026-11-19. Era borrador porque varios datos exigían verificación en las máquinas virtuales; esa evidencia se capturó el 14 y 15 de noviembre y cerró seis filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md). **Queda una reserva:** la fila D10 (migraciones y `BYPASSRLS` en PROD) sigue sin verificar, de modo que lo que este documento diga sobre migraciones o roles de base de datos **no está acreditado** y así debe leerse. |
 | **Responsables** | Daniel Ávila (DevOps Lead), Nicolás León (DevOps Secundario), Santiago Hernández (QA & Security), Sara Albarracín (Scrum Master) |
-| **Base** | [Documento de Infraestructura V3](DOCUMENTO_INFRAESTRUCTURA_V3.md) (Sprint 4, 17-oct-2026) |
+| **Base** | [Documento de Infraestructura V3](DOCUMENTO_INFRAESTRUCTURA_V4.md) (Sprint 4, 17-oct-2026) |
 
 ---
 
@@ -218,7 +218,7 @@ Implementado en el Sprint 5 por TEC-14 (hallazgo R-4 de la revisión de segurida
 
 - **Verificado el 2026-11-14, y la respuesta no era la que la pregunta suponía.** Sí existe un recolector desplegado, pero **no corre en DEV, QA ni PROD**: corre en la **VM de Calidad (`10.43.98.196`)**, que raspa a los demás ambientes. Allí operan Prometheus (`127.0.0.1:9090`), Alertmanager (`127.0.0.1:9093`), Grafana (`127.0.0.1:3000`), Loki (`0.0.0.0:3100`), Blackbox (`127.0.0.1:9115`) y Mailpit (`127.0.0.1:8025`), con versiones fijas y configuración versionada en `MANI-APIGateway/monitoring/`. En QA corren además cinco exportadores y Promtail como agente de logs. Evidencia: [`08-infraestructura/01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md) §5 y [`05-monitoreo-y-politicas-devops.md`](../08-infraestructura/05-monitoreo-y-politicas-devops.md).
 
-  **Por qué esto resolvió una contradicción de tres documentos.** El informe de DevOps decía que la observabilidad era futura, el análisis de monitoreo decía que ya existía, y el SDD §8 decía que no estaba aprovisionada. Las tres tenían una parte de razón: existe, pero no en la máquina donde todos la buscaban. Es la fila **D8** de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md), cerrada el 2026-11-19.
+  **Por qué esto resolvió una contradicción de tres documentos.** El informe de DevOps decía que la observabilidad era futura, el análisis de monitoreo decía que ya existía, y el SDD §8 decía que no estaba aprovisionada. Las tres tenían una parte de razón: existe, pero no en la máquina donde todos la buscaban. Es la fila **D8** de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md), cerrada el 2026-11-19.
 
   **Lo que sigue sin estar:** Alertmanager ya enruta las notificaciones SMTP hacia **Mailpit local** (`127.0.0.1:1025`, UI `127.0.0.1:8025`, receptor `email-operaciones`, con `send_resolved: true` verificado en [`05-monitoreo-y-politicas-devops.md`](../08-infraestructura/05-monitoreo-y-politicas-devops.md)); queda pendiente únicamente conectar un `webhook_config` externo (Slack/Teams) cuando el equipo defina canal y entregue el secreto fuera de Git. Por su parte, el escenario de disponibilidad (`QAS-16`) sigue sin medir porque exige una serie de un mes calendario que todavía no se ha acumulado. Que exista el recolector no equivale a tener la medición.
 

@@ -27,7 +27,7 @@ Principios que atan el versionado con la entrega:
 
 - `main` representa la versión productiva y recibe sólo cambios aprobados; los releases se etiquetan semánticamente.
 - El tag inmutable y el digest son el mecanismo de trazabilidad entre ambientes; `latest` no lo sustituye.
-- La misma imagen validada se promueve: un cambio de versión no implica reconstruir para PROD ([Ambientes y promoción](../04-proceso/ambientes-y-promocion.md)).
+- La misma imagen validada se promueve: un cambio de versión no implica reconstruir para PROD ([Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md)).
 
 ## Cuándo se etiqueta una versión y quién lo hace
 

@@ -37,7 +37,7 @@ Un cambio se sigue así: **historia en Jira → rama con su clave → commits co
 | Atributo → ADR → componente | [`02-arquitectura`](../02-arquitectura/README.md); para repositorios: [ADR-0004](../02-arquitectura/adr/ADR-0004-cicd-multirepo-ambientes.md), [ADR-0028](../02-arquitectura/adr/ADR-0028-nombres-repositorios-y-ambientes.md) y [ADR-0030](../02-arquitectura/adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) |
 | Componente → repositorio → rama → PR | Esta carpeta y [`04-proceso`](../04-proceso/README.md) ([Git: ramas y commits](../04-proceso/git-ramas-y-commits.md), [Pull requests](../04-proceso/pull-requests.md)) |
 | PR → prueba | [`07-calidad`](../07-calidad/README.md) |
-| Versión → ambiente | [`08-infraestructura`](../08-infraestructura/README.md) y [Ambientes y promoción](../04-proceso/ambientes-y-promocion.md) |
+| Versión → ambiente | [`08-infraestructura`](../08-infraestructura/README.md) y [Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md) |
 
 ## Discrepancias encontradas y su estado
 

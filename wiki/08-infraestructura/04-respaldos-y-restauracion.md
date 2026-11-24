@@ -2,7 +2,7 @@
 
 [← Volver a `08-infraestructura`](README.md)
 
-> **Fuente:** Implementación real verificada en la VM de Backups (`10.43.98.197`) y réplica externa en Calidad (`10.43.98.196`) el `2026-11-14`, scripts versionados en `MANI-APIGateway/infra/backups/`, [`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](../06-gobernanza/PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md), [SCRUM-1666](https://maniservices.atlassian.net/browse/SCRUM-1666) y [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684).
+> **Fuente:** Implementación real verificada en la VM de Backups (`10.43.98.197`) y réplica externa en Calidad (`10.43.98.196`) el `2026-11-14`, scripts versionados en `MANI-APIGateway/infra/backups/`, [`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](../01-producto/requisitos.md), [SCRUM-1666](https://maniservices.atlassian.net/browse/SCRUM-1666) y [SCRUM-1684](https://maniservices.atlassian.net/browse/SCRUM-1684).
 > **Finalidad:** Documentar la automatización diaria cifrada de respaldos (`pg_dump` 17), retención GFS, copia externa redundante, monitoreo en Prometheus, tiempos reales medidos en simulacro cronometrado de restauración y procedimiento operativo de recuperación.
 > **Mantiene:** Daniel Ávila (DevOps) · **Consume:** DevOps, Arquitectura, QA, PO · **Frecuencia:** Ante cambios de retención/esquemas o ejecución de simulacros periódicos · **Versión:** 2.0 (`2026-11-14`)
 

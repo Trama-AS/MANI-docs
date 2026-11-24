@@ -27,7 +27,7 @@
 
 1. **Cada usuario en un navegador distinto.** Si el caso tiene un cliente y un aliado, uno va en un navegador y el otro en otro. Dos sesiones en el mismo navegador comparten almacenamiento y la segunda pisa a la primera.
 2. **Ventana privada.** Evita que la caché sirva una versión anterior del front y que quede una sesión vieja.
-3. **Las fallas se reportan a Santiago (QA).** El canal del equipo para pruebas y defectos es `#qa` ([Ceremonias y tiempos](ceremonias-y-tiempos.md)).
+3. **Las fallas se reportan a Santiago (QA).** El canal del equipo para pruebas y defectos es `#qa` ([Ceremonias y tiempos](../06-gobernanza/ceremonias-y-tiempos.md)).
 4. **No se crean incidencias.** Quien encuentra la falla no abre el ítem en Jira: lo hace QA después de confirmarla. Así no se duplican defectos ni se registra como defecto un dato viejo o un problema de ambiente.
 
 ## 3. Qué lleva un reporte
@@ -39,7 +39,7 @@ Los cuatro datos que piden los criterios de SCRUM-1698 y SCRUM-1642:
 | **Clave** | La historia o tarea de Jira que se estaba probando |
 | **Paso** | Qué se hizo justo antes, de modo que otro lo pueda repetir |
 | **Cuenta** | Con qué cuenta de prueba y qué rol. Nunca la contraseña |
-| **Hora** | Con zona horaria, para cruzarla con los logs por `correlation_id` ([Observabilidad](observabilidad.md)) |
+| **Hora** | Con zona horaria, para cruzarla con los logs por `correlation_id` ([Observabilidad](../08-infraestructura/observabilidad.md)) |
 
 Además: el ambiente y la versión desplegada si se conoce, lo esperado, lo obtenido y una captura **sin credenciales ni datos personales** ([Secretos](secretos.md)).
 

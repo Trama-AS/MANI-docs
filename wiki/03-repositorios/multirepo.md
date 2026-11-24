@@ -45,7 +45,7 @@ Cada repositorio debe explicar en su README cómo **levantarlo**, **probarlo** y
 | `MANI-APIGateway` | Sí (NGINX, imagen, Compose completo) | **Falta**: no menciona `tests/gateway/*.sh` ni Newman | Parcial: quién ejecuta las migraciones por ambiente |
 | `MANI-docs` | No aplica | No aplica | No aplica |
 
-El despliegue lo hace DevOps con los workflows de cada repositorio y la promoción de [Ambientes y promoción](../04-proceso/ambientes-y-promocion.md); lo que falta es que cada README lo enlace en una sección corta «Despliegue».
+El despliegue lo hace DevOps con los workflows de cada repositorio y la promoción de [Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md); lo que falta es que cada README lo enlace en una sección corta «Despliegue».
 
 Nombres de ADR-0028 (ver la equivalencia con GitHub en el [mapa](#mapa-de-los-6-repositorios)):
 
@@ -77,7 +77,7 @@ Cada repositorio desplegable mantiene de forma independiente: código · depende
 - Un cambio que cruza repositorios se parte en un PR por repositorio, cada uno con su referencia Jira.
 - Un contrato compartido (OpenAPI entre Gateway y servicios) se acuerda antes de implementar: es la tarea `CFG-16` del backlog de transición.
 - Crear los repositorios que faltan del modelo es `CFG-15`; replicar el pipeline en cada uno es `CFG-29`.
-- Los artefactos de infraestructura salieron del repositorio Flutter (tarea `CFG-33`, SCRUM-1110): `database/`, `scripts/`, `supabase/` y el Compose pasan a `MANI-API-Gateway`; `nginx.conf` queda en `MANI-Frontend` como `docker/nginx-web.conf` porque sirve la SPA dentro de la imagen web. El responsable de las migraciones por ambiente es DevOps ([`INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §15).
+- Los artefactos de infraestructura salieron del repositorio Flutter (tarea `CFG-33`, SCRUM-1110): `database/`, `scripts/`, `supabase/` y el Compose pasan a `MANI-API-Gateway`; `nginx.conf` queda en `MANI-Frontend` como `docker/nginx-web.conf` porque sirve la SPA dentro de la imagen web. El responsable de las migraciones por ambiente es DevOps ([`INFRAESTRUCTURA_MANI.md`](../08-infraestructura/README.md) §15).
 
 ## Estado real a tener en cuenta (histórico, 2026-10-07)
 

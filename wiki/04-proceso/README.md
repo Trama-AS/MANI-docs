@@ -25,7 +25,7 @@ Siete procesos, en el orden en que una historia los recorre. Quien llega nuevo e
 
 | # | Proceso | Página | Por qué va aquí |
 |---|---|---|---|
-| 1 | **Scrum del equipo y ceremonias** | [Ceremonias y tiempos de respuesta](ceremonias-y-tiempos.md) y [Roles y decisiones](roles-y-decisiones.md) | Sin saber quién decide y cuándo se reúne el equipo, lo demás no es exigible |
+| 1 | **Scrum del equipo y ceremonias** | [Ceremonias y tiempos de respuesta](../06-gobernanza/ceremonias-y-tiempos.md) y [Roles y decisiones](roles-y-decisiones.md) | Sin saber quién decide y cuándo se reúne el equipo, lo demás no es exigible |
 | 2 | **Definición de Listo y de Terminado** | [DoR y DoD](dor-y-dod.md) | Fija cuándo una historia puede empezar y cuándo se puede decir que acabó |
 | 3 | **Flujo de Jira**: estados, transiciones y enlaces de bloqueo | [Jira y trazabilidad](jira-y-trazabilidad.md) | Es donde vive el trabajo y donde se ve si avanza |
 | 4 | **Flujo de PR y revisión** | [Git: ramas y commits](git-ramas-y-commits.md), [Pull requests](pull-requests.md) y [CI/CD y calidad](cicd-y-calidad.md) | Es el único camino del código hacia una rama compartida |
@@ -33,7 +33,7 @@ Siete procesos, en el orden en que una historia los recorre. Quien llega nuevo e
 | 6 | **Reporte de fallas** | [Reporte de fallas](reporte-de-fallas.md) | Dice qué hacer cuando algo no funciona en QA |
 | 7 | **Onboarding** | [Onboarding de un desarrollador nuevo](onboarding.md) | Reúne todo lo anterior en una lista para el primer día |
 
-Páginas de apoyo, que se consultan cuando la tarea lo pide: [Ambientes y promoción](ambientes-y-promocion.md), [Secretos](secretos.md), [Observabilidad](observabilidad.md), [Estándares de documentación](documentacion.md) y [Trabajo con asistentes de IA](trabajo-con-ia.md).
+Páginas de apoyo, que se consultan cuando la tarea lo pide: [Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md), [Secretos](secretos.md), [Observabilidad](../08-infraestructura/observabilidad.md), [Estándares de documentación](documentacion.md) y [Trabajo con asistentes de IA](trabajo-con-ia.md).
 
 ## 2. Los siete procesos: responsable, entradas, salidas y ejemplo
 
@@ -70,7 +70,7 @@ Cada página lleva su propia ficha con finalidad, quién la mantiene, quién la 
 
 | Documento | Para qué sirve | Fuente que resume | Mantiene la fuente | Versión y fecha |
 |---|---|---|---|---|
-| [Ceremonias y tiempos de respuesta](ceremonias-y-tiempos.md) | Ceremonias, canales, *daily*, retrospectiva y plazos exigibles | Gobierno §4, §6 y §10 | Scrum Master | Viva · 2026-10-22 |
+| [Ceremonias y tiempos de respuesta](../06-gobernanza/ceremonias-y-tiempos.md) | Ceremonias, canales, *daily*, retrospectiva y plazos exigibles | Gobierno §4, §6 y §10 | Scrum Master | Viva · 2026-10-22 |
 | [Roles y decisiones](roles-y-decisiones.md) | Quién decide qué, desempates y Mesa de Arquitectura | Gobierno §2 y §5; ADR-0003 | Scrum Master | Viva · 2026-11-16 |
 | [DoR y DoD](dor-y-dod.md) | Cuándo una historia entra y cuándo está terminada | Gobierno §8 y §9 | QA (DoD) y Scrum Master (DoR) | Viva · 2026-11-04 |
 | [Jira y trazabilidad](jira-y-trazabilidad.md) | Qué vive en Jira y qué en GitHub, estados, transiciones y enlaces de bloqueo | ADR-0002; Gobierno §3 y §6; tablero `SCRUM` | Scrum Master | Viva · 2026-11-16 |
@@ -80,9 +80,9 @@ Cada página lleva su propia ficha con finalidad, quién la mantiene, quién la 
 | [Videos de validación](videos-de-validacion.md) | Cómo se graba, se entrega y se valida el video de un cambio en QA | Criterios del Sprint 6 en Jira | PO y Scrum Master | 1.0 · 2026-11-16 |
 | [Reporte de fallas](reporte-de-fallas.md) | Cómo se prueba a mano en QA, a quién se reporta y con qué datos | Reporte de QA del Sprint 5; criterios de SCRUM-1694 | QA | 1.0 · 2026-11-16 |
 | [Onboarding de un desarrollador nuevo](onboarding.md) | Lista ordenada para entregar el primer cambio | Las páginas de esta carpeta | Scrum Master y DevOps | 1.0 · 2026-11-16 |
-| [Ambientes y promoción](ambientes-y-promocion.md) | DEV, QA y PROD, y cómo se promueve una versión | Políticas §7 a §12; ADR-0004 y ADR-0028 | DevOps | Viva · 2026-10-23 |
+| [Ambientes y promoción](../08-infraestructura/03-despliegue-y-rollback.md) | DEV, QA y PROD, y cómo se promueve una versión | Políticas §7 a §12; ADR-0004 y ADR-0028 | DevOps | Viva · 2026-10-23 |
 | [Secretos](secretos.md) | Qué no se sube y cómo se manejan los secretos por ambiente | Políticas §15 y §16 | DevOps | Viva · 2026-11-04 |
-| [Observabilidad](observabilidad.md) | Herramientas y obligaciones de los servicios | Políticas §17; ADR-0006 | DevOps | Viva · 2026-11-13 |
+| [Observabilidad](../08-infraestructura/observabilidad.md) | Herramientas y obligaciones de los servicios | Políticas §17; ADR-0006 | DevOps | Viva · 2026-11-13 |
 | [Estándares de documentación](documentacion.md) | Qué documento se actualiza con cada tipo de cambio | ADR-0001 y ADR-0008; Gobierno §3 y §9.4 | Scrum Master | Viva · 2026-11-04 |
 | [Trabajo con asistentes de IA](trabajo-con-ia.md) | Política de uso de IA y cómo se aplica | Políticas §18 | DevOps con la Scrum Master | Viva · 2026-11-04 |
 
@@ -97,7 +97,7 @@ Cada página lleva su propia ficha con finalidad, quién la mantiene, quién la 
 | Fila | Qué dice | Estado en esta carpeta |
 |---|---|---|
 | **D12** — quién firma como PO | Decidido el 2026-11-11: firma Camila Beltrán como PO | **Enlazada.** [Roles y decisiones](roles-y-decisiones.md) avisa que la tabla de roles de la fuente está desactualizada en esa fila. La tabla no se reescribe hasta que el equipo acuerde el cambio |
-| **D8** — observabilidad | Pendiente de validar por DevOps y la Scrum Master | **Enlazada.** [Observabilidad](observabilidad.md) describe la política; el estado real lo cierra [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) |
+| **D8** — observabilidad | Pendiente de validar por DevOps y la Scrum Master | **Enlazada.** [Observabilidad](../08-infraestructura/observabilidad.md) describe la política; el estado real lo cierra [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) |
 
 Las demás filas de [`VALIDACION_HU-VAL-01.md`](../06-gobernanza/VALIDACION_HU-VAL-01.md) no corresponden a esta carpeta.
 

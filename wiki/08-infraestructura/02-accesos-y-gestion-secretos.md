@@ -2,7 +2,7 @@
 
 [← Volver a `08-infraestructura`](README.md)
 
-> **Fuente:** [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §10 y §22, [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](../06-gobernanza/DOCUMENTO_INFRAESTRUCTURA_V4.md), [SCRUM-1639](https://maniservices.atlassian.net/browse/SCRUM-1639) y [SCRUM-1712](https://maniservices.atlassian.net/browse/SCRUM-1712).
+> **Fuente:** [`POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §10 y §22, [`DOCUMENTO_INFRAESTRUCTURA_V4.md`](DOCUMENTO_INFRAESTRUCTURA_V4.md), [SCRUM-1639](https://maniservices.atlassian.net/browse/SCRUM-1639) y [SCRUM-1712](https://maniservices.atlassian.net/browse/SCRUM-1712).
 > **Finalidad:** Establecer cómo solicitar accesos operativos a las VMs y servicios externos sin almacenar contraseñas ni tokens en `MANI-docs` ni en `MANI-APIGateway`, y documentar las variables de entorno requeridas por ambiente.
 > **Mantiene:** Daniel Ávila (DevOps) · **Consume:** DevOps, Desarrollo, QA · **Frecuencia:** Ante cambio de integrantes, rotación o nuevas variables · **Versión:** 1.0 (`2026-11-14`)
 

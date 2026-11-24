@@ -1,0 +1,14 @@
+release de Flutter 4539d53
+antes: a98fa12
+ Image ghcr.io/trama-as/mani-flutter:staging Pulling 
+ Image ghcr.io/trama-as/mani-flutter:staging Pulled 
+ Container mani-flutter-web Recreated 
+ Container mani-flutter-web Starting 
+ Container mani-flutter-web Started 
+wget: can't connect to remote host (172.18.0.3): Connection refused
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/rules/health
+  200 /api/v1/dispatch/health
+mani-flutter-web Up 6 seconds
+despues: 4539d53 ; fin 2026-11-24T05:47:02Z

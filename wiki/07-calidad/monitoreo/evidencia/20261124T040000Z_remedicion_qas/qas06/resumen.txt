@@ -1,0 +1,3 @@
+core: rutas 129, operaciones 128 (128 únicas), sin contrato [('_ALL', '/auth/validate-token')], sin ruta [], en dos contratos [], servers [['https://api.mani.app/api/v1/core', 'http://localhost/api/v1/core'], ['http://core-service:3000/api/v1']]
+dispatch: rutas 9, operaciones 8 (8 únicas), sin contrato [('GET', '/metrics')], sin ruta [], en dos contratos [], servers [['http://localhost/api/v1/dispatch']]
+rules: rutas 5, operaciones 5 (5 únicas), sin contrato [], sin ruta [], en dos contratos [], servers [['https://api.mani.app/api/v1/rules', 'http://localhost/api/v1/rules', 'http://rules-service:8080/api/v1/rules']]

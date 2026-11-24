@@ -1,14 +1,18 @@
 # Reporte de QA del Sprint 6
 
-> **Finalidad:** qué midió QA en el Sprint 6, con qué resultado y qué queda pendiente. **Mantiene:** QA (Santiago Hernández). **Consume:** PO, SM, desarrollo y DevOps. **Se actualiza:** al cierre del sprint. **Versión:** 1.1, 2026-11-23 (remedición del 22 nov y T-45). **HU:** [SCRUM-1692](https://maniservices.atlassian.net/browse/SCRUM-1692). Estados de los QAS: [SDD §8](../02-arquitectura/SDD.md) y [tabla operativa](QAS_45_ESTADO_METODO_EVIDENCIA.md).
+> **Finalidad:** qué midió QA en el Sprint 6, con qué resultado y qué queda pendiente. **Mantiene:** QA (Santiago Hernández). **Consume:** PO, SM, desarrollo y DevOps. **Se actualiza:** al cierre del sprint. **Versión:** 1.4, 2026-11-24 (QAS-02, 06, 09 y 26). **HU:** [SCRUM-1692](https://maniservices.atlassian.net/browse/SCRUM-1692). Estados de los QAS: [SDD §8](../02-arquitectura/SDD.md) y [tabla operativa](QAS_45_ESTADO_METODO_EVIDENCIA.md).
 
 ## 1. Resultado
 
-**Conteo final de los 45 QAS:** Cumple 24 · Parcial 10 · No cumple 8 · No medido 3. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
+**Conteo final de los 45 QAS:** Cumple 33 · Parcial 5 · No cumple 6 · No medido 1. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
 
-Los 3 No medido (05, 18 y 27) dependen de DevOps. Los 8 No cumple tienen causa y responsable en el §5.
+El No medido (05) depende de DevOps. Los 6 No cumple tienen causa y responsable en el §5.
 
 La remedición del 22 de noviembre (19:20Z a 00:30Z) se hizo sobre lo promovido ese día a `release` y desplegado en QA: Core `cdebf74`, Dispatch `ba460e4`, Flutter `95a3e42`, Gateway `e454bcf` y Rules `348f6d9`. Detalle en el [informe del cierre](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/informe_cierre.md).
+
+La remedición del 23 y 24 de noviembre (23:41Z a 01:24Z) se hizo sobre Core `f0c2e87`, Dispatch `4b065e9`, Flutter `d9597a5`, Gateway `45a6c95`, Rules `348f6d9` y Landing `7649832`, con la migración 0044 aplicada. QAS-30 y 44 pasaron a Cumple. Detalle en el [informe de la remedición](monitoreo/evidencia/20261124T012400Z_remedicion_qas/informe_remedicion.md).
+
+La remedición del 24 de noviembre (03:24Z a 04:00Z) se hizo sobre Core `3bb3dd3`, Dispatch `1fce80e`, Flutter `a98fa12`, Gateway `71558b8`, Rules `ce513cb` y Landing `73b1625`, con las migraciones 0045 y 0046 aplicadas. QAS-22, 23 y 40 pasaron a Cumple y QAS-21 a Parcial. Ese mismo día (hasta las 15:09Z) pasaron a Cumple QAS-09 y 26, y QAS-02 y 06 se midieron y siguen en Parcial. Detalle en el [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md).
 
 ## 2. Qué se midió
 
@@ -23,11 +27,14 @@ La remedición del 22 de noviembre (19:20Z a 00:30Z) se hizo sobre lo promovido 
 | SCRUM-1685 | 17 (recuperabilidad) | Cumple con el umbral del acta A/B | SDD §8 |
 | Barrido del 22 nov | Las 22 filas sin medir del sprint, más 11, 37, 42 | 11, 16, 25, 37 y 42 Cumple | [informe del barrido](monitoreo/evidencia/20261122T025500Z_barrido_qas/informe_barrido.md) |
 | QAS-14 | SAST, OWASP ZAP y rate limiting | Cumple | [informe de QAS-14](monitoreo/evidencia/20261122T032900Z_qas14_dast_sast/informe_qas14.md) |
-| QAS-23 | Cobertura de casos de uso críticos | Parcial | [informe de QAS-23](monitoreo/evidencia/20261122T040500Z_qas23_cobertura/informe_qas23.md) |
+| QAS-23 | Cobertura de casos de uso críticos | Parcial el 22 nov (4 casos bajo 90 %). **Cumple** el 24 nov (SCRUM-1724) | [informe de QAS-23](monitoreo/evidencia/20261122T040500Z_qas23_cobertura/informe_qas23.md), [medición](monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas23/qas23_24nov_0400z.txt) |
 | QAS-24 y 33 con el umbral B | Imagen por ambiente y regla de componentes | 24 No cumple (backend y Gateway); 33 No cumple tras fusionar #152 | [informe del umbral B](monitoreo/evidencia/20261122T180000Z_qas24_qas33_umbral_b/informe_qas24_qas33.md) |
-| T-45 (SCRUM-1682) | 30, 31, 32 | Revisión heurística, opción B aceptada por la SM: 30 **No cumple** (11 de 14 flujos), 31 **Cumple**, 32 **Cumple** tras corregir tres defectos | [lista de chequeo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/lista_chequeo_heuristica.md) |
+| T-45 (SCRUM-1682) | 30, 31, 32 | Revisión heurística, opción B aceptada por la SM: 30 **No cumple** (11 de 14 flujos), 31 **Cumple**, 32 **Cumple** tras corregir tres defectos. 30 pasó a **Cumple** el 23 nov (14 de 14, MANI-Flutter#163) | [lista de chequeo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/lista_chequeo_heuristica.md) |
 | QAS-34 y 35 (23 nov) | Accesibilidad y asistencia al usuario | Siguen **No cumple**. 34: el criterio WCAG 2.2 AA ya existe en Flutter, pero fallan idioma, nombre de campos, zoom en celular y foco visible, y la Landing tiene contraste bajo. 35: 3 de 6 casos no orientan | [revisión del 23 nov](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas34_qas35/revision_qas34_qas35.md) |
 | QAS-38 (23 nov) | Riesgos de las operaciones sensibles | **Cumple**: 12 de 12 en SAD §23.1 (MANI-docs#91), con el control verificado en el código de QA | [operación ↔ riesgo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas38/qas38_operacion_riesgo_23nov.md) |
+| Remedición del 23 y 24 nov | 01, 20, 22, 30, 34 (Landing), 40, 44 | 30 y 44 pasan a **Cumple**. 01 y 20 siguen en Cumple tras la 0044. 22 y 40 siguen Parcial (falta Core). 34 sigue No cumple (Landing: 18 textos bajo el umbral, antes 33) | [informe de la remedición](monitoreo/evidencia/20261124T012400Z_remedicion_qas/informe_remedicion.md) |
+| Remedición del 24 nov | 01, 18, 20, 21, 22, 23, 27, 30, 33, 34, 35, 40, 43 | 18, 22, 23, 27 y 40 pasan a **Cumple**; 21 a **Parcial**; 20 y 30 siguen en Cumple; 33, 34 y 35 siguen en No cumple y 43 en Parcial (PROD por HTTP) | [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) |
+| SCRUM-1719 | 44 (rollback con despliegue fallido a propósito) | **Cumple**: rollback en 6 s y aceptación sin duplicado | [corrida](monitoreo/evidencia/20261124T012400Z_remedicion_qas/qas40_qas44/qas40_44_24nov_0123z.txt) |
 
 ## 3. Bugs abiertos (Jira, 23 nov)
 
@@ -63,7 +70,7 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
 | MANI-Node (Core) | SonarQube de la VM de Calidad | #42 | — |
 | MANI-Java (Rules) | SonarQube de la VM | #12 | — |
 | MANI-.NET (Dispatch) | SonarQube de la VM | #35 | — |
-| MANI-APIGateway | SonarQube de la VM | #96 | No exige cobertura de código nuevo (QAS-23) |
+| MANI-APIGateway | SonarQube de la VM | #96 | Exige cobertura de código nuevo desde MANI-APIGateway#108 |
 | MANI-Landing | SonarQube de la VM | #7 | — |
 | MANI-Flutter | SonarCloud | #141 | 42 Critical de mantenibilidad abiertos en código existente. El paso «Sin issues Blocker o Critical nuevos» bloqueó el 22 nov el rescate de SCRUM-1646 (#155) hasta corregir 14 Critical nuevos |
 
@@ -73,33 +80,28 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
 
 - **DevOps:**
   - ventana para escalar en QA (05);
-  - cAdvisor por contenedor (18, 27);
-  - `mock_falla` y `STORAGE_FALLA` activos en QA (02, 09);
-  - cerrar el 8080 sin TLS y medir PROD (43);
-  - rollback con fallo forzado (44);
+  - llevar a PROD el TLS del 8080 (43);
   - promover el mismo digest a `staging` y `latest` (24);
   - cabeceras CSP y anti-clickjacking (14).
 - **Core:**
   - menos consultas por petición en elegibles y revisión del pool (03, 19);
   - actor y correlation ID en la aprobación de aliado (12);
-  - logs JSON (22, también Dispatch);
-  - circuit breaker (40, también Dispatch);
-  - segundo adaptador de pagos (26);
-  - validación de reglas solo en Rules (21);
-  - pruebas de los 3 casos críticos bajo 90 % (23).
+  - que un push que no responde no tumbe la orquestación ni corte las ofertas restantes, y registrar en logs la falla de entrega con correlation ID (02);
+  - fijar un timeout a Storage (09, no cambia el estado);
+  - quitar de Core el límite de la comisión repetido en `comisionValida()` (21);
+  - responder 502 ante una respuesta malformada de Rules (40, no cambia el estado).
 - **Flutter:**
   - migrar a `ManiButton` y `ManiTextField` las 31 pantallas con nativos (33);
-  - botón principal visible en reglas del tenant y en los registros (30);
-  - mensaje al redirigir por rol y errores útiles (35);
-  - idioma `es-CO`, rótulos de campos, foco visible y prueba de escalado de texto (34);
+  - mensaje al redirigir por rol, 5xx de verificación, límite de tamaño en el registro y texto de la solicitud cancelada sin cotización (35);
+  - idioma `es-CO`, rótulos de campos, zoom en celular y prueba de escalado de texto (34);
   - hallazgos de la revisión heurística en el [informe del cierre](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/informe_cierre.md).
-- **Landing:** contraste del botón principal y del texto amarillo, y movimiento reducido (34).
+- **Landing:** contraste de los textos en naranja y amarillo (el botón principal ya cumple) y movimiento reducido (34).
 - **PO y arquitectura:**
   - llevar el criterio WCAG 2.2 AA de `PRODUCT.md` al SDD §7.9 y a la Landing (34);
   - confirmación al aceptar una cotización (hallazgo H5 de T-45);
-  - fusionar MANI-docs#81 (06).
+  - fusionar MANI-docs#81 y decidir si las métricas cuentan como API; si cuentan, documentar `/api/v1/dispatch/metrics` y `/api/v1/rules/metrics` (06).
 - **QA:**
-  - remedir 02, 09, 43 y 44 cuando DevOps habilite cada caso;
-  - repetir 05, 18 y 27 con el cAdvisor por contenedor.
+  - remedir 02 con la corrección de Core y PROD (43) cuando DevOps lo habilite;
+  - medir 05 cuando DevOps dé la ventana y repetir 18 al resolver el cuello de QAS-19.
 
 El detalle de cada pendiente, con su posible solución, está en la [tabla de los 45 QAS](QAS_45_ESTADO_METODO_EVIDENCIA.md).

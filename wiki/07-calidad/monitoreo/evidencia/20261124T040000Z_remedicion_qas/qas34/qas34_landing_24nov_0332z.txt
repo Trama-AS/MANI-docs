@@ -1,0 +1,10 @@
+QAS-34, parte Landing. MANI-QA http://10.43.100.141:3001 (73b1625), 1280x800, 2026-11-24 03:32Z.
+Método: el mismo del 23 nov (contraste WCAG sobre estilos calculados en el navegador; umbral 4,5:1, o 3:1 en texto de 24 px o 18,66 px en negrita). Sin axe ni Lighthouse.
+Textos visibles: 319 (23 nov: 316). Bajo el umbral: 18 (23 nov: 18, los mismos). 29 textos sobre fondo con imagen o degradado, medidos contra el color sólido de detrás.
+1,82:1  #F2B705 sobre blanco        H4 «Soluciones rápidas cuando más lo necesitas.»
+3,68:1  #E4572E sobre blanco        10 H4 (subtítulos) y 4 cargos
+3,06:1  #E4572E sobre #FDE5DE       «Inicio Rápido»
+3,68:1  blanco sobre #E4572E        «Disponible Ahora en Tu Ciudad»
+3,68:1  #64748B sobre #0F192E       «©» del pie
+Los botones nuevos «Soy cliente» y «Soy aliado» (MANI-Landing#9) no aparecen entre los que fallan.
+lang=es · viewport sin bloqueo de zoom · 4 imágenes, 0 sin alt · 69 controles, 0 sin nombre · un h1 · sin prefers-reduced-motion · sin enlace para saltar al contenido

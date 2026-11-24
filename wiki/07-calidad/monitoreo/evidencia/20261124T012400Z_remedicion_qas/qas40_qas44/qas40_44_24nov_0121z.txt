@@ -1,0 +1,33 @@
+== QAS-40 y QAS-44 en MANI-QA (2026-11-24T01:22:05Z)
+  Dispatch 4b065e9 sha256:030677946310d60a89adaa464036d4bba0579fed46c643906c7f6332933c7a54
+  solicitud de prueba 240b4354-acc4-4452-b68c-684a0650bb2c; ofertas: 200
+
+== QAS-40: Rules sin responder (docker pause), circuit breaker de Dispatch
+  antes: 200 en 0.50 s
+  01:22:12Z rules-service pausado
+  intento 1: 503 RULES_SERVICE_UNAVAILABLE en 3.56 s
+  intento 2: 503 RULES_SERVICE_UNAVAILABLE en 3.43 s
+  intento 3: 503 RULES_SERVICE_UNAVAILABLE en 3.44 s
+  intento 4: 503 RULES_SERVICE_UNAVAILABLE en 3.44 s
+  intento 5: 503 RULES_SERVICE_UNAVAILABLE en 3.43 s
+  intento 6: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s
+  intento 7: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s
+  intento 8: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s
+  intento 9: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s
+  01:22:31Z rules-service reanudado
+  despues de 12 s: 200 en 0.44 s
+  media intentos 1-5: 3.46 s; media 6-9: 0.43 s; menciones de "Circuito abierto para mani-rules" en logs: 4
+PASA  | QAS-40 | Dispatch corta hacia Rules tras fallas repetidas y se recupera
+
+== QAS-44: despliegue fallido a proposito
+
+== Restauracion
+  Dispatch 4b065e9 imagen=ghcr.io/trama-as/mani-dotnet:staging misma_imagen=True; rules pausado=false
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/dispatch/health
+  200 /api/v1/rules/health
+  cancelar la solicitud de prueba: 200 ; estado ['CANCELADA']
+== Fin (2026-11-24T01:22:48Z), 43 s
+ABORTA QAS-44: no se pudo construir la imagen de prueba: :030677946310d60a89adaa464036d4bba0579fed46c643906c7f6332933c7a54: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+

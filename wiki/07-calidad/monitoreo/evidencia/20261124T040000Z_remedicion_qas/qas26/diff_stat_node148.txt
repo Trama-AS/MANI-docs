@@ -1,0 +1,11 @@
+ .env.example                                       |   5 +-
+ docs/arquitectura/PROVEEDORES_EXTERNOS.md          |  28 ++++-
+ src/config/index.js                                |   6 +-
+ src/container.js                                   |   5 +-
+ .../payments/HttpSandboxPaymentProvider.js         |  91 +++++++++++++++
+ .../payments/createPaymentProvider.js              |  23 +++-
+ tests/helpers/fakeSandboxPagos.js                  |  33 ++++++
+ .../providers/httpSandboxPaymentProvider.test.js   | 126 +++++++++++++++++++++
+ tests/unit/providers/providers.contract.test.js    |   9 +-
+ .../useCases/payments/paymentAdaptadores.test.js   |  68 +++++++++++
+ 10 files changed, 386 insertions(+), 8 deletions(-)

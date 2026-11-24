@@ -1,0 +1,23 @@
+QAS-33, 24 nov 2026 (UTC). Flutter desplegada en QA: a98fa12 (release). Solo lectura de git.
+Metodo: el del 22 nov. Diff de cada PR fusionado a develop contra su base, solo lib/, contando lineas agregadas con botones o campos nativos.
+7a43729 nativos 162 mani 49 archivos con nativos 52
+1991221 nativos 83 mani 127 archivos con nativos 31
+a98fa12 nativos 83 mani 127 archivos con nativos 31
+pantallas tocadas desde la regla con nativos: 31 lineas 83
+   11 mis_solicitudes_page.dart
+   10 adiciones_seccion.dart
+   7 tarifario_page.dart
+   5 registro_aliado_empresa_page.dart
+   5 eventos_seccion.dart
+   4 registro_cliente_empresa_page.dart
+   4 restablecer_contrasena_page.dart
+   4 calificacion_cierre_widgets.dart
+-- PR fusionados a develop desde 1991221
+dc71a35 11-23 21:44 Merge pull request #164 lib 1 nativos+ 0 mani+ 0 
+7c6c44b 11-23 20:51 Merge pull request #165 lib 15 nativos+ 0 mani+ 0 
+5b1bd6c 11-23 16:05 Merge pull request #163 lib 4 nativos+ 0 mani+ 1 
+784210d 11-22 19:10 Merge pull request #161 lib 1 nativos+ 0 mani+ 0 
+fc0a0c9 11-22 18:50 Merge pull request #159 lib 1 nativos+ 0 mani+ 0 
+99191b6 11-22 17:35 Merge pull request #157 lib 2 nativos+ 0 mani+ 0 
+Resultado: los 6 PR fusionados desde 1991221 (157, 159, 161, 163, 164, 165) agregan 0 nativos. En a98fa12 quedan 83 nativos en 31 archivos de lib/features, los mismos que el 22 nov.
+De los 13 archivos en los que #152 agrego nativos, 8 ya tienen 0; siguen con nativos app_shell 1, mani_estado 3, auth_layout 1, mis_solicitudes_page 11 y reporte_fuera_rango_page 1. Los de core/ incluyen componentes internos del sistema.

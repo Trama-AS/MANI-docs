@@ -1,0 +1,49 @@
+== QAS-22 en MANI-QA 2026-11-24T03:59:08Z
+== Cabecera de respuesta (una sola, mismo ID; generada si falta)
+  /api/v1/core/catalog | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=d8a16fee2f9f5a0a0ab60f59317e6638
+  /api/v1/dispatch/offers/me | con ID 401 PASA 1 cabecera | sin ID 401 PASA generado=b554e89234dc23e17d5f1d00b53748e7
+  /api/v1/rules/health | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=942c88379de9020b0032e05d332cb2ac
+  /api/v1/dispatch/health | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=b8e3abdd88c16403e37465c55c159019
+  /api/v1/core/health | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=0ce280cf0e06002842ab52086fe82457
+== Logs desde el arranque de cada contenedor (release del 24 nov): lineas que se leen como JSON
+  gateway: rev 71558b8, arranque 2026-11-24T03:24:44Z
+  gateway: 1237 de 1375 JSON (90.0 %)
+     no JSON x76 03:24-03:58 | nginx [warn] using uninitialized  | ej: 2026/11/24 03:24:51 [warn] 31#31: *25 using uninitialized "correlation_id" variable while logging request, client: 172.18.0.1, server: localhost, request: "GET / HTTP/1.1
+     no JSON x52 03:33-03:47 | nginx [warn] an upstream response is buffered to a temporary file /var/cache/nginx/ | ej: 2026/11/24 03:33:13 [warn] 33#33: *286 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 10
+     no JSON x9 - | sin formato de log | ej: /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+     no JSON x1 03:24-03:24 | nginx [error] connect() failed (111 | ej: 2026/11/24 03:24:48 [error] 32#32: *2 connect() failed (111: Connection refused) while connecting to upstream, client: 10.43.98.196, server: localhost, request: "GET /api
+     JSON: {"time_local": "24/Nov/2026:03:59:08 +0000","remote_addr": "172.18.0.1","request_method": "GET","request_uri": "/api/v1/core/health","status": "200","body_bytes_sent": "236","request_time": "0.124","http_referrer": "","http_user_agent": "Python-urllib/3.10","x
+     JSON: {"time_local": "24/Nov/2026:03:59:09 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/api/v1/dispatch/health","status": "200","body_bytes_sent": "153","request_time": "0.003","http_referrer": "","http_user_agent": "Blackbox Exporte
+  core: rev 3bb3dd3, arranque 2026-11-24T03:24:33Z
+  core: 517 de 519 JSON (99.6 %)
+     no JSON x2 - | sin formato de log | ej: 🔒 PostgreSQL: Core conecta como mani_core_svc, sin BYPASSRLS (RLS activo)
+     JSON: {"timestamp":"2026-11-24T03:51:11.036Z","level":"ERROR","service":"mani-core-node","correlationId":"t41-e1e380b583","correlation_id":"t41-e1e380b583","event":"http_error","method":"GET","path":"/aliados/50000000-0000-4000-8000-000000000011/verificacion","statu
+     JSON: {"timestamp":"2026-11-24T03:51:14.813Z","level":"ERROR","service":"mani-core-node","correlationId":"t41-14c3875ad0","correlation_id":"t41-14c3875ad0","event":"http_error","method":"POST","path":"/api/v1/solicitudes/3a4f245a-78ab-4cad-bb8f-891224c3831b/asignaci
+  dispatch: rev 1fce80e, arranque 2026-11-24T03:24:41Z
+  dispatch: 258 de 260 JSON (99.2 %)
+     no JSON x2 - | sin formato de log | ej: Cannot load library libgssapi_krb5.so.2 
+     JSON: {"Timestamp":"2026-11-24T03:59:08.548Z","EventId":0,"LogLevel":"Information","Category":"Mani.Dispatch","Message":"HTTP GET /api/v1/dispatch/health iniciada (correlationId=b8e3abdd88c16403e37465c55c159019)","State":{"Message":"HTTP GET /api/v1/dispatch/health 
+     JSON: {"Timestamp":"2026-11-24T03:59:09.116Z","EventId":0,"LogLevel":"Information","Category":"Mani.Dispatch","Message":"HTTP GET /api/v1/dispatch/health iniciada (correlationId=c6e9c73185feea48f5d7c6ecfdafc9ce)","State":{"Message":"HTTP GET /api/v1/dispatch/health 
+  rules: rev ce513cb, arranque 2026-11-24T03:24:34Z
+  rules: 139 de 146 JSON (95.2 %)
+     no JSON x7 - | sin formato de log | ej:   .   ____          _            __ _ _
+     JSON: {"timestamp":"2026-11-24T03:59:08.530Z","level":"INFO","service":"mani-rules-java","correlationId":"qas22-cb1529a815","correlation_id":"qas22-cb1529a815","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1/rules/health status=200 correla
+     JSON: {"timestamp":"2026-11-24T03:59:08.539Z","level":"INFO","service":"mani-rules-java","correlationId":"942c88379de9020b0032e05d332cb2ac","correlation_id":"942c88379de9020b0032e05d332cb2ac","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1
+== IDs de la corrida T-41, de QAS-40 (qas40-: solo lo que paso al servicio real) y de esta prueba, por servicio
+  25 IDs en: core + gateway
+  18 IDs en: core
+  14 IDs en: core + rules
+  9 IDs en: core + dispatch + gateway
+  8 IDs en: rules
+  7 IDs en: core + dispatch
+  3 IDs en: gateway + rules
+  3 IDs en: dispatch + gateway
+  1 IDs en: gateway
+  IDs en 3 o mas servicios: 9
+  IDs en core+dispatch: 16
+   qas22-cda8e6c8d8 /api/v1/core/catalog ['core', 'gateway']
+   qas22-a5b7e10600 /api/v1/dispatch/offers/me ['core', 'gateway']
+   qas22-cb1529a815 /api/v1/rules/health ['gateway', 'rules']
+   qas22-870b0661fc /api/v1/dispatch/health ['dispatch', 'gateway']
+   qas22-91ddb823e4 /api/v1/core/health ['core', 'gateway']
+== Fin

@@ -1,0 +1,97 @@
+cabezas de release: core 3bb3dd3 dispatch 1fce80e flutter a98fa12 gateway 71558b8 rules ce513cb landing 73b1625
+== Antes (2026-11-24T03:24:14Z)
+  mani-core-service f0c2e87
+  mani-dispatch-service 4b065e9
+  mani-flutter-web d9597a5
+  mani-api-gateway 45a6c95
+  mani-rules-service 348f6d9
+  mani-landing-web 7649832
+== Comprobaciones sin cambios
+  migraciones de release registradas: ultima 0045
+  CORE_SERVICE_URL de Dispatch: http://core-service:3000
+  pools en el compose: Core 30, Dispatch 5
+  cambios del compose:
+    >       - "8080:8080"
+    >     hostname: flutter-web
+    <     ports:
+    <       - "8080:80"
+    >     expose:
+    >       - "80"
+    <       API_GATEWAY_URL: http://10.43.100.141:8080
+    >       API_GATEWAY_URL: https://10.43.100.141:8080
+  variables de .env.qa con http://10.43.100.141:8080 (revisar a mano): 
+== Pull de imagenes :staging
+ Image ghcr.io/trama-as/mani-java:staging Pulled 
+ Image ghcr.io/trama-as/mani-apigateway:staging Pulled 
+ Image ghcr.io/trama-as/mani-landing:staging Pulled 
+ Image ghcr.io/trama-as/mani-flutter:staging Pulled 
+  ok  ghcr.io/trama-as/mani-node:staging 3bb3dd3
+  ok  ghcr.io/trama-as/mani-dotnet:staging 1fce80e
+  ok  ghcr.io/trama-as/mani-java:staging ce513cb
+  ok  ghcr.io/trama-as/mani-flutter:staging a98fa12
+  ok  ghcr.io/trama-as/mani-apigateway:staging 71558b8
+  ok  ghcr.io/trama-as/mani-landing:staging 73b1625
+== Compose: respaldo en /opt/mani/docker-compose.qa.yml.antes_8080_24nov y parche
+== Redespliegue 1/3: core-service rules-service
+ Container mani-core-service Starting 
+ Container mani-rules-service Starting 
+ Container mani-core-service Started 
+ Container mani-rules-service Started 
+  core: 200
+== Redespliegue 2/3: dispatch-service flutter-web landing-web
+ Container mani-landing-web Recreated 
+ Container mani-dispatch-service Recreated 
+ Container mani-dispatch-service Starting 
+ Container mani-flutter-web Starting 
+ Container mani-landing-web Starting 
+ Container mani-dispatch-service Started 
+ Container mani-flutter-web Started 
+ Container mani-landing-web Started 
+== Redespliegue 3/3: gateway (toma el 8080)
+ Container mani-api-gateway Recreate 
+ Container mani-api-gateway Recreated 
+ Container mani-api-gateway Starting 
+ Container mani-api-gateway Started 
+== Espera y salud
+mani-api-gateway | Up 6 seconds
+mani-core-service | Up 17 seconds
+mani-dispatch-service | Up 9 seconds
+mani-flutter-web | Up 9 seconds
+mani-kafka | Up 9 days (healthy)
+mani-landing-web | Up 8 seconds
+mani-qa-cadvisor | Up 5 hours (healthy)
+mani-qa-nginx-exporter | Up 5 hours
+mani-qa-nginxlog-exporter | Up 5 hours
+mani-qa-node-exporter | Up 9 days
+mani-qa-postgres-exporter | Up 5 hours
+mani-qa-promtail | Up 9 days
+mani-rules-service | Up 16 seconds
+  200 http://localhost/health
+  200 http://localhost/api/v1/core/health
+  200 http://localhost/api/v1/rules/health
+  200 http://localhost/api/v1/dispatch/health
+  200 https://localhost:8080/
+  200 http://localhost:3001/
+== 8080: HTTP plano (esperado 301) y TLS
+  http 301 -> https://localhost:8080/
+curl: unknown --write-out variable: 'ssl_version'
+  https 200 
+  api por 8080: 200
+== Rol de arranque en logs
+🔒 PostgreSQL: Core conecta como mani_core_svc, sin BYPASSRLS (RLS activo)
+{"Timestamp":"2026-11-24T03:24:44.806Z","EventId":0,"LogLevel":"Information","Category":"ManiDispatch.Infrastructure.Repositories.
+== Verificacion oficial (termina con 'roles y politicas conformes' si cumple)
+supabase_storage_admin | Supabase Storage API 1.96.4 | ::1 | 1
+DO
+TEC-21: roles y políticas conformes
+== Pools en los contenedores
+DATABASE_POOL_MAX=30
+Maximum Pool Size=5
+== Revisiones finales
+  mani-core-service 3bb3dd3
+  mani-dispatch-service 1fce80e
+  mani-flutter-web a98fa12
+  mani-api-gateway 71558b8
+  mani-rules-service ce513cb
+  mani-landing-web 73b1625
+== Fin (2026-11-24T03:24:54Z)

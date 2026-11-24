@@ -1,0 +1,160 @@
+== conectado a la VM; corriendo t41_qa.py (tarda unos minutos)
+== SCRUM-1678 T-41 en MANI-QA (2026-11-24T03:50:59Z)
+
+== Conexiones (solo forma)
+  core: usuario=mani_core_svc.<ref> host=<pooler> puerto=6543
+  dispatch: usuario=mani_dispatch_svc.<ref> host=<pooler> puerto=5432
+  admin: usuario=postgres.<ref> host=<pooler> puerto=5432
+
+== Revisiones desplegadas
+  mani-api-gateway rev=71558b8
+  mani-core-service rev=3bb3dd3
+  mani-dispatch-service rev=1fce80e
+  mani-rules-service rev=ce513cb
+
+== Precondicion: db/verify/0037_verificar_sin_bypassrls.sql (URL admin, solo lectura)
+1. Roles de servicio: LOGIN, sin SUPERUSER ni BYPASSRLS
+mani_core_svc | t | f | f
+mani_dispatch_svc | t | f | f
+DO
+2. Políticas TO public en tablas con tenant_id (R-06): debe quedar vacío
+DO
+3. Conexiones abiertas por usuario: Core y Dispatch deben aparecer con su rol, no como postgres
+authenticator | PostgREST 14.5 | ::1 | 2
+mani_core_svc | Supavisor | <ipv6> | 3
+pgbouncer |  | ::1 | 1
+pgbouncer | Supavisor (auth_query) | <ipv6> | 2
+postgres | pg_net 0.20.4 |  | 1
+postgres | Supavisor | <ipv6> | 1
+supabase_admin |  | ::1 | 1
+supabase_admin | pg_cron scheduler |  | 1
+supabase_admin | postgres_exporter | ::1 | 1
+supabase_auth_admin |  | 127.0.0.1 | 1
+DO
+TEC-21: roles y políticas conformes
+WARNING:  TEC-21: no hay conexiones de mani_dispatch_svc; revisar la cadena de conexión de Dispatch
+
+  migraciones: 0037,0038,0039,0044,0045,0046
+
+== Sesiones de las cuentas del seed
+  cliente.t1: ok
+  aliado.t1: ok
+  admin.t1: ok
+  cliente.t2: ok
+  aliado.t2: ok
+  admin.t2: ok
+PASA  | preparacion | crear solicitud de T1 | esperado 201 | obtenido 201  | cid=t41-f368f3a84d
+PASA  | preparacion | crear solicitud de T2 | esperado 201 | obtenido 201  | cid=t41-7f8587c2ca
+
+== QAS-01 por el Gateway (los seis casos de Politicas DevOps 13.4, mismos que el 5-nov)
+PASA  | QAS-01 | caso 1 lectura de otro tenant | esperado 403/404 | obtenido 404 MANI-SOL-404 | cid=t41-f09654160d
+PASA  | QAS-01 | caso 2 listado sin recursos ajenos | esperado sin la solicitud de T1 | obtenido 200 fuga=False | cid=t41-4203c36335
+PASA  | QAS-01 | caso 3 escritura en otro tenant | esperado 403/404 | obtenido 404 MANI-COT-404 | cid=t41-0dba7057e5
+PASA  | QAS-01 | caso 4 borrado o cancelacion ajena | esperado 403/404 | obtenido 404 MANI-SOL-404 | cid=t41-c92ec73115
+PASA  | QAS-01 | caso 5 token alterado | esperado 401 | obtenido 401 | cid=t41-41fba70e6f
+PASA  | QAS-01 | caso 6 verificacion KYC de otro tenant | esperado 403/404 | obtenido 404 MANI-VER-404 | cid=t41-e1e380b583
+PASA  | QAS-01 | la solicitud de T1 no cambio | esperado PENDIENTE | obtenido PENDIENTE | cid=
+
+== QAS-01 P4 rol en la aceptacion (por el Gateway)
+PASA  | QAS-01 | P4 un cliente no acepta | esperado 403 | obtenido 403 MANI-DSP-403 | cid=t41-ce0d3d0301
+PASA  | QAS-01 | P4 aliado de T1 no acepta solicitud de T2 | esperado 403/404 | obtenido 404 MANI-SOL-404 | cid=t41-14c3875ad0
+PASA  | QAS-01 | P4 la solicitud de T2 sigue sin asignar | esperado sin cambio | obtenido PENDIENTE | cid=
+
+== QAS-01 en el motor como mani_core_svc
+== QAS-01 motor, correlation-id de la corrida API: t41-f09654160d
+PASA  | QAS-01 motor | identidad de la conexion | mani_core_svc sin BYPASSRLS | current_user=mani_core_svc bypassrls=false super=false
+BEGIN
+PASA  | QAS-01 motor | caso 1 sitio de T2 por id | 0 filas | 0
+PASA  | QAS-01 motor | caso 1 solicitud de T2 por id | 0 filas | 0
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+BEGIN
+-- documento_legal visible con contexto T1 que no es de T1 (id | tenant_id | tipo | version | is_active)
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+BEGIN
+PASA  | QAS-01 motor | caso 5 sin set_context lectura | 0 filas | 0
+UPDATE 0
+ROLLBACK
+BEGIN
+PASA  | QAS-01 motor | caso 5 claim corrupto lectura | 0 filas | 0
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+-- caso 5 escritura sin contexto: la linea UPDATE de arriba debe decir UPDATE 0
+BEGIN
+PASA  | QAS-01 motor | caso 6 aliado T1 ve solo su documento_kyc | 0 ajenos | visibles=1 ajenos=0
+ROLLBACK
+BEGIN
+PASA  | QAS-01 motor | caso 6 admin T1 sin documento_kyc de T2 | 0 de T2 | visibles=6 de_t2=0
+DO
+ROLLBACK
+BEGIN
+INFO  | QAS-01 motor | P1 con contexto en la primera transaccion | filas visibles=33
+COMMIT
+BEGIN
+PASA  | QAS-01 motor | P1 la transaccion siguiente sin set_context | 0 filas | 0
+ROLLBACK
+PASA  | QAS-01 motor | P5 authenticated y anon sin EXECUTE en app.set_context | false/false | false/false
+== fin QAS-01 motor
+NOTICE:  PASA  | QAS-01 motor | caso 2 listado sin filtro | 0 tablas con filas de otro tenant | tablas_leidas=32 con_fuga=0
+NOTICE:  PASA  | QAS-01 motor | caso 3 INSERT con tenant_id de T2 | 42501 por RLS | 42501 new row violates row-level security policy for table "sitio"
+NOTICE:  PASA  | QAS-01 motor | caso 3 UPDATE que muda fila de T1 a T2 | 42501 por RLS | 42501 new row violates row-level security policy for table "sitio"
+NOTICE:  PASA  | QAS-01 motor | caso 3 UPDATE de fila de T2 | 0 filas | filas=0
+NOTICE:  PASA  | QAS-01 motor | caso 4 DELETE de sitio de T2 | 0 filas | filas=0
+NOTICE:  INFO  | QAS-01 motor | caso 4 DELETE sin WHERE | no ejecutable por restricciones | 23503 update or delete on table "sitio" violates foreign key constraint "solicitud_sitio_id_fkey" on table "solicitud"
+NOTICE:  PASA  | QAS-01 motor | caso 5 set_context sin tenant | MANI-RLS-400 | 22023 MANI-RLS-400: el contexto exige tenant_id
+NOTICE:  PASA  | QAS-01 motor | caso 6 Storage objetos bajo {T2}/ | 0 filas o permiso denegado | 42501 permission denied for schema storage
+
+
+== QAS-20 en el motor como mani_dispatch_svc
+== QAS-20 motor, correlation-id de la corrida API: t41-f09654160d
+PASA  | QAS-20 motor | identidad de la conexion | mani_dispatch_svc sin BYPASSRLS | current_user=mani_dispatch_svc bypassrls=false super=false
+BEGIN
+DO
+ROLLBACK
+PASA  | QAS-20 motor | tablas de public con algun permiso de mani_dispatch_svc | solicitud_rechazo | solicitud_rechazo
+-- privilegios efectivos de mani_dispatch_svc por tabla (tabla | S I U D)
+solicitud_rechazo | SI--
+-- tablas de Dispatch sobre las que mani_core_svc tiene escritura (tabla | S I U D)
+solicitud_rechazo | ----
+35 lectura, 32 escritura, de 38 tablas (mani_core_svc)
+== fin QAS-20 motor
+NOTICE:  PASA  | QAS-20 motor | P3 INSERT en notificacion | permission denied | 42501 permission denied for table notificacion
+NOTICE:  PASA  | QAS-20 motor | P3 UPDATE en aliado | permission denied | 42501 permission denied for table aliado
+NOTICE:  PASA  | QAS-20 motor | P3 SELECT en aliado | permission denied | 42501 permission denied for table aliado
+NOTICE:  PASA  | QAS-20 motor | P3 SELECT en notificacion | permission denied | 42501 permission denied for table notificacion
+NOTICE:  PASA  | QAS-20 motor | 6A UPDATE en solicitud | permission denied | 42501 permission denied for table solicitud
+NOTICE:  PASA  | QAS-20 motor | 0046 SELECT en solicitud | permission denied | 42501 permission denied for table solicitud
+NOTICE:  PASA  | QAS-20 motor | 0046 SELECT en tenant | permission denied | 42501 permission denied for table tenant
+NOTICE:  PASA  | QAS-20 motor | 0046 SELECT en zona | permission denied | 42501 permission denied for table zona
+NOTICE:  PASA  | QAS-20 motor | INSERT en cotizacion | permission denied | 42501 permission denied for table cotizacion
+NOTICE:  PASA  | QAS-20 motor | DELETE en pago | permission denied | 42501 permission denied for table pago
+NOTICE:  PASA  | QAS-20 motor | escritura permitida INSERT en solicitud_rechazo | 1 fila (revertida) | filas=1
+
+
+== QAS-20 funcional: bandeja y rechazo de Dispatch con sesion, sin permisos sobre tablas de Core (0046)
+PASA  | QAS-20 | crear solicitud de plomeria | esperado 201 | obtenido 201  | cid=t41-df4a17aafb
+PASA  | QAS-20 | orquestar las ofertas | esperado 200 | obtenido 200  | cid=t41-fa41a2e66b
+PASA  | QAS-20 | la bandeja del aliado trae la oferta | esperado 200 y la oferta | obtenido 200  oferta=True | cid=t41-08b1ee209b
+PASA  | QAS-20 | asignaciones del aliado | esperado 200 | obtenido 200  | cid=t41-c6a17e5f3e
+PASA  | QAS-20 | rechazar la oferta | esperado 200 isRetry=False | obtenido 200  isRetry=False | cid=t41-d62ad318db
+PASA  | QAS-20 | repetir el rechazo no duplica | esperado 200 isRetry=True | obtenido 200  isRetry=True | cid=t41-3bd22e1167
+PASA  | QAS-20 | la bandeja ya no trae la rechazada | esperado 200 sin la oferta | obtenido 200  oferta=False | cid=t41-ca3343d7c8
+PASA  | QAS-20 | aceptar lo rechazado | esperado 409 | obtenido 409 MANI-DSP-409R | cid=t41-6a38bf87c5
+PASA  | QAS-20 | logs de Dispatch sin permission denied en la corrida | esperado 0 | obtenido 0 | cid=
+
+== Limpieza: cancelar las solicitudes de prueba
+  7e0d508a-1d17-424e-b659-af6070a59186: 200  estado=CANCELADA
+  3a4f245a-78ab-4cad-bb8f-891224c3831b: 200  estado=CANCELADA
+  e50e91da-e6b8-40f7-b3dc-f4250b7989b8: 200  estado=CANCELADA
+
+== Fin (2026-11-24T03:51:59Z)

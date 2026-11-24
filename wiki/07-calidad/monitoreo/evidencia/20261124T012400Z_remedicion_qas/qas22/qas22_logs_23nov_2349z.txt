@@ -1,0 +1,36 @@
+== QAS-22 en MANI-QA 2026-11-23T23:50:15Z
+== Cabecera de respuesta (una sola, mismo ID; generada si falta)
+  /api/v1/core/catalog | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=e479bdc386ee130808799353467a9d04
+  /api/v1/dispatch/offers/me | con ID 401 PASA 1 cabecera | sin ID 401 PASA generado=3f6c5e22f2b57420c67e39f32818c976
+  /api/v1/rules/health | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=a8474cb4b8e20fd23153d1a800c67516
+  /api/v1/dispatch/health | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=906afba50711204b03cbfa7b57e0981f
+  /api/v1/core/health | con ID 200 PASA 1 cabecera | sin ID 200 PASA generado=90ee4b65e6fa026093de4884d3cc7386
+== Logs de los ultimos 30 min: lineas que se leen como JSON
+  gateway: 349 de 349 JSON (100.0 %)
+     JSON: {"time_local": "23/Nov/2026:23:50:17 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/health","status": "200","body_bytes_sent": "83","request_time": "0.000","http_referrer": "","http_user_agent": "Blackbox Exporter/0.25.0","x_corr
+     JSON: {"time_local": "23/Nov/2026:23:50:18 +0000","remote_addr": "10.43.98.196","request_method": "GET","request_uri": "/api/v1/rules/health","status": "200","body_bytes_sent": "150","request_time": "0.002","http_referrer": "","http_user_agent": "Blackbox Exporter/0
+  core: 1 de 221 JSON (0.5 %)
+     no JSON: [2026-11-23T23:20:35.607Z] [GET] /health - Correlation: 9572f31fdf19419347759ca8b920c528
+     no JSON: [2026-11-23T23:20:38.104Z] [GET] /metrics - Correlation: 193ef857812783e4f38666a8be81c4ca
+     no JSON: [2026-11-23T23:21:05.606Z] [GET] /health - Correlation: ee723bba15480811cb1a89150b1c5fba
+     no JSON: [2026-11-23T23:21:08.103Z] [GET] /metrics - Correlation: 8e462b28c9c5066f6c8b166cabafaa15
+     JSON: {"evento":"SOLICITUD_ASIGNACION","correlationId":"t41-283323646d","idempotencyKey":"43acfd20-7e75-43c2-bb91-9feb25d5cdfe","tenantId":"10000000-0000-4000-8000-000000000011","solicitudId":"e4021667-4c60-43fe-9ef6-03cf71b2ba71","usuarioId":"30000000-0000-4000-800
+  dispatch: 73 de 73 JSON (100.0 %)
+     JSON: {"Timestamp":"2026-11-23T23:50:15.602Z","EventId":0,"LogLevel":"Information","Category":"Mani.Dispatch","Message":"HTTP GET /api/v1/dispatch/health iniciada (correlationId=qas22-2db36cba9c)","State":{"Message":"HTTP GET /api/v1/dispatch/health iniciada (correl
+     JSON: {"Timestamp":"2026-11-23T23:50:15.605Z","EventId":0,"LogLevel":"Information","Category":"Mani.Dispatch","Message":"HTTP GET /api/v1/dispatch/health iniciada (correlationId=906afba50711204b03cbfa7b57e0981f)","State":{"Message":"HTTP GET /api/v1/dispatch/health 
+  rules: 62 de 62 JSON (100.0 %)
+     JSON: {"timestamp":"2026-11-23T23:50:15.600Z","level":"INFO","service":"mani-rules-java","correlationId":"a8474cb4b8e20fd23153d1a800c67516","correlation_id":"a8474cb4b8e20fd23153d1a800c67516","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1
+     JSON: {"timestamp":"2026-11-23T23:50:18.310Z","level":"INFO","service":"mani-rules-java","correlationId":"92ced8ac875c6028853bc90004cabdf3","correlation_id":"92ced8ac875c6028853bc90004cabdf3","logger":"c.t.m.rules.web.CorrelationIdFilter","message":"HTTP GET /api/v1
+== IDs de la corrida T-41 y de esta prueba, por servicio
+  13 IDs en: core + gateway
+  2 IDs en: core + dispatch + gateway
+  1 IDs en: gateway + rules
+  1 IDs en: dispatch + gateway
+  IDs en 3 o mas servicios: 2
+  IDs en core+dispatch: 2
+   qas22-f5fbd3337a /api/v1/core/catalog ['core', 'gateway']
+   qas22-91986fdb1b /api/v1/dispatch/offers/me ['core', 'gateway']
+   qas22-d8ef059248 /api/v1/rules/health ['gateway', 'rules']
+   qas22-2db36cba9c /api/v1/dispatch/health ['dispatch', 'gateway']
+   qas22-6eb4a59922 /api/v1/core/health ['core', 'gateway']
+== Fin

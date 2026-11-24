@@ -1,0 +1,6 @@
+QAS-21. Corte 2026-11-24 03:31Z. Código de release y Sonar de develop (árboles idénticos).
+Duplicación (Sonar de Calidad, GET con sesión; Flutter en SonarCloud, API pública):
+  Node 0,6 % (11 bloques) · Java 0,0 % · .NET 1,5 % (2 bloques) · Gateway 0,0 % · Landing 1,0 % (2 bloques) · Flutter 0,9 % (15 bloques; 21 nov: 6,3 %)
+H-21-1 (validación de reglas del tenant en Core y en Rules): corregido por SCRUM-1722. MANI-Node 3bb3dd3 TenantRulesUseCase.js ya no valida el contenido: llama a Rules (validateTenantRules) y guarda lo normalizado que devuelve; si Rules falla, 503 MANI-RGL-503 sin regla local. MANI-Java ce513cb TenantRulesValidator.java es el único validador al guardar.
+Residuo: MANI-Node src/domain/rules/tenantRulesDefaults.js comisionValida() repite el límite de la comisión (0 a 30 %, 2 decimales), que también está en Rules. Lo usa fondosEnGarantia.js:72 al liquidar, sobre una comisión ya guardada. Un cambio del límite exige tocar los dos repos.
+Dispatch y Flutter (lib): sin los límites de las reglas en la búsqueda.

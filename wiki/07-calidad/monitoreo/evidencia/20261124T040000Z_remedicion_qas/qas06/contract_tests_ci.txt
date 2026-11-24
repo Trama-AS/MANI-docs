@@ -1,0 +1,7 @@
+Contract tests y gate de CI antes de la promoción a release (horas UTC, 2026-11-24)
+
+Servicio  Commit develop  Corrida Quality Gate (push)  Resultado                       Promoción a release
+Core      c763f77         45315539905  02:52-02:53     120 de 120 (core) + 8 de 8 (core-internal)   3bb3dd3  03:18
+Dispatch  b822ce7         45317236489  03:07-03:08     8 de 8                          1fce80e  03:18
+Rules     8f840b5         45312705336  02:29-02:30     5 de 5                          ce513cb  03:18
+Gateway   9ed8ffc         45315874864  02:55           CI Gateway Contract & Quality Gate: success   71558b8  03:19

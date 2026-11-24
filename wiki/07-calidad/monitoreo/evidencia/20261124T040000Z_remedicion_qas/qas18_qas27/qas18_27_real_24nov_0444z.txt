@@ -1,0 +1,253 @@
+== Ensayo 2026-11-24T04:45:39Z
+Gateway por el tunel: 200
+mani-api-gateway ghcr.io/trama-as/mani-apigateway:staging
+mani-dispatch-service ghcr.io/trama-as/mani-dotnet:staging
+mani-core-service ghcr.io/trama-as/mani-node:staging
+mani-rules-service ghcr.io/trama-as/mani-java:staging
+mani-qa-cadvisor gcr.io/cadvisor/cadvisor:v0.55.1
+/dev/sda2        68G   44G   22G  68% /
+nucleos 4 | carga (0.26025390625, 0.50048828125, 0.55029296875)
+  gateway          /health                      200 83 bytes 4 ms
+  core             /api/v1/core/metrics         200 109799 bytes 16 ms
+  rules            /api/v1/rules/health         200 139 bytes 7 ms
+  dispatch         /api/v1/dispatch/health      200 142 bytes 3 ms
+  satura rules     /api/v1/rules/metrics        200 79510 bytes 32 ms
+  satura core      /api/v1/core/metrics         200 109788 bytes 11 ms
+contenedores en cAdvisor: 13
+  mani-api-gateway           cpu=si cuota=50000.0 mem_limite=134217728.0
+  mani-core-service          cpu=si cuota=100000.0 mem_limite=536870912.0
+  mani-dispatch-service      cpu=si cuota=100000.0 mem_limite=536870912.0
+  mani-flutter-web           cpu=si cuota=25000.0 mem_limite=134217728.0
+  mani-kafka                 cpu=si cuota=100000.0 mem_limite=1073741824.0
+  mani-landing-web           cpu=si cuota=25000.0 mem_limite=134217728.0
+  mani-qa-cadvisor           cpu=si cuota=30000.0 mem_limite=201326592.0
+  mani-qa-nginx-exporter     cpu=si cuota=15000.0 mem_limite=50331648.0
+  mani-qa-nginxlog-exporter  cpu=si cuota=15000.0 mem_limite=50331648.0
+  mani-qa-node-exporter      cpu=si cuota=25000.0 mem_limite=67108864.0
+  mani-qa-postgres-exporter  cpu=si cuota=20000.0 mem_limite=67108864.0
+  mani-qa-promtail           cpu=si cuota=25000.0 mem_limite=134217728.0
+  mani-rules-service         cpu=si cuota=100000.0 mem_limite=805306368.0
+faltan criticos: ninguno
+== Prometheus ensayo, 1795495240 a 1795495540
+  mani-kafka                   CPU media  21.6%  max  25.6%  mem max 47%  n=11
+  mani-qa-cadvisor             CPU media   4.1%  max   4.7%  mem max 54%  n=11
+  mani-qa-promtail             CPU media   3.0%  max   3.4%  mem max 34%  n=11
+  mani-qa-postgres-exporter    CPU media   1.5%  max   1.9%  mem max 26%  n=11
+  mani-qa-nginxlog-exporter    CPU media   1.1%  max   1.3%  mem max 29%  n=11
+  mani-core-service            CPU media   1.2%  max   1.2%  mem max 11%  n=11
+  mani-qa-node-exporter        CPU media   0.6%  max   0.9%  mem max 24%  n=11
+  mani-rules-service           CPU media   0.3%  max   0.5%  mem max 18%  n=11
+  mani-api-gateway             CPU media   0.2%  max   0.3%  mem max 6%  n=11
+  mani-qa-nginx-exporter       CPU media   0.1%  max   0.2%  mem max 18%  n=11
+  mani-dispatch-service        CPU media   0.1%  max   0.1%  mem max 18%  n=11
+  mani-landing-web             CPU media   0.0%  max   0.0%  mem max 5%  n=11
+  mani-flutter-web             CPU media   0.0%  max   0.0%  mem max 6%  n=11
+  CPU de la VM media 12.8% max 13.6%
+== Humo 30 s (04:45:41Z)
+{
+ "modo": "mezcla",
+ "fecha_utc": "2026-11-24T04:46:21.800Z",
+ "base_url": "http://127.0.0.1:18080",
+ "carga": {
+  "vus": 10,
+  "rps": 2,
+  "rampa": "5s",
+  "duracion": "30s"
+ },
+ "tasa_sostenida_rps": 2,
+ "peticiones_sostenidas": 60,
+ "tasa_fallo_http": 0,
+ "tasa_5xx": 0,
+ "por_ruta": {
+  "elegibles": {
+   "ruta": "/api/v1/dispatch/requests/cb68d899-f579-46a8-b30f-7eed71878baf/eligible-allies?pageSize=20",
+   "p95_ms": 601.726,
+   "p99_ms": 618.6364,
+   "max_ms": 622.864,
+   "peticiones": 14,
+   "tasa_5xx": 0
+  },
+  "perfil": {
+   "ruta": "/api/v1/core/profiles/me",
+   "p95_ms": 535.0915,
+   "p99_ms": 536.3335,
+   "max_ms": 536.644,
+   "peticiones": 16,
+   "tasa_5xx": 0
+  },
+  "sitios": {
+   "ruta": "/api/v1/core/solicitudes/sitios",
+   "p95_ms": 579.7761499999999,
+   "p99_ms": 584.52563,
+   "max_ms": 585.713,
+   "peticiones": 10,
+   "tasa_5xx": 0
+  },
+  "tarifa": {
+   "ruta": "/api/v1/core/solicitudes/cb68d899-f579-46a8-b30f-7eed71878baf/tarifa-referencia",
+   "p95_ms": 639.692,
+   "p99_ms": 667.5992,
+   "max_ms": 674.576,
+   "peticiones": 10,
+   "tasa_5xx": 0
+  },
+  "ofertas": {
+   "ruta": "/api/v1/dispatch/offers/me",
+   "p95_ms": 1348.94455,
+   "p99_ms": 1354.73371,
+   "max_ms": 1356.181,
+   "peticiones": 10,
+   "tasa_5xx": 0
+  }
+ }
+}
+time="2026-11-23T23:46:21-05:00" level=error msg="thresholds on metrics 'http_req_duration{fase:sostenida,nombre:elegibles}, http_req_duration{fase:sostenida,nombre:ofertas}, http_req_duration{fase:sostenida,nombre:perfil}, http_req_duration{fase:sostenida,nombre:sitios}, http_req_duration{fase:sostenida,nombre:tarifa}' have been crossed"
+== QAS-18 carga nominal 300 VU, 50 req/s, 1 min de rampa y 5 sostenidos (04:46:21Z)
+{
+ "modo": "mezcla",
+ "fecha_utc": "2026-11-24T04:52:28.850Z",
+ "base_url": "http://127.0.0.1:18080",
+ "carga": {
+  "vus": 300,
+  "rps": 50,
+  "rampa": "60s",
+  "duracion": "5m"
+ },
+ "tasa_sostenida_rps": 37.276666666666664,
+ "peticiones_sostenidas": 11183,
+ "tasa_fallo_http": 0,
+ "tasa_5xx": 0,
+ "por_ruta": {
+  "elegibles": {
+   "ruta": "/api/v1/dispatch/requests/cb68d899-f579-46a8-b30f-7eed71878baf/eligible-allies?pageSize=20",
+   "p95_ms": 6250.8225999999995,
+   "p99_ms": 6568.60838,
+   "max_ms": 7018.592,
+   "peticiones": 2227,
+   "tasa_5xx": 0
+  },
+  "perfil": {
+   "ruta": "/api/v1/core/profiles/me",
+   "p95_ms": 11734.75575,
+   "p99_ms": 12043.32933,
+   "max_ms": 12388.465,
+   "peticiones": 2242,
+   "tasa_5xx": 0
+  },
+  "sitios": {
+   "ruta": "/api/v1/core/solicitudes/sitios",
+   "p95_ms": 6431.4998000000005,
+   "p99_ms": 6762.89304,
+   "max_ms": 7028.956,
+   "peticiones": 2237,
+   "tasa_5xx": 0
+  },
+  "tarifa": {
+   "ruta": "/api/v1/core/solicitudes/cb68d899-f579-46a8-b30f-7eed71878baf/tarifa-referencia",
+   "p95_ms": 6093.6672,
+   "p99_ms": 6465.32008,
+   "max_ms": 7050.96,
+   "peticiones": 2245,
+   "tasa_5xx": 0
+  },
+  "ofertas": {
+   "ruta": "/api/v1/dispatch/offers/me",
+   "p95_ms": 12481.27,
+   "p99_ms": 12863.14145,
+   "max_ms": 13455.11,
+   "peticiones": 2232,
+   "tasa_5xx": 0
+  }
+ }
+}
+time="2026-11-23T23:52:28-05:00" level=error msg="thresholds on metrics 'http_req_duration{fase:sostenida,nombre:elegibles}, http_req_duration{fase:sostenida,nombre:ofertas}, http_req_duration{fase:sostenida,nombre:perfil}, http_req_duration{fase:sostenida,nombre:sitios}, http_req_duration{fase:sostenida,nombre:tarifa}' have been crossed"
+== Prometheus qas18_sostenido, 1795495766 a 1795495941
+  mani-qa-promtail             CPU media  37.7%  max  43.0%  mem max 44%  n=6
+  mani-core-service            CPU media  35.1%  max  37.7%  mem max 12%  n=6
+  mani-kafka                   CPU media  18.8%  max  20.8%  mem max 41%  n=6
+  mani-dispatch-service        CPU media  17.9%  max  20.2%  mem max 24%  n=6
+  mani-api-gateway             CPU media   8.4%  max   9.0%  mem max 18%  n=6
+  mani-rules-service           CPU media   4.2%  max   5.2%  mem max 19%  n=6
+  mani-qa-cadvisor             CPU media   3.9%  max   4.4%  mem max 56%  n=6
+  mani-qa-nginxlog-exporter    CPU media   2.7%  max   2.9%  mem max 33%  n=6
+  mani-qa-postgres-exporter    CPU media   1.1%  max   1.3%  mem max 25%  n=6
+  mani-qa-node-exporter        CPU media   0.7%  max   1.0%  mem max 24%  n=6
+  mani-qa-nginx-exporter       CPU media   0.1%  max   0.2%  mem max 21%  n=6
+  mani-landing-web             CPU media   0.0%  max   0.0%  mem max 5%  n=6
+  mani-flutter-web             CPU media   0.0%  max   0.0%  mem max 6%  n=6
+  CPU de la VM media 34.9% max 36.9%
+== Pausa de 2 min y QAS-27 (04:53:14Z)
+== Objetivo rules, 04:55:14Z
+base desde 04:55:14Z epoch 1795496114
+saturado desde 04:57:14Z epoch 1795496234 procesos 4
+recuperacion desde 05:00:44Z epoch 1795496444
+peticiones de saturacion: 32528 (155/s)
+CPU % del limite (media / maximo por tramo)
+  mani-api-gateway         base 1.6 / 1.6      saturado 19.7 / 27.0    recup 9.0 / 15.7     mem max 9% frenado 0%
+  mani-core-service        base 4.6 / 4.9      saturado 3.7 / 4.5      recup 4.4 / 4.4      mem max 11% frenado 0%
+  mani-rules-service       base 0.8 / 0.9      saturado 79.5 / 99.7    recup 89.7 / 89.7    mem max 22% frenado 89%
+  mani-dispatch-service    base 0.5 / 0.5      saturado 0.4 / 0.5      recup 0.7 / 0.7      mem max 23% frenado 0%
+Sondas (ms): p50 / p95 / n / fallos
+  gateway   base 3 / 4 / 228 / 0        saturado 2 / 5 / 383 / 0        recup 3 / 4 / 114 / 0
+  core      base 15 / 20 / 228 / 0      saturado 14 / 23 / 383 / 0      recup 15 / 22 / 114 / 0
+  rules     base 5 / 7 / 228 / 0        saturado 13 / 62 / 383 / 0      recup 4 / 6 / 114 / 0
+  dispatch  base 3 / 6 / 228 / 0        saturado 4 / 8 / 383 / 0        recup 4 / 6 / 114 / 0
+El objetivo llego a su limite (media >= 90%): NO, 80%
+Vecinos sobre 500 ms o con fallos: ninguno
+== Objetivo core, 05:01:44Z
+base desde 05:01:44Z epoch 1795496504
+saturado desde 05:03:44Z epoch 1795496624 procesos 4
+recuperacion desde 05:07:14Z epoch 1795496834
+peticiones de saturacion: 16779 (80/s)
+CPU % del limite (media / maximo por tramo)
+  mani-api-gateway         base 1.6 / 1.6      saturado 16.6 / 18.2    recup 12.1 / 12.1    mem max 8% frenado 0%
+  mani-core-service        base 4.8 / 5.7      saturado 94.5 / 99.6    recup 9.3 / 9.3      mem max 13% frenado 93%
+  mani-rules-service       base 0.5 / 0.5      saturado 0.5 / 0.5      recup sin serie      mem max 21% frenado 0%
+  mani-dispatch-service    base 0.6 / 0.6      saturado 0.6 / 0.7      recup 0.6 / 0.6      mem max 24% frenado 0%
+Sondas (ms): p50 / p95 / n / fallos
+  gateway   base 3 / 4 / 228 / 0        saturado 3 / 5 / 364 / 0        recup 3 / 4 / 114 / 0
+  core      base 15 / 21 / 228 / 0      saturado 69 / 96 / 364 / 0      recup 15 / 20 / 114 / 0
+  rules     base 4 / 6 / 228 / 0        saturado 4 / 7 / 364 / 0        recup 4 / 6 / 114 / 0
+  dispatch  base 3 / 5 / 228 / 0        saturado 4 / 8 / 364 / 0        recup 4 / 6 / 114 / 0
+El objetivo llego a su limite (media >= 90%): SI
+Vecinos sobre 500 ms o con fallos: ninguno
+== Contenedores (reinicios, OOM, arranque, cpus, memoria)
+  mani-api-gateway         0 false 2026-11-24T03:24:44.276515072Z 500000000 134217728 IGUAL
+  mani-core-service        0 false 2026-11-24T03:24:33.584546529Z 1000000000 536870912 IGUAL
+  mani-rules-service       0 false 2026-11-24T03:24:34.260325851Z 1000000000 805306368 IGUAL
+  mani-dispatch-service    0 false 2026-11-24T03:24:41.713614528Z 1000000000 536870912 IGUAL
+== Prometheus qas27_rules_saturado, 1795496359 a 1795496444
+  mani-rules-service           CPU media  99.5%  max  99.6%  mem max 21%  n=3
+  mani-qa-promtail             CPU media  39.9%  max  41.3%  mem max 43%  n=3
+  mani-api-gateway             CPU media  22.8%  max  24.9%  mem max 9%  n=3
+  mani-kafka                   CPU media  17.8%  max  19.1%  mem max 44%  n=3
+  mani-qa-cadvisor             CPU media   5.2%  max   5.4%  mem max 58%  n=3
+  mani-qa-nginxlog-exporter    CPU media   5.0%  max   5.3%  mem max 32%  n=3
+  mani-core-service            CPU media   3.7%  max   3.7%  mem max 11%  n=3
+  mani-qa-postgres-exporter    CPU media   0.9%  max   1.1%  mem max 23%  n=3
+  mani-dispatch-service        CPU media   0.4%  max   0.5%  mem max 23%  n=3
+  mani-qa-node-exporter        CPU media   0.4%  max   0.5%  mem max 22%  n=3
+  mani-qa-nginx-exporter       CPU media   0.1%  max   0.1%  mem max 21%  n=3
+  mani-landing-web             CPU media   0.0%  max   0.0%  mem max 5%  n=3
+  mani-flutter-web             CPU media   0.0%  max   0.0%  mem max 5%  n=3
+  CPU de la VM media 49.2% max 50.4%
+== Prometheus qas27_core_saturado, 1795496749 a 1795496834
+  mani-core-service            CPU media  99.6%  max  99.6%  mem max 13%  n=3
+  mani-qa-promtail             CPU media  30.3%  max  30.6%  mem max 44%  n=3
+  mani-kafka                   CPU media  18.6%  max  20.8%  mem max 41%  n=3
+  mani-api-gateway             CPU media  15.5%  max  18.2%  mem max 8%  n=3
+  mani-qa-cadvisor             CPU media   5.2%  max   5.3%  mem max 48%  n=3
+  mani-qa-nginxlog-exporter    CPU media   3.5%  max   3.6%  mem max 31%  n=3
+  mani-qa-postgres-exporter    CPU media   1.3%  max   1.5%  mem max 25%  n=3
+  mani-qa-node-exporter        CPU media   0.6%  max   0.7%  mem max 22%  n=3
+  mani-dispatch-service        CPU media   0.6%  max   0.6%  mem max 24%  n=3
+  mani-rules-service           CPU media   0.5%  max   0.5%  mem max 21%  n=3
+  mani-qa-nginx-exporter       CPU media   0.1%  max   0.1%  mem max 20%  n=3
+  mani-flutter-web             CPU media   0.0%  max   0.0%  mem max 5%  n=3
+  mani-landing-web             CPU media   0.0%  max   0.0%  mem max 5%  n=3
+  CPU de la VM media 45.6% max 46.2%
+mani-api-gateway Up 2 hours
+mani-dispatch-service Up 2 hours
+mani-core-service Up 2 hours
+mani-rules-service Up 2 hours
+== Fin (05:09:00Z); salida en qa_qas_24nov/evidencia/qas18_27_real_24nov_0444z.txt

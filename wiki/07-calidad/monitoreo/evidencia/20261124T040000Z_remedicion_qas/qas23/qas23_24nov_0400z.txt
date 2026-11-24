@@ -1,0 +1,8 @@
+QAS-23. Corte 2026-11-24 04:00Z. Código de release (árbol idéntico a develop).
+Gate de código nuevo: los 6 repos lo exigen; el Gateway entra con MANI-APIGateway#108 (Sonar develop: 98,9 % de código nuevo).
+Contract tests en el paso «Pruebas y cobertura»: Gateway, Core, Dispatch y Rules (scripts/verificar_contrato.js; 141 de 141 operaciones; MANI-Node#154, MANI-.NET#47, MANI-Java#19).
+Casos de uso críticos (líneas):
+  Core: aprobar aliado 128/128, reglas del tenant 109/109 (23 nov). Los otros 10 casos, del 22 nov: 95,2 a 100 %; no se repitieron.
+  Dispatch: aceptar 29/29, rechazar 65/65 (MANI-.NET#48), orquestar 97/103 (94,2 %), elegibles 164/175 (93,7 %), ofertas 19/21 (90,5 %).
+  Rules: Sonar develop, 0 líneas sin cubrir en AllyRanker, RateEvaluator, CategoryRuleEvaluator, TenantRulesValidator y CriterioRanking (consulta del 24 nov 04:00Z).
+Corrección al informe del 22 nov: los casos bajo 90 % eran 4, no 3; faltó contar rechazar oferta (57/65, 87,7 %).

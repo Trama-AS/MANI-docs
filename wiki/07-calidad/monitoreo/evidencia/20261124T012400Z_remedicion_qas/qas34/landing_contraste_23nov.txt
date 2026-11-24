@@ -1,0 +1,11 @@
+QAS-34, parte Landing. MANI-QA http://10.43.100.141:3001 (7649832), 1280x800, 2026-11-23 23:41Z.
+Método: código propio en el navegador sobre estilos calculados (fórmula de contraste WCAG; umbral 4,5:1, o 3:1 en texto de 24 px o 18,66 px en negrita). Sin axe ni Lighthouse.
+Textos visibles: 316. Bajo el umbral: 18 (22 nov, a82b94e: 33). 21 textos sobre fondo con imagen o degradado, medidos contra el color sólido de detrás.
+1,82:1  #F2B705 sobre blanco        H4 «Soluciones rápidas cuando más lo necesit…»
+3,68:1  #E4572E sobre blanco        10 H4: «Trato amable…», «Grifos, fugas…», «Instalaciones…», «Muebles…», «Cualquier detalle…», «Aperturas…», «Retoques…», «En menos de 60 segundos», «Técnico verificado…», «Tranquilidad y garantía»
+3,68:1  #E4572E sobre blanco        4 cargos: carpintero, plomería, electricidad, mantenimiento locativo
+3,06:1  #E4572E sobre #FDE5DE       «Inicio Rápido»
+3,68:1  blanco sobre #E4572E        «Disponible Ahora en Tu Ciudad»
+3,68:1  #64748B sobre #0F192E       «©» del pie
+El botón principal ya no aparece (#CC441C, MANI-Landing#8).
+lang=es · viewport sin bloqueo de zoom · 4 imágenes, 0 sin alt · 68 controles, 0 sin nombre · un h1 · sin prefers-reduced-motion · sin enlace para saltar al contenido

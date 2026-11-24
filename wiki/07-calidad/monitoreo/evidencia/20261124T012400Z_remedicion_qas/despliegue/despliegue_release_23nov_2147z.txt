@@ -1,0 +1,76 @@
+cabezas de release: core f0c2e87 dispatch 4b065e9 flutter d9597a5 gateway 45a6c95 rules 348f6d9
+== Antes (2026-11-23T21:47:46Z)
+  mani-core-service cdebf74
+  mani-dispatch-service ba460e4
+  mani-flutter-web 95a3e42
+  mani-api-gateway e454bcf
+  mani-rules-service 348f6d9
+  mani-landing-web 7649832
+== Comprobaciones sin cambios
+  migraciones de release registradas: ultima 0044
+  CORE_SERVICE_URL de Dispatch: http://core-service:3000
+  pools en el compose: Core 30, Dispatch 5
+  landing ya en release
+== Pull de imagenes :staging
+ Image ghcr.io/trama-as/mani-node:staging Pulled 
+ Image ghcr.io/trama-as/mani-dotnet:staging Pulled 
+ Image ghcr.io/trama-as/mani-apigateway:staging Pulled 
+ Image ghcr.io/trama-as/mani-flutter:staging Pulled 
+  ok  ghcr.io/trama-as/mani-node:staging f0c2e87
+  ok  ghcr.io/trama-as/mani-dotnet:staging 4b065e9
+  ok  ghcr.io/trama-as/mani-java:staging 348f6d9
+  ok  ghcr.io/trama-as/mani-flutter:staging d9597a5
+  ok  ghcr.io/trama-as/mani-apigateway:staging 45a6c95
+== Redespliegue 1/2: core-service
+ Container mani-core-service Recreate 
+ Container mani-core-service Recreated 
+ Container mani-core-service Starting 
+ Container mani-core-service Started 
+  core: 200
+== Redespliegue 2/2: dispatch-service rules-service flutter-web gateway
+ Container mani-api-gateway Recreate 
+ Container mani-api-gateway Recreated 
+ Container mani-dispatch-service Starting 
+ Container mani-flutter-web Starting 
+ Container mani-dispatch-service Started 
+ Container mani-api-gateway Starting 
+ Container mani-api-gateway Started 
+ Container mani-flutter-web Started 
+== Espera y salud
+mani-api-gateway | Up 7 seconds
+mani-core-service | Up 15 seconds
+mani-dispatch-service | Up 7 seconds
+mani-flutter-web | Up 6 seconds
+mani-kafka | Up 8 days (healthy)
+mani-landing-web | Up 2 minutes
+mani-qa-cadvisor | Up 8 days (healthy)
+mani-qa-nginx-exporter | Up 8 days
+mani-qa-nginxlog-exporter | Up 8 days
+mani-qa-node-exporter | Up 8 days
+mani-qa-postgres-exporter | Up 8 days
+mani-qa-promtail | Up 8 days
+mani-rules-service | Up 3 days
+  200 http://localhost/health
+  200 http://localhost/api/v1/core/health
+  200 http://localhost/api/v1/rules/health
+  200 http://localhost/api/v1/dispatch/health
+  200 http://localhost:8080/
+  200 http://localhost:3001/
+== Rol de arranque en logs
+🔒 PostgreSQL: Core conecta como mani_core_svc, sin BYPASSRLS (RLS activo)
+{"Timestamp":"2026-11-23T21:48:07.516Z","EventId":0,"LogLevel":"Information","Category":"ManiDispatch.Infrastructure.Repositories.
+== Verificacion oficial (termina con 'roles y politicas conformes' si cumple)
+supabase_auth_admin |  | 127.0.0.1 | 1
+DO
+TEC-21: roles y políticas conformes
+== Pools en los contenedores
+DATABASE_POOL_MAX=30
+Maximum Pool Size=5
+== Revisiones finales
+  mani-core-service f0c2e87
+  mani-dispatch-service 4b065e9
+  mani-flutter-web d9597a5
+  mani-api-gateway 45a6c95
+  mani-rules-service 348f6d9
+  mani-landing-web 7649832
+== Fin (2026-11-23T21:48:13Z)

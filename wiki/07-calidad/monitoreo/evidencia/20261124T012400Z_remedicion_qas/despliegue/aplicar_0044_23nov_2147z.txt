@@ -1,0 +1,94 @@
+== Fecha 2026-11-23T21:47:27Z
+== Antes
+-- migraciones registradas (0042 a 0044)
+version | applied_at
+0042 | 2026-11-20 19:16:56.930855+00
+0043 | 2026-11-22 19:25:12.833611+00
+(2 rows)
+-- politicas de tenant y zona
+tablename | policyname | roles | cmd
+tenant | lectura_global_tenant | {public} | SELECT
+tenant | tenant_estado_plataforma | {mani_core_svc} | UPDATE
+tenant | tenant_lectura | {anon,authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+zona | lectura_global_zona | {public} | SELECT
+zona | zona_lectura | {anon,authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+(5 rows)
+-- SELECT por rol (anon esperado f tras aplicar; los demas t)
+tabla | rol | lee
+tenant | anon | t
+tenant | authenticated | t
+tenant | mani_core_svc | t
+tenant | mani_dispatch_svc | t
+zona | anon | t
+zona | authenticated | t
+zona | mani_core_svc | t
+zona | mani_dispatch_svc | t
+(8 rows)
+== Migracion 0044 en una transaccion, termina en COMMIT
+BEGIN
+DROP POLICY
+DROP POLICY
+DO
+DO
+INSERT 0 1
+-- dentro de la transaccion
+registradas
+0044
+(1 row)
+tablename | policyname | roles
+tenant | tenant_estado_plataforma | {mani_core_svc}
+tenant | tenant_lectura | {authenticated,mani_core_svc,mani_dispatch_svc}
+zona | zona_lectura | {authenticated,mani_core_svc,mani_dispatch_svc}
+(3 rows)
+COMMIT
+-- COMMIT hecho
+== Despues
+-- migraciones registradas (0042 a 0044)
+version | applied_at
+0042 | 2026-11-20 19:16:56.930855+00
+0043 | 2026-11-22 19:25:12.833611+00
+0044 | 2026-11-23 21:47:30.131494+00
+(3 rows)
+-- politicas de tenant y zona
+tablename | policyname | roles | cmd
+tenant | tenant_estado_plataforma | {mani_core_svc} | UPDATE
+tenant | tenant_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+zona | zona_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+(3 rows)
+-- SELECT por rol (anon esperado f tras aplicar; los demas t)
+tabla | rol | lee
+tenant | anon | f
+tenant | authenticated | t
+tenant | mani_core_svc | t
+tenant | mani_dispatch_svc | t
+zona | anon | f
+zona | authenticated | t
+zona | mani_core_svc | t
+zona | mani_dispatch_svc | t
+(8 rows)
+== Verificacion oficial db/verify/0044
+--- 1. Políticas de lectura de tenant y zona: ninguna debe incluir public ni anon ---
+tablename | policyname | roles | cmd
+tenant | tenant_estado_plataforma | {mani_core_svc} | UPDATE
+tenant | tenant_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+zona | zona_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+(3 rows)
+--- 2. Las dos políticas creadas a mano ya no existen (esperado: 0 filas) ---
+tablename | policyname
+(0 rows)
+--- 3. anon sin SELECT sobre tenant y zona (esperado: has_table_privilege = f en las dos) ---
+tabla | anon_lee
+tenant | f
+zona | f
+(2 rows)
+--- 4. Con la llave anon no se listan (esperado: permission denied) y Core sí lee ---
+BEGIN
+SET
+DO
+NOTICE:  OK: anon recibe permission denied al leer tenant
+DO
+NOTICE:  OK: anon recibe permission denied al leer zona
+ROLLBACK
+BEGIN
+ERROR:  permission denied to set role "mani_core_svc"
+== Fin

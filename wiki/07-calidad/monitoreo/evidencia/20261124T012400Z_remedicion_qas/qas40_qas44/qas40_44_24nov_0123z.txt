@@ -1,0 +1,42 @@
+== QAS-40 y QAS-44 en MANI-QA (2026-11-24T01:23:32Z)
+  Dispatch 4b065e9 sha256:030677946310d60a89adaa464036d4bba0579fed46c643906c7f6332933c7a54
+  solicitud de prueba 8655ca16-c207-43dd-90f4-194471142e4c; ofertas: 200
+
+== QAS-44: despliegue fallido a proposito
+  01:23:44Z despliegue de la imagen que falla
+  contenedor: running reinicios=6 salida=0; /dispatch/health: 502
+  aceptar durante la falla: 502
+  estado en base: ['PENDIENTE']
+  01:23:57Z rollback_qa.sh a sha256:030677946310d60a89adaa464036d4bba0579fed46c643906c7f6332933c7a54
+     Container mani-dispatch-service Recreated 
+     Container mani-dispatch-service Starting 
+     Container mani-dispatch-service Started 
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_SERVICE_ROLE_KEY\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_JWT_SECRET\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_ANON_KEY\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"DATABASE_URL\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_URL\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_URL\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_JWT_SECRET\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"DATABASE_URL\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"DISPATCH_DB_CONNECTION\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_ANON_KEY\" variable is not set. Defaulting to a blank string."
+    time="2026-11-23T20:24:03-05:00" level=warning msg="The \"SUPABASE_URL\" variable is not set. Defaulting to a blank string."
+PASA  | QAS-44 | rollback en 6 s (limite 300); desde el despliegue fallido 19 s; codigo 0; Dispatch 4b065e9
+
+== QAS-44: peticion critica despues del rollback (misma Idempotency-Key)
+  aceptar: 200  isRetry=False en 2.46 s
+  repetir: 200  isRetry=True en 1.22 s
+  base: ASIGNADA | t
+  base: OFERTA_DESPACHO | 2
+  base: SOLICITUD_ASIGNADA | 1
+PASA  | QAS-44 | la aceptacion responde 200 y el reintento no duplica
+
+== Restauracion
+  Dispatch 4b065e9 imagen=ghcr.io/trama-as/mani-dotnet:staging misma_imagen=True; rules pausado=false
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/dispatch/health
+  200 /api/v1/rules/health
+  cancelar la solicitud de prueba: 200 ; estado ['CANCELADA']
+== Fin (2026-11-24T01:24:19Z), 46 s

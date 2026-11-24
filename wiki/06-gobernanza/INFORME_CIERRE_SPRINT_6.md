@@ -11,6 +11,8 @@
 | **Versión** | 2.1 · corte **2026-11-23**. La cifra definitiva se toma el día del cierre del sprint |
 | **Fuente de las cifras** | Jira: `project = SCRUM AND sprint in openSprints()`, consultada el 2026-11-23. Escenarios de calidad: columna Resultado del [SDD §8](../02-arquitectura/SDD.md), en su vista operativa [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md) v1.1. Reproducible. |
 
+> **Actualización del 24 de noviembre, 5:15 p. m.** Las cifras de las §1 y §4 son las del corte del 23-nov. Después: **742 de 764** ítems del proyecto en Done, **134 de 135** historias y **95 de 103** ítems del Sprint 6. Escenarios de calidad: **35 cumplen**, 4 en parte, 5 no cumplen y 1 sin medir; ya cumplen QAS-02, 09 y 24 y siguen sin cumplir 03, 19, 33, 34 y 35. Se cerraron la foto de perfil (SCRUM-1634), el inicio por rol accesible (1647), los contratos OpenAPI (1661) y la promoción del mismo digest a PROD (1723). El estado vigente está en el [acta de cierre](../../Entregas/Entrega_Final/ACTA_DE_CIERRE.md) §4 y §5.
+
 > **Regla de este informe.** Las cifras son las de Jira y las del SDD, no las de la impresión de nadie. Donde el dato es incómodo se escribe igual: un informe de cierre que maquilla no sirve para planificar ni para sustentar.
 
 ## 1. Resultados, en cifras

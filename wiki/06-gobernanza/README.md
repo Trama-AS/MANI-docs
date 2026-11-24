@@ -18,7 +18,7 @@ Esta carpeta responde a **quién decide**, **bajo qué políticas**, **sobre qu�
 | **Barrido de secretos** | 2026-11-22: **sin credenciales en la carpeta**, repetido sobre los doce documentos y este README. Ver [§5](#5-barrido-de-secretos). |
 | **Estado del cierre de HU-WIKI-08** | **Criterios cumplidos al 2026-11-22, con una reserva sobre el acta A/B; pendiente de la decisión de cierre de la SM.** Ver [§6](#6-qué-falta-para-cerrar-hu-wiki-08). |
 
-**Entrega final:** el índice de los ocho entregables está en [`ENTREGA_FINAL.md`](ENTREGA_FINAL.md).
+**Entrega final:** el paquete está en [`Entregas/Entrega_Final/`](../../Entregas/Entrega_Final/README.md).
 
 ## 1. Orden de lectura
 

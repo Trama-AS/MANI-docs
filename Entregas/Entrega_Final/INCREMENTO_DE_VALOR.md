@@ -1,6 +1,6 @@
 # Incremento de valor — versión 1.0.5
 
-[← 06 · Gobernanza](README.md) · [Entrega final](ENTREGA_FINAL.md) · [Índice de la wiki](../Home.md)
+[Entrega final](README.md) · [Índice de la wiki](../../wiki/Home.md)
 
 Este documento es el entregable 4 de la entrega final. Dice qué versión se entrega, dónde está cada pieza y qué trae de nuevo respecto a la anterior.
 
@@ -18,11 +18,11 @@ Los siete repositorios tienen publicada la versión `v1.0.5`, el 24 de noviembre
 | `MANI-Landing` | Página comercial | [v1.0.5](https://github.com/Trama-AS/MANI-Landing/releases/tag/v1.0.5) |
 | `MANI-docs` | Documentación: wiki, ADR y diagramas | [v1.0.5](https://github.com/Trama-AS/MANI-docs/releases/tag/v1.0.5) |
 
-La versión anterior desplegada en PROD era `v1.0.4` de Flutter Web ([`01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md)).
+La versión anterior verificada en PROD (14 de noviembre) era `v1.0.4` de Flutter Web ([`01-mapa-ambientes-y-versiones.md`](../../wiki/08-infraestructura/01-mapa-ambientes-y-versiones.md)).
 
 ## 2. Qué aporta el incremento
 
-El producto funcional (registro y verificación de aliados, cobertura, solicitud y despacho, cotización, ejecución, calificación, mensajería y tarifario) se construyó hasta el Sprint 5, cuyo último día de desarrollo fue el 30 de octubre. El Sprint 6 (6 al 25 de noviembre) lo valida, lo endurece y lo documenta. Al 24 de noviembre cerró **88 de 103 ítems**, entre ellos estas **18 historias**:
+El producto funcional (registro y verificación de aliados, cobertura, solicitud y despacho, cotización, ejecución, calificación, mensajería y tarifario) se construyó hasta el Sprint 5, cuyo último día de desarrollo fue el 30 de octubre. El Sprint 6 (6 al 25 de noviembre) lo valida, lo endurece y lo documenta. Al 24 de noviembre cerró **95 de 103 ítems**, entre ellos estas **18 historias**:
 
 | Historia | Qué entrega |
 |---|---|
@@ -42,7 +42,7 @@ Además del trabajo de las historias, el sprint dejó el modelo C4 y el modelo d
 
 ## 3. Cómo se acepta
 
-Cada historia termina con QA ejecutado, un video en QA con token real y el visto bueno de la PO. El estado y la evidencia de cada una están en su ítem de Jira. El informe de cierre del Sprint 6 declara que algunos ítems se cerraron con la evidencia de QA pero sin el video de la PO ([`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) §4.5), y el [acta de cierre](ACTA_DE_CIERRE.md) §6 lo recoge como riesgo aceptado.
+Cada historia termina con QA ejecutado, un video en QA con token real y el visto bueno de la PO. El estado y la evidencia de cada una están en su ítem de Jira. El informe de cierre del Sprint 6 declara que algunos ítems se cerraron con la evidencia de QA pero sin el video de la PO ([`INFORME_CIERRE_SPRINT_6.md`](../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md) §4.5), y el [acta de cierre](ACTA_DE_CIERRE.md) §6 lo recoge como riesgo aceptado.
 
 ## 4. Qué no incluye
 

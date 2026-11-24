@@ -39,7 +39,7 @@ Por tipo: 56 tareas (42 en Done), 19 historias (**15 en Done**), 6 defectos (3 e
 
 **El acta A/B de los escenarios de calidad, firmada por la PO el 2026-11-21** ([acta](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md)), y sus umbrales escritos en el SDD el mismo día.
 
-**La validación de discrepancias pasó de 0 a 14 de 15 filas cerradas** ([`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md)). Quince contradicciones entre documentos; queda una, D10.
+**La validación de discrepancias pasó de 0 a 15 de 15 filas cerradas** ([`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md)). Quince contradicciones entre documentos, todas con evidencia o con decisión. La última, D10, se verificó el 23-nov: los roles de servicio no se saltan RLS en QA ni en PROD, pero PROD tiene 4 migraciones menos que QA hasta la ventana del 25/11.
 
 **Cuatro restricciones de proyecto que nadie había escrito** (PROY-09 a PROY-12 del [SRS](../01-producto/SRS.md)): observabilidad, eventos de negocio, lógica fuera de la base de datos y no usar la plataforma de datos como *backend as a service*.
 
@@ -150,7 +150,7 @@ Son los ítems que QA no pudo cerrar al corte del 23-nov, con la causa que dejó
 | Qué | Responsable | Por qué no se entrega |
 |---|---|---|
 | **Kafka en PROD** ([SCRUM-1677](https://maniservices.atlassian.net/browse/SCRUM-1677)) | DevOps y Arquitectura | Kafka corre en DEV y QA, pero no en PROD. Está en la épica post-MVP, que según su propio criterio no entra al sprint hasta que la PO la priorice. Los flujos que dependen de eventos asíncronos no funcionan en PROD, y la restricción PROY-10 lo exige |
-| **Fila D10 de la validación** | Daniel | **QA verificado el 23-nov** (Santiago): roles de servicio sin `BYPASSRLS`, 49 migraciones hasta la `0043`, 58 políticas. Falta la misma consulta en PROD, que solo Daniel puede correr. Sin ella no se puede afirmar paridad |
+| **Paridad de migraciones entre QA y PROD** (fila D10) | Daniel | D10 quedó verificada el 23-nov en los dos ambientes. Los roles de servicio no tienen `BYPASSRLS` en ninguno. Las migraciones no coinciden: PROD tiene 45, hasta la `0039`, y QA 49, hasta la `0043`. Las que faltan se aplican en la ventana del 25/11 ([SCRUM-1726](https://maniservices.atlassian.net/browse/SCRUM-1726)). Si no se aplican, PROD se entrega con un esquema más viejo que el probado en QA |
 | **Ratificación de ADR-0035 en Mesa** | Mesa de Arquitectura | La Mesa no se convocó en todo el sprint, y la SM no puede ratificar un ADR que ella misma propuso |
 | **Token de SonarQube sin rotar** | Daniel | Es un **riesgo aceptado**, no resuelto: se retiró de los archivos, pero no se invalidó. Ver [`08-infraestructura/02-accesos-y-gestion-secretos.md`](../08-infraestructura/02-accesos-y-gestion-secretos.md) |
 | **RNF-13 y QAS-46 sin aprobar** | PO | Son la base de ADR-0037. Están propuestos, pero la PO no los ha aprobado |

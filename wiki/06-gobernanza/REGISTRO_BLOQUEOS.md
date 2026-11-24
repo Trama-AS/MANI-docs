@@ -9,8 +9,8 @@
 | **Mantiene** | Sara Albarracín (Scrum Master), gestión de impedimentos |
 | **Consume** | El equipo en cada *daily*; el informe de cierre del Sprint 6 ([SCRUM-1708](https://maniservices.atlassian.net/browse/SCRUM-1708)); el PO para los bloqueos que escalan a decisión |
 | **Se actualiza** | En cada *daily*: se abre lo nuevo, se cierra lo resuelto y se recalcula el tiempo abierto |
-| **Versión** | 1.4 |
-| **Fecha de corte** | 2026-11-22. Días hábiles de lunes a viernes, sin el festivo del 16 de noviembre |
+| **Versión** | 1.5 |
+| **Fecha de corte** | 2026-11-23. Días hábiles de lunes a viernes, sin el festivo del 16 de noviembre |
 | **Umbral de escalamiento** | **2 días hábiles abierto.** Al cumplirse, el bloqueo se escala con evidencia al rol con autoridad sobre el artefacto ([`GOBIERNO_DEL_EQUIPO.md`](GOBIERNO_DEL_EQUIPO.md) §2.3). |
 
 > **Regla de este registro.** Un bloqueo se registra el día en que se detecta, no el día en que alguien decide que es importante. Si no tiene responsable nombrado, el responsable es la SM hasta que se reasigne: un bloqueo sin dueño no existe para nadie.
@@ -29,11 +29,10 @@ No es un bloqueo: una tarea que avanza despacio, una tarea mal estimada, ni una 
 
 ## 2. Bloqueos abiertos
 
-**Dos bloqueos abiertos al 2026-11-22**, de los nueve registrados el 11 de noviembre. Los otros siete se resolvieron entre el 12 y el 21 de noviembre y están en [§3](#3-bloqueos-resueltos).
+**Un bloqueo abierto al 2026-11-23**, de los nueve registrados el 11 de noviembre. Los otros ocho se resolvieron entre el 12 y el 23 de noviembre y están en [§3](#3-bloqueos-resueltos).
 
 | ID | Ítem afectado | Tipo | Causa | Responsable de resolverlo | Aparición | Días hábiles | Estado |
 |---|---|---|---|---|---|---|---|
-| **B-03** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696), fila **D10** | Acceso | De las siete filas que exigían acceso a los ambientes, seis se cerraron el 2026-11-19 con la evidencia que DevOps publicó en [`08-infraestructura/`](../08-infraestructura/README.md). Queda **D10**: las migraciones aplicadas y `BYPASSRLS` en los roles de servicio, que solo se comprueban con una consulta a Supabase de PROD y de QA. La consulta se corrigió el 2026-11-22 ([`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) §3.1): la versión anterior leía una tabla equivocada y exigía `f` en roles que en Supabase tienen `BYPASSRLS` por diseño. **El 2026-11-23 Santiago corrió la consulta en QA y cumple**; falta solo PROD, que depende de Daniel | Daniel Ávila o Santiago Hernández, que tienen acceso a los dos proyectos | 2026-11-10 | **7** | **Supera el umbral.** Pendiente de la consulta |
 | **B-06** | [SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704) (ADR 6A) | Decisión | [ADR-0035](../02-arquitectura/adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto` y [ADR-0032](../02-arquitectura/adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) sigue pendiente de acta. **La Mesa no se convocó en todo el Sprint 6.** La SM ratificó el 2026-11-19 otras cuatro decisiones sin Mesa (ADR-0036, 0037, 0038 y la enmienda de 0006), pero no puede ratificar ADR-0035 porque es su proponente. La asignación idempotente sí está escrita en `SAD.md` §7.2 y §7.4: lo que falta es la firma, no el contenido. SCRUM-1704 se cerró en Jira, pero el bloqueo sigue: el ADR no está ratificado | Mesa de Arquitectura (ADR-0003) | 2026-11-09 | **8** | **Supera el umbral.** Sin respuesta: depende de convocar una sesión, no de una persona |
 
 ## 3. Bloqueos resueltos
@@ -48,6 +47,7 @@ No es un bloqueo: una tarea que avanza despacio, una tarea mal estimada, ni una 
 | **B-09** | [SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699) y [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) (cifrado) | Decisión: no existía el requisito que el ADR debía cumplir | 2026-11-11 | 2026-11-19 | 5 | Se propusieron RNF-13 y QAS-46 ([`PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md`](PROPUESTA_RNF_PROTECCION_Y_RECUPERACION.md)); [ADR-0037](../02-arquitectura/adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) decidió la opción A, con acreditación técnica el 14-nov, y la SM lo ratificó el 19-nov. SCRUM-1383 pasó a `Done` el 21-nov. **Queda abierto, sin bloquear:** la aprobación de RNF-13 y QAS-46 por la PO (M2 del ADR) |
 | **B-02** | [SCRUM-1686](https://maniservices.atlassian.net/browse/SCRUM-1686) (SDD §8, Infra V4 §7, Excel) | Dependencia: esperaba la fila D8 | 2026-11-09 | 2026-11-19 | 7 | Al cerrarse D8 el 2026-11-19, DevOps actualizó `SDD.md` §8 e Infraestructura V4 §7 (`a0bb876`). El Excel salió del alcance el 2026-11-12, porque ninguna de sus 34 hojas tiene el conteo de historias, y el 84/85 ya está en D11. La tarea está en revisión |
 | **B-01** | [SCRUM-1685](https://maniservices.atlassian.net/browse/SCRUM-1685) (reescribir SDD §7 y §8) | Dependencia: el acta A/B no existía | 2026-11-09 | 2026-11-21 | 8 | La PO firmó el [acta A/B](ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md) el 2026-11-21 y QA escribió los umbrales en el SDD (`7815d75`). SCRUM-1685 `Done` ese mismo día. **Es el bloqueo que más duró**, y por la causa más evitable: no había una fecha comprometida para firmar el acta |
+| **B-03** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696), fila **D10** | Acceso: las migraciones y `BYPASSRLS` solo se comprueban con una consulta a Supabase de QA y de PROD, y el acceso estaba en DevOps y QA | 2026-11-10 | 2026-11-23 | 8 | Santiago corrió la consulta corregida en QA y Daniel en PROD, los dos el 2026-11-23 (salida de PROD adjunta a [SCRUM-1726](https://maniservices.atlassian.net/browse/SCRUM-1726)). Resultado en [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) §3.1: paridad de roles sí, de migraciones no (PROD 45, QA 49) |
 
 ## 3.1 Evidencia del escalamiento
 
@@ -73,19 +73,19 @@ El umbral de escalamiento son **2 días hábiles**. Seis bloqueos lo alcanzaron 
 
 Los seis bloqueos que superaron el umbral **se escalaron y obtuvieron respuesta**, de modo que el criterio de aceptación queda cumplido. Pero la respuesta no siempre fue desbloquear: en el caso del token fue **aceptar el riesgo de forma deliberada**, y eso también es una respuesta válida de quien tiene la autoridad. Lo que no sería válido es presentarlo como cerrado.
 
-**Lo que sigue sin escalarse con respuesta** es **B-06**, que espera a la Mesa de Arquitectura y depende de convocar una sesión, no de una persona. B-07 se resolvió el 2026-11-12 sin necesidad de sesión. **B-03** pasó el umbral con la fila D10: la evidencia de su escalamiento se registra aquí cuando Daniel o Santiago respondan.
+**Lo que sigue sin escalarse con respuesta** es **B-06**, que espera a la Mesa de Arquitectura y depende de convocar una sesión, no de una persona. B-07 se resolvió el 2026-11-12 sin necesidad de sesión. **B-03** pasó el umbral con la fila D10 y se resolvió el 2026-11-23, cuando Santiago y Daniel corrieron la consulta en QA y en PROD.
 
 ## 4. Resumen al corte
 
-| Métrica | Valor al 2026-11-22 | Valor al 2026-11-11 |
+| Métrica | Valor al 2026-11-23 | Valor al 2026-11-11 |
 |---|---|---|
 | Bloqueos registrados | **10** (B-00 a B-09) | 10 |
-| Abiertos | **2** (B-03, B-06) | 9 |
-| Resueltos | **8** | 1 |
-| Tiempo medio de resolución | **4,5 días hábiles** sobre 8 muestras (mínimo 2, máximo 8; mediana 4,5) | 2, sobre una sola muestra |
+| Abiertos | **1** (B-06) | 9 |
+| Resueltos | **9** | 1 |
+| Tiempo medio de resolución | **4,9 días hábiles** sobre 9 muestras (mínimo 2, máximo 8; mediana 5) | 2, sobre una sola muestra |
 | Superaron el umbral de 2 días hábiles | **7** de 10: B-01, B-02, B-03, B-04, B-05, B-06 y B-09 | 6 de 9 |
 | Por tipo, los 10 | Decisión **5** · Dependencia **4** · Acceso **1** | — |
-| Por tipo, los 2 abiertos | Decisión **1** (Mesa) · Acceso **1** (Supabase) | — |
+| Por tipo, el abierto | Decisión **1** (Mesa) | — |
 
 **Lo que dicen las cifras.** Los bloqueos de **decisión** se resolvieron en cuanto hubo una sesión o alguien con autoridad que decidiera; el que sigue abierto (B-06) es justamente el único que exige una sesión que nunca se convocó. Los de **dependencia** tardaron más (de 2 a 8 días) porque esperaban un entregable de otra persona sin fecha comprometida: B-01, el más largo, esperó doce días naturales un acta que podía firmarse en una reunión.
 
@@ -103,11 +103,11 @@ Los seis bloqueos que superaron el umbral **se escalaron y obtuvieron respuesta*
 |---|---|---|
 | 1 | La etiqueta `bloqueado` y la tabla existen | Cumplido, con la salvedad de abajo |
 | 2 | El 100 % de los bloqueos tiene ítem, causa, responsable y fechas | Cumplido: los diez |
-| 3 | Los bloqueos sobre el umbral quedan escalados con evidencia | Cumplido en los resueltos (§3.1). B-06 y B-03 siguen sin respuesta y así se declaran |
+| 3 | Los bloqueos sobre el umbral quedan escalados con evidencia | Cumplido en los resueltos (§3.1). B-03 se resolvió el 2026-11-23. B-06 sigue sin respuesta y así se declara |
 | 4 | Resumen al cierre: número, tiempo medio y causas recurrentes | Cumplido al corte del 2026-11-22 (§4). Se toma la cifra definitiva el día del cierre |
 | 5 | Cada bloqueo recurrente genera acción de mejora o riesgo | Cumplido: tres patrones con su acción |
 
-**Lo único que queda** es repetir el corte el día del cierre del sprint: B-03 se resuelve con la consulta de D10, y B-06 se declara como abierto al cierre si la Mesa no se convoca.
+**Lo único que queda** es repetir el corte el día del cierre del sprint. B-03 ya se resolvió el 2026-11-23 con la consulta de D10, y B-06 se declara como abierto al cierre si la Mesa no se convoca.
 
 El criterio «la tabla existe antes del inicio del sprint» **no se cumplió**: el registro se crea el 2026-11-11, con el sprint en curso. Queda dicho así, y no como cumplido, porque los ocho bloqueos de §2 ya estaban activos antes de que existiera dónde anotarlos. Para el Sprint 7 la tabla debe crearse vacía en la *planning*.
 
@@ -115,6 +115,7 @@ El criterio «la tabla existe antes del inicio del sprint» **no se cumplió**: 
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 1.5 | 2026-11-23 | **B-03 resuelto**: la fila D10 tiene la salida de QA (Santiago) y de PROD (Daniel). Queda un bloqueo abierto, B-06. Tiempo medio de resolución: 4,9 días hábiles sobre 9 muestras. | Sara Albarracín |
 | 1.4 | 2026-11-22 | Corte al 22 de noviembre con los estados de Jira del día: **siete bloqueos resueltos** (B-01, B-02, B-04, B-05, B-07, B-08 y B-09) con fecha y forma de resolución, y **dos abiertos** (B-03, reducido a la fila D10, y B-06, que espera a la Mesa). Tiempo medio de resolución de 4,5 días hábiles sobre ocho muestras. §5 pasa a tabla de criterios. Anotado el 23-nov: SCRUM-1704 se cerró en Jira, pero B-06 sigue abierto porque ADR-0035 no está ratificado. | Sara Albarracín |
 | 1.3 | 2026-11-19 | Se añade la **evidencia del escalamiento** de los seis bloqueos que superaron el umbral, con las dos conversaciones que la acreditan: la del 10 de noviembre con el PO, que cerró cinco decisiones y desbloqueó dos filas de la validación, y la del 16 con DevOps sobre el token expuesto, cuya respuesta fue aceptar el riesgo con justificación. Con esto queda cumplido el tercer criterio de aceptación de SCRUM-1709. | Sara Albarracín |
 | 1.2 | 2026-11-11 | Se aplica la etiqueta `bloqueado` en Jira a los diez tickets de los nueve bloqueos, con lo que el primer criterio de SCRUM-1709 queda cumplido. B-02 recoge que el título y el criterio de SCRUM-1686 ya dicen 84/85. | Sara Albarracín |

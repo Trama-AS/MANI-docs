@@ -8,9 +8,9 @@
 | **Origen** | [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) (HU-VAL-01) |
 | **Coordina** | Sara Albarracín (Scrum Master) |
 | **Consume** | PO, Arquitectura, DevOps y QA antes de la sustentación |
-| **Versión** | 2.4 |
-| **Fecha de corte** | 2026-11-19 |
-| **Estado** | **14 de 15 filas cerradas.** **12 verificadas con evidencia de sistema o de código**: D1, D2, D3, D5, D6, D7, D8, D9, D11, D13, D14 y D15. **2 cerradas por decisión**, que no son verificaciones: D4 y D12, más las decisiones P-D2, P-D14 y P-D15a. **Queda una sola pendiente: D10**, migraciones y `BYPASSRLS` en PROD. |
+| **Versión** | 2.5 |
+| **Fecha de corte** | 2026-11-23 |
+| **Estado** | **15 de 15 filas cerradas.** **13 verificadas con evidencia de sistema o de código**: D1, D2, D3, D5, D6, D7, D8, D9, D10, D11, D13, D14 y D15. **2 cerradas por decisión**, que no son verificaciones: D4 y D12, más las decisiones P-D2, P-D14 y P-D15a. D10 se verificó el 2026-11-23 y su resultado es **paridad en los roles y no en las migraciones**: PROD tiene 45, QA 49. |
 | **Corrección de conteo** | La versión 1.0 y la 1.1 decían «8 de 15 verificadas» contando D4 y D12 como verificadas. No lo eran: en esas dos filas se verificó que **existía el conflicto**, no cuál era el dato correcto. El avance real verificado es **6 de 15**. |
 | **Salto del 2026-11-19** | Seis filas (D1, D5, D6, D7, D8 y D9) se cerraron de una vez con la evidencia que DevOps capturó el 14 y el 15 de noviembre y publicó en `wiki/08-infraestructura/`. No hubo que ejecutar nada nuevo: la evidencia ya estaba escrita y solo faltaba contrastarla contra cada fila. |
 | **Se actualiza** | Cada vez que se cierra una fila; obligatorio antes de cada sustentación. |
@@ -30,7 +30,7 @@
 | D7 | Kafka en DEV y QA | **VERIFICADO** el 2026-11-14: en DEV y QA sí, en PROD no | Daniel y Sara |
 | D8 | Observabilidad | **VERIFICADO** el 2026-11-14: no está en la VM de QA, está en la de Calidad | Daniel y Sara |
 | D9 | Respaldos | **VERIFICADO** el 2026-11-15: automatización diaria cifrada, con simulacro `PASS` | Daniel |
-| D10 | Migraciones y `BYPASSRLS` | **QA verificado el 2026-11-23. Falta PROD — la única que queda** | Daniel y Santiago |
+| D10 | Migraciones y `BYPASSRLS` | **VERIFICADO** el 2026-11-23 en QA y PROD: roles de servicio sin `BYPASSRLS` en los dos; migraciones **sin paridad** (PROD 45 hasta la `0039`, QA 49 hasta la `0043`) | Daniel y Santiago |
 | D11 | Cifras del Sprint 5 | **Verificado en Jira** | Sara y Camila |
 | D12 | Quién firma el acta de ajustes | **Decidido** (D12): firma Camila Beltrán como PO | Sara y Camila |
 | D13 | HU-M04-05 sin historia en Jira | **Verificado en Jira** | Sara y Camila |
@@ -207,11 +207,11 @@ Seis filas se cerraron el **2026-11-19** con evidencia que DevOps capturó el **
 
 ---
 
-## 3.1 La única fila que queda: D10
+## 3.1 La última fila en cerrarse: D10
 
 ### D10 · Migraciones y `BYPASSRLS` en PROD — Daniel y Santiago
 
-**QA verificado el 2026-11-23; PROD sigue pendiente.** Es la única fila abierta, y no se cierra con un solo ambiente porque lo que pide es **paridad** entre QA y PROD.
+**Verificada el 2026-11-23 en los dos ambientes.** La fila preguntaba si había **paridad** entre QA y PROD. La respuesta es **sí en los roles y no en las migraciones**: PROD va cuatro migraciones detrás de QA. Las dos salidas están abajo.
 
 **Aviso sobre el documento de origen.** La §5 del mapa de ambientes rotula una fila como «D10», pero su contenido responde a **D7** (Kafka en PROD frente a QA y DEV). La D10 real —cuántas migraciones hay aplicadas en PROD y si los roles tienen `BYPASSRLS`— **no está respondida en ningún documento**. Se deja dicho para que nadie la dé por cerrada leyendo esa etiqueta.
 
@@ -269,9 +269,36 @@ Sin filas `0011` ni `0012`. Coincide con los archivos de `release` (`cdebf74`).
 
 **Hallazgo de aislamiento, fuera de D10.** Las dos políticas `TO public` dejan leer a `anon` **todos** los tenants y todas las zonas, de todas las empresas, y **no vienen de ninguna migración del repositorio**: se crearon a mano. **La app no las usa:** Flutter solo usa Supabase para iniciar sesión, y `test/core/arquitectura/supabase_solo_auth_test.dart` (MANI-Flutter, `develop`) prohíbe `.from()` sobre tablas sin ninguna excepción; los datos, incluido el catálogo público del registro (`src/routes/core/catalog.routes.js`), los sirve Core por el Gateway, conectado como `mani_core_svc`. Como la llave `anon` es pública en la app web, cualquiera puede listar tenants y zonas de otras empresas, lo que contradice el aislamiento por tenant (ADR-0032). **Corrección propuesta:** una migración nueva de Core que haga `DROP POLICY IF EXISTS` de las dos, probada primero en QA. Responsable: Core. La consulta de PROD debe decir si existen también allí.
 
-#### Evidencia de PROD (`tjxueukivwxsgipltqwb`)
+#### Evidencia de PROD (`tjxueukivwxsgipltqwb`), 2026-11-23
 
-**Pendiente.** Mismas tres consultas, con su fecha. Responsable: Daniel Ávila, que tiene el acceso a PROD.
+Ejecutó Daniel Ávila (DevOps), antes de la ventana del 25/11. Solo `SELECT`. La salida completa está adjunta a [SCRUM-1726](https://maniservices.atlassian.net/browse/SCRUM-1726) como `evidencia_prod_d10.txt` (adjunto 10088); aquí se transcriben las cifras de su comentario del 2026-11-23.
+
+| rolname | rolbypassrls | rolsuper | rolcanlogin |
+|---|---|---|---|
+| `mani_core_svc` | **false** | false | true |
+| `mani_dispatch_svc` | **false** | false | true |
+
+| migraciones | formato antiguo | serie_core | serie_gateway | primera_core | ultima_core |
+|---|---|---|---|---|---|
+| **45** | 4 | 33 | 8 | `0005` | `0039` |
+
+| Políticas | Valor |
+|---|---|
+| `count(*) FROM pg_policies` | **60** |
+| En el esquema `public` | 58, sobre 36 tablas |
+| `TO public` | 2: `lectura_global_tenant` en `tenant` y `lectura_global_zona` en `zona`, ambas `SELECT`. **También existen en PROD** |
+
+#### Resultado de D10
+
+| Punto | QA | PROD | ¿Paridad? |
+|---|---|---|---|
+| Roles de servicio sin `BYPASSRLS` | Sí | Sí | **Sí** |
+| Migraciones aplicadas | 49 (hasta `0043`) | 45 (hasta `0039`) | **No**: a PROD le faltan `0040`–`0043` |
+| Políticas activas | 58 | 60 | No (dato informativo; la diferencia se explica en parte por las migraciones que faltan) |
+
+**Qué significa.** La afirmación «los roles de servicio no se saltan RLS en ningún ambiente» queda **verificada**. La afirmación «PROD tiene el mismo esquema que QA» **no se puede hacer** al 2026-11-23: PROD está en el estado de la última versión desplegada, y las cuatro migraciones de QA se aplican en la ventana del martes 25/11, junto con la `0044` de [SCRUM-1720](https://maniservices.atlassian.net/browse/SCRUM-1720). Esa aplicación es parte de [SCRUM-1726](https://maniservices.atlassian.net/browse/SCRUM-1726) (Daniel), no de esta historia. Si se aplican las cinco, lo esperado después de la ventana es **50 filas** con `ultima_core = '0044'`.
+
+**El hallazgo de aislamiento se confirma en PROD:** las dos políticas `TO public` creadas a mano existen allí también. Se retiran con la `0044` en la misma ventana.
 
 > **Corrección del 2026-11-22.** La versión anterior de esta consulta leía `supabase_migrations.schema_migrations` y comparaba contra la serie `0001`–`0033`. Las dos cosas estaban mal: las migraciones del proyecto se registran en la tabla propia `public.schema_migrations` (cada archivo hace `INSERT INTO schema_migrations`), no en la de la CLI de Supabase, y la serie de Core llega hoy a `0039`. Además, `max(version)` sin filtro devolvía `'008'`, porque compara texto y `'008'` > `'0039'`. La afirmación «roles sin `BYPASSRLS` en PROD» se refiere a los **roles de servicio del proyecto**, `mani_core_svc` y `mani_dispatch_svc`, creados en `MANI-Node/db/migrations/0006_contexto_identidad.sql` con `NOBYPASSRLS` (ADR-0032). Se sostiene si `rolbypassrls = f` en **esos dos** roles, en PROD y en QA.
 
@@ -368,7 +395,7 @@ Con esos dos, el ADR de [SCRUM-1699](https://maniservices.atlassian.net/browse/S
 
 ## 6. Cierre
 
-[SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) **no se cierra** hasta que la **única** fila que queda, D10, tenga su evidencia pegada aquí y el historial de cambios lo registre. La consulta de D14-PROD queda informativa y no bloquea. Mientras eso no ocurra, en la sustentación esas siete filas se presentan como **pendientes de validar**.
+**Las 15 filas tienen su evidencia o su decisión** desde el 2026-11-23, así que [SCRUM-1696](https://maniservices.atlassian.net/browse/SCRUM-1696) se puede cerrar. En la sustentación, D10 se presenta como lo que es: paridad de roles verificada y migraciones de PROD cuatro detrás de QA hasta la ventana del 25/11. Antes de este cierre, la regla era que la historia no se cerraba hasta que D10 tuviera su evidencia pegada aquí y el historial de cambios lo registrara. La consulta de D14-PROD queda informativa y no bloquea. Mientras eso no ocurra, en la sustentación esas siete filas se presentan como **pendientes de validar**.
 
 Las decisiones de §4 están cerradas y no esperan evidencia. P-D15b sigue abierto y espera dos artefactos del PO.
 
@@ -376,6 +403,7 @@ Las decisiones de §4 están cerradas y no esperan evidencia. P-D15b sigue abier
 
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
+| 2.5 | 2026-11-23 | **D10 verificado en PROD** con la salida de Daniel Ávila (adjunta a SCRUM-1726): roles de servicio sin `BYPASSRLS`, 45 migraciones hasta la `0039` y 60 políticas. Resultado: paridad de roles sí, de migraciones no (faltan `0040`–`0043` en PROD, que entran en la ventana del 25/11). Las dos políticas `TO public` existen también en PROD. **15 de 15 filas cerradas.** | Sara Albarracín |
 | 2.4 | 2026-11-23 | **D10 verificado en QA** con la salida de Santiago Hernández: roles de servicio sin `BYPASSRLS`, 49 migraciones hasta la `0043` y 58 políticas. Se corrige el valor esperado (49, no 45) y la consulta, que no contaba las cuatro primeras migraciones de Core. Se anotan las dos políticas `TO public` creadas a mano. **La fila sigue abierta hasta tener la salida de PROD.** | Sara Albarracín |
 | 2.3 | 2026-11-19 | **Se cierran seis filas de una vez** con la evidencia que DevOps capturó el 2026-11-14 y 15 y publicó en `wiki/08-infraestructura/`, cuya §5 ya la mapeaba a estas filas. **D1**: el digest de `mani-flutter-web` en PROD coincide exacto con el tag `v1.0.4`, y `check-prod.sh` devuelve `200 OK` en los seis endpoints y las dieciocho rutas. **D5**: conteo de contenedores por ambiente. **D6**: `ss -tulpn` muestra que en QA el 443 **sí** escucha con TLS 1.2+, de modo que el reporte de QA que decía que rechazaba queda corregido. **D7**: Kafka corre en DEV y QA y **no** en PROD. **D8**: Prometheus y Grafana **no corren en la VM de QA** sino en la de Calidad, ligados a `127.0.0.1`; la respuesta es más precisa que la pregunta. **D9**: respaldo diario cifrado AES-256-CBC con simulacro cronometrado `PASS`. Se corrige además un desajuste de etiqueta en el documento de origen: lo que rotula «D10» responde en realidad a D7, y la **D10 verdadera sigue abierta**. | Sara Albarracín |
 | 2.2 | 2026-11-13 | Se registran las decisiones del PO del 2026-11-10 (Camila Beltrán, [SCRUM-1687](https://maniservices.atlassian.net/browse/SCRUM-1687)). **D13 se cierra**: HU-M04-05 se retira del plan porque su alcance lo cubren 1390, 1391 y 1393, las tres `Done` y verificadas, con la precisión de que son HU-M04-01, 02 y 04 y ninguna es la 05. **D14-PROD se cierra**: Jardinería activa en PROD y desactivada en QA, con SCRUM-1641 `Done`. **P-D2 queda ratificado por el PO**, con la reserva de que el 10 % de comisión y el pago aparte no se verificaron en el código. | Sara Albarracín |

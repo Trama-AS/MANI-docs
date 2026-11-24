@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1450" viewBox="0 0 1800 1450">
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#68778b"/></marker></defs>
+<rect width="1800" height="1450" fill="#f7f9fc"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#243650}.title{font-size:36px;font-weight:700;fill:#10254b}.subtitle{font-size:19px;fill:#68778b}.head{font-size:22px;font-weight:700;fill:#10254b}.body{font-size:18px}.small{font-size:15px;fill:#68778b}.edge{fill:none;stroke:#68778b;stroke-width:2;marker-end:url(#arrow)}</style>
+<text x="40" y="58" class="title">03 · Arquitectura de datos</text>
+<text x="40" y="92" class="subtitle">Una base PostgreSQL por ambiente · Propiedad y permisos por tabla · Vista de dominios, no DER completo</text>
+<rect x="40" y="145" width="500" height="190" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="40" y="160" width="5" height="28" rx="2" fill="#168163"/>
+<text x="59" y="179" class="head">Core · MANI-Node</text>
+<text x="59" y="210" style="font-size:17px">mani_core_svc · Datos de negocio y estado canónico</text>
+<text x="59" y="236" style="font-size:17px">Único dueño de migraciones: db/migrations/</text>
+<text x="59" y="262" style="font-size:17px">Persiste reglas, tarifas y asignación</text>
+<text x="59" y="288" style="font-size:17px">Integra Storage y publica eventos de mensajería</text>
+<rect x="650" y="145" width="500" height="190" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="650" y="160" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="669" y="179" class="head">Rules · MANI-Java</text>
+<text x="669" y="210" style="font-size:17px">Motor de evaluación, ranking y validación</text>
+<text x="669" y="236" style="font-size:17px">Sin conexión directa a PostgreSQL</text>
+<text x="669" y="262" style="font-size:17px">Consulta configuración y tarifas a Core</text>
+<text x="669" y="288" style="font-size:17px">No versiona DDL</text>
+<rect x="1260" y="145" width="500" height="190" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="1260" y="160" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="1279" y="179" class="head">Dispatch · MANI-.NET</text>
+<text x="1279" y="210" style="font-size:17px">mani_dispatch_svc</text>
+<text x="1279" y="236" style="font-size:17px">INSERT / SELECT solo en solicitud_rechazo</text>
+<text x="1279" y="262" style="font-size:17px">Decide la aceptación y la entrega a Core</text>
+<text x="1279" y="288" style="font-size:17px">Sin escritura directa sobre solicitud</text>
+<polyline points="650,240 540,240" class="edge"/>
+<text x="570" y="225" class="small">HTTP</text>
+<rect x="40" y="420" width="1720" height="640" rx="17" fill="#eef8f5" stroke="#9ac9b9"/>
+<text x="58" y="453" class="head">Supabase / PostgreSQL · Una base por ambiente (QA y PROD aislados)</text>
+<text x="65" y="480" class="body">public: 37 tablas · app: funciones de contexto de identidad y outbox · Propiedad por tabla, no por esquema</text>
+<rect x="65" y="510" width="515" height="220" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="65" y="525" width="5" height="28" rx="2" fill="#168163"/>
+<text x="84" y="544" class="head">Identidad y acceso</text>
+<text x="84" y="575" style="font-size:16px">tenant · usuario · aliado · cliente · sitio</text>
+<text x="84" y="601" style="font-size:16px">documento_kyc · documento_legal</text>
+<text x="84" y="627" style="font-size:16px">consentimiento_usuario · tenant_estado_cambio</text>
+<text x="84" y="653" style="font-size:16px">Escritura: Core (según privilegios por tabla)</text>
+<text x="84" y="679" style="font-size:16px">Auth gestiona la identidad y emite el JWT</text>
+<rect x="605" y="510" width="540" height="220" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="605" y="525" width="5" height="28" rx="2" fill="#168163"/>
+<text x="624" y="544" class="head">Catálogo, cobertura y reglas</text>
+<text x="624" y="575" style="font-size:16px">zona · geometria_territorial · categoria_servicio</text>
+<text x="624" y="601" style="font-size:16px">aliado_categoria · cobertura_aliado · aliado_ausencia</text>
+<text x="624" y="627" style="font-size:16px">tarifa_referencia · regla_tenant</text>
+<text x="624" y="653" style="font-size:16px">politica_cancelacion_tenant</text>
+<text x="624" y="679" style="font-size:16px">Propiedad: Core · Rules evalúa mediante HTTP</text>
+<rect x="1170" y="510" width="565" height="220" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="1170" y="525" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="1189" y="544" class="head">Ciclo del servicio</text>
+<text x="1189" y="575" style="font-size:16px">solicitud · solicitud_foto · cotizacion</text>
+<text x="1189" y="601" style="font-size:16px">adicion_servicio · evento_servicio · calificacion</text>
+<text x="1189" y="627" style="font-size:16px">solicitud_rechazo: exclusiva de Dispatch</text>
+<text x="1189" y="653" style="font-size:16px">solicitud: Core es el único escritor</text>
+<text x="1189" y="679" style="font-size:16px">Asignación atómica: un ganador; resto 409</text>
+<rect x="65" y="755" width="515" height="190" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="65" y="770" width="5" height="28" rx="2" fill="#168163"/>
+<text x="84" y="789" class="head">Comunicaciones</text>
+<text x="84" y="820" style="font-size:16px">mensaje · consulta_conversacion · notificacion</text>
+<text x="84" y="846" style="font-size:16px">queja · queja_transicion</text>
+<text x="84" y="872" style="font-size:16px">Propiedad: Core</text>
+<text x="84" y="898" style="font-size:16px">Quejas: alcance del segundo incremento</text>
+<rect x="605" y="755" width="540" height="190" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="605" y="770" width="5" height="28" rx="2" fill="#168163"/>
+<text x="624" y="789" class="head">Pagos</text>
+<text x="624" y="820" style="font-size:16px">pago · transaccion_evento · retencion_fondos</text>
+<text x="624" y="846" style="font-size:16px">comision_tenant · liquidacion</text>
+<text x="624" y="872" style="font-size:16px">Propiedad: Core</text>
+<text x="624" y="898" style="font-size:16px">Pagos sandbox / simulados, sin dinero real</text>
+<rect x="1170" y="755" width="565" height="190" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="1170" y="770" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="1189" y="789" class="head">Integración y control</text>
+<text x="1189" y="820" style="font-size:16px">outbox_evento · schema_migrations</text>
+<text x="1189" y="846" style="font-size:16px">Serie única de migraciones: Core</text>
+<text x="1189" y="872" style="font-size:16px">Outbox no equivale a Kafka operativo en PROD</text>
+<text x="1189" y="898" style="font-size:16px">Rules y Dispatch no mantienen DDL propio</text>
+<text x="65" y="995" class="body">Contexto transaccional: JWT verificado → app.set_context → app.tenant_id() → políticas RLS</text>
+<text x="65" y="1026" class="small">Roles NOBYPASSRLS · UUID · timestamptz · RLS y FORCE con excepciones documentadas por tabla</text>
+<polyline points="290,335 290,420" class="edge"/>
+<text x="310" y="380" class="small">SQL con contexto tenant</text>
+<polyline points="1510,335 1510,420" class="edge"/>
+<text x="1530" y="380" class="small">SQL: solo rechazos</text>
+<rect x="40" y="1100" width="1720" height="240" rx="17" fill="#ffffff" stroke="#ccd9e9"/>
+<text x="58" y="1133" class="head">Servicios de plataforma y acceso del cliente</text>
+<rect x="65" y="1150" width="515" height="165" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="65" y="1165" width="5" height="28" rx="2" fill="#168163"/>
+<text x="84" y="1184" class="head">Auth y Realtime</text>
+<text x="84" y="1215" style="font-size:17px">Flutter ↔ Auth: registro, sesión y JWT</text>
+<text x="84" y="1241" style="font-size:17px">Core → Realtime → Flutter: eventos</text>
+<text x="84" y="1267" style="font-size:17px">Sin lecturas directas de tablas desde Flutter</text>
+<rect x="605" y="1150" width="540" height="165" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="605" y="1165" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="624" y="1184" class="head">Storage</text>
+<text x="624" y="1215" style="font-size:17px">Archivos KYC, fotografías y evidencias</text>
+<text x="624" y="1241" style="font-size:17px">Acceso gestionado por Core vía backend</text>
+<text x="624" y="1267" style="font-size:17px">Metadatos y referencias en PostgreSQL</text>
+<rect x="1170" y="1150" width="565" height="165" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="1170" y="1165" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="1189" y="1184" class="head">Protección y recuperación</text>
+<text x="1189" y="1215" style="font-size:17px">TLS · Credenciales por servicio y ambiente</text>
+<text x="1189" y="1241" style="font-size:17px">Respaldos cifrados + réplica + restauración</text>
+<text x="1189" y="1267" style="font-size:17px">Analítica / DW: diseño separado del OLTP</text>
+<rect x="0" y="1384" width="1800" height="66" fill="#10254b"/>
+<text x="40" y="1412" class="small" style="fill:#ffffff">MANI · Vista documental actualizada · 24 nov 2026</text>
+<text x="40" y="1435" class="small" style="fill:#d6e5f5">Fuentes: ModeloDatos §3 y §6 · ADR-0012 / 0027 / 0030 / 0032 / 0035 · Runbook de respaldos</text>
+</svg>

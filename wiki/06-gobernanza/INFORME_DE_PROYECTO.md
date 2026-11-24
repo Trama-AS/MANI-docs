@@ -7,7 +7,7 @@
 | **Finalidad** | Dejar por escrito los resultados del proyecto, las lecciones aprendidas y las conclusiones, con cifras que se puedan reproducir. |
 | **Redacta** | Sara Albarracín (Scrum Master) |
 | **Consume** | La PO, el equipo y el jurado en la sustentación |
-| **Corte** | 24 de noviembre de 2026. El Sprint 6 cierra el 25 de noviembre |
+| **Corte** | 24 de noviembre de 2026, 3:50 p. m. El Sprint 6 cierra el 25 de noviembre |
 | **Fuentes** | Jira (`project = SCRUM`), [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md), [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md), [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) y la wiki. Las consultas están en la §9 |
 
 > **Regla de este informe.** Las cifras son las de Jira y las de las mediciones de QA, no las de la impresión de nadie. Donde el dato es incómodo se escribe igual.
@@ -16,7 +16,7 @@
 
 MANI formaliza el ciclo solicitud, cotización, ejecución, calificación y cierre de servicios entre clientes y aliados, para varias empresas a la vez y con los datos de cada una aislados. En seis sprints, del 26 de agosto al 25 de noviembre de 2026, el equipo construyó el MVP sobre una arquitectura de tres servicios detrás de un API Gateway y lo desplegó en tres ambientes.
 
-- **728 de 764** ítems de Jira cerrados; **133 de 135** historias.
+- **735 de 764** ítems de Jira cerrados; **134 de 135** historias.
 - **33 de 45** escenarios de calidad se cumplen; 5 en parte, 6 no y 1 sin medir.
 - **15 de 15** contradicciones entre documentos resueltas con evidencia.
 - Lo que no se entrega: rendimiento del Core bajo carga, accesibilidad WCAG 2.2 AA, promoción del mismo digest de QA a PROD, Kafka en PROD y varias funcionalidades puntuales. Está en la §6.
@@ -56,13 +56,13 @@ Seis sprints con Scrum, un tablero en Jira y la convención `[SCRUM-id]` en cada
 | 3 | 4 al 7 oct | 35 | 35 | Sin meta escrita |
 | 4 | 13 al 22 oct | 57 | 57 | Sin meta escrita |
 | 5 | 26 oct al 4 nov (cerrado el 5 nov) | 124 | 124 | Terminar el desarrollo y demostrar por video, en QA y por el Gateway con token real, que cada funcionalidad cumple. Último sprint de desarrollo |
-| 6 | 6 al 25 nov | 103 | 82 al 24 nov | Validación, calidad y documentación final. Sin meta escrita |
+| 6 | 6 al 25 nov | 103 | 88 al 24 nov | Validación, calidad y documentación final. Sin meta escrita |
 
 ## 5. Resultados
 
 ### 5.1 Producto
 
-133 de las 135 historias del proyecto están cerradas. PROD sirve la versión `v1.0.4` de Flutter Web con un digest que coincide con el tag, y las dieciocho rutas verificadas responden ([`01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md)).
+La versión entregada es la `v1.0.5` de los siete repositorios ([`INCREMENTO_DE_VALOR.md`](INCREMENTO_DE_VALOR.md)). 134 de las 135 historias del proyecto están cerradas; la que queda es SCRUM-1643 (mensajes de error con código), en revisión. PROD sirve la versión `v1.0.4` de Flutter Web con un digest que coincide con el tag, y las dieciocho rutas verificadas responden ([`01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md)).
 
 ### 5.2 Calidad
 
@@ -92,7 +92,7 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 - **Una sola imagen de QA a PROD (QAS-24).** El backend y el Gateway construyen una imagen por rama.
 - **Sistema de diseño y mensajes de error (QAS-33 y 35).** Migración parcial de componentes y errores sin orientar al usuario.
 - **Kafka en PROD.** Funciona en DEV y QA; PROD queda sin broker (épica SCRUM-1677).
-- **Funcionalidades puntuales.** La foto de perfil se sube pero no se ve, los aliados de una solicitud no se muestran y los mensajes de error con código solo llegan a solicitudes.
+- **Funcionalidades puntuales.** Siguen abiertas en Jira, en revisión, los aliados de una solicitud (SCRUM-1635), los mensajes de error con código (1643), el sistema de diseño (1648), el rendimiento de `eligible-allies` (1652), el actor y correlation ID (1657) y los contratos OpenAPI (1661). La foto de perfil y el inicio por rol accesible se cerraron después del informe de cierre del Sprint 6.
 
 **Riesgos aceptados al cerrar:** el token de SonarQube expuesto se retiró pero no se rotó; ADR-0034 a ADR-0038 se ratificaron sin sesión de la Mesa de Arquitectura; y RNF-13 y QAS-46 (cifrado en reposo) no están aprobados por la PO. Están en el [acta de cierre](ACTA_DE_CIERRE.md) §6.
 
@@ -127,8 +127,8 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 
 | Cifra | Consulta |
 |---|---|
-| Ítems del proyecto: 764; en Done: 728 | `project = SCRUM` y `project = SCRUM AND statusCategory = Done` |
-| Historias: 135; en Done: 133 | `project = SCRUM AND issuetype = Historia` (y con `statusCategory = Done`) |
+| Ítems del proyecto: 764; en Done: 735 | `project = SCRUM` y `project = SCRUM AND statusCategory = Done` |
+| Historias: 135; en Done: 134 | `project = SCRUM AND issuetype = Historia` (y con `statusCategory = Done`) |
 | Ítems por sprint | `project = SCRUM AND sprint = <id>`, con ids 3, 36, 37, 70, 71 (sprints 1 a 5) y `sprint in openSprints()` (sprint 6) |
 | Escenarios de calidad | Columna Resultado del [SDD §8](../02-arquitectura/SDD.md) y su vista operativa [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md) |
 | Discrepancias | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) |

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1400" viewBox="0 0 1800 1400">
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#68778b"/></marker></defs>
+<rect width="1800" height="1400" fill="#f7f9fc"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#243650}.title{font-size:36px;font-weight:700;fill:#10254b}.subtitle{font-size:19px;fill:#68778b}.head{font-size:22px;font-weight:700;fill:#10254b}.body{font-size:18px}.small{font-size:15px;fill:#68778b}.edge{fill:none;stroke:#68778b;stroke-width:2;marker-end:url(#arrow)}</style>
+<text x="40" y="58" class="title">02 · Despliegue e infraestructura</text>
+<text x="40" y="92" class="subtitle">QA y PROD sobre máquinas virtuales con Docker Compose · Inventario operativo documentado al 14 nov 2026</text>
+<rect x="35" y="125" width="1730" height="240" rx="17" fill="#eef4fb" stroke="#ccd9e9"/>
+<text x="53" y="158" class="head">Repositorios, CI y validación de calidad</text>
+<rect x="55" y="180" width="395" height="160" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="55" y="195" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="74" y="214" class="head">GitHub · Siete repositorios</text>
+<text x="74" y="245" style="font-size:16px">Flutter · APIGateway · Node · Java · .NET</text>
+<text x="74" y="271" style="font-size:16px">Landing · docs (solo documentación)</text>
+<text x="74" y="297" style="font-size:16px">Todos con prefijo MANI- · Jira: trazabilidad</text>
+<rect x="490" y="180" width="445" height="160" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="490" y="195" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="509" y="214" class="head">GitHub Actions · CI</text>
+<text x="509" y="245" style="font-size:17px">Lint, unitarias e integración → SonarQube</text>
+<text x="509" y="271" style="font-size:17px">Build OCI → escaneo dependencias/imagen</text>
+<text x="509" y="297" style="font-size:17px">Publicación en GHCR · SAST: SonarQube</text>
+<rect x="975" y="180" width="330" height="160" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="975" y="195" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="994" y="214" class="head">GHCR · Imágenes OCI</text>
+<text x="994" y="245" style="font-size:16px">release → :staging (QA)</text>
+<text x="994" y="271" style="font-size:16px">main → :latest / SemVer (PROD)</text>
+<text x="994" y="297" style="font-size:16px">Registrar digest para rollback</text>
+<rect x="1345" y="180" width="400" height="160" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="1345" y="195" width="5" height="28" rx="2" fill="#168163"/>
+<text x="1364" y="214" class="head">Validación sobre QA</text>
+<text x="1364" y="245" style="font-size:16px">Newman: contratos y aislamiento tenant</text>
+<text x="1364" y="271" style="font-size:16px">k6 según escenario · OWASP ZAP: DAST</text>
+<text x="1364" y="297" style="font-size:16px">Gates y aprobación QA / PO antes de PROD</text>
+<polyline points="450,260 490,260" class="edge"/>
+<polyline points="935,260 975,260" class="edge"/>
+<rect x="35" y="405" width="825" height="470" rx="17" fill="#fff9e9" stroke="#e4cf8d"/>
+<text x="53" y="438" class="head">QA · NBIG01 · 10.43.100.141</text>
+<rect x="940" y="405" width="825" height="470" rx="17" fill="#eff9f3" stroke="#9dcab0"/>
+<text x="958" y="438" class="head">PROD · NBIG05 · 10.43.98.203</text>
+<rect x="55" y="465" width="385" height="120" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="55" y="480" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="74" y="499" class="head">Frontend y acceso</text>
+<text x="74" y="530" style="font-size:17px">Flutter Web :8080 · Landing :3001</text>
+<text x="74" y="556" style="font-size:17px">API Gateway NGINX · :80</text>
+<rect x="460" y="465" width="380" height="120" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="460" y="480" width="5" height="28" rx="2" fill="#168163"/>
+<text x="479" y="499" class="head">Servicios · red interna</text>
+<text x="479" y="530" style="font-size:17px">Core Node.js :3000 · Rules Java :8080</text>
+<text x="479" y="556" style="font-size:17px">Dispatch .NET :5000</text>
+<rect x="55" y="610" width="785" height="110" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="55" y="625" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="74" y="644" class="head">Docker Compose · /opt/mani</text>
+<text x="74" y="675" style="font-size:17px">docker-compose.qa.yml · red bridge interna</text>
+<text x="74" y="701" style="font-size:17px">Variables y secretos por ambiente · Health checks · Rollback por digest</text>
+<polyline points="440,525 460,525" class="edge"/>
+<rect x="960" y="465" width="385" height="120" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="960" y="480" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="979" y="499" class="head">Frontend y acceso</text>
+<text x="979" y="530" style="font-size:17px">Flutter Web :8080 · Landing :3001</text>
+<text x="979" y="556" style="font-size:17px">API Gateway NGINX · :80</text>
+<rect x="1365" y="465" width="380" height="120" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="1365" y="480" width="5" height="28" rx="2" fill="#168163"/>
+<text x="1384" y="499" class="head">Servicios · red interna</text>
+<text x="1384" y="530" style="font-size:17px">Core Node.js :3000 · Rules Java :8080</text>
+<text x="1384" y="556" style="font-size:17px">Dispatch .NET :5000</text>
+<rect x="960" y="610" width="785" height="110" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="960" y="625" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="979" y="644" class="head">Docker Compose · /opt/mani</text>
+<text x="979" y="675" style="font-size:17px">docker-compose.prod.yml · red bridge interna</text>
+<text x="979" y="701" style="font-size:17px">Variables y secretos por ambiente · Health checks · Rollback por digest</text>
+<polyline points="1345,525 1365,525" class="edge"/>
+<rect x="55" y="745" width="785" height="105" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="55" y="760" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="74" y="779" class="head">Específico de QA</text>
+<text x="74" y="810" style="font-size:17px">TLS :443 · Límites CPU/RAM · Exporters y Promtail</text>
+<text x="74" y="836" style="font-size:17px">Kafka 3.8: broker presente; no acredita integración asíncrona de negocio</text>
+<rect x="960" y="745" width="785" height="105" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="960" y="760" width="5" height="28" rx="2" fill="#168163"/>
+<text x="979" y="779" class="head">Específico de PROD</text>
+<text x="979" y="810" style="font-size:17px">Seis contenedores de aplicación · Redis y cloudflared documentados</text>
+<text x="979" y="836" style="font-size:17px">Kafka no desplegado · Integración de negocio entre servicios: HTTP</text>
+<polyline points="1080,340 1080,385 455,385 455,405" class="edge"/>
+<text x="575" y="378" class="small">Descarga imagen QA</text>
+<polyline points="1260,340 1260,385 1330,385 1330,405" class="edge"/>
+<text x="1360" y="384" class="small">Imagen PROD aprobada</text>
+<polyline points="1540,340 1540,365 1780,365 1780,895 455,895 455,875" class="edge" stroke-dasharray="7 6"/>
+<text x="580" y="920" class="small">ZAP se ejecuta contra QA desplegado; el escaneo de imágenes ocurre antes, en CI.</text>
+<rect x="35" y="950" width="1730" height="290" rx="17" fill="#eef4fb" stroke="#ccd9e9"/>
+<text x="53" y="983" class="head">Plataformas de datos y operación</text>
+<rect x="55" y="1005" width="530" height="200" rx="13" fill="#ffffff" stroke="#168163" stroke-width="1.6"/>
+<rect x="55" y="1020" width="5" height="28" rx="2" fill="#168163"/>
+<text x="74" y="1039" class="head">Supabase · separado por ambiente</text>
+<text x="74" y="1070" style="font-size:17px">PostgreSQL compartido por ambiente + RLS</text>
+<text x="74" y="1096" style="font-size:17px">Auth · Storage · Realtime</text>
+<text x="74" y="1122" style="font-size:17px">Core: persistencia y adaptadores externos</text>
+<text x="74" y="1148" style="font-size:17px">Rules sin SQL · Dispatch solo solicitud_rechazo</text>
+<rect x="615" y="1005" width="550" height="200" rx="13" fill="#ffffff" stroke="#2373bd" stroke-width="1.6"/>
+<rect x="615" y="1020" width="5" height="28" rx="2" fill="#2373bd"/>
+<text x="634" y="1039" class="head">VM Calidad · 10.43.98.196</text>
+<text x="634" y="1070" style="font-size:17px">Prometheus · Grafana · Loki</text>
+<text x="634" y="1096" style="font-size:17px">Alertmanager · Mailpit · Blackbox</text>
+<text x="634" y="1122" style="font-size:17px">Métricas, logs y disponibilidad de QA/PROD</text>
+<text x="634" y="1148" style="font-size:17px">SonarQube · Promtail en los hosts emisores</text>
+<rect x="1195" y="1005" width="550" height="200" rx="13" fill="#ffffff" stroke="#7353b5" stroke-width="1.6"/>
+<rect x="1195" y="1020" width="5" height="28" rx="2" fill="#7353b5"/>
+<text x="1214" y="1039" class="head">VM Backups · 10.43.98.197</text>
+<text x="1214" y="1070" style="font-size:17px">systemd + herramientas PostgreSQL</text>
+<text x="1214" y="1096" style="font-size:17px">Respaldo diario cifrado y réplica en Calidad</text>
+<text x="1214" y="1122" style="font-size:17px">Restauración y simulacro documentados</text>
+<text x="1214" y="1148" style="font-size:17px">DEV: integración previa (:develop), fuera de esta vista</text>
+<text x="55" y="1280" class="body">Operación: scripts de despliegue y verificación de salud; CD automatizado a PROD aún documentado como pendiente.</text>
+<rect x="0" y="1334" width="1800" height="66" fill="#10254b"/>
+<text x="40" y="1362" class="small" style="fill:#ffffff">MANI · Vista documental actualizada · 24 nov 2026</text>
+<text x="40" y="1385" class="small" style="fill:#d6e5f5">Fuentes: Mapa de ambientes §1 y §5 · Runbooks de despliegue y rollback · CI/CD y calidad · ADR-0028</text>
+</svg>

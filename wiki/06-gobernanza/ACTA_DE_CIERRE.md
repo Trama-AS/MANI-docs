@@ -10,7 +10,7 @@
 | **Medio** | [completar en la sesión] |
 | **Facilita y redacta** | Sara Albarracín (Scrum Master) |
 | **Acepta y firma** | Camila Beltrán (Product Owner) |
-| **Corte de las cifras** | 24 de noviembre de 2026. Se actualizan el día de la firma con las consultas de la §4 |
+| **Corte de las cifras** | 24 de noviembre de 2026, 3:50 p. m. Se actualizan el día de la firma con las consultas de la §4 |
 
 > **Cómo se usa este documento.** La redacción y las cifras están completas. Lo que está entre corchetes lo llena la sesión de cierre: fecha, medio, asistencia, las decisiones que se tomen y las firmas. Nada de lo que se afirma aquí se inventa: cada cifra tiene su fuente en la §4.
 
@@ -37,11 +37,13 @@ Los ocho entregables de la entrega final están indexados en [`ENTREGA_FINAL.md`
 1. Despliegue de componentes en QA.
 2. Informe de pruebas.
 3. Actualización de documento y arquitectura.
-4. Incremento de valor.
+4. [Incremento de valor](INCREMENTO_DE_VALOR.md).
 5. Acta de Cierre (este documento).
 6. [Informe de proyecto](INFORME_DE_PROYECTO.md).
 7. Presentación de la Entrega.
 8. Versión final de los documentos y productos.
+
+**Versión entregada.** `v1.0.5` en los siete repositorios; los enlaces están en [`INCREMENTO_DE_VALOR.md`](INCREMENTO_DE_VALOR.md) §1.
 
 **Producto desplegado.** PROD sirve `v1.0.4` de Flutter Web con un digest que coincide con el tag, y las 18 rutas de la lista de SCRUM-1638 responden. La evidencia está en [`01-mapa-ambientes-y-versiones.md`](../08-infraestructura/01-mapa-ambientes-y-versiones.md).
 
@@ -49,9 +51,9 @@ Los ocho entregables de la entrega final están indexados en [`ENTREGA_FINAL.md`
 
 | Medida | Resultado | Fuente |
 |---|---|---|
-| Ítems del proyecto en Jira | **728 de 764** en estado Done | `project = SCRUM`, consultada el 2026-11-24 |
-| Historias | **133 de 135** en Done | `project = SCRUM AND issuetype = Historia` |
-| Sprint 6 (6 al 25 de noviembre) | 82 de 103 ítems en Done al 24-nov | `project = SCRUM AND sprint in openSprints()` |
+| Ítems del proyecto en Jira | **735 de 764** en estado Done (quedan 29: 15 épicas sin empezar y 14 ítems de trabajo) | `project = SCRUM`, consultada el 2026-11-24 |
+| Historias | **134 de 135** en Done (queda SCRUM-1643, en revisión) | `project = SCRUM AND issuetype = Historia` |
+| Sprint 6 (6 al 25 de noviembre) | **88 de 103** ítems en Done al 24-nov | `project = SCRUM AND sprint in openSprints()` |
 | Escenarios de calidad (45) | **33 cumplen**, 5 en parte, 6 no cumplen y 1 sin medir | [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md), corte 2026-11-24 |
 | Discrepancias entre documentos (HU-VAL-01) | **15 de 15** cerradas con evidencia o decisión | [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md) |
 | Decisiones de arquitectura | 30 ADR: 29 aceptados y 1 rechazado (ADR-0014) | [`SAD.md`](../02-arquitectura/SAD.md) §24 |
@@ -67,7 +69,7 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 
 **Escenario sin medir (1):** 05 escalabilidad, porque escalar en QA altera un ambiente compartido.
 
-**Funcionalidades:** las nueve que el informe de cierre lista en su §4.4 (entre ellas la foto de perfil, los aliados de una solicitud y los mensajes de error con código), según su estado en Jira el día de la firma.
+**Funcionalidades y tareas abiertas en Jira al 24-nov** (todas en revisión salvo la 1716): SCRUM-1635 (ver los aliados de una solicitud), 1643 (mensajes de error con código), 1648 (sistema de diseño), 1652 (rendimiento de `eligible-allies`), 1657 (actor y correlation ID), 1661 (contratos OpenAPI), 1722 (validación de reglas solo en Rules), 1723 (promover el mismo digest a PROD) y 1716 (medir QAS-05, por hacer). La foto de perfil (1634) y el inicio por rol accesible (1647) ya están cerradas; el detalle de cada una está en [`INFORME_CIERRE_SPRINT_6.md`](INFORME_CIERRE_SPRINT_6.md) §4.4, escrito al corte del 23-nov.
 
 **Fuera del producto:** Kafka no corre en PROD (épica post-MVP SCRUM-1677).
 

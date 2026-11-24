@@ -33,7 +33,7 @@ La remedición del 24 de noviembre (03:24Z a 04:00Z) se hizo sobre Core `3bb3dd3
 | QAS-34 y 35 (23 nov) | Accesibilidad y asistencia al usuario | Siguen **No cumple**. 34: el criterio WCAG 2.2 AA ya existe en Flutter, pero fallan idioma, nombre de campos, zoom en celular y foco visible, y la Landing tiene contraste bajo. 35: 3 de 6 casos no orientan | [revisión del 23 nov](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas34_qas35/revision_qas34_qas35.md) |
 | QAS-38 (23 nov) | Riesgos de las operaciones sensibles | **Cumple**: 12 de 12 en SAD §23.1 (MANI-docs#91), con el control verificado en el código de QA | [operación ↔ riesgo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas38/qas38_operacion_riesgo_23nov.md) |
 | Remedición del 23 y 24 nov | 01, 20, 22, 30, 34 (Landing), 40, 44 | 30 y 44 pasan a **Cumple**. 01 y 20 siguen en Cumple tras la 0044. 22 y 40 siguen Parcial (falta Core). 34 sigue No cumple (Landing: 18 textos bajo el umbral, antes 33) | [informe de la remedición](monitoreo/evidencia/20261124T012400Z_remedicion_qas/informe_remedicion.md) |
-| Remedición del 24 nov | 01, 20, 21, 22, 23, 30, 34, 40, 43 | 22, 23 y 40 pasan a **Cumple**; 21 a **Parcial**; 20 y 30 siguen en Cumple; 34 sigue en No cumple y 43 en Parcial (PROD por HTTP) | [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) |
+| Remedición del 24 nov | 01, 20, 21, 22, 23, 30, 33, 34, 35, 40, 43 | 22, 23 y 40 pasan a **Cumple**; 21 a **Parcial**; 20 y 30 siguen en Cumple; 33, 34 y 35 siguen en No cumple y 43 en Parcial (PROD por HTTP) | [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) |
 | SCRUM-1719 | 44 (rollback con despliegue fallido a propósito) | **Cumple**: rollback en 6 s y aceptación sin duplicado | [corrida](monitoreo/evidencia/20261124T012400Z_remedicion_qas/qas40_qas44/qas40_44_24nov_0123z.txt) |
 
 ## 3. Bugs abiertos (Jira, 23 nov)
@@ -93,7 +93,7 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
   - responder 502 ante una respuesta malformada de Rules (40, no cambia el estado).
 - **Flutter:**
   - migrar a `ManiButton` y `ManiTextField` las 31 pantallas con nativos (33);
-  - mensaje al redirigir por rol y errores útiles (35);
+  - mensaje al redirigir por rol, 5xx de verificación, límite de tamaño en el registro y texto de la solicitud cancelada sin cotización (35);
   - idioma `es-CO`, rótulos de campos, zoom en celular y prueba de escalado de texto (34);
   - hallazgos de la revisión heurística en el [informe del cierre](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/informe_cierre.md).
 - **Landing:** contraste de los textos en naranja y amarillo (el botón principal ya cumple) y movimiento reducido (34).

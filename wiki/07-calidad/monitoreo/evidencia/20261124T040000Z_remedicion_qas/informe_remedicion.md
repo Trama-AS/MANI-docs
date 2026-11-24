@@ -2,7 +2,7 @@
 
 > Evidencia de QA. Resultado en el [SDD §8](../../../../02-arquitectura/SDD.md). Mantiene: QA (Santiago Hernández).
 
-QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z.
+QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z; QAS-33 y 35, 04:05Z a 04:26Z.
 
 | QAS | Antes | Ahora |
 |---|---|---|
@@ -11,7 +11,9 @@ QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flut
 | 22 | Parcial | **Cumple** |
 | 23 | Parcial | **Cumple** |
 | 30 | Cumple | Cumple |
+| 33 | No cumple | No cumple |
 | 34 | No cumple | No cumple |
+| 35 | No cumple | No cumple |
 | 40 | Parcial | **Cumple** |
 | 43 | Parcial | Parcial |
 
@@ -52,9 +54,17 @@ El registro de acceso del Gateway es JSON. `X-Correlation-ID`: 10 de 10 peticion
 
 Mismo método de T-45. [Pantallas con sesión](qas30/qas30_sesion_24nov.txt) y [sin sesión](qas30/qas30_sin_sesion_24nov_0334z.txt). Ventana de referencia 800x865; se repitieron 13 flujos a 800x600 y los dos registros también a 390x844. F11 no se repitió porque no había aliados pendientes y conserva la medición del 22 y 23 de noviembre. Límite: revisión de experto, no prueba con usuarios; en ventanas bajas (800x600), «Pagar» (F4) y «Aceptar» de la bandeja del aliado (F8) aparecen al desplazarse un poco; en celular solo se revisaron los dos registros.
 
+## QAS-33: No cumple
+
+[Conteo](qas33/qas33_a98fa12_24nov.txt) ([script](qas33/qas33_conteo.py)) con el método del 22 de noviembre. Los 6 PR de Flutter fusionados desde `1991221` agregan 0 nativos. `lib/features` conserva 83 nativos en 31 archivos, todos tocados desde la regla; los mayores son mis solicitudes (11), adiciones (10) y tarifario (7).
+
 ## QAS-34: No cumple
 
 [Landing](qas34/qas34_landing_24nov_0332z.txt): 18 de 319 textos con contraste bajo (los mismos), sin `prefers-reduced-motion`. [Flutter](qas34/qas34_flutter_24nov_0334z.txt): el foco de «Ingresar» ya se ve (2.4.7); siguen `lang` en `en-US` (3.1.1), campos nombrados por su ejemplo (1.3.1) y zoom bloqueado en celular (1.4.4).
+
+## QAS-35: No cumple
+
+[Revisión](qas35/qas35_a98fa12_24nov.md). `flutter test` de 39 suites: 579 de 579 (el 23 de noviembre se usó un filtro más amplio, 594; no se comparan). Orientan la validación, la falta de conexión y los 5xx de asignación; los estados vacíos también, salvo la [solicitud cancelada sin cotización](qas35/qas35_cancelada_sin_cotizacion_a98fa12.jpg). No orientan la [redirección por rol](qas35/qas35_redireccion_rol_2s_a98fa12.jpg), los 5xx de verificación ni el archivo grande del registro. Límite: los 5xx y el archivo grande se verificaron en código, y las listas vacías no se vieron en pantalla porque la cuenta de prueba tiene datos. Corrección: el corte del 23 de noviembre incluyó por error los 5xx de asignación.
 
 ## QAS-40: Cumple
 

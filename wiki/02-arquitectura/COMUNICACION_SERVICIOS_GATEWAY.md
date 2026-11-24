@@ -158,17 +158,18 @@ El token portador emitido por Supabase Auth y validado en el ecosistema MANI con
   - `Authorization: Bearer <JWT>` (Token Relay)
 * **Anti-Spoofing:** En peticiones pre-autenticadas (ej. `/api/v1/core/auth/*`) se acepta `X-Tenant-Slug` únicamente para resolución previa de tenant, y el Gateway descarta cualquier encabezado `X-Tenant-Id` provisto externamente por el cliente para impedir suplantación.
 
-### 4.2 Trazabilidad Distribuida con Correlation ID
-* Si el cliente no suministra un encabezado `X-Correlation-ID`, NGINX genera automáticamente un identificador único por petición.
-* Este identificador se propaga en los encabezados HTTP hacia los servicios backend y se registra en los logs de auditoría para permitir la depuración distribuida de transacciones (*RNF-04*).
+### 4.2 Trazabilidad Distribuida con Correlation ID y Logs Estructurados JSON (SCRUM-1658 / QAS-22)
+* Si el cliente no suministra un encabezado `X-Correlation-ID`, NGINX genera automáticamente un identificador único por petición (`$request_id`) y oculta el encabezado aguas arriba (`proxy_hide_header 'X-Correlation-ID'`) antes de emitir un único `X-Correlation-ID` al cliente (eliminando la duplicación `H-07`).
+* El mismo `X-Correlation-ID` se propaga entre los tres servicios (`Core <-> Dispatch <-> Rules`) y cada servicio emite todas sus líneas de registro en formato JSON estructurado de una línea (`timestamp`, `level`, `service`, `correlationId`, `correlation_id`, `message`), indexables en Grafana Loki (`ADR-0038`).
 
 ### 4.3 Semántica de Respuestas y Manejo de Errores
 * Todas las comunicaciones emplean `application/json; charset=utf-8`.
 * **Exclusión Concurrente (RNF-05):** Cuando dos manicuristas intentan aceptar una misma orden de servicio simultáneamente:
   - La primera aceptación confirmada retorna **`200 OK`**.
   - Cualquier aceptación posterior retorna de forma atómica e inmediata **`409 Conflict`**.
+* **Transiciones Finales (SCRUM-1654 / T-17 / QAS-37):** Repetir la cancelación sobre una solicitud que ya se encuentra en estado `CANCELADA` retorna **`409 Conflict` (`MANI-SOL-409C`)** sin modificar el estado ni emitir eventos o notificaciones adicionales.
 
-### 4.4 Llamadas Permitidas entre Servicios y Alternativas Prohibidas
+### 4.4 Llamadas Permitidas entre Servicios y Alternativas Prohibidas (SCRUM-1660 / QAS-20)
 
 Patrón único para toda llamada servicio → servicio, fijado por [`ADR-0030`](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md) §2:
 
@@ -180,12 +181,27 @@ Patrón único para toda llamada servicio → servicio, fijado por [`ADR-0030`](
 | Llamador | Llamado | Para qué | Alternativa prohibida |
 |---|---|---|---|
 | Dispatch | Core | elegibilidad por categoría y zona | leer `core.aliado_cobertura` o `core.disponibilidad` |
+| Dispatch | Core | bandeja de ofertas y solicitudes asignadas (`GET /allies/me/offers`) | leer directamente `solicitud`, `tenant` o `zona` (`SCRUM-1660`, migración `0043`) |
 | Dispatch | Rules | orden del listado | leer `reglas.tarifario` |
 | Dispatch | Core | notificación al usuario | integrar FCM/APNs por su cuenta |
 | Core | Rules | veredicto de tarifa | escribir `reglas.*` |
 | Rules | — | devuelve el veredicto; **Core** escribe `fuera_de_rango` | escribir `servicio.cotizacion` |
 
-La frontera no es solo un acuerdo: es exigible por el motor de base de datos, porque ningún rol de servicio tiene `SELECT` sobre un esquema ajeno ([`ModeloDatos.md`](ModeloDatos.md) §6.3). El reparto de dueños de datos está en [`SAD.md`](SAD.md) §7.4.
+La frontera es exigible por el motor de base de datos: con la migración `0043_retirar_lecturas_core_en_dispatch.sql`, el rol `mani_dispatch_svc` tiene únicamente `SELECT, INSERT` sobre `solicitud_rechazo` y cero permisos sobre las tablas de Core (`solicitud`, `tenant`, `zona`, `aliado`, `usuario`, `notificacion`).
+
+### 4.5 Cobertura de Contratos OpenAPI y Contract Tests en CI (SCRUM-1661 / QAS-06 y QAS-23)
+* Los cuatro contratos OpenAPI en `MANI-APIGateway/docs/openapi/` cubren el **100 % de las operaciones de los tres servicios**:
+  - `core.yaml` (v0.33.0, 120 operaciones públicas) + `core-internal.yaml` (7 operaciones internas) = **127 de 127 rutas de `MANI-Node`**.
+  - `dispatch.yaml` (8 de 8 operaciones de `MANI-.NET`, incluyendo `/health` y `/match`).
+  - `rules.yaml` (5 de 5 operaciones de `MANI-Java`).
+* El workflow `.github/workflows/ci.yml` de `MANI-APIGateway` ejecuta la validación con Swagger Parser, el linting con Spectral (`0` errores y `0` advertencias) y los contract tests con Newman en `main`, `develop` y `release` antes de cada promoción.
+
+### 4.6 Circuit Breaker y Resiliencia en Integraciones (SCRUM-1663 / QAS-40)
+* Cada servicio implementa disyuntor (*circuit breaker*) con máquina de estados `CLOSED -> OPEN -> HALF_OPEN -> CLOSED`:
+  - **Core (`MANI-Node`):** `src/application/providers/CircuitBreaker.js` integrado en `callProvider`, `RulesServiceHttpClient` y `DispatchServiceHttpClient`.
+  - **Dispatch (`MANI-.NET`):** `CircuitBreakerPolicy` y `CircuitBreakerDelegatingHandler` en la tubería `HttpClient` hacia Core y Rules.
+  - **Rules (`MANI-Java`):** `RulesCircuitBreaker` registrado en `RulesConfiguration`.
+* Tras alcanzar `failureThreshold` fallas pasajeras consecutivas (`502`/`503`/`504`, error de red o timeout), el circuito pasa a `OPEN` y responde `503` de inmediato sin agotar conexiones ni esperar el timeout; cumplido el enfriamiento (`resetTimeoutMs` / `BreakDuration` / `waitDurationInOpenState`), sondea en `HALF_OPEN` y se restablece a `CLOSED` al primer éxito. While pagos y push operan con adaptadores simulados en memoria, la política de timeout, validación de contrato y disyuntor queda activa y probada para todo adaptador registrado en `PROVIDERS`.
 
 ---
 

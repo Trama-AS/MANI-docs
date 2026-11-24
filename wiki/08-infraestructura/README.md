@@ -39,7 +39,7 @@ Recorrido operativo de 1 a 5 para operar o reconstruir los ambientes:
 | [`02-accesos-y-gestion-secretos.md`](02-accesos-y-gestion-secretos.md) | Modelo de acceso sin secretos expuestos y gestión de variables de entorno por ambiente | Daniel Ávila (DevOps) | DevOps, Desarrollo, QA | Ante rotación o cambio de esquema de secretos | 1.0 · `2026-11-14` |
 | [`03-despliegue-y-rollback.md`](03-despliegue-y-rollback.md) | Runbooks de despliegue, promoción de imágenes, límites de contenedores en QA y rollback | Daniel Ávila (DevOps) | DevOps, Desarrollo | Ante cambios de pipeline o Compose | 1.0 · `2026-11-14` |
 | [`04-respaldos-y-restauracion.md`](04-respaldos-y-restauracion.md) | Respaldos automáticos diarios cifrados (`10.43.98.197` + réplica `10.43.98.196`) y simulacro cronometrado de restauración | Daniel Ávila (DevOps) | DevOps, Arquitectura | Al cambiar retención/frecuencia o ejecutar simulacro | 2.0 · `2026-11-14` |
-| [`05-monitoreo-y-politicas-devops.md`](05-monitoreo-y-politicas-devops.md) | Stack de observabilidad versionado, retención 35d, ventanas de mantenimiento y evaluación de §17 | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Al añadir exporters, alertas o monitoreo en PROD | 1.0 · `2026-11-14` |
+| [`05-monitoreo-y-politicas-devops.md`](05-monitoreo-y-politicas-devops.md) | Stack de observabilidad versionado, retención 35d, ventanas de mantenimiento y evaluación de §17 | Daniel Ávila (DevOps) | DevOps, QA, Arquitectura | Al añadir exporters, alertas o monitoreo en PROD | 1.2 · `2026-11-23` |
 
 ## 3. Trazabilidad y relación con Gobernanza
 

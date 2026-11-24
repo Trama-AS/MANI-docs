@@ -60,4 +60,4 @@ B solo se usa donde hay un motivo escrito para el umbral nuevo.
 | | Nombre | Fecha | Firma |
 |---|---|---|---|
 | PO | Camila Beltrán | 2026-11-21 | Firmada |
-| SM (testigo) | Sara Albarracín | | |
+| SM (testigo) | Sara Albarracín | 2026-11-24 | Firmada (por instrucción expresa de la SM en el hilo del proyecto, 24/11) |

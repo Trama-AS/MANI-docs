@@ -1,0 +1,41 @@
+== QAS-02 y QAS-09 en MANI-QA con copias desechables (ENSAYO, sin escrituras) (2026-11-24T15:01:35Z)
+  mani-core-service rev=3bb3dd3
+  mani-dispatch-service rev=1fce80e
+  mani-rules-service rev=ce513cb
+  mani-api-gateway rev=71558b8
+  red mani-network; memoria disponible 2606 MB
+  tenant de prueba: acme-servicios
+  residuos antes (lectura de prueba): {"auth.users": 0, "usuario": 0, "aliado": 0, "aliado_categoria_huerfana": 0, "documento_kyc_huerfano": 0, "consentimiento_huerfano": 0, "storage_kyc_nuevo": 0}
+  sesiones listas; categoria de prueba: si
+
+-- QAS-02 control: {'PUSH_PROVIDER': 'mock'}
+  copias sanas
+
+-- QAS-02 caida: {'PUSH_PROVIDER': 'mock_falla', 'PUSH_MOCK_FALLAS': 'siempre'}
+  copias sanas
+
+-- QAS-02 error y reintento: {'PUSH_PROVIDER': 'mock_falla', 'PUSH_MOCK_FALLAS': '1'}
+  copias sanas
+
+-- QAS-02 timeout: {'PUSH_PROVIDER': 'mock', 'QAS02_CUELGA': '1'}
+  copias sanas
+
+-- QAS-09 natural, falla el primer documento: {'STORAGE_FALLA': 'upload', 'STORAGE_FALLA_DESPUES_DE': '0'}
+  copia sana
+
+-- QAS-09 natural, falla el segundo documento: {'STORAGE_FALLA': 'upload', 'STORAGE_FALLA_DESPUES_DE': '1'}
+  copia sana
+
+-- QAS-09 empresa, falla el tercer documento: {'STORAGE_FALLA': 'upload', 'STORAGE_FALLA_DESPUES_DE': '2'}
+  copia sana
+
+== Limpieza
+  contenedores temporales borrados: si
+  servicios de QA sin cambios (imagen, arranque y reinicios): si
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/dispatch/health
+  200 /api/v1/rules/health
+== QAS-02: 0 PASA, 0 FALLA, 0 REVISAR
+== QAS-09: 0 PASA, 0 FALLA, 0 REVISAR
+== Fin (2026-11-24T15:02:38Z)

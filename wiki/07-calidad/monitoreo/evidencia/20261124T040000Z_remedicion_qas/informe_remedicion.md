@@ -2,17 +2,21 @@
 
 > Evidencia de QA. Resultado en el [SDD §8](../../../../02-arquitectura/SDD.md). Mantiene: QA (Santiago Hernández).
 
-QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z; QAS-33 y 35, 04:05Z a 04:26Z; QAS-18 y 27, 04:46Z a 05:09Z.
+QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z; QAS-33 y 35, 04:05Z a 04:26Z; QAS-18 y 27, 04:46Z a 05:09Z; QAS-02 y 09, 15:03Z a 15:09Z; QAS-06 y 26, el mismo día sobre el código desplegado.
 
 Flutter vigente en QA desde las 05:47Z: `4539d53` ([despliegue](despliegue/despliegue_flutter_24nov_0545z.txt)). Entre `a98fa12` y `4539d53` solo entra MANI-Flutter#168 (SCRUM-1646): cambia colores del tema y no toca rutas, sesión, red ni mensajes. QAS-30, 34 y 35 se midieron con `a98fa12` y no se repitieron. El conteo de QAS-33 se repitió en `4539d53` y da lo mismo: 83 nativos en 31 archivos, 0 agregados.
 
 | QAS | Antes | Ahora |
 |---|---|---|
+| 02 | Parcial | Parcial |
+| 06 | Parcial | Parcial |
+| 09 | Parcial | **Cumple** |
 | 18 | No medido | **Cumple** |
 | 20 | Cumple (con un permiso sobrante) | Cumple |
 | 21 | No cumple | **Parcial** |
 | 22 | Parcial | **Cumple** |
 | 23 | Parcial | **Cumple** |
+| 26 | Parcial | **Cumple** |
 | 27 | No medido | **Cumple** |
 | 30 | Cumple | Cumple |
 | 33 | No cumple | No cumple |
@@ -21,7 +25,57 @@ Flutter vigente en QA desde las 05:47Z: `4539d53` ([despliegue](despliegue/despl
 | 40 | Parcial | **Cumple** |
 | 43 | Parcial | Parcial |
 
-**Conteo:** Cumple 31 · Parcial 7 · No cumple 6 · No medido 1 (05).
+**Conteo:** Cumple 33 · Parcial 5 (02, 06, 12, 21, 43) · No cumple 6 · No medido 1 (05).
+
+## QAS-02: Parcial
+
+[Corrida](qas02_qas09/qas02_09_real_24nov_1503z.txt) ([script](qas02_qas09/qas02_qas09_qa.py), [corredor](qas02_qas09/correr_qas02_09.sh), [observador](qas02_qas09/observador_push.js), [ensayo](qas02_qas09/qas02_09_ensayo_24nov_1501z.txt)). Copias desechables de Core y Dispatch con las imágenes desplegadas y sus mismas variables, sin Kafka y con 2 conexiones. Los servicios de QA no cambiaron. Caída y error usan `mock_falla`; en el timeout, el observador deja sin respuesta al proveedor, porque `mock_falla` no simula esa falla. 31 PASA, 1 FALLA y 3 REVISAR.
+
+| Caso | Orquestar | Aceptar | Cancelar | Intentos por aviso | Ofertas guardadas |
+|---|---|---|---|---|---|
+| Control (`mock`) | 200 en 3,03 s | 200 | 200 | 1 | 2 de 2 |
+| Caída | 200 en 3,24 s | 200 | 200 | 2, ambos fallan | 2 de 2 |
+| Error y reintento | 200 en 3,30 s | 200 | 200 | 2, el segundo entrega | 2 de 2 |
+| Timeout | **503 en 11,96 s** | 200 en 4,36 s | 200 en 3,37 s | 2, sin respuesta | **1 de 2** |
+
+- **Umbral:** 0 operaciones confirmadas revertidas. En los tres casos con falla, aceptar dejó la solicitud ASIGNADA y cancelar la dejó CANCELADA (6 de 6). Los avisos de esas operaciones quedaron en la bandeja del cliente y del aliado.
+- **Reintento:** misma clave de idempotencia y mismo correlation ID en cada intento.
+- **Brecha 1:** la oferta de Dispatch espera al push. `PublishNotificationUseCase` hace hasta 3 intentos de 5 s y Dispatch corta cada llamada a Core a los 10 s (`ClientesDeCore.Espera`). Dispatch publica las ofertas una por una, así que el segundo aliado no la recibió. La recuperación se midió en QAS-09.
+- **Brecha 2:** Core no registra la falla de entrega. Con el correlation ID de cada corrida hay 9 o 10 líneas y ninguna la menciona.
+- **Alcance:** QA corre con `mock`; la brecha 1 se vería con un proveedor real que no responda.
+
+## QAS-06: Parcial
+
+[Tabla API ↔ contrato](qas06/tabla_api_contrato.csv), [resumen](qas06/resumen.txt) y [contract tests](qas06/contract_tests_ci.txt) ([cruce](qas06/qas06_rutas_contrato.py), [rutas de Core](qas06/qas06_rutas_core.js)). Core: rutas que Express registra al cargar `3bb3dd3`. Dispatch y Rules: rutas declaradas en `1fce80e` y `ce513cb`. Solo lectura.
+
+| Servicio | Rutas en código | Operaciones en contrato | Sin contrato |
+|---|---|---|---|
+| Core | 129 | 128 (120 + 8 internas) | `/auth/validate-token` |
+| Dispatch | 9 | 8 | `GET /metrics` |
+| Rules | 5 | 5 | `/actuator/prometheus` (la expone Spring; no entra en el conteo) |
+
+- Ninguna operación de los contratos carece de ruta.
+- `/auth/validate-token` es interna: el Gateway responde 404 desde fuera (comprobado en su CI). `/metrics` de Dispatch y `/actuator/prometheus` de Rules sí se publican, en `/api/v1/dispatch/metrics` y `/api/v1/rules/metrics` (SCRUM-1714), y no tienen contrato. Core sí documenta el suyo.
+- Contract tests en `develop` antes de promover, sobre código idéntico al de `release`: 120/120, 8/8, 8/8 y 5/5. CI del Gateway en verde, con Newman en 19 peticiones y 78 verificaciones sin fallas.
+- MANI-docs#81 suma 140 operaciones y aquí hay 141: falta `/allies/eligible/by-request/{id}` del contrato interno, agregada con SCRUM-1652.
+
+## QAS-09: Cumple
+
+[Corrida](qas02_qas09/qas02_09_real_24nov_1503z.txt): 15 de 15. [Recuperación](qas02_qas09/qas02_09_real_recuperacion_24nov_1508z.txt): 4 de 4.
+
+| Caso | Respuesta | Estado persistido | Recuperación |
+|---|---|---|---|
+| Aliado natural, falla el primer documento | 503 | 0 residuos | Repetir no choca con 409 |
+| Aliado natural, falla el segundo documento | 503 | 0 residuos | Repetir no choca con 409 |
+| Aliado empresa, falla el tercer documento | 503 | 0 residuos | Repetir no choca con 409 |
+| Orquestación con el push colgado | 503 | PENDIENTE, 1 de 2 ofertas | Repetir con el push sano: 2 de 2, sin duplicados |
+
+- Residuos revisados por SELECT en `auth.users`, `usuario`, `aliado`, `aliado_categoria`, `documento_kyc`, `consentimiento_usuario` y el bucket `kyc-documentos`. El segundo intento se hizo con la misma falla para no crear una cuenta.
+- **Límites:** no se probó un Storage que no responde (el cliente de Supabase de Core no fija un timeout propio), ni que falle también la limpieza: `STORAGE_FALLA_DESPUES_DE` cuenta por operación y no permite provocarla; por código, el archivo ya subido quedaría huérfano. Pagos no se ejecutó.
+
+## QAS-26: Cumple
+
+[Pruebas](qas26/pruebas.txt) (58 de 58) y [diff de MANI-Node#148](qas26/diff_stat_node148.txt). Core `3bb3dd3` elige entre `mock` y `sandbox_http` con `PAYMENT_PROVIDER`. Las mismas 4 pruebas de contrato pasan con ambos, y los casos de uso de cobro también. El diff toca `infrastructure/payments`, `config`, `container`, documentación y pruebas; 0 archivos en `domain` o `application`. Corrido en local con Node 25 (CI usa 22) contra un servidor falso: no hubo cobros.
 
 ## QAS-18: Cumple
 

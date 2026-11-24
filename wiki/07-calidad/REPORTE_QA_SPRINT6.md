@@ -1,10 +1,10 @@
 # Reporte de QA del Sprint 6
 
-> **Finalidad:** qué midió QA en el Sprint 6, con qué resultado y qué queda pendiente. **Mantiene:** QA (Santiago Hernández). **Consume:** PO, SM, desarrollo y DevOps. **Se actualiza:** al cierre del sprint. **Versión:** 1.3, 2026-11-24 (remedición tras el despliegue del 24 nov). **HU:** [SCRUM-1692](https://maniservices.atlassian.net/browse/SCRUM-1692). Estados de los QAS: [SDD §8](../02-arquitectura/SDD.md) y [tabla operativa](QAS_45_ESTADO_METODO_EVIDENCIA.md).
+> **Finalidad:** qué midió QA en el Sprint 6, con qué resultado y qué queda pendiente. **Mantiene:** QA (Santiago Hernández). **Consume:** PO, SM, desarrollo y DevOps. **Se actualiza:** al cierre del sprint. **Versión:** 1.4, 2026-11-24 (QAS-02, 06, 09 y 26). **HU:** [SCRUM-1692](https://maniservices.atlassian.net/browse/SCRUM-1692). Estados de los QAS: [SDD §8](../02-arquitectura/SDD.md) y [tabla operativa](QAS_45_ESTADO_METODO_EVIDENCIA.md).
 
 ## 1. Resultado
 
-**Conteo final de los 45 QAS:** Cumple 31 · Parcial 7 · No cumple 6 · No medido 1. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
+**Conteo final de los 45 QAS:** Cumple 33 · Parcial 5 · No cumple 6 · No medido 1. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
 
 El No medido (05) depende de DevOps. Los 6 No cumple tienen causa y responsable en el §5.
 
@@ -12,7 +12,7 @@ La remedición del 22 de noviembre (19:20Z a 00:30Z) se hizo sobre lo promovido 
 
 La remedición del 23 y 24 de noviembre (23:41Z a 01:24Z) se hizo sobre Core `f0c2e87`, Dispatch `4b065e9`, Flutter `d9597a5`, Gateway `45a6c95`, Rules `348f6d9` y Landing `7649832`, con la migración 0044 aplicada. QAS-30 y 44 pasaron a Cumple. Detalle en el [informe de la remedición](monitoreo/evidencia/20261124T012400Z_remedicion_qas/informe_remedicion.md).
 
-La remedición del 24 de noviembre (03:24Z a 04:00Z) se hizo sobre Core `3bb3dd3`, Dispatch `1fce80e`, Flutter `a98fa12`, Gateway `71558b8`, Rules `ce513cb` y Landing `73b1625`, con las migraciones 0045 y 0046 aplicadas. QAS-22, 23 y 40 pasaron a Cumple y QAS-21 a Parcial. Detalle en el [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md).
+La remedición del 24 de noviembre (03:24Z a 04:00Z) se hizo sobre Core `3bb3dd3`, Dispatch `1fce80e`, Flutter `a98fa12`, Gateway `71558b8`, Rules `ce513cb` y Landing `73b1625`, con las migraciones 0045 y 0046 aplicadas. QAS-22, 23 y 40 pasaron a Cumple y QAS-21 a Parcial. Ese mismo día (hasta las 15:09Z) pasaron a Cumple QAS-09 y 26, y QAS-02 y 06 se midieron y siguen en Parcial. Detalle en el [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md).
 
 ## 2. Qué se midió
 
@@ -80,14 +80,14 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
 
 - **DevOps:**
   - ventana para escalar en QA (05);
-  - `mock_falla` y `STORAGE_FALLA` activos en QA (02, 09);
   - llevar a PROD el TLS del 8080 (43);
   - promover el mismo digest a `staging` y `latest` (24);
   - cabeceras CSP y anti-clickjacking (14).
 - **Core:**
   - menos consultas por petición en elegibles y revisión del pool (03, 19);
   - actor y correlation ID en la aprobación de aliado (12);
-  - segundo adaptador de pagos (26);
+  - que un push que no responde no tumbe la orquestación ni corte las ofertas restantes, y registrar en logs la falla de entrega con correlation ID (02);
+  - fijar un timeout a Storage (09, no cambia el estado);
   - quitar de Core el límite de la comisión repetido en `comisionValida()` (21);
   - responder 502 ante una respuesta malformada de Rules (40, no cambia el estado).
 - **Flutter:**
@@ -99,9 +99,9 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
 - **PO y arquitectura:**
   - llevar el criterio WCAG 2.2 AA de `PRODUCT.md` al SDD §7.9 y a la Landing (34);
   - confirmación al aceptar una cotización (hallazgo H5 de T-45);
-  - fusionar MANI-docs#81 (06).
+  - fusionar MANI-docs#81 y decidir si las métricas cuentan como API; si cuentan, documentar `/api/v1/dispatch/metrics` y `/api/v1/rules/metrics` (06).
 - **QA:**
-  - remedir 02, 09 y PROD (43) cuando DevOps habilite cada caso;
+  - remedir 02 con la corrección de Core y PROD (43) cuando DevOps lo habilite;
   - medir 05 cuando DevOps dé la ventana y repetir 18 al resolver el cuello de QAS-19.
 
 El detalle de cada pendiente, con su posible solución, está en la [tabla de los 45 QAS](QAS_45_ESTADO_METODO_EVIDENCIA.md).

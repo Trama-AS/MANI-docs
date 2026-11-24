@@ -4,7 +4,7 @@
 
 ## 1. Resultado
 
-**Conteo final de los 45 QAS:** Cumple 32 · Parcial 6 · No cumple 6 · No medido 1 (QAS-30 pasó de Cumple a Parcial el 24 nov por el registro de cliente empresa, SCRUM-1717). Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
+**Conteo final de los 45 QAS:** Cumple 33 · Parcial 5 · No cumple 6 · No medido 1. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
 
 El No medido (05) depende de DevOps. Los 6 No cumple tienen causa y responsable en el §5.
 

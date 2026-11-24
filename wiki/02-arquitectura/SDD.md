@@ -968,33 +968,31 @@ Resultado más reciente de QA para cada escenario, con corte del **24 de noviemb
 
 ## 9.1 Producción
 
-[![Vista de despliegue de producción: borde con balanceo, clúster Kubernetes, Supabase por dominio, pipeline de CI/CD y observabilidad](diagrams/c4/despliegue/despliegue-prod.png)](diagrams/c4/despliegue/despliegue-prod.png)
+[![Vista de despliegue de producción: dispositivo, borde, servicios con su orquestador, Supabase, CI/CD y observabilidad](diagrams/c4/despliegue/despliegue-prod.png)](diagrams/c4/despliegue/despliegue-prod.png)
 
 > **Figura 12 — Despliegue de producción.** Generada desde la vista `despliegue-prod` de [`workspace.dsl`](diagrams/c4/workspace.dsl); imagen en [`diagrams/c4/despliegue/despliegue-prod.png`](diagrams/c4/despliegue/despliegue-prod.png).
 
 ```text
-Web / Mobile Users → DNS + TLS + balanceador → NGINX Ingress / API Gateway (2 réplicas)
-                                          ↓
-Clúster Kubernetes — producción
-  Namespace de servicios
-    Rules — decide (Java) · Dispatch — asigna (.NET) · Core — opera (Node.js)
-    2 réplicas mínimo cada uno, HPA hasta 6
-  Gestor de secretos → inyecta credenciales y configuración fuera de la imagen
-                                          ↓
-Supabase — proyecto productivo
-  PostgreSQL por dominio: reglas · despacho · core (RLS por tenant)
-  Auth · Storage (bucket privado) · Realtime
-                                          ↓
-Core → FCM/APNs + Operador de pagos
-PostgreSQL → CDC/ELT → Data Warehouse
+Dispositivo del usuario (Flutter)
+        ↓ HTTPS
+Borde: API Gateway (NGINX) — TLS, validación del token y enrutamiento
+        ↓
+Servicios — Docker Compose hoy, Kubernetes como objetivo
+  Rules (Java) · Dispatch (.NET) · Core (Node.js) · Bus de eventos (Kafka)
+  Orquestador → recibe la imagen validada y la despliega
+        ↓
+Supabase — plataforma administrada
+  PostgreSQL con RLS por tenant · Auth · Storage · Realtime
 
-GitHub Actions → pipeline de calidad y seguridad → registro de imágenes → clúster
-Prometheus → recolecta métricas del Gateway y de los pods → Grafana (dashboards y alertas)
+CI/CD: GitHub Actions → pruebas, análisis, build y registro de imágenes → orquestador
+Observabilidad: Prometheus, Grafana y Loki → recolectan de los servicios
 ```
 
 La vista incluye deliberadamente **de dónde sale** lo que corre —el pipeline promueve exactamente la misma imagen verificada— y **quién lo vigila**. Ambas cosas son parte del despliegue y no se deducen de la estructura lógica.
 
 ### Reglas físicas
+
+Las reglas de réplicas, probes, requests/limits y HPA son las del objetivo en Kubernetes; con Docker Compose el escalado es manual (§10).
 
 - contenedores inmutables;
 - al menos dos réplicas para servicios críticos en producción;

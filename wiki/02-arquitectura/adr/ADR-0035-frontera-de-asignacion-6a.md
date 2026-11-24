@@ -1,6 +1,6 @@
 # ADR-0035 — Frontera de la asignación: Dispatch decide y Core escribe (decisión 6A)
 
-- **Estado:** Propuesto
+- **Estado:** `Aceptado` · **ratificado por la Scrum Master (Sara Albarracín) el 2026-11-20**, sin sesión de Mesa de Arquitectura. ADR-0003 reserva la ratificación a la Mesa; al no haberse convocado ninguna en el Sprint 6 y con la entrega en curso, la SM ratifica para que la decisión no quede sin respaldo formal mientras el código ya la cumple. **La Mesa puede confirmarla o revertirla** cuando se reúna.
 - **Decisión de:** límites entre servicios y propiedad del estado del servicio
 - **Proponente:** Sara Albarracín Niño (Scrum Master), decisión 6A del 2026-10-26
 - **Autor:** Santiago Hernández Barbosa
@@ -91,7 +91,38 @@ Se adopta la alternativa **B**.
 - `develop` de MANI-Node el 28-oct-2026 (`e9d5e58`): 1252 de 1252, 0 omitidas.
 - La certificación en el ambiente QA depende de TEC-16 (SCRUM-1463).
 
-## Pendiente para aprobar
+## Ratificación
 
-Sesión de Mesa de Arquitectura según ADR-0003 §2 y `GOBIERNO_DEL_EQUIPO.md` §5. Hasta entonces este ADR queda en
-`Propuesto`; la decisión 6A de la Scrum Master rige el trabajo del sprint mientras tanto.
+**Ratificado el 2026-11-20 por la Scrum Master (Sara Albarracín), sin sesión de Mesa de Arquitectura.**
+
+ADR-0003 §2 y `GOBIERNO_DEL_EQUIPO.md` §5 reservan la ratificación de una decisión estructural a la Mesa de
+Arquitectura. **No se convocó ninguna sesión en el Sprint 6** y la entrega está en curso, de modo que la alternativa
+real no era ratificar en Mesa sino llegar a la sustentación con una decisión que el código ya cumple y que
+formalmente nadie había aprobado.
+
+Lo que sostiene la ratificación:
+
+- La decisión 6A es de la propia Scrum Master, tomada el 2026-10-26, y ha regido el trabajo del sprint desde entonces.
+- La implementación de referencia está **fusionada en `develop`** en MANI-Node#80, MANI-.NET#16, MANI-APIGateway#41 y
+  MANI-Flutter#76, con la verificación de §Verificación en verde.
+- Existe precedente propio: el 2026-10-23 la misma Scrum Master ratificó así
+  [ADR-0032](ADR-0032-identidad-de-servicio-en-base-de-datos.md), y lo dejó anotado en su cabecera.
+
+**La objeción que esta ratificación tiene en contra, dicha completa.** El README de la carpeta sostuvo hasta hoy que
+la ratificación de este ADR «no la puede hacer la Scrum Master, que es la proponente del ADR». Es cierto que lo es: la
+decisión 6A es suya, del 2026-10-26. Ratificar lo que uno mismo propuso concentra en una persona la propuesta y su
+aprobación, y eso es exactamente lo que ADR-0003 quiere evitar al reservar la ratificación a un órgano colegiado.
+
+Se ratifica igual, y por eso queda escrito aquí y no omitido. El motivo es que la alternativa no era una ratificación
+imparcial sino **ninguna**: no hay Mesa convocada y la entrega está en curso. Entre dejar la decisión sin respaldo
+formal mientras cuatro repositorios ya la implementan, y respaldarla declarando el conflicto, se elige lo segundo.
+**Quién puede subsanarlo sin esperar a la Mesa:** un segundo revisor técnico que no sea la proponente —Santiago
+Hernández, autor de la ficha, o Juan Sebastián Álvarez, autor de ADR-0032— dejando su visto bueno en este apartado.
+
+**Esta ratificación es reversible.** Cuando la Mesa se reúna puede confirmarla o revertirla; si la revierte, el ADR
+vuelve a `Propuesto` y queda constancia aquí de ambas decisiones, sin borrar ninguna.
+
+Lo que la ratificación **no** resuelve: la certificación en el ambiente QA sigue dependiendo de TEC-16
+([SCRUM-1463](https://maniservices.atlassian.net/browse/SCRUM-1463)), y el pendiente P1 de SAD §7.4 solo se cierra
+cuando la asignación idempotente quede escrita en el SAD
+([SCRUM-1704](https://maniservices.atlassian.net/browse/SCRUM-1704)).

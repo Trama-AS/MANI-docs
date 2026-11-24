@@ -41,3 +41,20 @@ Qué corregir (Flutter): declarar `locale: Locale('es', 'CO')` y `supportedLocal
 | Archivo demasiado grande en el registro | **No orienta**: el mensaje no dice el límite de 10 MB | Revisión heurística de T-45 (H9) |
 
 Resultado: **No cumple**. 3 de 6 casos orientan. Qué corregir: mostrar un aviso al redirigir por rol («Esa sección es para…»), un mensaje para 5xx que diga qué hacer si persiste, y el límite en el error de tamaño.
+
+## Actualización del 24 de noviembre
+
+Medición de QA (Santiago Hernández) en MANI-QA con lo desplegado el 24 nov: Flutter Web en `https://10.43.100.141:8080` y Landing en `http://10.43.100.141:3001`. Contraste medido con `getComputedStyle` sobre la página servida, sin Lighthouse ni lector de pantalla real. Resultado: **QAS-34 sigue en No cumple**, con avances.
+
+| Criterio | Antes (23 nov) | Ahora (24 nov) |
+|---|---|---|
+| 1.4.3 Landing, botón principal | 3,68:1 | **Cumple**: 4,76:1 (blanco sobre `#CC441C`). «Solicitar Servicio» 7,82:1; «Soy cliente» y «Soy aliado» 14,22:1 |
+| 1.4.3 Landing, todos los textos | 33 de 316 bajo el umbral | **No cumple**: 18 de 319. Encabezados en `#E4572E` sobre claro a 3,68:1 y texto amarillo `#F2B705` sobre blanco a 1,82:1 |
+| 2.4.7 Foco visible en Flutter | No cumplía en «Ingresar» | **Cumple**: anillo doble color durazno en «Ingresar» y «Soy cliente» (SCRUM-1647) |
+| Áreas táctiles en el login de Flutter | Sin medir | 48 a 50 px de alto en los 7 botones y en los campos |
+| Árbol de accesibilidad de Flutter | Campos nombrados por su ejemplo | Botones con nombre («Mostrar contraseña», «Ingresar», «Soy cliente»...). Los campos de texto no se volvieron a medir: había una sesión abierta que redirigía el login |
+| 3.1.1 Idioma en Flutter | `en-US` | **No cumple**: sigue `en-US` |
+| 1.4.4 Zoom en celular | `user-scalable=no` | **No cumple**: el viewport sigue con `maximum-scale=1.0, user-scalable=no` |
+| `prefers-reduced-motion` en la Landing | Sin regla | **No cumple**: 0 reglas. En Flutter, el código respeta `disableAnimations` y el `index.html` trae la regla; no se vio en vivo |
+
+Qué falta para pasar a Cumple: declarar `locale` en `MaterialApp` (3.1.1), quitar `user-scalable=no` (1.4.4), oscurecer el naranja de los encabezados y no usar el amarillo como texto en la Landing (1.4.3), agregar `@media (prefers-reduced-motion: reduce)` en la Landing, y volver a medir el nombre de los campos del login.

@@ -1,0 +1,161 @@
+{
+ "consultado": "2026-11-15T19:20:01.021Z",
+ "mani-java-pr": {
+  "gate": "MANI ADR-0005",
+  "status": "ERROR",
+  "ignoredConditions": true,
+  "analisis": "2026-11-15T18:24:29+0000 ab44c15",
+  "condiciones": [
+   {
+    "metric": "new_coverage",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "LT",
+    "umbral": "80"
+   },
+   {
+    "metric": "new_duplicated_lines_density",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "GT",
+    "umbral": "3"
+   },
+   {
+    "metric": "new_violations",
+    "status": "ERROR",
+    "actual": "1",
+    "op": "GT",
+    "umbral": "0"
+   }
+  ],
+  "issues_nuevos": [
+   {
+    "rule": "java:S3923",
+    "severity": "MAJOR",
+    "file": "src/main/java/com/trama/mani/rules/evidencia/GateRojo.java",
+    "line": 13,
+    "creado": "2026-11-15T18:20:06+0000"
+   }
+  ]
+ },
+ "mani-dotnet-pr": {
+  "gate": "MANI ADR-0005",
+  "status": "ERROR",
+  "ignoredConditions": true,
+  "analisis": "2026-11-15T18:23:41+0000 baa73e0",
+  "condiciones": [
+   {
+    "metric": "new_coverage",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "LT",
+    "umbral": "80"
+   },
+   {
+    "metric": "new_duplicated_lines_density",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "GT",
+    "umbral": "3"
+   },
+   {
+    "metric": "new_violations",
+    "status": "ERROR",
+    "actual": "2",
+    "op": "GT",
+    "umbral": "0"
+   }
+  ],
+  "issues_nuevos": [
+   {
+    "rule": "external_roslyn:CS0414",
+    "severity": "MAJOR",
+    "file": "Evidencia/GateRojo.cs",
+    "line": 7,
+    "creado": "2026-11-15T18:20:10+0000"
+   },
+   {
+    "rule": "csharpsquid:S3923",
+    "severity": "MAJOR",
+    "file": "Evidencia/GateRojo.cs",
+    "line": 12,
+    "creado": "2026-11-15T18:20:10+0000"
+   }
+  ]
+ },
+ "mani-landing-pr": {
+  "gate": "MANI ADR-0005",
+  "status": "ERROR",
+  "ignoredConditions": true,
+  "analisis": "2026-11-15T18:22:01+0000 94c532e",
+  "condiciones": [
+   {
+    "metric": "new_coverage",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "LT",
+    "umbral": "80"
+   },
+   {
+    "metric": "new_duplicated_lines_density",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "GT",
+    "umbral": "3"
+   },
+   {
+    "metric": "new_violations",
+    "status": "ERROR",
+    "actual": "1",
+    "op": "GT",
+    "umbral": "0"
+   }
+  ],
+  "issues_nuevos": [
+   {
+    "rule": "javascript:S3923",
+    "severity": "MAJOR",
+    "file": "src/evidencia/gateRojo.js",
+    "line": 4,
+    "creado": "2026-11-15T18:20:16+0000"
+   }
+  ]
+ },
+ "mani-apigateway-pr": {
+  "gate": "MANI ADR-0005",
+  "status": "ERROR",
+  "ignoredConditions": false,
+  "analisis": "2026-11-15T19:18:48+0000 cdf480d",
+  "condiciones": [
+   {
+    "metric": "new_duplicated_lines_density",
+    "status": "OK",
+    "actual": "0.0",
+    "op": "GT",
+    "umbral": "3"
+   },
+   {
+    "metric": "new_violations",
+    "status": "ERROR",
+    "actual": "1",
+    "op": "GT",
+    "umbral": "0"
+   }
+  ],
+  "issues_nuevos": [
+   {
+    "rule": "javascript:S3923",
+    "severity": "MAJOR",
+    "file": "scripts/evidencia/gate_rojo.js",
+    "line": 4,
+    "creado": "2026-11-15T19:18:21+0000"
+   }
+  ]
+ },
+ "gate_MANI_ADR_0005": [
+  "new_security_hotspots_reviewed LT 100",
+  "new_duplicated_lines_density GT 3",
+  "new_coverage LT 80",
+  "new_violations GT 0"
+ ]
+}

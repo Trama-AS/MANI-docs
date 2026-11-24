@@ -1,0 +1,89 @@
+== Fecha 2026-11-20T19:14:32Z
+== Antes
+-- migraciones registradas (0037 a 0042)
+version | applied_at
+0037 | 2026-11-05 18:53:44.270977+00
+0038 | 2026-11-05 18:53:46.455387+00
+0039 | 2026-11-05 20:14:09.187407+00
+004 | 2026-09-23 21:20:32.069963+00
+(4 rows)
+-- columnas nuevas presentes
+table_name | column_name
+(0 rows)
+-- triggers de inmutabilidad y politicas de documento_legal
+tgname
+(0 rows)
+policyname | cmd | roles | qual
+Permitir todo a service_role en documento_legal | ALL | {service_role} | true
+documento_legal_alta | INSERT | {mani_core_svc} | 
+documento_legal_lectura | SELECT | {anon,authenticated,mani_core_svc} | ((is_active = true) AND ((tenant_id IS NULL) OR (tenant_id = app.tenant_id())))
+(3 rows)
+-- documento_legal por tenant (NULL = global)
+tenant | activos
+10000000-0000-4000-8000-000000000011 | 2
+10000000-0000-4000-8000-000000000021 | 2
+10000000-0000-4000-8000-900000000001 | 2
+NULL | 2
+(4 rows)
+== Migraciones 0040 a 0042 en una transaccion, termina en ROLLBACK
+BEGIN
+NOTICE:  relation "schema_migrations" already exists, skipping
+CREATE TABLE
+DO
+INSERT 0 1
+ALTER TABLE
+COMMENT
+INSERT 0 1
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE FUNCTION
+NOTICE:  trigger "trg_evento_servicio_inmutable" for relation "evento_servicio" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+DROP TRIGGER
+NOTICE:  trigger "trg_evento_servicio_sin_truncate" for relation "evento_servicio" does not exist, skipping
+CREATE TRIGGER
+INSERT 0 1
+-- dentro de la transaccion
+registradas
+0040 0041 0042
+(1 row)
+ROLLBACK
+-- ROLLBACK hecho
+== Despues
+-- migraciones registradas (0037 a 0042)
+version | applied_at
+0037 | 2026-11-05 18:53:44.270977+00
+0038 | 2026-11-05 18:53:46.455387+00
+0039 | 2026-11-05 20:14:09.187407+00
+004 | 2026-09-23 21:20:32.069963+00
+(4 rows)
+-- columnas nuevas presentes
+table_name | column_name
+(0 rows)
+-- triggers de inmutabilidad y politicas de documento_legal
+tgname
+(0 rows)
+policyname | cmd | roles | qual
+Permitir todo a service_role en documento_legal | ALL | {service_role} | true
+documento_legal_alta | INSERT | {mani_core_svc} | 
+documento_legal_lectura | SELECT | {anon,authenticated,mani_core_svc} | ((is_active = true) AND ((tenant_id IS NULL) OR (tenant_id = app.tenant_id())))
+(3 rows)
+-- documento_legal por tenant (NULL = global)
+tenant | activos
+10000000-0000-4000-8000-000000000011 | 2
+10000000-0000-4000-8000-000000000021 | 2
+10000000-0000-4000-8000-900000000001 | 2
+NULL | 2
+(4 rows)
+== Fin

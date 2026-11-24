@@ -1,0 +1,23 @@
+== QAS-11/37/42 2026-11-22T03:18:41Z, Gateway http://10.43.100.141:8080, correlation qa-qas11-0318-*
+solicitud A 6ef93e76-9749-401a-a3a5-2499a0876931: estado ASIGNADA
+{"qas": "37", "caso": "aliado cotiza la solicitud ASIGNADA", "status": 201, "code": null, "esperado": "200/201", "ok": true}
+cotizacion 73cecd30-afe0-4dbb-baab-0794474e0504: estado solicitud COTIZANDO
+{"qas": "37", "caso": "segunda cotizacion con una pendiente", "status": 409, "code": "MANI-COT-409P", "esperado": "409 MANI-COT-409P", "ok": true, "estado_antes": "COTIZANDO", "estado_despues": "COTIZANDO"}
+{"qas": "37", "caso": "pagar una cotizacion PENDIENTE", "status": 409, "code": "MANI-PAG-409E", "esperado": "409 MANI-PAG-409E", "ok": true, "estado_antes": "COTIZANDO", "estado_despues": "COTIZANDO"}
+{"qas": "37", "caso": "cliente acepta la cotizacion", "status": 200, "code": null, "esperado": "200", "ok": true}
+estado solicitud tras aceptar: ACEPTADA
+{"qas": "37", "caso": "rechazar una cotizacion ya ACEPTADA", "status": 409, "code": "MANI-COT-409R", "esperado": "409 MANI-COT-409R", "ok": true, "estado_antes": "ACEPTADA", "estado_despues": "ACEPTADA"}
+{"qas": "37", "caso": "cotizar una solicitud ACEPTADA", "status": 409, "code": "MANI-COT-409E", "esperado": "409 MANI-COT-409E", "ok": true, "estado_antes": "ACEPTADA", "estado_despues": "ACEPTADA"}
+{"qas": "11", "caso": "pago sandbox APROBADO (mock, sin dinero real)", "status": 201, "code": null, "esperado": "201", "ok": true}
+pago fa6b63c9-3a9e-4674-a370-2bd61a60fd08: estado APROBADO, simulado True, proveedor mock, monto 150000
+{"qas": "42", "caso": "reintento del pago, misma clave y cuerpo (mismo id: True)", "status": 200, "code": null, "esperado": "200", "ok": true}
+{"qas": "42", "caso": "pago con la misma clave y otro escenario", "status": 409, "code": "MANI-PAG-409K", "esperado": "409 MANI-PAG-409K", "ok": true}
+{"qas": "37", "caso": "segundo pago con otra clave sobre cotizacion pagada", "status": 409, "code": "MANI-PAG-409A", "esperado": "409 MANI-PAG-409A", "ok": true, "estado_antes": "ACEPTADA", "estado_despues": "ACEPTADA"}
+{"qas": "42", "caso": "crear solicitud con clave de idempotencia", "status": 201, "code": null, "esperado": "201/200", "ok": true}
+{"qas": "42", "caso": "reintento: misma clave y cuerpo (mismo id: True)", "status": 200, "code": null, "esperado": "200/201", "ok": true}
+{"qas": "42", "caso": "misma clave con otra descripcion", "status": 409, "code": "MANI-SOL-409K", "esperado": "409 MANI-SOL-409K", "ok": true}
+{"qas": "37", "caso": "cancelar solicitud PENDIENTE", "status": 200, "code": null, "esperado": "200", "ok": true}
+{"qas": "37", "caso": "cancelar una solicitud CANCELADA", "status": 409, "code": "MANI-SOL-409C", "esperado": "409 MANI-SOL-409C", "ok": true, "estado_antes": "CANCELADA", "estado_despues": "CANCELADA"}
+{"qas": "37", "caso": "aliado acepta una solicitud CANCELADA", "status": 409, "code": "MANI-SOL-409E", "esperado": "403/404/409", "ok": true, "estado_antes": "CANCELADA", "estado_despues": "CANCELADA"}
+{"qas": "37", "caso": "aliado cotiza una solicitud CANCELADA sin asignar", "status": 403, "code": "MANI-COT-403A", "esperado": "403/404/409", "ok": true, "estado_antes": "CANCELADA", "estado_despues": "CANCELADA"}
+== resumen: 17 de 17 casos como se esperaba

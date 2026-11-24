@@ -1,8 +1,17 @@
 # Estructura de MANI-Docs
 
-[← 04 · Repositorios](README.md) · [Índice](../Home.md)
+[← 03 · Repositorios](README.md) · [Índice](../Home.md)
 
 **Fuente:** árbol real del repositorio · [`adr/ADR-0001`](../02-arquitectura/adr/ADR-0001-gestion-documental.md) · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §3.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Árbol real de este repositorio y dónde poner cada documento |
+| **Mantiene** | Responsable de la carpeta 03 |
+| **Consume** | Quien escribe o mueve documentación |
+| **Cada cuánto se actualiza** | Cuando se crea, mueve o retira una carpeta de `wiki/` |
+| **Versión y fecha** | 1.1 · 2026-11-23 ([SCRUM-1693](https://maniservices.atlassian.net/browse/SCRUM-1693)) |
+| **Origen y destino** | ADR-0001 (gestión documental) → esta página → cada carpeta numerada |
 
 ## Árbol actual
 
@@ -33,7 +42,7 @@ MANI-Docs/
     │       ├── flujos/            flujos de negocio y dinamicos/
     │       ├── MOCKUPS/           mockups de interfaz — fuera de ADR-0008
     │       └── TechRadar.png      lo referencia el TECH_RADAR — fuera de ADR-0008
-    ├── 03-repositorios/           multirepo, versionado y esta página
+    ├── 03-repositorios/           multirepo, ramas y protección, versionado y esta página
     ├── 04-proceso/                ramas, PR, CI/CD, ambientes, DoR/DoD, trabajo con IA
     ├── 05-backlog/                BACKLOG_MANI.md y el libro de módulos
     ├── 06-gobernanza/

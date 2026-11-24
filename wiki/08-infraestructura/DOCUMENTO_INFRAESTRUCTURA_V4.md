@@ -220,7 +220,7 @@ Implementado en el Sprint 5 por TEC-14 (hallazgo R-4 de la revisión de segurida
 
   **Por qué esto resolvió una contradicción de tres documentos.** El informe de DevOps decía que la observabilidad era futura, el análisis de monitoreo decía que ya existía, y el SDD §8 decía que no estaba aprovisionada. Las tres tenían una parte de razón: existe, pero no en la máquina donde todos la buscaban. Es la fila **D8** de [`VALIDACION_HU-VAL-01.md`](VALIDACION_HU-VAL-01.md), cerrada el 2026-11-19.
 
-  **Lo que sigue sin estar:** las alertas de autenticación de este apartado notifican a Alertmanager, pero **a dónde escala desde ahí no está escrito**, y el escenario de disponibilidad (QAS-16) sigue sin medir porque exige una serie de un mes calendario que todavía no se ha acumulado. Que exista el recolector no equivale a tener la medición.
+  **Lo que sigue sin estar:** Alertmanager ya enruta las notificaciones SMTP hacia **Mailpit local** (`127.0.0.1:1025`, UI `127.0.0.1:8025`, receptor `email-operaciones`, con `send_resolved: true` verificado en [`05-monitoreo-y-politicas-devops.md`](../08-infraestructura/05-monitoreo-y-politicas-devops.md)); queda pendiente únicamente conectar un `webhook_config` externo (Slack/Teams) cuando el equipo defina canal y entregue el secreto fuera de Git. Por su parte, el escenario de disponibilidad (`QAS-16`) sigue sin medir porque exige una serie de un mes calendario que todavía no se ha acumulado. Que exista el recolector no equivale a tener la medición.
 
 ---
 

@@ -1,0 +1,63 @@
+== 1. Conexión a base por contenedor (host, puerto, usuario; sin contraseña) ==
+mani-flutter-web  SUPABASE_URL=https://hpsxdotaizzclkeufzct.supabase.co
+mani-dispatch-service  ConnectionStrings__DefaultConnection=Host=aws-0-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=mani_dispatch_svc.hpsxdotaizzclkeufzct;Password=***;SslMode=Require;TrustServerCertificate=true;Maximum Pool Size=10
+mani-dispatch-service  SUPABASE_URL=https://hpsxdotaizzclkeufzct.supabase.co
+mani-dispatch-service  DATABASE_URL=postgresql://mani_core_svc.hpsxdotaizzclkeufzct:***@aws-0-us-east-2.pooler.supabase.com:5432/postgres
+mani-core-service  SUPABASE_URL=https://hpsxdotaizzclkeufzct.supabase.co
+mani-core-service  DATABASE_URL=postgresql://mani_core_svc.hpsxdotaizzclkeufzct:***@aws-0-us-east-2.pooler.supabase.com:5432/postgres
+mani-core-service  DATABASE_POOL_MAX=30
+
+== 2. Creación de los contenedores y del .env (¿cambió algo hace poco?) ==
+mani-api-gateway	Up 3 hours	ghcr.io/trama-as/mani-apigateway:staging
+mani-flutter-web	Up 26 hours	ghcr.io/trama-as/mani-flutter:staging
+mani-dispatch-service	Up 26 hours	ghcr.io/trama-as/mani-dotnet:staging
+mani-rules-service	Up 26 hours	ghcr.io/trama-as/mani-java:staging
+mani-core-service	Up 26 hours	ghcr.io/trama-as/mani-node:staging
+mani-qa-node-exporter	Up 6 days	prom/node-exporter:v1.8.2
+mani-qa-cadvisor	Up 6 days (healthy)	gcr.io/cadvisor/cadvisor:v0.49.1
+mani-qa-postgres-exporter	Up 6 days	quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+mani-qa-nginxlog-exporter	Up 6 days	quay.io/martinhelmich/prometheus-nginxlog-exporter:v1.11.0
+mani-qa-nginx-exporter	Up 6 days	nginx/nginx-prometheus-exporter:1.3.0
+mani-qa-promtail	Up 6 days	grafana/promtail:3.1.1
+mani-kafka	Up 6 days (healthy)	apache/kafka:3.8.0
+mani-landing-web	Up 3 hours	ghcr.io/trama-as/mani-landing:staging
+
+== 3. EMAXCONNSESSION por hora en el Core (últimas 48 h) ==
+   2232 2026-11-20T19
+      4 2026-11-21T19
+      2 2026-11-21T21
+
+== 4. Nueva petición de hoy (correlationId bea96af4…) ==
+[2026-11-21T21:36:31.198Z] [GET] /api/v1/auth/validate-token - Correlation: bea96af4-598c-4b0d-b99c-f725c9e97d20
+[2026-11-21T21:36:31.201Z] [GET] /aliados/verificacion - Correlation: bea96af4-598c-4b0d-b99c-f725c9e97d20
+DomainError: Error consultando documentos KYC
+    ... 3 lines matching cause stack trace ...
+  cause: error: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15
+
+== 5. Quién ocupa las conexiones de la base (pg_stat_activity, vía el Core) ==
+┌─────────┬───────────────────────┬──────────────────────────┬──────────────────────────────────────────┬──────────┬────┐
+│ (index) │ usename               │ app                      │ ip                                       │ state    │ n  │
+├─────────┼───────────────────────┼──────────────────────────┼──────────────────────────────────────────┼──────────┼────┤
+│ 0       │ 'mani_core_svc'       │ 'Supavisor'              │ '2600:1f16:1cd0:3301:fbde:32b5:abbe:713' │ 'idle'   │ 14 │
+│ 1       │ 'mani_core_svc'       │ 'Supavisor'              │ '2600:1f16:1cd0:3301:fbde:32b5:abbe:713' │ 'active' │ 1  │
+│ 2       │ 'pgbouncer'           │ '(sin nombre)'           │ 'local'                                  │ null     │ 1  │
+│ 3       │ 'pgbouncer'           │ 'Supavisor (auth_query)' │ 'local'                                  │ null     │ 1  │
+│ 4       │ 'postgres'            │ 'pg_net 0.20.4'          │ 'local'                                  │ null     │ 1  │
+│ 5       │ 'supabase_admin'      │ '(sin nombre)'           │ 'local'                                  │ null     │ 1  │
+│ 6       │ 'supabase_admin'      │ 'pg_cron scheduler'      │ 'local'                                  │ null     │ 1  │
+│ 7       │ 'supabase_admin'      │ 'postgres_exporter'      │ 'local'                                  │ null     │ 1  │
+│ 8       │ 'authenticator'       │ 'PostgREST 14.5'         │ 'local'                                  │ null     │ 1  │
+│ 9       │ 'supabase_auth_admin' │ '(sin nombre)'           │ 'local'                                  │ null     │ 1  │
+└─────────┴───────────────────────┴──────────────────────────┴──────────────────────────────────────────┴──────────┴────┘
+max_connections 60
+
+== 6. Cantidad de aliados del tenant (el caso de uso abre 3 conexiones por aliado) ==
+ERROR: 42P01 relation "aliados" does not exist
+
+== Lectura de QA (21 nov 21:40Z) ==
+- Todos los servicios apuntan al mismo proyecto de Supabase, con usuarios propios por servicio (mani_core_svc, mani_dispatch_svc), por el pooler en modo sesión (puerto 5432).
+- El Core en QA tiene DATABASE_POOL_MAX=30 (el valor por defecto es 5), pero el pooler en modo sesión solo deja 15 clientes por usuario. Las 15 conexiones de mani_core_svc son todas del propio Core (14 idle y 1 activa).
+- Cuando una petición necesita más conexiones a la vez de las que hay libres (verificación de aliados abre 3 por aliado), el pool de Node intenta abrir la número 16 y el pooler la rechaza: EMAXCONNSESSION.
+- 2232 errores EMAXCONNSESSION el 20 nov entre 19:00 y 19:59Z, la hora de la prueba de carga de T-42 (SCRUM-1679).
+- Dispatch tiene además una variable DATABASE_URL con el usuario mani_core_svc; si la usa, comparte esos 15 cupos.
+- La consulta 6 falló porque la tabla no se llama "aliados"; no cambia la conclusión.

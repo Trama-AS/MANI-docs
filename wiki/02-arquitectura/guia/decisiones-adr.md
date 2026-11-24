@@ -4,7 +4,9 @@
 
 **Fuente:** los archivos de [`adr/`](../adr/) · [`GOBIERNO_DEL_EQUIPO.md`](../../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §5 · [`adr/ADR-0003`](../adr/ADR-0003-mesa-arquitectura.md).
 
-**28 ADR en el registro**, numerados `ADR-0001` a `ADR-0036` con huecos: 24 `Aceptado` (vinculantes), 1 `Rechazado` (ADR-0014) y 3 `Propuesto` (ADR-0034, ADR-0035 y ADR-0036, pendientes de Mesa). Ningún ADR queda en `Superseded`.
+**30 ADR en el registro**, numerados `ADR-0001` a `ADR-0038` con huecos: 27 `Aceptado` (vinculantes), 1 `Rechazado` (ADR-0014) y 2 `Propuesto` (ADR-0034 y ADR-0035, pendientes de Mesa). Ningún ADR queda en `Superseded`. Conteo hecho el 2026-11-22 sobre el campo `Estado` de cada archivo de [`adr/`](../adr/).
+
+**Cuatro decisiones ratificadas por la Scrum Master sin sesión de Mesa el 2026-11-19:** [ADR-0036](../adr/ADR-0036-pertenencia-del-cliente-a-tenant.md), [ADR-0037](../adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md), [ADR-0038](../adr/ADR-0038-logs-centralizados-y-trazas-loki.md) y la enmienda de [ADR-0006](../adr/ADR-0006-observabilidad.md). En el Sprint 6 no se convocó ninguna Mesa; cada ficha declara quién, cuándo y por qué, y que **la Mesa puede confirmarla o revertirla** cuando se reúna. [ADR-0035](../adr/ADR-0035-frontera-de-asignacion-6a.md) sigue `Propuesto` porque su proponente es la propia Scrum Master y no puede ratificarlo.
 
 ## Cómo funciona un ADR en MANI
 
@@ -30,7 +32,7 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 |---|---|
 | `Aceptado` | Vinculante |
 | `Rechazado` | Evaluado y descartado; no se reintroduce sin nueva decisión |
-| `Propuesto` | Redactado y a la espera de Mesa; no vincula todavía. Hoy ADR-0034, ADR-0035 y ADR-0036 |
+| `Propuesto` | Redactado y a la espera de Mesa; no vincula todavía. Hoy ADR-0034 y ADR-0035 |
 
 `Superseded` ya no se usa en el registro: los seis ADR que lo tenían se retiraron el 2026-10-23. Los diez que estaban en `Propuesto` se ratificaron esa misma fecha, y `Propuesto` sigue siendo el estado de salida de todo ADR nuevo mientras la Mesa no lo apruebe.
 
@@ -64,9 +66,9 @@ Una respuesta de un asistente de IA, un mensaje de chat o una propuesta en un PR
 | [ADR-0032](../adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md) | Identidad de servicio en base de datos | RNF-01 |
 | [ADR-0034](../adr/ADR-0034-contrato-comun-proveedores-externos.md) | Contrato y política comunes para proveedores externos de pagos y notificaciones — `Propuesto` | RF-20, RF-24 |
 | [ADR-0035](../adr/ADR-0035-frontera-de-asignacion-6a.md) | Frontera de la asignación: Dispatch decide y Core escribe (decisión 6A) — `Propuesto`; reemplazaría la fila de `AliadoAsignado` en [ADR-0029](../adr/ADR-0029-comunicacion-asincrona-kafka.md) §1 si la Mesa lo aprueba | RF-14, RNF-03, RNF-05 |
-| [ADR-0036](../adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) | Pertenencia del cliente a un tenant — `Propuesto`; decide la PO y ratifica la Mesa. Condiciona a [ADR-0018](../adr/ADR-0018-identificacion-tenant.md) y a las políticas RLS que dependen de `tenant_id` ([SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637), [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) | RF-01, RF-08, RNF-01 |
-| [ADR-0037](../adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) | Cifrado de datos personales en reposo — decidido por la SM (`Opción A`: cifrado del medio + exclusión documentada + 0 PII en logs), pendiente de ratificación en Mesa; acreditación técnica M4 y plan respaldo/migración condicional completados el `2026-11-14` ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699), [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383)) | RNF-13 (prop.), QAS-46 (prop.) |
-| [ADR-0038](../adr/ADR-0038-logs-centralizados-y-trazas-loki.md) | Logs centralizados y trazabilidad por `correlation_id` con Grafana Loki — `Propuesto` (completa el hueco declarado en [ADR-0006](../adr/ADR-0006-observabilidad.md) tras retirar Datadog, [SCRUM-1676](https://maniservices.atlassian.net/browse/SCRUM-1676)) | RNF-04, QAS-16 |
+| [ADR-0036](../adr/ADR-0036-pertenencia-del-cliente-a-tenant.md) | Pertenencia del cliente a un tenant — `Aceptado`, ratificado por la SM el 2026-11-19 sin Mesa. Condiciona a [ADR-0018](../adr/ADR-0018-identificacion-tenant.md) y a las políticas RLS que dependen de `tenant_id` ([SCRUM-1637](https://maniservices.atlassian.net/browse/SCRUM-1637), [SCRUM-1700](https://maniservices.atlassian.net/browse/SCRUM-1700)) | RF-01, RF-08, RNF-01 |
+| [ADR-0037](../adr/ADR-0037-cifrado-de-datos-personales-en-reposo.md) | Cifrado de datos personales en reposo — `Aceptado`, ratificado por la SM el 2026-11-19 sin Mesa (`Opción A`: cifrado del medio + exclusión documentada + 0 PII en logs); acreditación técnica M4 y plan respaldo/migración condicional completados el `2026-11-14` ([SCRUM-1699](https://maniservices.atlassian.net/browse/SCRUM-1699), [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383)) | RNF-13 (prop.), QAS-46 (prop.) |
+| [ADR-0038](../adr/ADR-0038-logs-centralizados-y-trazas-loki.md) | Logs centralizados y trazabilidad por `correlation_id` con Grafana Loki — `Aceptado`, ratificado por la SM el 2026-11-19 sin Mesa (completa el hueco declarado en [ADR-0006](../adr/ADR-0006-observabilidad.md) tras retirar Datadog, [SCRUM-1676](https://maniservices.atlassian.net/browse/SCRUM-1676)) | RNF-04, QAS-16 |
 
 ## Índice — descartado
 
@@ -129,7 +131,7 @@ Los números **no son contiguos y no se reutilizan**. Ocho números libres, por 
 | `0007`, `0009`, `0010`, `0020`, `0021`, `0023` | Retirados el 2026-10-23, ver arriba |
 | `0026` | Nunca se emitió |
 | `0033` | Retirado el 2026-11-02 sin llegar a Mesa. Proponía a Dispatch como productor de `SolicitudCreada`, sobre la premisa de que Dispatch persiste la solicitud. La decisión del 17-oct-2026 (Core crea la solicitud, SAD §7.2) y la decisión 6A del 26-oct (Core es el único escritor de su estado) dejaron esa premisa sin base, y el propio documento lo declaraba en su cierre. La fila de `SolicitudCreada` de ADR-0029 §1 —Core como productor— sigue vigente y nunca fue reemplazada. El texto queda en el histórico de git. |
-| — | `ADR-0034` a `ADR-0038` ya están emitidos (`ADR-0034`, `0035`, `0036` y `0038` en `Propuesto`; `ADR-0037` decidido por SM pendiente de ratificación en Mesa). El siguiente número libre es `ADR-0039` |
+| — | `ADR-0034` a `ADR-0038` ya están emitidos (`ADR-0034` y `0035` en `Propuesto`; `0036`, `0037` y `0038` en `Aceptado` desde el 2026-11-19). El siguiente número libre es `ADR-0039` |
 
 Dos avisos para no equivocarse al leer:
 

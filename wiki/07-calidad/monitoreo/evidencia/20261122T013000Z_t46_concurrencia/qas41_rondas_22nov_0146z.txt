@@ -1,0 +1,47 @@
+== T-46 QAS-41 2026-11-22T01:46:16Z, 1 rondas, Gateway http://10.43.100.141:8080
+k6 v2.3.0 (commit/devel, go1.27.1, darwin/arm64)
+== Ronda 1 01:46:16Z
+crear solicitud: 201, categoria Plomeria, sitio 95ec8352 (Niza), estado PENDIENTE
+orquestar (ofertas): 200 {"requestId": "03490d4a-cdb2-43ea-8982-9aeb312cad01", "tenantId": "10000000-0000-4000-8000-000000000011", "zonaId": "20000000-0000-4000-8000-000000005004", "categoriaId": "60000000-0000-4000-8000-000000000011", "status": "DISPATCHED", "candidatesCount": 2}
+solicitud 03490d4a-cdb2-43ea-8982-9aeb312cad01
+RESULTADO {"vu":32,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":2227,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":31,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":2308,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":5,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":2402,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":22,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":2570,"code":null,"isRetry":false,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":4,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":2571,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":11,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":2597,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":34,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":2708,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":18,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":2788,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":13,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":2887,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":1,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":2977,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":8,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":3111,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":14,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":3177,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":19,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":3274,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":26,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":3371,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":29,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":3470,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":23,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":3620,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":15,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":3661,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":30,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":3757,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":16,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":3854,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":35,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":3953,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":27,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":4049,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":20,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":4164,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":25,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":4255,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":24,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":4343,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":7,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":4440,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+REINTENTO {"vu":22,"status":200,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":3,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":4668,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":6,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":4737,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":2,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":4831,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":33,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":4935,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":37,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":5036,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":9,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":5199,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":17,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":5230,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":21,"aliado":"aliado.t1@qa.mani.test","status":409,"ms":5322,"code":"MANI-SOL-409","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":28,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":5420,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":12,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":5516,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":10,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":5611,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+RESULTADO {"vu":36,"aliado":"empleado_directo.t1@qa.mani.test","status":200,"ms":5719,"code":null,"isRetry":true,"assignedAllyId":"50000000-0000-4000-8000-000000005103"}
+ronda=1 solicitud=03490d4a-cdb2-43ea-8982-9aeb312cad01 n=37 -> asignada=1 reintento_mismo_aliado=17 409=19 otros=0 reintento_ganador=1 p95=5530ms
+persistido (cliente lee su solicitud): 200 {"estado": "ASIGNADA"}
+== fin 01:46:31Z

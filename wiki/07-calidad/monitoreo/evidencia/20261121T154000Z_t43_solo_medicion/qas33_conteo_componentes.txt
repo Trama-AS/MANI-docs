@@ -1,0 +1,12 @@
+QAS-33 (SCRUM-1680, T-43). Corte 2026-11-21. MANI-Flutter develop daba130 (incluye #138, tokens unificados, SCRUM-1646).
+Componentes compartidos en lib/core/widgets: ManiButton, ManiCard, ManiTextField, ManiSnackbar, ManiPagina, ManiLayout, ManiLogo, ManiMano.
+Conteo de instancias en lib/ (grep de constructores):
+
+| Componente | Compartido | Nativo fuera de core/widgets | Adopción |
+| Botón | ManiButton 83 (42 archivos) | ElevatedButton 16, FilledButton 20, OutlinedButton 22, TextButton 94 = 141 (contados en todo lib/: 152) | 37 % |
+| Campo de texto | ManiTextField 1 | TextFormField 78, TextField 27 = 105 | 1 % |
+| Tarjeta | ManiCard 37 | Card 44 | 46 % |
+Colores literales Color(0x........) en lib/features: 115 (fuera del tema).
+
+PR abiertos de Nicolás León que cambian este conteo (sin fusionar al corte): MANI-Flutter#142 (sistema de diseño: tipografía, tarjeta, botón), #143 (navegación), #144 (entrada), #145 (pantallas del cliente), #146 (pantallas del aliado), #147 (resto de pantallas).
+Nota: TextButton se usa sobre todo en diálogos y acciones secundarias. ManiButton tiene variantes primario, peligro y secundario (sin variante de solo texto), así que esos TextButton cuentan como no adoptados.

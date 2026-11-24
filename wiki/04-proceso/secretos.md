@@ -1,8 +1,17 @@
 # Secretos
 
-[← 03 · Entrega](../../Entregas/README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §15 y §16 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §17 · [`architecture/SDD.md`](../02-arquitectura/SDD.md) §14.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir qué está prohibido subir al repositorio y cómo se manejan los secretos por ambiente |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps |
+| **Consume** | Todo el equipo |
+| **Cada cuánto se actualiza** | Cuando cambia la política de secretos o se rota una credencial |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-04; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Requisito de seguridad → política §15 y §16 → secretos por ambiente → barrido de secretos |
 
 ## Prohibido
 

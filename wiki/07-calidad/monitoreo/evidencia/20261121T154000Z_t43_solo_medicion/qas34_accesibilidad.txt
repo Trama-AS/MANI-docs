@@ -1,0 +1,8 @@
+QAS-34 (SCRUM-1680, T-43). Corte 2026-11-21.
+Paso 1 del método: ¿existe y está publicado el criterio (nivel WCAG y contrastes)?
+  Búsqueda de "WCAG" en MANI-docs/wiki, MANI-Flutter y MANI-Landing: solo aparece en REPORTE_QA_SPRINT5.md, que registra que no hay criterio. Ni el SDD (§7.9 y QAS-34) ni ningún otro documento fija nivel ni contrastes.
+  Resultado: el criterio NO existe. El umbral de QAS-34 ("criterios de accesibilidad definidos") no se cumple. Definir el nivel (por ejemplo WCAG 2.1 AA) es decisión de arquitectura y PO, no de QA.
+Paso 2 (complementario): estado en el código de MANI-Flutter develop daba130 (archivos versionados):
+  Semantics( 15 usos en 13 archivos; semanticsLabel 0; tooltip: 28; textScaler / textScaleFactor 0.
+  Pruebas de accesibilidad (meetsGuideline: textContrastGuideline, labeledTapTargetGuideline, etc.): 0.
+Lighthouse o axe: no se corrió. La Landing de QA no responde desde el equipo de QA (puerto 80 sin respuesta y 443 filtrado el 21 nov); Flutter Web responde en :8080. Correrlo exige instalar Lighthouse con npx (pendiente de visto bueno). Sin criterio publicado, el reporte sería informativo.

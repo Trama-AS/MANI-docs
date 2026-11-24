@@ -1,0 +1,47 @@
+== T-46 QAS-41 2026-11-22T01:32:04Z, 1 rondas, Gateway http://10.43.100.141:8080
+k6 v2.3.0 (commit/devel, go1.27.1, darwin/arm64)
+== Ronda 1 01:32:04Z
+crear solicitud: 201, categoria Plomeria, estado PENDIENTE
+orquestar (ofertas): 200 {"requestId": "b94cdb40-ceec-4bbc-9b03-f2de0b87fdaa", "tenantId": "10000000-0000-4000-8000-000000000011", "zonaId": "11f6adf2-b206-b5d1-ef8a-376ce5e3347a", "categoriaId": "60000000-0000-4000-8000-000000000011", "status": "NO_ELIGIBLE_ALLIES", "candidatesCount": 0}
+solicitud b94cdb40-ceec-4bbc-9b03-f2de0b87fdaa
+RESULTADO {"vu":29,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":1733,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":32,"aliado":"aliado_empresa.t1@qa.mani.test","status":403,"ms":1924,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":3,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":2125,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":27,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":2395,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":7,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":2506,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":2,"aliado":"aliado_empresa.t1@qa.mani.test","status":403,"ms":2698,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":22,"aliado":"aliado_empresa.t1@qa.mani.test","status":403,"ms":2916,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":35,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":3095,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":23,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":3279,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":30,"aliado":"aliado_empresa.t1@qa.mani.test","status":403,"ms":3474,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":33,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":3667,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":13,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":3861,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":11,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":4058,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":25,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":4249,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":9,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":4490,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":37,"aliado":"aliado.t1@qa.mani.test","status":403,"ms":4643,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":36,"aliado":"aliado_empresa.t1@qa.mani.test","status":403,"ms":4856,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":12,"aliado":"aliado_empresa.t1@qa.mani.test","status":403,"ms":5016,"code":"MANI-SOL-403O","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":15,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5084,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":18,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5120,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":6,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5139,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":19,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5362,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":1,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5372,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":10,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5372,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":4,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5408,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":16,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5418,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":21,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5643,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":31,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5656,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":26,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5656,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":8,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5707,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":34,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5713,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":5,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5956,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":24,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":5956,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":17,"aliado":"aliado.t1@qa.mani.test","status":503,"ms":5956,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":20,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":6063,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":28,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":6063,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+RESULTADO {"vu":14,"aliado":"aliado_empresa.t1@qa.mani.test","status":503,"ms":6210,"code":"CORE_SERVICE_UNAVAILABLE","isRetry":null,"assignedAllyId":null}
+ronda=1 solicitud=b94cdb40-ceec-4bbc-9b03-f2de0b87fdaa n=37 -> asignada=0 reintento_mismo_aliado=0 409=0 otros=37 reintento_ganador=0 p95=6063ms
+time="2026-11-21T20:32:17-05:00" level=error msg="thresholds on metrics 'asignada_200, otros_status' have been crossed"
+persistido (cliente lee su solicitud): 200 {"estado": "PENDIENTE"}
+== fin 01:32:18Z

@@ -1,0 +1,20 @@
+[
+ {
+  "key": "AaHgdKEntvBvsV68ONYk",
+  "rule": "dart:S3776",
+  "severity": "CRITICAL",
+  "component": "Trama-AS_MANI-Flutter:lib/evidencia/gate_rojo.dart",
+  "line": 7,
+  "message": "Refactor this function to reduce its Cognitive Complexity from 34 to the 15 allowed.",
+  "creationDate": "2026-11-15T18:20:19+0000"
+ },
+ {
+  "key": "AaHgdKEntvBvsV68ONYj",
+  "rule": "dart:S1192",
+  "severity": "CRITICAL",
+  "component": "Trama-AS_MANI-Flutter:lib/evidencia/gate_rojo.dart",
+  "line": 13,
+  "message": "Define a constant instead of duplicating this literal \"evidencia gate rojo\" 5 times.",
+  "creationDate": "2026-11-15T18:20:19+0000"
+ }
+]

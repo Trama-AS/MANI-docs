@@ -1,8 +1,17 @@
 # Observabilidad
 
-[← 03 · Entrega](../../Entregas/README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §17 · [`architecture/SAD.md`](../02-arquitectura/SAD.md) §19 · [`governance/INFRAESTRUCTURA_MANI.md`](../06-gobernanza/INFRAESTRUCTURA_MANI.md) §20 · [`adr/ADR-0006`](../02-arquitectura/adr/ADR-0006-observabilidad.md).
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir con qué herramientas se observa el sistema y qué debe emitir cada servicio |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps |
+| **Consume** | Desarrollo, DevOps, QA |
+| **Cada cuánto se actualiza** | Cuando cambia ADR-0006 o una herramienta de observabilidad |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-13; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Atributo de calidad (mantenibilidad) → ADR-0006 → métricas y logs → tablero |
 
 | Herramienta | Para |
 |---|---|

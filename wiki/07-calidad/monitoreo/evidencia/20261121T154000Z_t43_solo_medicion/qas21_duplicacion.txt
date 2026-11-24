@@ -1,0 +1,14 @@
+QAS-21 (SCRUM-1680, T-43). Corte 2026-11-21. Revision de origin/develop de los seis repos.
+
+1) Duplicacion reportada por Sonar
+   MANI-Flutter (SonarCloud, rama develop, API publica): duplicated_lines_density 6.3 %, 75 bloques, 17 archivos, 39 832 ncloc.
+   Core, Dispatch, Rules, Gateway y Landing (SonarQube de la VM de Calidad): ver qas21_sonar_21nov_1544z.txt
+
+2) Logica de dominio repetida entre servicios
+   H-21-1. Validacion de las reglas operativas del tenant duplicada en Core y en Rules.
+     Core: MANI-Node src/domain/rules/tenantRulesDefaults.js validarReglasOperativas() (comision 0-30 con 2 decimales, tolerancia 0-50, ventana 0-72 h, penalizacion 0-100, minutos 1-1440, criterio CALIFICACION|COBERTURA).
+     Rules: MANI-Java src/main/java/com/trama/mani/rules/service/TenantRulesValidator.java violations() con los mismos limites.
+     Core aplica la suya y despues llama a Rules (TenantRulesUseCase.js:58 y :61, RulesServiceHttpClient.js /api/v1/rules/tenant-rules/validate). Dos fuentes de la misma regla: un cambio de limite exige tocar los dos repos.
+   Sin hallazgo:
+     Ranking de aliados: Dispatch (GetEligibleAlliesUseCase.cs) delega en Rules por RulesClient.cs; Rules AllyRanker.java es la unica implementacion.
+     Comision en Flutter: cobros.dart solo lee porcentajeComision y comision del JSON; no la calcula.

@@ -1,8 +1,17 @@
 # Pull requests
 
-[← 05 · Proceso](README.md) · [Índice](../Home.md)
+[← 04 · Proceso](README.md) · [Índice](../Home.md)
 
 **Fuente:** [`governance/POLITICAS_DEVOPS_HERRAMIENTAS.md`](../06-gobernanza/POLITICAS_DEVOPS_HERRAMIENTAS.md) §6 · [`governance/GOBIERNO_DEL_EQUIPO.md`](../06-gobernanza/GOBIERNO_DEL_EQUIPO.md) §6.1 y §9.
+
+| Campo | Valor |
+|---|---|
+| **Finalidad** | Decir qué debe traer un PR, quién lo revisa y cuándo se considera cerrado |
+| **Mantiene** | La página: Nicolás Álvarez (responsable de la carpeta). La fuente: DevOps |
+| **Consume** | Desarrollo, QA, revisores |
+| **Cada cuánto se actualiza** | Cuando cambia la política de PR o la plantilla de un repositorio |
+| **Versión y fecha** | Viva, sin número · contenido del 2026-11-04; ficha añadida el 2026-11-16 ([SCRUM-1694](https://maniservices.atlassian.net/browse/SCRUM-1694)) |
+| **Origen y destino** | Historia → PR → revisión → CI y *quality gate* → integración → evidencia en Jira |
 
 ## Contenido obligatorio
 

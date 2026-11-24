@@ -1,0 +1,83 @@
+== contenedor ==
+mani-core-service ghcr.io/trama-as/mani-node:staging Up 26 hours
+
+== correlationId c8a271e6-ba48-4b83-8738-20a3cce029ec ==
+2088-    routine: undefined
+2089-  }
+2090-}
+2091:[2026-11-21T19:35:27.328Z] [GET] /api/v1/auth/validate-token - Correlation: c8a271e6-ba48-4b83-8738-20a3cce029ec
+2092:[2026-11-21T19:35:27.331Z] [GET] /aliados/verificacion - Correlation: c8a271e6-ba48-4b83-8738-20a3cce029ec
+2093-DomainError: Error consultando documentos KYC
+2094-    at fallaDeBase (/app/src/infrastructure/db/enContextoTenant.js:59:21)
+2095-    at PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:65:13)
+2096-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2097-    at async Promise.all (index 2)
+2098-    ... 3 lines matching cause stack trace ...
+2099-    at async listAlliesVerification (/app/src/controllers/verification.controller.js:24:19) {
+2100-  code: 'INTERNAL_ERROR',
+2101-  statusCode: 500,
+2102-  cause: error: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15
+2103-      at /app/node_modules/pg-pool/index.js:45:11
+2104-      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2105-      at async withTenantContext (/app/src/infrastructure/db/withTenantContext.js:43:18)
+2106-      at async PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:57:24)
+2107-      at async Promise.all (index 2)
+2108-      at async hydrateAllyVerificationView (/app/src/application/useCases/verification/allyVerificationMapper.js:50:47)
+2109-      at async Promise.all (index 4)
+2110-      at async ListAlliesVerificationUseCase.execute (/app/src/application/useCases/verification/ListAlliesVerificationUseCase.js:31:19)
+2111-      at async listAlliesVerification (/app/src/controllers/verification.controller.js:24:19) {
+2112-    length: 117,
+2113-    severity: 'FATAL',
+2114-    code: 'XX000',
+2115-    detail: undefined,
+2116-    hint: undefined,
+2117-    position: undefined,
+
+== correlationId 6ee02b95-cb27-4f86-a61e-99b53289ada0 ==
+2014-[2026-11-21T19:35:18.589Z] [GET] /aliados/verificacion - Correlation: 37992076-4853-405b-ba3a-177ace85cc20
+2015-[2026-11-21T19:35:18.617Z] [GET] /api/v1/auth/validate-token - Correlation: dcd2f75d-5bbb-432b-8176-d568497fad55
+2016-[2026-11-21T19:35:18.622Z] [GET] /profiles/me - Correlation: dcd2f75d-5bbb-432b-8176-d568497fad55
+2017:[2026-11-21T19:35:19.596Z] [GET] /api/v1/auth/validate-token - Correlation: 6ee02b95-cb27-4f86-a61e-99b53289ada0
+2018:[2026-11-21T19:35:19.601Z] [GET] /profiles/me - Correlation: 6ee02b95-cb27-4f86-a61e-99b53289ada0
+2019-DomainError: Error consultando documentos KYC
+2020-    at fallaDeBase (/app/src/infrastructure/db/enContextoTenant.js:59:21)
+2021-    at PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:65:13)
+2022-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2023-    at async Promise.all (index 2)
+2024-    ... 3 lines matching cause stack trace ...
+2025-    at async listAlliesVerification (/app/src/controllers/verification.controller.js:24:19) {
+2026-  code: 'INTERNAL_ERROR',
+2027-  statusCode: 500,
+2028-  cause: error: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15
+2029-      at /app/node_modules/pg-pool/index.js:45:11
+2030-      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2031-      at async withTenantContext (/app/src/infrastructure/db/withTenantContext.js:43:18)
+2032-      at async PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:57:24)
+2033-      at async Promise.all (index 2)
+2034-      at async hydrateAllyVerificationView (/app/src/application/useCases/verification/allyVerificationMapper.js:50:47)
+2035-      at async Promise.all (index 1)
+2036-      at async ListAlliesVerificationUseCase.execute (/app/src/application/useCases/verification/ListAlliesVerificationUseCase.js:31:19)
+2037-      at async listAlliesVerification (/app/src/controllers/verification.controller.js:24:19) {
+2038-    length: 117,
+2039-    severity: 'FATAL',
+2040-    code: 'XX000',
+2041-    detail: undefined,
+2042-    hint: undefined,
+2043-    position: undefined,
+
+== KYC / documentos (últimas 6 h) ==
+DomainError: Error consultando documentos KYC
+    at PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:65:13)
+      at async PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:57:24)
+DomainError: Error consultando documentos KYC
+    at PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:65:13)
+      at async PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:57:24)
+DomainError: Error consultando documentos KYC
+    at PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:65:13)
+      at async PgDocumentoKycRepository.findByAliadoId (/app/src/infrastructure/repositories/PgDocumentoKycRepository.js:57:24)
+
+== variables de almacenamiento definidas (solo nombres) ==
+SUPABASE_ANON_KEY
+SUPABASE_JWT_SECRET
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_URL

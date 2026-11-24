@@ -1,0 +1,80 @@
+== Revision de codigo en release (Core 73c28f4, Dispatch eedb112, Rules 348f6d9, Gateway ee5000c), 2026-11-22T02:57:53Z
+
+== QAS-40: circuit breaker y timeouts
+origin/release:src/main/java/com/trama/mani/rules/config/RulesCircuitBreaker.java:24:    private final Duration waitDurationInOpenState;
+origin/release:src/main/java/com/trama/mani/rules/config/RulesCircuitBreaker.java:31:    public RulesCircuitBreaker(
+origin/release:src/main/java/com/trama/mani/rules/config/RulesCircuitBreaker.java:34:            Duration waitDurationInOpenState,
+origin/release:src/main/java/com/trama/mani/rules/config/RulesCircuitBreaker.java:41:        this.waitDurationInOpenState = Objects.requireNonNull(waitDurationInOpenState, "waitDurationInOpenState es requerido");
+origin/release:src/main/java/com/trama/mani/rules/config/RulesCircuitBreaker.java:45:    public RulesCircuitBreaker(String name, int failureThreshold, Duration waitDurationInOpenState) {
+origin/release:Infrastructure/Auth/JwksKeySource.cs:44:        _http = new HttpClient(handler ?? new HttpClientHandler()) { Timeout = TimeSpan.FromSeconds(3) };
+origin/release:Program.cs:37:builder.Services.AddHttpClient<IAllyRepository, CoreAllyClient>(client => client.Timeout = TimeSpan.FromSeconds(3))
+origin/release:Program.cs:39:builder.Services.AddHttpClient<IDispatchPublisher, CoreDispatchPublisher>(client => client.Timeout = TimeSpan.FromSeconds(3))
+origin/release:Program.cs:42:builder.Services.AddHttpClient<ICoreAssignmentClient, CoreAssignmentClient>(client => client.Timeout = TimeSpan.FromSeconds(3))
+origin/release:Program.cs:45:builder.Services.AddHttpClient<ITenantRulesReader, CoreTenantRulesClient>(client => client.Timeout = TimeSpan.FromSeconds(3))
+origin/release:src/infrastructure/clients/DispatchServiceHttpClient.js:21:  constructor({ baseUrl, timeoutMs = 3000, retries = 1, fetchImpl = globalThis.fetch } = {}) {
+origin/release:src/infrastructure/clients/DispatchServiceHttpClient.js:24:    this.timeoutMs = timeoutMs;
+origin/release:src/infrastructure/clients/DispatchServiceHttpClient.js:61:        signal: AbortSignal.timeout(this.timeoutMs),
+origin/release:src/infrastructure/clients/DispatchServiceHttpClient.js:64:      const reason = err.name === 'TimeoutError' ? `sin respuesta en ${this.timeoutMs} ms` : err.message;
+origin/release:src/infrastructure/clients/RulesServiceHttpClient.js:31:  constructor({ baseUrl, timeoutMs = 3000, retries = 1, fetchImpl = globalThis.fetch } = {}) {
+(Core: sin circuit breaker si no hay lineas arriba)
+
+== QAS-42: comandos de Core con clave de idempotencia
+src/controllers/requests.controller.js
+origin/release:src/application/useCases/messages/MessagesUseCase.js:89:   * sin el texto del mensaje. Se avisa también en un reintento con la misma clave (200): la clave del evento es el id del
+origin/release:src/application/useCases/payments/CreatePaymentUseCase.js:8:// el cliente reintenta con la misma claveIdempotencia y el proveedor devuelve el mismo desenlace sin cobrar dos veces.
+origin/release:src/application/useCases/payments/CreatePaymentUseCase.js:31: * Con la misma clave, otra huella no es un reintento sino otra petición.
+origin/release:src/controllers/messages.controller.js:14:    // 201 si se guardó; 200 si era un reintento con la misma clave de idempotencia.
+origin/release:src/controllers/payments.controller.js:13:    // 201 si se registró; 200 si era un reintento con la misma clave de idempotencia.
+origin/release:src/controllers/requests.controller.js:12:    // 201 si se creó; 200 si era un reintento con la misma clave de idempotencia.
+
+== QAS-37: transiciones invalidas en Core (codigos 409 por estado)
+   5 MANI-RGL-409C
+   4 MANI-VER-409
+   4 MANI-SOL-409C
+   4 MANI-SOL-409
+   4 MANI-PAG-409K
+   4 MANI-COT-409E
+   4 MANI-CAL-409E
+   4 MANI-CAL-409D
+   4 MANI-AUS-409
+   4 MANI-ADI-409E
+   2 MANI-TEN-409
+   2 MANI-TAR-409V
+   2 MANI-TAR-409R
+   2 MANI-SOL-409K
+   2 MANI-SOL-409E
+
+== QAS-26: adaptadores de proveedores
+7:  mock: () => new MockPushProvider(),
+9:  mock_falla: ({ fallas } = {}) => new FalibleMockPushProvider({ fallas }),
+13:const SOLO_FUERA_DE_PRODUCCION = new Set(['mock_falla']);
+18: * Elige el proveedor push según PUSH_PROVIDER (por omisión `mock`). Un valor sin adaptador detiene el
+21:function createPushProvider(name = 'mock', { environment = 'development', fallas } = {}) {
+22:  const key = String(name || 'mock').trim().toLowerCase();
+6:  mock: () => new MockPaymentProvider(),
+12: * Elige el proveedor de pagos según PAYMENT_PROVIDER (por omisión `mock`). Un valor sin adaptador detiene el arranque:
+15:function createPaymentProvider(name = 'mock') {
+16:  const key = String(name || 'mock').trim().toLowerCase();
+tests/unit/domain/ruleEvaluationContract.test.js
+tests/unit/payments/paymentProvider.test.js
+tests/unit/providers/callProvider.test.js
+tests/unit/providers/providerContracts.js
+tests/unit/providers/providerPolicyUseCases.test.js
+tests/unit/providers/providers.contract.test.js
+tests/unit/push/falibleMockPushProvider.test.js
+tests/unit/push/pushProvider.test.js
+
+== QAS-06/23: contract tests en los pipelines
+MANI-Node: 
+MANI-.NET: 
+MANI-Java: 
+MANI-API: .github/workflows/ci.yml .github/workflows/quality-gate.yml 
+MANI-Flutter: 
+
+== QAS-25: scripts de despliegue versionados
+MANI-Node: 
+MANI-.NET: 
+MANI-Java: 
+MANI-API: 
+MANI-Flutter: 
+MANI-docs: 

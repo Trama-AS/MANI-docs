@@ -1,0 +1,150 @@
+== conectado a la VM; corriendo t41_qa.py (tarda unos minutos)
+== SCRUM-1678 T-41 en MANI-QA (2026-11-13T00:30:51Z)
+
+== Conexiones (solo forma)
+  core: usuario=mani_core_svc.<ref> host=aws-0-us-east-2.pooler.supabase.com puerto=5432
+  dispatch: usuario=mani_dispatch_svc.<ref> host=aws-0-us-east-2.pooler.supabase.com puerto=5432
+  admin: usuario=postgres.<ref> host=aws-0-us-east-2.pooler.supabase.com puerto=5432
+
+== Revisiones desplegadas
+  mani-api-gateway rev=ecd9ec2
+  mani-core-service rev=cfa503a
+  mani-dispatch-service rev=930a15b
+  mani-rules-service rev=3e3da57
+
+== Precondicion: db/verify/0037_verificar_sin_bypassrls.sql (URL admin, solo lectura)
+1. Roles de servicio: LOGIN, sin SUPERUSER ni BYPASSRLS
+mani_core_svc | t | f | f
+mani_dispatch_svc | t | f | f
+DO
+2. Políticas TO public en tablas con tenant_id (R-06): debe quedar vacío
+DO
+3. Conexiones abiertas por usuario: Core y Dispatch deben aparecer con su rol, no como postgres
+authenticator | PostgREST 14.5 | ::1 | 1
+mani_core_svc | Supavisor | 2600:1f16:1cd0:3301:fbde:32b5:abbe:713 | 3
+mani_dispatch_svc | Supavisor | 2600:1f16:1cd0:3301:fbde:32b5:abbe:713 | 2
+pgbouncer |  | ::1 | 1
+pgbouncer | Supavisor (auth_query) | 2600:1f16:1cd0:3301:fbde:32b5:abbe:713 | 3
+postgres | pg_net 0.20.4 |  | 1
+postgres | Supavisor | 2600:1f16:1cd0:3301:fbde:32b5:abbe:713 | 1
+supabase_admin |  | ::1 | 1
+supabase_admin | pg_cron scheduler |  | 1
+supabase_admin | postgres_exporter | ::1 | 1
+supabase_auth_admin |  | 127.0.0.1 | 1
+DO
+TEC-21: roles y políticas conformes
+
+  migraciones: 0037,0038,0039
+
+== Sesiones de las cuentas del seed
+  cliente.t1: ok
+  aliado.t1: ok
+  admin.t1: ok
+  cliente.t2: ok
+  aliado.t2: ok
+  admin.t2: ok
+PASA  | preparacion | crear solicitud de T1 | esperado 201 | obtenido 201  | cid=t41-c3497de37f
+PASA  | preparacion | crear solicitud de T2 | esperado 201 | obtenido 201  | cid=t41-874e2aff9e
+
+== QAS-01 por el Gateway (los seis casos de Politicas DevOps 13.4, mismos que el 5-nov)
+PASA  | QAS-01 | caso 1 lectura de otro tenant | esperado 403/404 | obtenido 404 MANI-SOL-404 | cid=t41-8186c9948a
+PASA  | QAS-01 | caso 2 listado sin recursos ajenos | esperado sin la solicitud de T1 | obtenido 200 fuga=False | cid=t41-0257546c26
+PASA  | QAS-01 | caso 3 escritura en otro tenant | esperado 403/404 | obtenido 404 MANI-COT-404 | cid=t41-f21c91a6d1
+PASA  | QAS-01 | caso 4 borrado o cancelacion ajena | esperado 403/404 | obtenido 404 MANI-SOL-404 | cid=t41-b7d48f7d5c
+PASA  | QAS-01 | caso 5 token alterado | esperado 401 | obtenido 401 | cid=t41-0263ac0642
+PASA  | QAS-01 | caso 6 verificacion KYC de otro tenant | esperado 403/404 | obtenido 404 MANI-VER-404 | cid=t41-17d373275a
+PASA  | QAS-01 | la solicitud de T1 no cambio | esperado PENDIENTE | obtenido PENDIENTE | cid=
+
+== QAS-01 P4 rol en la aceptacion (por el Gateway)
+PASA  | QAS-01 | P4 un cliente no acepta | esperado 403 | obtenido 403 MANI-DSP-403 | cid=t41-ba8855f575
+PASA  | QAS-01 | P4 aliado de T1 no acepta solicitud de T2 | esperado 403/404 | obtenido 404 MANI-SOL-404 | cid=t41-2142977c20
+PASA  | QAS-01 | P4 la solicitud de T2 sigue sin asignar | esperado sin cambio | obtenido PENDIENTE | cid=
+
+== QAS-01 en el motor como mani_core_svc
+== QAS-01 motor, correlation-id de la corrida API: t41-8186c9948a
+PASA  | QAS-01 motor | identidad de la conexion | mani_core_svc sin BYPASSRLS | current_user=mani_core_svc bypassrls=false super=false
+BEGIN
+PASA  | QAS-01 motor | caso 1 sitio de T2 por id | 0 filas | 0
+PASA  | QAS-01 motor | caso 1 solicitud de T2 por id | 0 filas | 0
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+BEGIN
+-- documento_legal visible con contexto T1 que no es de T1 (id | tenant_id | tipo | version | is_active)
+00000000-0000-0000-0000-000000000001 | NULL | TERMS_AND_CONDITIONS | 1.0 | true
+00000000-0000-0000-0000-000000000002 | NULL | PRIVACY_POLICY | 1.0 | true
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+BEGIN
+PASA  | QAS-01 motor | caso 5 sin set_context lectura | 0 filas | 0
+UPDATE 0
+ROLLBACK
+BEGIN
+PASA  | QAS-01 motor | caso 5 claim corrupto lectura | 0 filas | 0
+ROLLBACK
+BEGIN
+DO
+ROLLBACK
+-- caso 5 escritura sin contexto: la linea UPDATE de arriba debe decir UPDATE 0
+BEGIN
+PASA  | QAS-01 motor | caso 6 aliado T1 ve solo su documento_kyc | 0 ajenos | visibles=1 ajenos=0
+ROLLBACK
+BEGIN
+PASA  | QAS-01 motor | caso 6 admin T1 sin documento_kyc de T2 | 0 de T2 | visibles=4 de_t2=0
+DO
+ROLLBACK
+BEGIN
+INFO  | QAS-01 motor | P1 con contexto en la primera transaccion | filas visibles=33
+COMMIT
+BEGIN
+PASA  | QAS-01 motor | P1 la transaccion siguiente sin set_context | 0 filas | 0
+ROLLBACK
+PASA  | QAS-01 motor | P5 authenticated y anon sin EXECUTE en app.set_context | false/false | false/false
+== fin QAS-01 motor
+NOTICE:  INFO  | QAS-01 motor | caso 2 documento_legal | filas con tenant_id NULL visibles=2 de 4
+NOTICE:  PASA  | QAS-01 motor | caso 2 listado sin filtro | 0 tablas con filas de otro tenant | tablas_leidas=32 con_fuga=0
+NOTICE:  PASA  | QAS-01 motor | caso 3 INSERT con tenant_id de T2 | 42501 por RLS | 42501 new row violates row-level security policy for table "sitio"
+NOTICE:  PASA  | QAS-01 motor | caso 3 UPDATE que muda fila de T1 a T2 | 42501 por RLS | 42501 new row violates row-level security policy for table "sitio"
+NOTICE:  PASA  | QAS-01 motor | caso 3 UPDATE de fila de T2 | 0 filas | filas=0
+NOTICE:  PASA  | QAS-01 motor | caso 4 DELETE de sitio de T2 | 0 filas | filas=0
+NOTICE:  INFO  | QAS-01 motor | caso 4 DELETE sin WHERE | no ejecutable por restricciones | 23503 update or delete on table "sitio" violates foreign key constraint "solicitud_sitio_id_fkey" on table "solicitud"
+NOTICE:  PASA  | QAS-01 motor | caso 5 set_context sin tenant | MANI-RLS-400 | 22023 MANI-RLS-400: el contexto exige tenant_id
+NOTICE:  PASA  | QAS-01 motor | caso 6 Storage objetos bajo {T2}/ | 0 filas o permiso denegado | 42501 permission denied for schema storage
+
+
+== QAS-20 en el motor como mani_dispatch_svc
+== QAS-20 motor, correlation-id de la corrida API: t41-8186c9948a
+PASA  | QAS-20 motor | identidad de la conexion | mani_dispatch_svc sin BYPASSRLS | current_user=mani_dispatch_svc bypassrls=false super=false
+BEGIN
+DO
+ROLLBACK
+-- privilegios efectivos de mani_dispatch_svc por tabla (tabla | S I U D)
+solicitud | S---
+solicitud_rechazo | SI--
+tenant | S---
+zona | S---
+-- tablas de Dispatch sobre las que mani_core_svc tiene escritura (tabla | S I U D)
+solicitud_rechazo | ----
+35 lectura, 32 escritura, de 38 tablas (mani_core_svc)
+== fin QAS-20 motor
+NOTICE:  PASA  | QAS-20 motor | P3 INSERT en notificacion | permission denied | 42501 permission denied for table notificacion
+NOTICE:  PASA  | QAS-20 motor | P3 UPDATE en aliado | permission denied | 42501 permission denied for table aliado
+NOTICE:  PASA  | QAS-20 motor | P3 SELECT en aliado | permission denied | 42501 permission denied for table aliado
+NOTICE:  PASA  | QAS-20 motor | P3 SELECT en notificacion | permission denied | 42501 permission denied for table notificacion
+NOTICE:  PASA  | QAS-20 motor | 6A UPDATE en solicitud | permission denied | 42501 permission denied for table solicitud
+NOTICE:  PASA  | QAS-20 motor | INSERT en cotizacion | permission denied | 42501 permission denied for table cotizacion
+NOTICE:  PASA  | QAS-20 motor | DELETE en pago | permission denied | 42501 permission denied for table pago
+NOTICE:  PASA  | QAS-20 motor | escritura permitida INSERT en solicitud_rechazo | 1 fila (revertida) | filas=1
+
+
+== Limpieza: cancelar las solicitudes de prueba
+  8a53c4eb-d78c-42eb-a4b8-27da553354c2: 200  estado=CANCELADA
+  32697a6e-4f35-43dc-9bb8-dccb4eb16d03: 200  estado=CANCELADA
+
+== Fin (2026-11-13T00:32:24Z)

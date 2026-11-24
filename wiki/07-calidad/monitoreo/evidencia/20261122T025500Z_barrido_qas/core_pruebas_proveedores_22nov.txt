@@ -1,0 +1,6 @@
+== Core release 73c28f4: proveedores, falla inyectable (push y Storage de KYC) y contratos (node --test), 2026-11-22T02:58:11Z
+archivos: tests/unit/providers/*, tests/unit/push/*, tests/unit/payments/paymentProvider.test.js, tests/unit/security/falibleFileStorageService.test.js
+ℹ tests 55
+ℹ suites 3
+ℹ pass 55
+ℹ fail 0

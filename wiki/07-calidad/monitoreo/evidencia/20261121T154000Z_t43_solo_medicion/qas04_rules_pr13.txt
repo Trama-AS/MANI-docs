@@ -1,0 +1,12 @@
+QAS-04 (SCRUM-1680, T-43). Corte 2026-11-21.
+Cambio interno de Rules: MANI-Java#13 [SCRUM-1658][SCRUM-1663] Logs JSON con correlationId y CircuitBreaker en Rules. Fusionado a develop 2026-11-19, merge 054f464.
+Archivos del diff (solo Rules):
+  src/main/java/com/trama/mani/rules/config/RulesCircuitBreaker.java +116 -0
+  src/main/java/com/trama/mani/rules/config/RulesConfiguration.java +7 -0
+  src/main/java/com/trama/mani/rules/web/CorrelationIdFilter.java +11 -2
+  src/main/resources/application.properties +2 -2
+  src/test/java/com/trama/mani/rules/config/RulesCircuitBreakerTest.java +74 -0
+Sin cambios en controladores ni contratos (git diff 054f464^1 054f464 -- '*Controller*' '*openapi*' vacio).
+Checks del PR: Pruebas (Java 17) pass; Pruebas y cobertura pass; Sonar Quality Gate pass.
+Consumidores: ningun commit en origin/develop de MANI-Node, MANI-.NET, MANI-APIGateway ni MANI-Flutter desde 2026-11-17 toca archivos de rules/reglas.
+En QA: 054f464 es ancestro de 348f6d9, desplegado el 2026-11-20. Durante T-42 (19:25Z a 19:49Z) Rules atendio 678 POST /api/v1/rules/rank-allies, uno por cada eligible-allies 200 del Gateway (678), y 49 /health 200 (qa_t42/evidencia/logs_carga_20nov_1958z.txt).

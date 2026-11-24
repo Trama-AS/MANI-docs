@@ -1,0 +1,2 @@
+== Fecha 2026-11-20T19:14:49Z, modo ensayo
+== cambios: compose: linea 39 agrega DATABASE_POOL_MAX en core-service; env: agrega CORE_DATABASE_POOL_MAX=30; env: DISPATCH_DB_CONNECTION termina en ;Maximum Pool Size=10

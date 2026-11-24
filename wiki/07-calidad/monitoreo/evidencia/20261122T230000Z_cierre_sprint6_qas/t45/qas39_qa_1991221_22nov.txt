@@ -1,0 +1,16 @@
+QAS-39 Advertencia de peligro. QA, Flutter 1991221, 22 nov ~22:20Z, admin.t2 (Nova Mantenimiento).
+Escritorio:
+- Categorías → Ocultar «Pintura»: diálogo «¿Desactivar Pintura?» con Cancelar/Desactivar. Se canceló: sigue visible. OK.
+- Barra superior → Cerrar sesión: diálogo «¿Cerrar sesión?». Se canceló. OK.
+Celular (375x812):
+- Perfil → Tu cuenta → Cerrar sesión: cerró la sesión de inmediato, SIN confirmación. FALLA.
+  Causa: seccion_menu_page.dart (y la tarjeta inicio-cerrar-sesion de inicio_page.dart) llegaron con el rescate #155
+  y llaman onCerrarSesion directo, sin confirmarAccion.
+Arreglo: rama fix/SCRUM-1650-confirmar-cierre-sesion-movil (78c6bbf), +1419 pruebas en verde. PR pendiente de abrir.
+
+Remedición tras el arreglo (MANI-Flutter#157 → develop 99191b6, #158 → release 77cd696, desplegado 22:45Z):
+Usuario admin.t1 (ACME Servicios), ~22:50Z.
+- Celular (375x812) · Perfil → Tu cuenta → Cerrar sesión: diálogo «¿Cerrar sesión?». Cancelar: la sesión sigue. OK.
+- Escritorio · tarjeta «Cerrar sesión» al final del inicio: diálogo «¿Cerrar sesión?». Cancelar. OK.
+- Barra superior (escritorio) y ocultar categoría: probados en 1991221, sin cambios en 77cd696. OK.
+Resultado QAS-39: las tres entradas a cerrar sesión y la desactivación de categoría piden confirmación.

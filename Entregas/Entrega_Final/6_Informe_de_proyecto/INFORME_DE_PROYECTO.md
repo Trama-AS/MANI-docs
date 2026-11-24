@@ -1,6 +1,6 @@
 # Informe de proyecto — MANI
 
-[Entrega final](README.md) · [Índice de la wiki](../../wiki/Home.md)
+[Entrega final](../README.md) · [Índice de la wiki](../../../wiki/Home.md)
 
 | Campo | Valor |
 |---|---|
@@ -8,7 +8,7 @@
 | **Redacta** | Sara Albarracín (Scrum Master) |
 | **Consume** | La PO, el equipo y el jurado en la sustentación |
 | **Corte** | 24 de noviembre de 2026, 5:25 p. m. El Sprint 6 cierra el 25 de noviembre |
-| **Fuentes** | Jira (`project = SCRUM`), [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md), [`INFORME_CIERRE_SPRINT_6.md`](../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md), [`VALIDACION_HU-VAL-01.md`](../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) y la wiki. Las consultas están en la §9 |
+| **Fuentes** | Jira (`project = SCRUM`), [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md), [`INFORME_CIERRE_SPRINT_6.md`](../../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md), [`VALIDACION_HU-VAL-01.md`](../../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) y la wiki. Las consultas están en la §9 |
 
 > **Regla de este informe.** Las cifras son las de Jira y las de las mediciones de QA, no las de la impresión de nadie. Donde el dato es incómodo se escribe igual.
 
@@ -23,7 +23,7 @@ MANI formaliza el ciclo solicitud, cotización, ejecución, calificación y cier
 
 ## 2. Contexto y alcance
 
-**El problema.** La operación se gestionaba de forma informal (llamadas, mensajería, contactos directos), sin trazabilidad de los servicios, verificación de aliados, tarifas estandarizadas ni auditoría, y sin forma de escalar a varias empresas. Está en [`vision-y-alcance.md`](../../wiki/01-producto/vision-y-alcance.md).
+**El problema.** La operación se gestionaba de forma informal (llamadas, mensajería, contactos directos), sin trazabilidad de los servicios, verificación de aliados, tarifas estandarizadas ni auditoría, y sin forma de escalar a varias empresas. Está en [`vision-y-alcance.md`](../../../wiki/01-producto/vision-y-alcance.md).
 
 **Alcance del MVP.** Plataforma multi-tenant, autenticación y control de acceso, directorio de aliados y clientes, documentos KYC, catálogo de categorías, cobertura por zonas, creación y despacho de solicitudes, cotizaciones, ejecución, calificación bidireccional, mensajería y notificaciones, tarifario de referencia y reportes asociados.
 
@@ -31,7 +31,7 @@ MANI formaliza el ciclo solicitud, cotización, ejecución, calificación y cier
 
 ## 3. Qué se construyó
 
-**Arquitectura.** SOA distribuida con un API Gateway y tres servicios, cada uno en su tecnología y con su repositorio ([`SAD.md`](../../wiki/02-arquitectura/SAD.md)):
+**Arquitectura.** SOA distribuida con un API Gateway y tres servicios, cada uno en su tecnología y con su repositorio ([`SAD.md`](../../../wiki/02-arquitectura/SAD.md)):
 
 | Servicio | Tecnología | Responde de |
 |---|---|---|
@@ -39,11 +39,11 @@ MANI formaliza el ciclo solicitud, cotización, ejecución, calificación y cier
 | Dispatch Service | .NET | ofertas, aceptación y exclusión concurrente |
 | Core Service | Node.js | identidad, aliados y KYC, clientes, catálogo, disponibilidad, solicitud, cotización, ejecución, calificación, mensajería y reportes |
 
-La aplicación cliente es Flutter (web y móvil); la persistencia, Supabase sobre PostgreSQL con RLS por tenant; los eventos de negocio van por Kafka con *transactional outbox*. El diseño detallado, las vistas C4, los escenarios de calidad y los contratos de eventos están en [`SDD.md`](../../wiki/02-arquitectura/SDD.md), y el modelo de datos, de 37 tablas, en [`ModeloDatos.md`](../../wiki/02-arquitectura/ModeloDatos.md).
+La aplicación cliente es Flutter (web y móvil); la persistencia, Supabase sobre PostgreSQL con RLS por tenant; los eventos de negocio van por Kafka con *transactional outbox*. El diseño detallado, las vistas C4, los escenarios de calidad y los contratos de eventos están en [`SDD.md`](../../../wiki/02-arquitectura/SDD.md), y el modelo de datos, de 37 tablas, en [`ModeloDatos.md`](../../../wiki/02-arquitectura/ModeloDatos.md).
 
 **Decisiones.** 30 ADR, de los cuales 29 aceptados y 1 rechazado. Las más determinantes: SOA políglota (ADR-0019), la lógica de negocio fuera de la base de datos (ADR-0022), la exclusión concurrente en la asignación (ADR-0016) y la decisión 6A, por la que Core es el único que escribe el estado de la solicitud (ADR-0035).
 
-**Operación.** Tres ambientes (DEV, QA y PROD) sobre Docker Compose, con imágenes versionadas en GHCR; respaldo diario cifrado con un simulacro de recuperación de 2 segundos; métricas con Prometheus y Grafana y logs con Loki ([`08-infraestructura/`](../../wiki/08-infraestructura/README.md)).
+**Operación.** Tres ambientes (DEV, QA y PROD) sobre Docker Compose, con imágenes versionadas en GHCR; respaldo diario cifrado con un simulacro de recuperación de 2 segundos; métricas con Prometheus y Grafana y logs con Loki ([`08-infraestructura/`](../../../wiki/08-infraestructura/README.md)).
 
 ## 4. Cómo se trabajó
 
@@ -62,7 +62,7 @@ Seis sprints con Scrum, un tablero en Jira y la convención `[SCRUM-id]` en cada
 
 ### 5.1 Producto
 
-La versión entregada es la `v1.0.5` de los siete repositorios ([`INCREMENTO_DE_VALOR.md`](INCREMENTO_DE_VALOR.md)). Las 135 historias del proyecto están cerradas. La última verificación de PROD (14 de noviembre) encontró `v1.0.4` de Flutter Web con un digest que coincide con el tag y las dieciocho rutas verificadas respondiendo ([`01-mapa-ambientes-y-versiones.md`](../../wiki/08-infraestructura/01-mapa-ambientes-y-versiones.md)); el despliegue de `v1.0.5` se confirma el día del cierre.
+La versión entregada es la `v1.0.5` de los siete repositorios ([`INCREMENTO_DE_VALOR.md`](../4_Incremento_de_valor/INCREMENTO_DE_VALOR.md)). Las 135 historias del proyecto están cerradas. La última verificación de PROD (14 de noviembre) encontró `v1.0.4` de Flutter Web con un digest que coincide con el tag y las dieciocho rutas verificadas respondiendo ([`01-mapa-ambientes-y-versiones.md`](../../../wiki/08-infraestructura/01-mapa-ambientes-y-versiones.md)); el despliegue de `v1.0.5` se confirma el día del cierre.
 
 ### 5.2 Calidad
 
@@ -75,17 +75,17 @@ Los 45 escenarios de calidad (ISO/IEC 25010:2023) se definieron en el SDD §8 co
 | No cumple (5) | 03 comportamiento temporal, 19 capacidad, 33 involucración, 34 inclusividad, 35 asistencia al usuario |
 | No medido (1) | 05 escalabilidad |
 
-Los umbrales de once escenarios P1 que no tenían requisito se revisaron y cuatro quedaron marcados `supuesto`. La PO fijó el criterio de medición de varios escenarios en el acta A/B del 21 de noviembre ([`ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md`](../../wiki/06-gobernanza/ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md)).
+Los umbrales de once escenarios P1 que no tenían requisito se revisaron y cuatro quedaron marcados `supuesto`. La PO fijó el criterio de medición de varios escenarios en el acta A/B del 21 de noviembre ([`ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md`](../../../wiki/06-gobernanza/ACTA_DECISION_AB_ESCENARIOS_CALIDAD.md)).
 
 ### 5.3 Validación de la documentación
 
-Se detectaron quince contradicciones entre documentos de la línea base (versiones de servicios, número de ambientes, estado de Kafka y de la observabilidad, RPO y RTO, cifrado y otras). **Las quince están cerradas**, cada una con evidencia o con una decisión ([`VALIDACION_HU-VAL-01.md`](../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md)).
+Se detectaron quince contradicciones entre documentos de la línea base (versiones de servicios, número de ambientes, estado de Kafka y de la observabilidad, RPO y RTO, cifrado y otras). **Las quince están cerradas**, cada una con evidencia o con una decisión ([`VALIDACION_HU-VAL-01.md`](../../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md)).
 
 La carpeta de arquitectura se redujo a cuatro documentos (SAD, SDD, ModeloDatos y TECH_RADAR), más las decisiones y los diagramas. El modelo C4 se actualizó al sistema real y el modelo de datos se reescribió desde la base resultante de las migraciones.
 
 ## 6. Lo que no se entrega
 
-El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPRINT_6.md`](../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md) §4. En resumen:
+El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPRINT_6.md`](../../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md) §4. En resumen:
 
 - **Rendimiento (QAS-03 y 19).** `eligible-allies` tiene un p95 de 8,2 s con 300 usuarios y la capacidad se queda en 36 req/s frente a los 50 pedidos. El cuello está en la base de datos y el pool del Core.
 - **Accesibilidad (QAS-34).** El criterio es WCAG 2.2 AA y ni Flutter ni la Landing lo cumplen.
@@ -93,7 +93,7 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 - **Kafka en PROD.** Funciona en DEV y QA; PROD queda sin broker (épica SCRUM-1677).
 - **Funcionalidades puntuales.** Siguen abiertos en Jira, reabiertos, el sistema de diseño (SCRUM-1648), el rendimiento de `eligible-allies` (1652), el actor y correlation ID (1657) y la validación de reglas solo en Rules (1722); y en revisión, la medición de QAS-05 (1716). La foto de perfil, el inicio por rol accesible, los mensajes de error con código, los aliados de una solicitud, los contratos OpenAPI y la promoción del mismo digest a PROD se cerraron después del informe de cierre del Sprint 6.
 
-**Riesgos aceptados al cerrar:** el token de SonarQube expuesto se retiró pero no se rotó; ADR-0034 a ADR-0038 se ratificaron sin sesión de la Mesa de Arquitectura; y RNF-13 y QAS-46 (cifrado en reposo) no están aprobados por la PO. Están en el [acta de cierre](ACTA_DE_CIERRE.md) §6.
+**Riesgos aceptados al cerrar:** el token de SonarQube expuesto se retiró pero no se rotó; ADR-0034 a ADR-0038 se ratificaron sin sesión de la Mesa de Arquitectura; y RNF-13 y QAS-46 (cifrado en reposo) no están aprobados por la PO. Están en el [acta de cierre](../5_Acta_de_Cierre/ACTA_DE_CIERRE.md) §6.
 
 ## 7. Lecciones aprendidas
 
@@ -128,5 +128,5 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 | Ítems del proyecto: 764; en Done: 744 | `project = SCRUM` y `project = SCRUM AND statusCategory = Done` |
 | Historias: 135; en Done: 135 | `project = SCRUM AND issuetype = Historia` (y con `statusCategory = Done`) |
 | Ítems por sprint | `project = SCRUM AND sprint = <id>`, con ids 3, 36, 37, 70, 71 (sprints 1 a 5) y `sprint in openSprints()` (sprint 6) |
-| Escenarios de calidad | Columna Resultado del [SDD §8](../../wiki/02-arquitectura/SDD.md) y su vista operativa [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md) |
-| Discrepancias | [`VALIDACION_HU-VAL-01.md`](../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) |
+| Escenarios de calidad | Columna Resultado del [SDD §8](../../../wiki/02-arquitectura/SDD.md) y su vista operativa [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md) |
+| Discrepancias | [`VALIDACION_HU-VAL-01.md`](../../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) |

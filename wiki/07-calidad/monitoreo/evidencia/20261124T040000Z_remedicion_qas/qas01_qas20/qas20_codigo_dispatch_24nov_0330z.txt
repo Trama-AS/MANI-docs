@@ -1,0 +1,8 @@
+== QAS-20 codigo de Dispatch en MANI-.NET@1fce80e (2026-11-24T03:30:18Z)
+-- archivos .cs fuera de pruebas: 47
+-- uso de tablas ajenas en SQL (archivo:linea: texto)
+-- uso de tablas permitidas en SQL (para contrastar)
+Infrastructure/Repositories/PostgresSolicitudAssignmentRepository.cs:37:            INSERT INTO solicitud_rechazo (tenant_id, solicitud_id, aliado_id, motivo, detalle)
+Infrastructure/Repositories/PostgresSolicitudAssignmentRepository.cs:49:                SELECT 1 FROM solicitud_rechazo
+Infrastructure/Repositories/PostgresSolicitudAssignmentRepository.cs:60:            FROM solicitud_rechazo
+Infrastructure/Repositories/PostgresSolicitudAssignmentRepository.cs:71:            FROM solicitud_rechazo

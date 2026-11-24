@@ -1,0 +1,106 @@
+== QAS-40 en MANI-QA con copias desechables (2026-11-24T03:52:52Z)
+  mani-core-service rev=3bb3dd3
+  mani-dispatch-service rev=1fce80e
+  mani-rules-service rev=ce513cb
+  mani-api-gateway rev=71558b8
+  red mani-network; memoria disponible 2676 MB
+  copias listas: qas40-dispatch, qas40-core
+
+-- Dispatch -> Rules
+PASA  | QAS-40 | Dispatch -> Rules | sin falla | 200  en 1.06 s; llamadas al destino 1
+PASA  | QAS-40 | Dispatch -> Rules | demora: termina por timeout (~3 s) | 503 RULES_SERVICE_UNAVAILABLE en 3.52 s
+PASA  | QAS-40 | Dispatch -> Rules | respuesta malformada (html) rechazada | 503 RULES_SERVICE_UNAVAILABLE en 0.45 s
+PASA  | QAS-40 | Dispatch -> Rules | respuesta malformada (roto) rechazada | 503 RULES_SERVICE_UNAVAILABLE en 0.44 s
+PASA  | QAS-40 | Dispatch -> Rules | respuesta malformada (vacio) rechazada | 503 RULES_SERVICE_UNAVAILABLE en 0.43 s
+    caida 1: 503 RULES_SERVICE_UNAVAILABLE en 0.44 s; llamadas al destino 1
+    caida 2: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s; llamadas al destino 1
+    caida 3: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s; llamadas al destino 1
+    caida 4: 503 RULES_SERVICE_UNAVAILABLE en 0.42 s; llamadas al destino 1
+    caida 5: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s; llamadas al destino 1
+    caida 6: 503 RULES_SERVICE_UNAVAILABLE en 0.42 s; llamadas al destino 0
+    caida 7: 503 RULES_SERVICE_UNAVAILABLE en 0.42 s; llamadas al destino 0
+    caida 8: 503 RULES_SERVICE_UNAVAILABLE en 0.43 s; llamadas al destino 0
+    caida 9: 503 RULES_SERVICE_UNAVAILABLE en 0.42 s; llamadas al destino 0
+PASA  | QAS-40 | Dispatch -> Rules | caidas repetidas: se corta el circuito | llamadas por intento [1, 1, 1, 1, 1, 0, 0, 0, 0]; codigos [503]
+PASA  | QAS-40 | Dispatch -> Rules | circuito abierto con el destino ya sano | 503 RULES_SERVICE_UNAVAILABLE en 0.43 s; llamadas 0
+PASA  | QAS-40 | Dispatch -> Rules | se recupera a los 10 s | 200 en 0.45 s; llamadas 1
+    menciones de 'Circuito abierto' / 'circuito abierto' en logs de qas40-dispatch: 5
+
+-- Dispatch -> Core
+PASA  | QAS-40 | Dispatch -> Core | sin falla | 200  en 0.45 s; llamadas al destino 1
+PASA  | QAS-40 | Dispatch -> Core | demora: termina por timeout (~10 s) | 503 CORE_SERVICE_UNAVAILABLE en 10.02 s
+PASA  | QAS-40 | Dispatch -> Core | respuesta malformada (html) rechazada | 503 CORE_SERVICE_UNAVAILABLE en 0.01 s
+PASA  | QAS-40 | Dispatch -> Core | respuesta malformada (roto) rechazada | 503 CORE_SERVICE_UNAVAILABLE en 0.01 s
+PASA  | QAS-40 | Dispatch -> Core | respuesta malformada (vacio) rechazada | 503 CORE_SERVICE_UNAVAILABLE en 0.01 s
+    caida 1: 503 CORE_SERVICE_UNAVAILABLE en 0.02 s; llamadas al destino 4
+    caida 2: 503 CORE_SERVICE_UNAVAILABLE en 0.02 s; llamadas al destino 4
+    caida 3: 503 CORE_SERVICE_UNAVAILABLE en 0.02 s; llamadas al destino 4
+    caida 4: 503 CORE_SERVICE_UNAVAILABLE en 0.03 s; llamadas al destino 4
+    caida 5: 503 CORE_SERVICE_UNAVAILABLE en 0.02 s; llamadas al destino 4
+    caida 6: 503 CORE_SERVICE_UNAVAILABLE en 0.01 s; llamadas al destino 0
+    caida 7: 503 CORE_SERVICE_UNAVAILABLE en 0.01 s; llamadas al destino 0
+    caida 8: 503 CORE_SERVICE_UNAVAILABLE en 0.01 s; llamadas al destino 0
+    caida 9: 503 CORE_SERVICE_UNAVAILABLE en 0.01 s; llamadas al destino 0
+PASA  | QAS-40 | Dispatch -> Core | caidas repetidas: se corta el circuito | llamadas por intento [4, 4, 4, 4, 4, 0, 0, 0, 0]; codigos [503]
+PASA  | QAS-40 | Dispatch -> Core | circuito abierto con el destino ya sano | 503 CORE_SERVICE_UNAVAILABLE en 0.01 s; llamadas 0
+PASA  | QAS-40 | Dispatch -> Core | se recupera a los 10 s | 200 en 0.43 s; llamadas 1
+    menciones de 'Circuito abierto' / 'circuito abierto' en logs de qas40-dispatch: 10
+
+-- Dispatch -> Core (bandeja)
+PASA  | QAS-40 | Dispatch -> Core (bandeja) | sin falla | 200  en 1.23 s; llamadas al destino 2
+PASA  | QAS-40 | Dispatch -> Core (bandeja) | respuesta malformada (html) rechazada | 503 CORE_SERVICE_UNAVAILABLE en 0.01 s
+PASA  | QAS-40 | Dispatch -> Core (bandeja) | respuesta malformada (roto) rechazada | 503 CORE_SERVICE_UNAVAILABLE en 0.01 s
+REVISAR | QAS-40 | Dispatch -> Core (bandeja) | respuesta malformada (vacio) rechazada | 403 MANI-SOL-403V en 0.02 s
+
+-- Core -> Rules
+PASA  | QAS-40 | Core -> Rules | sin falla | 400 MANI-RGL-400 en 0.12 s; llamadas al destino 1
+PASA  | QAS-40 | Core -> Rules | demora: termina por timeout (~6 s) | 503 MANI-RGL-503 en 6.02 s
+REVISAR | QAS-40 | Core -> Rules | respuesta malformada (html) rechazada | 400 MANI-RGL-400 en 0.01 s
+REVISAR | QAS-40 | Core -> Rules | respuesta malformada (roto) rechazada | 400 MANI-RGL-400 en 0.01 s
+REVISAR | QAS-40 | Core -> Rules | respuesta malformada (vacio) rechazada | 400 MANI-RGL-400 en 0.01 s
+PASA  | QAS-40 | Core -> Rules | respuesta malformada (valido) rechazada | 502 MANI-RGL-502 en 0.01 s
+    caida 1: 503 MANI-RGL-503 en 0.01 s; llamadas al destino 2
+    caida 2: 503 MANI-RGL-503 en 0.01 s; llamadas al destino 2
+    caida 3: 503 MANI-RGL-503 en 0.01 s; llamadas al destino 2
+    caida 4: 503 MANI-RGL-503 en 0.01 s; llamadas al destino 2
+    caida 5: 503 MANI-RGL-503 en 0.01 s; llamadas al destino 2
+    caida 6: 503 MANI-RGL-503 en 0.00 s; llamadas al destino 0
+    caida 7: 503 MANI-RGL-503 en 0.00 s; llamadas al destino 0
+    caida 8: 503 MANI-RGL-503 en 0.00 s; llamadas al destino 0
+    caida 9: 503 MANI-RGL-503 en 0.00 s; llamadas al destino 0
+PASA  | QAS-40 | Core -> Rules | caidas repetidas: se corta el circuito | llamadas por intento [2, 2, 2, 2, 2, 0, 0, 0, 0]; codigos [503]
+PASA  | QAS-40 | Core -> Rules | circuito abierto con el destino ya sano | 503 MANI-RGL-503 en 0.00 s; llamadas 0
+PASA  | QAS-40 | Core -> Rules | se recupera a los 10 s | 400 en 0.03 s; llamadas 1
+    menciones de 'Circuito abierto' / 'circuito abierto' en logs de qas40-core: 0
+
+-- Core -> Dispatch
+PASA  | QAS-40 | Core -> Dispatch | sin falla | 200  en 2.28 s; llamadas al destino 1
+PASA  | QAS-40 | Core -> Dispatch | demora: termina por timeout (~6 s) | 503 DISPATCH_SERVICE_UNAVAILABLE en 6.41 s
+PASA  | QAS-40 | Core -> Dispatch | respuesta malformada (html) rechazada | 502 DISPATCH_SERVICE_ERROR en 0.41 s
+PASA  | QAS-40 | Core -> Dispatch | respuesta malformada (roto) rechazada | 502 DISPATCH_SERVICE_ERROR en 0.41 s
+PASA  | QAS-40 | Core -> Dispatch | respuesta malformada (vacio) rechazada | 502 DISPATCH_SERVICE_ERROR en 0.41 s
+    caida 1: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.41 s; llamadas al destino 2
+    caida 2: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.41 s; llamadas al destino 2
+    caida 3: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.41 s; llamadas al destino 2
+    caida 4: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.41 s; llamadas al destino 2
+    caida 5: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.41 s; llamadas al destino 2
+    caida 6: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.40 s; llamadas al destino 0
+    caida 7: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.40 s; llamadas al destino 0
+    caida 8: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.40 s; llamadas al destino 0
+    caida 9: 503 DISPATCH_SERVICE_UNAVAILABLE en 0.40 s; llamadas al destino 0
+PASA  | QAS-40 | Core -> Dispatch | caidas repetidas: se corta el circuito | llamadas por intento [2, 2, 2, 2, 2, 0, 0, 0, 0]; codigos [503]
+PASA  | QAS-40 | Core -> Dispatch | circuito abierto con el destino ya sano | 503 DISPATCH_SERVICE_UNAVAILABLE en 0.40 s; llamadas 0
+PASA  | QAS-40 | Core -> Dispatch | se recupera a los 10 s | 200 en 1.82 s; llamadas 1
+    menciones de 'Circuito abierto' / 'circuito abierto' en logs de qas40-core: 5
+
+PASA  | QAS-40 | reglas del tenant | sin cambios en la corrida | 200 version=20
+
+== Limpieza
+  contenedores temporales borrados: si
+  cancelar la solicitud de prueba: 200 
+  servicios de QA sin cambios (imagen, arranque y reinicios): si
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/dispatch/health
+  200 /api/v1/rules/health
+== Resumen: 34 PASA, 0 FALLA, 4 REVISAR. Fin (2026-11-24T03:55:37Z)

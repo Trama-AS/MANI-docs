@@ -11,11 +11,11 @@
 | Parte | Medición | Cumple |
 |---|---|---|
 | Código nuevo ≥ 80 % | El gate `MANI ADR-0005` lo exige en Node, Java, .NET, Landing y Flutter. **El Gateway lo excluye.** | En 5 de 6 |
-| Casos de uso críticos ≥ 90 % | Core 97,2 % en conjunto, Rules 100 %, Dispatch 86 a 94 %. **3 casos por debajo de 90 %** (§2). | No del todo |
+| Casos de uso críticos ≥ 90 % | Core 97,2 % en conjunto, Rules 100 %, Dispatch 86 a 94 %. **4 casos por debajo de 90 %** (§2; corregido el 24 de noviembre: la primera versión decía 3 y no contaba rechazar oferta). | No del todo |
 | Contract tests obligatorios | Solo el CI del Gateway los exige (`validate:openapi`, Spectral y gate de contrato con Newman). Core tiene contract tests de proveedores y de reglas dentro de su suite; Dispatch y Rules no tienen. | No |
 | Casos de prueba por historia crítica | 51 de 51 historias críticas con caso en las matrices (QAS-28, T-43). | Sí |
 
-**Estado: Parcial.**
+**Estado: Parcial.** Remedido el 24 de noviembre: Cumple ([informe](../20261124T040000Z_remedicion_qas/informe_remedicion.md)).
 
 ## 2. Cobertura por caso de uso crítico (líneas)
 
@@ -46,7 +46,7 @@ Todo `src` del Core: 86,4 %.
 | Orquestar despacho | 97/103 | 94,2 |
 | Elegibles | 164/175 | 93,7 |
 | **Aceptar oferta** | 25/29 | **86,2** |
-| Rechazar oferta | 57/65 | 87,7 |
+| **Rechazar oferta** | 57/65 | **87,7** |
 | Ofertas del aliado | 19/21 | 90,5 |
 
 Lo que falta en aceptar y rechazar oferta son validaciones de entrada (`RequestId` vacío o no UUID) y los rechazos por aliado sin perfil o sin verificar.
@@ -59,7 +59,7 @@ Lo que falta en aceptar y rechazar oferta son validaciones de entrada (`RequestI
 |---|---|---|
 | H-23-1 | El gate del Gateway no exige cobertura de código nuevo. | DevOps |
 | H-23-2 | Core, Dispatch y Rules no tienen contract tests obligatorios contra su contrato OpenAPI en el CI. | Equipos de Core, Dispatch y Rules |
-| H-23-3 | Aprobar aliado (89,1 %), reglas del tenant (88,9 %) y aceptar oferta (86,2 %) quedan por debajo de 90 %. | Equipos de Core y Dispatch |
+| H-23-3 | Aprobar aliado (89,1 %), reglas del tenant (88,9 %), aceptar oferta (86,2 %) y rechazar oferta (87,7 %) quedan por debajo de 90 %. | Equipos de Core y Dispatch |
 | H-23-4 | El `pom.xml` de Rules usa JaCoCo 0.8.12, que no soporta Java 25; con un JDK nuevo hay que usar 0.8.14. En CI, con su JDK, funciona. | Equipo de Rules |
 
 ## 4. Método y evidencia

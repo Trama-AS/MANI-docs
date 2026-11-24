@@ -1,0 +1,27 @@
+== QAS-02 y QAS-09 en MANI-QA con copias desechables (2026-11-24T15:08:37Z)
+  mani-core-service rev=3bb3dd3
+  mani-dispatch-service rev=1fce80e
+  mani-rules-service rev=ce513cb
+  mani-api-gateway rev=71558b8
+  red mani-network; memoria disponible 2572 MB
+  tenant de prueba: acme-servicios
+  residuos antes (lectura de prueba): {"auth.users": 0, "usuario": 0, "aliado": 0, "aliado_categoria_huerfana": 0, "documento_kyc_huerfano": 0, "consentimiento_huerfano": 0, "storage_kyc_nuevo": 0}
+  sesiones listas; categoria de prueba: si
+
+-- QAS-09 orquestacion a medias por push colgado
+PASA  | QAS-09 | orquestacion a medias por push colgado | la falla se reproduce | 503 CORE_SERVICE_UNAVAILABLE en 11.48 s; ofertas 1 de 2 elegibles; estado PENDIENTE -> PENDIENTE
+PASA  | QAS-09 | orquestacion a medias por push colgado | la solicitud no cambia de estado | PENDIENTE -> PENDIENTE
+PASA  | QAS-09 | orquestacion a medias por push colgado | repetir con el push sano completa las ofertas | 200  en 1.85 s; ofertas 2 de 2
+PASA  | QAS-09 | orquestacion a medias por push colgado | sin ofertas duplicadas | 2 ofertas a 2 aliados
+    cancelar: 200 ; estado CANCELADA
+
+== Limpieza
+  contenedores temporales borrados: si
+  servicios de QA sin cambios (imagen, arranque y reinicios): si
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/dispatch/health
+  200 /api/v1/rules/health
+== QAS-02: 0 PASA, 0 FALLA, 0 REVISAR
+== QAS-09: 4 PASA, 0 FALLA, 0 REVISAR
+== Fin (2026-11-24T15:09:47Z)

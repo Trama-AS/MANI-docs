@@ -1,0 +1,129 @@
+== QAS-05 real 2026-11-24T22:22:51Z; 10 peticiones/s; 75 s por paso; servicios core
+== Revision sin cambios (2026-11-24T22:22:51Z)
+  compose 5.6.1; nucleos 4; disco 21G libre
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2688 MB; carga 2.29 1.61
+  ok  gateway corre la imagen de ghcr.io/trama-as/mani-apigateway:staging
+  ok  core-service corre la imagen de ghcr.io/trama-as/mani-node:staging
+  ok  rules-service corre la imagen de ghcr.io/trama-as/mani-java:staging
+  ok  dispatch-service corre la imagen de ghcr.io/trama-as/mani-dotnet:staging
+  compose aislado valido; pools por replica: Core 5, Dispatch no se levanta; CPU por replica 0.5
+== Se levanta el proyecto aislado: Core 2, Rules 1 (2026-11-24T22:22:54Z)
+  core-service: 2 replicas listas en 4 s
+  rules-service: 1 replicas listas en 27 s
+  gateway aislado -> core: 200
+  gateway aislado -> rules: 200
+== Humo core
+  "perfil": {
+   "med_ms": 732.141,
+   "p95_ms": 1074.6349999999998,
+   "max_ms": 1378.362,
+   "peticiones": 11
+  },
+  "sitios": {
+   "med_ms": 592.3315,
+   "p95_ms": 1019.8367,
+   "max_ms": 1048.229,
+   "peticiones": 10
+  },
+  "tarifa": {
+   "med_ms": 587.535,
+   "p95_ms": 876.5246999999998,
+   "max_ms": 1076.034,
+   "peticiones": 10
+  }
+ }
+}
+== core: carga 10/s y pasos 2 a 6 (2026-11-24T22:23:46Z)
+ESCALAR core-service 2 1795559041
+  core-service: 2 replicas listas en 0 s
+PASO core-service 2 1795559041
+REPLICA core-service 2 172.20.0.2 /qas05-core-service-1 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 2 172.20.0.3 /qas05-core-service-2 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2445 MB; carga 2.16 1.77
+FIN_PASO core-service 2 1795559118
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2460 MB; carga 2.22 1.89
+ESCALAR core-service 3 1795559118
+  core-service: 3 replicas listas en 5 s
+PASO core-service 3 1795559124
+REPLICA core-service 3 172.20.0.6 /qas05-core-service-3 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 3 172.20.0.2 /qas05-core-service-1 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 3 172.20.0.3 /qas05-core-service-2 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2393 MB; carga 2.85 2.02
+FIN_PASO core-service 3 1795559201
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2401 MB; carga 1.97 1.96
+ESCALAR core-service 4 1795559201
+  core-service: 4 replicas listas en 5 s
+PASO core-service 4 1795559207
+REPLICA core-service 4 172.20.0.7 /qas05-core-service-4 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 4 172.20.0.6 /qas05-core-service-3 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 4 172.20.0.2 /qas05-core-service-1 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 4 172.20.0.3 /qas05-core-service-2 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2356 MB; carga 1.89 1.95
+FIN_PASO core-service 4 1795559284
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2396 MB; carga 2.35 2.12
+ESCALAR core-service 5 1795559284
+  core-service: 5 replicas listas en 6 s
+PASO core-service 5 1795559291
+REPLICA core-service 5 172.20.0.8 /qas05-core-service-5 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 5 172.20.0.7 /qas05-core-service-4 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 5 172.20.0.6 /qas05-core-service-3 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 5 172.20.0.2 /qas05-core-service-1 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 5 172.20.0.3 /qas05-core-service-2 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2360 MB; carga 2.24 2.10
+FIN_PASO core-service 5 1795559369
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2258 MB; carga 2.28 2.11
+ESCALAR core-service 6 1795559369
+  core-service: 6 replicas listas en 6 s
+PASO core-service 6 1795559377
+REPLICA core-service 6 172.20.0.9 /qas05-core-service-6 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 6 172.20.0.8 /qas05-core-service-5 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 6 172.20.0.7 /qas05-core-service-4 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 6 172.20.0.6 /qas05-core-service-3 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 6 172.20.0.2 /qas05-core-service-1 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+REPLICA core-service 6 172.20.0.3 /qas05-core-service-2 misma_imagen a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c9091
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2292 MB; carga 2.89 2.24
+FIN_PASO core-service 6 1795559454
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2317 MB; carga 1.39 1.94
+ "no_200": 0,
+ "fallas_5xx": 0,
+ "descartadas": 0,
+ "por_ruta": {
+  "perfil": {
+   "med_ms": 670,
+   "p95_ms": 844.514,
+   "max_ms": 2479.504,
+   "peticiones": 1427
+  },
+  "sitios": {
+   "med_ms": 546.881,
+   "p95_ms": 626.6663,
+   "max_ms": 1718.736,
+   "peticiones": 1428
+  },
+  "tarifa": {
+   "med_ms": 547.455,
+   "p95_ms": 641.8271,
+   "max_ms": 1618.818,
+   "peticiones": 1427
+  }
+ }
+}
+time="2026-11-24T17:30:54-05:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"
+  core-service: 2 replicas listas en 1 s
+== Errores del Gateway aislado (ultimos 20)
+== core-service
+  2 replicas: atienden 2 de 2; reparto 209 212; misma imagen si; no 200 en el tramo 0 de 770; reintentos del Gateway 0; fuera del mapa 0 -> PASA
+  3 replicas: atienden 3 de 3; reparto 157 139 124; misma imagen si; no 200 en el tramo 0 de 829; reintentos del Gateway 0; fuera del mapa 0 -> PASA
+  4 replicas: atienden 4 de 4; reparto 103 121 94 103; misma imagen si; no 200 en el tramo 0 de 831; reintentos del Gateway 0; fuera del mapa 0 -> PASA
+  5 replicas: atienden 5 de 5; reparto 87 89 97 81 75; misma imagen si; no 200 en el tramo 0 de 849; reintentos del Gateway 0; fuera del mapa 0 -> PASA
+  6 replicas: atienden 6 de 6; reparto 81 57 70 71 65 76; misma imagen si; no 200 en el tramo 0 de 851; reintentos del Gateway 0; fuera del mapa 0 -> PASA
+  k6: 4282 peticiones a 10/s; no 200 0; 5xx o sin respuesta 0; descartadas 0; perfil p95 845 ms; sitios p95 627 ms; tarifa p95 642 ms
+  core-service: PASA
+== rules-service: SIN MEDIR
+== dispatch-service: SIN MEDIR
+== QAS-05 (umbral B): PARCIAL {'core-service': True, 'rules-service': None, 'dispatch-service': None}
+== Limpieza (2026-11-24T22:30:58Z)
+  restos de qas05: 0 contenedores, 0 redes
+  QA real sin cambios (imagen, arranque y reinicios): si
+  QA real: gateway 200 core 200 dispatch 200 rules 200; memoria libre 2704 MB; carga 2.88 2.24
+LIMPIEZA CONFIRMADA

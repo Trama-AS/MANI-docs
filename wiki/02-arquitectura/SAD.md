@@ -114,8 +114,7 @@ Los diagramas de alto nivel de este documento se dibujan a mano y se mantienen a
 |---|---|---|---|---|
 | 1 | **Arquitectura general** | ¿Cómo está construida MANI? | [`MANI_Arquitectura_SaaS_Multi-Tenant.png`](diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png) | §5, §6 y §7 |
 | 2 | **Infraestructura, CI/CD y operación** | ¿Cómo se desarrolla, despliega y opera MANI? | [`MANI_Despliegue_e_Infraestructura.png`](diagrams/AltoNivel/MANI_Despliegue_e_Infraestructura.png) | §16, §17 y §18 |
-| 3 | **Arquitectura de datos** | ¿Qué dominios de datos hay y quién accede a cuáles? | [`03-arquitectura-datos.png`](diagrams/AltoNivel/actualizados/03-arquitectura-datos.png) | §14 |
-| 4 | **Tech Radar** | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | — | [`TECH_RADAR.md`](TECH_RADAR.md) |
+| 3 | **Tech Radar** | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | — | [`TECH_RADAR.md`](TECH_RADAR.md) |
 
 **Las figuras son clicables** y abren la imagen a resolución completa. Cada figura va acompañada del contenido en texto, que es el que manda si imagen y documento no coinciden.
 
@@ -629,10 +628,6 @@ Para el segundo incremento, las operaciones financieras requieren registro inmut
 ---
 
 # 14. Persistencia
-
-[![Arquitectura de datos de MANI: dominios y fronteras de acceso](diagrams/AltoNivel/actualizados/03-arquitectura-datos.png)](diagrams/AltoNivel/actualizados/03-arquitectura-datos.png)
-
-> **Figura 3 — Arquitectura de datos.** Archivo: [`diagrams/AltoNivel/actualizados/03-arquitectura-datos.png`](diagrams/AltoNivel/actualizados/03-arquitectura-datos.png). Muestra dominios y fronteras de acceso; el DER detallado está en [`ModeloDatos.md`](ModeloDatos.md).
 
 MANI utiliza:
 

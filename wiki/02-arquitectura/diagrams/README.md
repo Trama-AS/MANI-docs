@@ -7,7 +7,7 @@ diagrams/
 ├── AltoNivel/
 │   ├── MANI_Arquitectura_SaaS_Multi-Tenant.png   arquitectura de alto nivel del SAD
 │   ├── MANI_Despliegue_e_Infraestructura.png     despliegue e infraestructura del SAD
-│   └── actualizados/        arquitectura de datos del SAD (PNG, SVG y PDF)
+│   └── actualizados/        vistas adicionales (PNG, SVG y PDF)
 ├── c4/
 │   ├── workspace.dsl        fuente editable del modelo C4 (Structurizr DSL)
 │   ├── contexto/            C4 N1 y panorama

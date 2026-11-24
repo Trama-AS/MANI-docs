@@ -4,6 +4,8 @@
 
 QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z; QAS-33 y 35, 04:05Z a 04:26Z; QAS-18 y 27, 04:46Z a 05:09Z.
 
+Flutter vigente en QA desde las 05:47Z: `4539d53` ([despliegue](despliegue/despliegue_flutter_24nov_0545z.txt)). Entre `a98fa12` y `4539d53` solo entra MANI-Flutter#168 (SCRUM-1646): cambia colores del tema y no toca rutas, sesión, red ni mensajes. QAS-30, 34 y 35 se midieron con `a98fa12` y no se repitieron. El conteo de QAS-33 se repitió en `4539d53` y da lo mismo: 83 nativos en 31 archivos, 0 agregados.
+
 | QAS | Antes | Ahora |
 |---|---|---|
 | 18 | No medido | **Cumple** |

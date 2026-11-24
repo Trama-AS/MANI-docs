@@ -1,0 +1,39 @@
+== QAS-43 desde fuera de las VM, 2026-11-24T03:29:16Z, LibreSSL 3.3.6
+== QA 10.43.100.141
+  http://10.43.100.141:8080/ 301 -> https://10.43.100.141:8080/
+  https://10.43.100.141:8080/ 200 -> 
+  https://10.43.100.141:8080/api/v1/core/health 200 -> 
+  https://10.43.100.141:8080/api/v1/dispatch/health 200 -> 
+  https://10.43.100.141:8080/api/v1/rules/health 200 -> 
+  http://10.43.100.141:3001/ 200 -> 
+  puerto 80 abierto
+  puerto 443 no responde
+  puerto 8080 abierto
+  puerto 3001 abierto
+  10.43.100.141:8080 tls1: New, (NONE), Cipher is (NONE) | 8321471232:error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version:
+  10.43.100.141:8080 tls1_1: New, (NONE), Cipher is (NONE) | 8321471232:error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version:
+  10.43.100.141:8080 tls1_2: New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES256-GCM-SHA384 | verify error:num=18:self signed certificate
+  10.43.100.141:8080 tls1_3: New, TLSv1/SSLv3, Cipher is AEAD-AES256-GCM-SHA384 | verify error:num=18:self signed certificate
+Server: nginx/1.31.10
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+== PROD 10.43.98.203 (solo lectura)
+  puerto 80 abierto
+  puerto 443 no responde
+  puerto 8080 abierto
+  http://10.43.98.203/ 000 -> 
+  http://10.43.98.203/health 000 -> 
+  http://10.43.98.203:8080/ 200 -> 
+  https://10.43.98.203:8080/ 000 -> 
+  https://10.43.98.203/ 000 -> 
+  10.43.98.203:8080 tls1: New, (NONE), Cipher is (NONE) | 8321471232:error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version:
+  10.43.98.203:8080 tls1_1: New, (NONE), Cipher is (NONE) | 8321471232:error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version:
+  10.43.98.203:8080 tls1_2: New, (NONE), Cipher is (NONE) | 8321471232:error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version:
+  10.43.98.203:8080 tls1_3: New, (NONE), Cipher is (NONE) | 8321471232:error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version:
+  10.43.98.203:443 tls1: sin handshake | 
+  10.43.98.203:443 tls1_1: sin handshake | 
+  10.43.98.203:443 tls1_2: sin handshake | 
+  10.43.98.203:443 tls1_3: sin handshake | 
+
+== Detalle de PROD (GET de solo lectura, 03:29Z)
+  http://10.43.98.203:8080/ 200: sirve el HTML de Flutter por HTTP sin cifrar (Last-Modified 05 Nov 2026). El handshake TLS en 8080 falla en todas las versiones.
+  Puerto 443: conexión rechazada. Puerto 80: acepta TCP y corta sin responder (igual que el 80 de QA desde fuera: la red no deja pasar). No se sabe desde aquí qué hacen por dentro.

@@ -1,0 +1,61 @@
+== Fecha 2026-11-24T03:23:53Z
+== Antes
+-- migraciones registradas (0044 a 0046)
+version | applied_at
+0044 | 2026-11-23 21:47:30.131494+00
+(1 row)
+-- columna usuario.nombre y cuentas (solo conteos)
+columna
+0
+(1 row)
+-- politicas de lectura de tenant, zona y solicitud
+tablename | policyname | roles | cmd
+solicitud | solicitud_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+tenant | tenant_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+zona | zona_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+(3 rows)
+-- permisos de mani_dispatch_svc
+tabla | lee | inserta
+solicitud | t | f
+solicitud_rechazo | t | t
+tenant | t | f
+zona | t | f
+(4 rows)
+== Migracion 0045 en una transaccion, termina en COMMIT
+BEGIN
+ALTER TABLE
+UPDATE 14
+UPDATE 125
+INSERT 0 1
+registrada
+0045
+(1 row)
+cuentas | con_nombre
+152 | 139
+(1 row)
+COMMIT
+-- COMMIT hecho
+== Despues
+-- migraciones registradas (0044 a 0046)
+version | applied_at
+0044 | 2026-11-23 21:47:30.131494+00
+0045 | 2026-11-24 03:23:56.382988+00
+(2 rows)
+-- columna usuario.nombre y cuentas (solo conteos)
+columna
+1
+(1 row)
+-- politicas de lectura de tenant, zona y solicitud
+tablename | policyname | roles | cmd
+solicitud | solicitud_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+tenant | tenant_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+zona | zona_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+(3 rows)
+-- permisos de mani_dispatch_svc
+tabla | lee | inserta
+solicitud | t | f
+solicitud_rechazo | t | t
+tenant | t | f
+zona | t | f
+(4 rows)
+== Fin

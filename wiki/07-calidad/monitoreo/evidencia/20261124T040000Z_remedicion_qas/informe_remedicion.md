@@ -1,0 +1,74 @@
+# Remedición de QAS tras el despliegue del 24 de noviembre de 2026
+
+> Evidencia de QA. Resultado en el [SDD §8](../../../../02-arquitectura/SDD.md). Mantiene: QA (Santiago Hernández).
+
+QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z.
+
+| QAS | Antes | Ahora |
+|---|---|---|
+| 20 | Cumple (con un permiso sobrante) | Cumple |
+| 21 | No cumple | **Parcial** |
+| 22 | Parcial | **Cumple** |
+| 23 | Parcial | **Cumple** |
+| 30 | Cumple | Cumple |
+| 34 | No cumple | No cumple |
+| 40 | Parcial | **Cumple** |
+| 43 | Parcial | Parcial |
+
+**Conteo:** Cumple 29 · Parcial 7 · No cumple 6 · No medido 3.
+
+## QAS-20: Cumple (y QAS-01, regresión)
+
+[Corrida](qas01_qas20/qas01_qas20_24nov_0350z.txt): 50 PASA, 0 FALLA, 0 REVISAR.
+
+- Tras la 0046, `mani_dispatch_svc` solo tiene `SELECT` e `INSERT` sobre `solicitud_rechazo`.
+- 10 de 10 operaciones prohibidas reciben `42501`, incluidas las lecturas de `solicitud`, `tenant` y `zona`.
+- Con sesión: ofertar, ver la bandeja, rechazar (repetirlo no duplica) y aceptar lo rechazado (409 `MANI-DSP-409R`). Logs de Dispatch con 0 `permission denied`.
+- [Código de Dispatch](qas01_qas20/qas20_codigo_dispatch_24nov_0330z.txt) `1fce80e`: SQL solo sobre `solicitud_rechazo`.
+- Las 3 solicitudes de prueba quedaron CANCELADA. Queda 1 rechazo de `aliado.t1`.
+
+## QAS-21: Parcial
+
+[Medición](qas21/qas21_24nov_0331z.txt). La validación de las reglas del tenant quedó solo en Rules (SCRUM-1722). Duplicación: Node 0,6 %, Java 0,0 %, .NET 1,5 %, Gateway 0,0 %, Landing 1,0 % y Flutter 0,9 % (antes 6,3 %). Falta: `comisionValida()` en Core repite el límite de la comisión (0 a 30 %, 2 decimales) que también está en Rules; la usa la liquidación.
+
+## QAS-22: Cumple
+
+[Logs por servicio](qas22/qas22_logs_24nov_0359z.txt), desde el arranque de cada contenedor. El corte del 23 de noviembre usó una ventana posterior al arranque, así que los porcentajes no se comparan directo.
+
+| Servicio | Líneas en JSON | Lo que no es JSON |
+|---|---|---|
+| Core | 517 de 519 | 2 mensajes de arranque |
+| Dispatch | 258 de 260 | 2 mensajes de arranque |
+| Rules | 139 de 146 | 7 líneas del letrero de arranque |
+| Gateway | 1237 de 1375 | 9 de arranque y 129 del `error_log` de nginx, que solo escribe texto |
+
+El registro de acceso del Gateway es JSON. `X-Correlation-ID`: 10 de 10 peticiones con una sola cabecera, 9 IDs en Gateway, Core y Dispatch, y 14 en Core y Rules (de la corrida de QAS-40, que llegaron a los servicios reales). Observación: 76 avisos del `error_log` dicen que `correlation_id` no estaba definido; por la configuración parecen ser redirecciones a HTTPS, que no llegan a ningún servicio.
+
+## QAS-23: Cumple
+
+[Medición](qas23/qas23_24nov_0400z.txt). El gate de código nuevo está en los 6 repositorios y los contract tests son obligatorios en el CI de Gateway, Core, Dispatch y Rules (141 de 141 operaciones). Todos los casos críticos están en 90 % o más; los otros 10 casos de Core conservan la cifra del 22 de noviembre (95,2 a 100 %). Corrección: en el corte del 22 de noviembre los casos bajo 90 % eran 4, no 3; faltó contar rechazar oferta (87,7 %).
+
+## QAS-30: Cumple (14 de 14)
+
+Mismo método de T-45. [Pantallas con sesión](qas30/qas30_sesion_24nov.txt) y [sin sesión](qas30/qas30_sin_sesion_24nov_0334z.txt). Ventana de referencia 800x865; se repitieron 13 flujos a 800x600 y los dos registros también a 390x844. F11 no se repitió porque no había aliados pendientes y conserva la medición del 22 y 23 de noviembre. Límite: revisión de experto, no prueba con usuarios; en ventanas bajas (800x600), «Pagar» (F4) y «Aceptar» de la bandeja del aliado (F8) aparecen al desplazarse un poco; en celular solo se revisaron los dos registros.
+
+## QAS-34: No cumple
+
+[Landing](qas34/qas34_landing_24nov_0332z.txt): 18 de 319 textos con contraste bajo (los mismos), sin `prefers-reduced-motion`. [Flutter](qas34/qas34_flutter_24nov_0334z.txt): el foco de «Ingresar» ya se ve (2.4.7); siguen `lang` en `en-US` (3.1.1), campos nombrados por su ejemplo (1.3.1) y zoom bloqueado en celular (1.4.4).
+
+## QAS-40: Cumple
+
+[Corrida](qas40/qas40_24nov_0352z.txt), con copias desechables de las imágenes desplegadas en la red de QA y un [proxy que inyecta fallas](qas40/proxy_fallas.js). Los contenedores de QA no se tocaron (imagen, arranque y reinicios iguales). 34 PASA, 0 FALLA, 4 observaciones.
+
+| Camino | Timeout | Circuito | Recuperación |
+|---|---|---|---|
+| Dispatch → Rules | 3,5 s | Abre tras 5 caídas | A los 10 s |
+| Dispatch → Core | 10,0 s | Abre tras 5 caídas | A los 10 s |
+| Core → Rules | 6,0 s | Abre tras 5 caídas | A los 10 s |
+| Core → Dispatch | 6,4 s | Abre tras 5 caídas | A los 10 s |
+
+Con el circuito abierto el destino recibió 0 llamadas. Ninguna respuesta malformada terminó en 2xx. Observaciones: con HTML, JSON roto o `{}` de Rules, Core responde 400 `MANI-RGL-400` (lo atribuye al administrador; no guarda nada); con `{}` de Core, la bandeja de Dispatch responde 403. No se probó `{}` en la segunda llamada de la bandeja. Los proveedores externos se apoyan en las pruebas de Core del 22 de noviembre.
+
+## QAS-43: Parcial
+
+[Medición](qas43/qas43_tls_24nov_0329z.txt) desde fuera de las VM. QA: el 8080 redirige HTTP a HTTPS y acepta TLS 1.2 y 1.3; rechaza 1.0 y 1.1 (SCRUM-1718). El certificado es autofirmado y no incluye la IP de QA. PROD: el 8080 sirve la app por HTTP y el 443 no responde.

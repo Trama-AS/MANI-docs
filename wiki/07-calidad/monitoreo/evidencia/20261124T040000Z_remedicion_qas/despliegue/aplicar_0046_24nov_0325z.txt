@@ -1,0 +1,72 @@
+== Fecha 2026-11-24T03:26:09Z
+  Dispatch en QA 1fce80e, release 1fce80e
+== Antes
+-- migraciones registradas (0044 a 0046)
+version | applied_at
+0044 | 2026-11-23 21:47:30.131494+00
+0045 | 2026-11-24 03:23:56.382988+00
+(2 rows)
+-- columna usuario.nombre y cuentas (solo conteos)
+columna
+1
+(1 row)
+-- politicas de lectura de tenant, zona y solicitud
+tablename | policyname | roles | cmd
+solicitud | solicitud_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+tenant | tenant_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+zona | zona_lectura | {authenticated,mani_core_svc,mani_dispatch_svc} | SELECT
+(3 rows)
+-- permisos de mani_dispatch_svc
+tabla | lee | inserta
+solicitud | t | f
+solicitud_rechazo | t | t
+tenant | t | f
+zona | t | f
+(4 rows)
+== Migracion 0046 en una transaccion, termina en COMMIT
+BEGIN
+DO
+DO
+DO
+DROP POLICY
+CREATE POLICY
+INSERT 0 1
+registrada
+0046
+(1 row)
+tabla | lee
+solicitud | f
+solicitud_rechazo | t
+tenant | f
+zona | f
+(4 rows)
+COMMIT
+-- COMMIT hecho
+== Despues
+-- migraciones registradas (0044 a 0046)
+version | applied_at
+0044 | 2026-11-23 21:47:30.131494+00
+0045 | 2026-11-24 03:23:56.382988+00
+0046 | 2026-11-24 03:26:12.293824+00
+(3 rows)
+-- columna usuario.nombre y cuentas (solo conteos)
+columna
+1
+(1 row)
+-- politicas de lectura de tenant, zona y solicitud
+tablename | policyname | roles | cmd
+solicitud | solicitud_lectura | {authenticated,mani_core_svc} | SELECT
+tenant | tenant_lectura | {authenticated,mani_core_svc} | SELECT
+zona | zona_lectura | {authenticated,mani_core_svc} | SELECT
+(3 rows)
+-- permisos de mani_dispatch_svc
+tabla | lee | inserta
+solicitud | f | f
+solicitud_rechazo | t | t
+tenant | f | f
+zona | f | f
+(4 rows)
+== Salud de Dispatch tras la 0046
+  health 200
+  permission denied en los ultimos 2 min: 0
+== Fin

@@ -1,0 +1,15 @@
+QAS-34 (Flutter) y QAS-30 (pantallas sin sesión). Build de QA a98fa12, 2026-11-24 03:33Z a 03:35Z.
+Método: navegador integrado sobre un proxy local de solo GET, sin sesión, hacia https://10.43.100.141:8080.
+Límite: ese proxy no verificaba el certificado autofirmado de QA. El navegador integrado lo rechaza (ERR_CERT_AUTHORITY_INVALID), así que el proxy se apagó y las pantallas con sesión quedan pendientes. Las llamadas a la API desde la página fallaron por lo mismo («No pudimos cargar las especialidades» en el registro de aliado): no es un defecto medido.
+
+QAS-34
+3.1.1 idioma: document.documentElement.lang = en-US (index.html dice es). No cumple.
+1.3.1 nombre de campos: los INPUT del login se llaman «hola@mani.app» y «••••••••». No cumple.
+1.4.4 zoom: viewport = maximum-scale=1.0, user-scalable=no. No cumple en celular.
+2.4.7 foco visible: con Tab, «Ingresar» muestra un anillo oscuro alrededor (SCRUM-1647). Cumple; el 23 nov no se veía. La tarjeta del login muestra también un anillo.
+
+QAS-30 (acción principal sin desplazarse)
+Registro de cliente 800x600 y 390x844: sí, «Crear mi cuenta de cliente» fijo al pie.
+Registro de aliado 800x600 y 390x844: sí, «Enviar registro a revisión» fijo al pie.
+Login 800x600 (no es uno de los 14 flujos): «Ingresar» queda bajo el pliegue; a 800x900 se ve.
+Pendiente con sesión: inicio por rol, menú, cobertura, sedes de empresa y mapa de zonas (cambiaron en a98fa12) y reglas del tenant.

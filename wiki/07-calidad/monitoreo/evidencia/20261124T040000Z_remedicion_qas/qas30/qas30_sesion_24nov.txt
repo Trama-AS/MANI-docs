@@ -1,0 +1,29 @@
+QAS-30, pantallas con sesión. MANI-QA Flutter a98fa12, 2026-11-24 03:39Z a 03:48Z. Chrome de Santiago (certificado aceptado por la persona), sesión iniciada por la persona. Solo lectura.
+Ventana: 800x597 de área visible. El ancho mínimo de Chrome fue 500, así que 390x844 no se repitió; en su lugar 500x780.
+
+Administrador (admin.t1@qa.mani.test)
+F11 Verificar aliado 800x597: sin aliados pendientes (0); «Aprobar» y «Rechazar» no se pudieron ver. No repetido. La lista tardó más de 10 s en cargar y a los 20 s ya estaba.
+F12 Categorías 800x597: sí, «Nueva categoría» arriba a la derecha y «Activar» en cada tarjeta.
+F13 Tarifas 800x597: sí, «Cargar tarifa» por categoría.
+F13 Reglas 800x597 y 500x780: sí, «Guardar nueva versión» fijo al pie. Versión vigente 20, sin cambios.
+F14 Quejas 800x597: sí, filtros por estado e «Historial».
+Inicio y menú (no son flujos): «Verificar aliados» visible; el menú completo pide desplazarse a la derecha (hay flechas).
+Hallazgos menores que siguen: rótulos con «(RF-13)», «(RF-16)», «(RNF-10)» en reglas.
+
+Cliente (cliente.t1@qa.mani.test), solo lectura
+F2 Crear solicitud 800x597: sí, categorías como tarjetas en el paso 1 de 4.
+F3 Ver aliados 800x597: sí, «Ver aliados» y «Ver cotización» en cada tarjeta. «Aceptar cotización» no se pudo ver (la revisada ya estaba aceptada). Sigue «Orden no disponible…» (H2).
+F4 Pagar: a 800x597 y 800x780 «Pagar (sandbox)» pide desplazarse (empieza en y≈773 y termina en ≈823). A 800x865, la ventana de T-45 donde se registró «Sí» el 22 nov, cabe por cálculo (no medido hoy: Chrome no pasó de 780 de alto). La pantalla de cotización no cambió en a98fa12.
+F5 Cancelar 800x597: sí, «Cancelar solicitud» en la tarjeta.
+F6 Queja 800x597: sí, indirecta: la pantalla dice que se presenta desde Mis pedidos; «Presentar queja» está en la tarjeta, a la altura del borde inferior.
+Inicio: «Pedir un servicio» visible.
+
+Aliado (aliado.t1@qa.mani.test), solo lectura
+F8 Bandeja: a 800x597 «Rechazar» y «Aceptar» de la primera oferta, con 3 reglas del sitio, piden desplazarse (y≈623 a 673). A 800x780 se ven. No se abrió la cotización de un trabajo.
+F9 Disponibilidad 800x597: sí, «Marcar no disponible» fijo abajo. Cobertura: sí, «Guardar cobertura» fijo abajo a la derecha (deshabilitado sin cambios).
+F10 Cobros 800x597: sí (consulta), «Por liquidar» y «Liquidado» arriba.
+Inicio: «Ver solicitudes» visible.
+
+Resumen con a98fa12: a 800x600 se ven sin desplazarse 11 flujos (F1, F2, F3, F5, F6, F7, F9, F10, F12, F13, F14); F4 y F8 al desplazarse un poco; F11 no repetido (sin pendientes; Sí el 22 y 23 nov a 800x865). Con la ventana de referencia 800x865: 14 de 14. F3: se vio «Ver aliados»; «Aceptar cotización» no.
+Celular (390x844): solo los dos registros; reglas a 500x780. Lo demás no se midió.
+No se guardó, aceptó, rechazó, pagó ni canceló nada.

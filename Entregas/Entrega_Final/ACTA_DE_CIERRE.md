@@ -10,7 +10,7 @@
 | **Medio** | [completar en la sesión] |
 | **Facilita y redacta** | Sara Albarracín (Scrum Master) |
 | **Acepta y firma** | Camila Beltrán (Product Owner) |
-| **Corte de las cifras** | 24 de noviembre de 2026, 5:15 p. m. Se actualizan el día de la firma con las consultas de la §4 |
+| **Corte de las cifras** | 24 de noviembre de 2026, 5:25 p. m. Se actualizan el día de la firma con las consultas de la §4 |
 
 > **Cómo se usa este documento.** La redacción y las cifras están completas. Lo que está entre corchetes lo llena la sesión de cierre: fecha, medio, asistencia, las decisiones que se tomen y las firmas. Nada de lo que se afirma aquí se inventa: cada cifra tiene su fuente en la §4.
 
@@ -51,9 +51,9 @@ Los ocho entregables de la entrega final están indexados en [`README.md`](READM
 
 | Medida | Resultado | Fuente |
 |---|---|---|
-| Ítems del proyecto en Jira | **742 de 764** en estado Done (quedan 22: 15 épicas sin empezar y 7 ítems de trabajo) | `project = SCRUM`, consultada el 2026-11-24 |
-| Historias | **134 de 135** en Done (queda SCRUM-1643, en revisión) | `project = SCRUM AND issuetype = Historia` |
-| Sprint 6 (6 al 25 de noviembre) | **95 de 103** ítems en Done al 24-nov | `project = SCRUM AND sprint in openSprints()` |
+| Ítems del proyecto en Jira | **744 de 764** en estado Done (quedan 20: 15 épicas sin empezar y 5 ítems de trabajo) | `project = SCRUM`, consultada el 2026-11-24 |
+| Historias | **135 de 135** en Done | `project = SCRUM AND issuetype = Historia` |
+| Sprint 6 (6 al 25 de noviembre) | **97 de 103** ítems en Done al 24-nov | `project = SCRUM AND sprint in openSprints()` |
 | Escenarios de calidad (45) | **35 cumplen**, 4 en parte, 5 no cumplen y 1 sin medir | [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md), corte 2026-11-24 |
 | Discrepancias entre documentos (HU-VAL-01) | **15 de 15** cerradas con evidencia o decisión | [`VALIDACION_HU-VAL-01.md`](../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) |
 | Decisiones de arquitectura | 30 ADR: 29 aceptados y 1 rechazado (ADR-0014) | [`SAD.md`](../../wiki/02-arquitectura/SAD.md) §24 |
@@ -69,7 +69,7 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 
 **Escenario sin medir (1):** 05 escalabilidad, porque escalar en QA altera un ambiente compartido. Su medición (SCRUM-1716) está en revisión.
 
-**Ítems de trabajo abiertos en Jira al 24-nov:** SCRUM-1635 (ver los aliados de una solicitud) y 1643 (mensajes de error con código), en revisión; y 1648 (sistema de diseño), 1652 (rendimiento de `eligible-allies`), 1657 (actor y correlation ID) y 1722 (validación de reglas solo en Rules), reabiertos. SCRUM-1716 (medir QAS-05) está en revisión. La foto de perfil (1634), el inicio por rol accesible (1647), los contratos OpenAPI (1661) y la promoción del mismo digest a PROD (1723) ya están cerrados; el detalle de cada una está en [`INFORME_CIERRE_SPRINT_6.md`](../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md) §4.4, escrito al corte del 23-nov.
+**Ítems de trabajo abiertos en Jira al 24-nov:** SCRUM-1648 (sistema de diseño), 1652 (rendimiento de `eligible-allies`), 1657 (actor y correlation ID) y 1722 (validación de reglas solo en Rules), reabiertos; y SCRUM-1716 (medir QAS-05), en revisión. Ya están cerradas las 135 historias, la foto de perfil (1634), el inicio por rol accesible (1647), los mensajes de error con código (1643), los aliados de una solicitud (1635), los contratos OpenAPI (1661) y la promoción del mismo digest a PROD (1723); el detalle de cada una está en [`INFORME_CIERRE_SPRINT_6.md`](../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md) §4.4, escrito al corte del 23-nov.
 
 **Fuera del producto:** Kafka no corre en PROD (épica post-MVP SCRUM-1677).
 

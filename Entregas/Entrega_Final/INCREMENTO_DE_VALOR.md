@@ -22,11 +22,12 @@ La versión anterior verificada en PROD (14 de noviembre) era `v1.0.4` de Flutte
 
 ## 2. Qué aporta el incremento
 
-El producto funcional (registro y verificación de aliados, cobertura, solicitud y despacho, cotización, ejecución, calificación, mensajería y tarifario) se construyó hasta el Sprint 5, cuyo último día de desarrollo fue el 30 de octubre. El Sprint 6 (6 al 25 de noviembre) lo valida, lo endurece y lo documenta. Al 24 de noviembre cerró **95 de 103 ítems**, entre ellos estas **18 historias**:
+El producto funcional (registro y verificación de aliados, cobertura, solicitud y despacho, cotización, ejecución, calificación, mensajería y tarifario) se construyó hasta el Sprint 5, cuyo último día de desarrollo fue el 30 de octubre. El Sprint 6 (6 al 25 de noviembre) lo valida, lo endurece y lo documenta. Al 24 de noviembre cerró **97 de 103 ítems**, entre ellos estas **19 historias**:
 
 | Historia | Qué entrega |
 |---|---|
 | [SCRUM-1383](https://maniservices.atlassian.net/browse/SCRUM-1383) | Cifrado de credenciales y de datos sensibles |
+| [SCRUM-1643](https://maniservices.atlassian.net/browse/SCRUM-1643) | Errores por código `MANI-XXX-NNN` con «Código · Ref» en todo estado de error |
 | [SCRUM-1644](https://maniservices.atlassian.net/browse/SCRUM-1644) | Sondeo de estado en la cotización, el estado del servicio y la ejecución |
 | [SCRUM-1645](https://maniservices.atlassian.net/browse/SCRUM-1645) | Etapa 1 de UX: arranque con marca, metadatos, fuentes empaquetadas y caché |
 | [SCRUM-1646](https://maniservices.atlassian.net/browse/SCRUM-1646) | Etapa 2 de UX: tokens unificados, gesto de botón, transiciones y estados vacíos |

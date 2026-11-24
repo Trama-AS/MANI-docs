@@ -7,7 +7,7 @@
 | **Finalidad** | Dejar por escrito los resultados del proyecto, las lecciones aprendidas y las conclusiones, con cifras que se puedan reproducir. |
 | **Redacta** | Sara Albarracín (Scrum Master) |
 | **Consume** | La PO, el equipo y el jurado en la sustentación |
-| **Corte** | 24 de noviembre de 2026, 5:15 p. m. El Sprint 6 cierra el 25 de noviembre |
+| **Corte** | 24 de noviembre de 2026, 5:25 p. m. El Sprint 6 cierra el 25 de noviembre |
 | **Fuentes** | Jira (`project = SCRUM`), [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md), [`INFORME_CIERRE_SPRINT_6.md`](../../wiki/06-gobernanza/INFORME_CIERRE_SPRINT_6.md), [`VALIDACION_HU-VAL-01.md`](../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) y la wiki. Las consultas están en la §9 |
 
 > **Regla de este informe.** Las cifras son las de Jira y las de las mediciones de QA, no las de la impresión de nadie. Donde el dato es incómodo se escribe igual.
@@ -16,7 +16,7 @@
 
 MANI formaliza el ciclo solicitud, cotización, ejecución, calificación y cierre de servicios entre clientes y aliados, para varias empresas a la vez y con los datos de cada una aislados. En seis sprints, del 26 de agosto al 25 de noviembre de 2026, el equipo construyó el MVP sobre una arquitectura de tres servicios detrás de un API Gateway y lo desplegó en tres ambientes.
 
-- **742 de 764** ítems de Jira cerrados; **134 de 135** historias.
+- **744 de 764** ítems de Jira cerrados; **135 de 135** historias.
 - **35 de 45** escenarios de calidad se cumplen; 4 en parte, 5 no y 1 sin medir.
 - **15 de 15** contradicciones entre documentos resueltas con evidencia.
 - Lo que no se entrega: rendimiento del Core bajo carga, accesibilidad WCAG 2.2 AA, sistema de diseño completo, Kafka en PROD y algunas funcionalidades puntuales. Está en la §6.
@@ -56,17 +56,17 @@ Seis sprints con Scrum, un tablero en Jira y la convención `[SCRUM-id]` en cada
 | 3 | 4 al 7 oct | 35 | 35 | Sin meta escrita |
 | 4 | 13 al 22 oct | 57 | 57 | Sin meta escrita |
 | 5 | 26 oct al 4 nov (cerrado el 5 nov) | 124 | 124 | Terminar el desarrollo y demostrar por video, en QA y por el Gateway con token real, que cada funcionalidad cumple. Último sprint de desarrollo |
-| 6 | 6 al 25 nov | 103 | 95 al 24 nov | Validación, calidad y documentación final. Sin meta escrita |
+| 6 | 6 al 25 nov | 103 | 97 al 24 nov | Validación, calidad y documentación final. Sin meta escrita |
 
 ## 5. Resultados
 
 ### 5.1 Producto
 
-La versión entregada es la `v1.0.5` de los siete repositorios ([`INCREMENTO_DE_VALOR.md`](INCREMENTO_DE_VALOR.md)). 134 de las 135 historias del proyecto están cerradas; la que queda es SCRUM-1643 (mensajes de error con código), en revisión. La última verificación de PROD (14 de noviembre) encontró `v1.0.4` de Flutter Web con un digest que coincide con el tag y las dieciocho rutas verificadas respondiendo ([`01-mapa-ambientes-y-versiones.md`](../../wiki/08-infraestructura/01-mapa-ambientes-y-versiones.md)); el despliegue de `v1.0.5` se confirma el día del cierre.
+La versión entregada es la `v1.0.5` de los siete repositorios ([`INCREMENTO_DE_VALOR.md`](INCREMENTO_DE_VALOR.md)). Las 135 historias del proyecto están cerradas. La última verificación de PROD (14 de noviembre) encontró `v1.0.4` de Flutter Web con un digest que coincide con el tag y las dieciocho rutas verificadas respondiendo ([`01-mapa-ambientes-y-versiones.md`](../../wiki/08-infraestructura/01-mapa-ambientes-y-versiones.md)); el despliegue de `v1.0.5` se confirma el día del cierre.
 
 ### 5.2 Calidad
 
-Los 45 escenarios de calidad (ISO/IEC 25010:2023) se definieron en el SDD §8 con su umbral y se midieron con k6, Newman, SonarQube y revisión de código. Al 24 de noviembre, 5:15 p. m.:
+Los 45 escenarios de calidad (ISO/IEC 25010:2023) se definieron en el SDD §8 con su umbral y se midieron con k6, Newman, SonarQube y revisión de código. Al 24 de noviembre, 5:25 p. m.:
 
 | Estado | Escenarios |
 |---|---|
@@ -91,7 +91,7 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 - **Accesibilidad (QAS-34).** El criterio es WCAG 2.2 AA y ni Flutter ni la Landing lo cumplen.
 - **Sistema de diseño y mensajes de error (QAS-33 y 35).** Migración parcial de componentes y errores sin orientar al usuario.
 - **Kafka en PROD.** Funciona en DEV y QA; PROD queda sin broker (épica SCRUM-1677).
-- **Funcionalidades puntuales.** Siguen abiertas en Jira los aliados de una solicitud (SCRUM-1635) y los mensajes de error con código (1643), en revisión, y el sistema de diseño (1648), el rendimiento de `eligible-allies` (1652), el actor y correlation ID (1657) y la validación de reglas solo en Rules (1722), reabiertos. La foto de perfil, el inicio por rol accesible, los contratos OpenAPI y la promoción del mismo digest a PROD se cerraron después del informe de cierre del Sprint 6.
+- **Funcionalidades puntuales.** Siguen abiertos en Jira, reabiertos, el sistema de diseño (SCRUM-1648), el rendimiento de `eligible-allies` (1652), el actor y correlation ID (1657) y la validación de reglas solo en Rules (1722); y en revisión, la medición de QAS-05 (1716). La foto de perfil, el inicio por rol accesible, los mensajes de error con código, los aliados de una solicitud, los contratos OpenAPI y la promoción del mismo digest a PROD se cerraron después del informe de cierre del Sprint 6.
 
 **Riesgos aceptados al cerrar:** el token de SonarQube expuesto se retiró pero no se rotó; ADR-0034 a ADR-0038 se ratificaron sin sesión de la Mesa de Arquitectura; y RNF-13 y QAS-46 (cifrado en reposo) no están aprobados por la PO. Están en el [acta de cierre](ACTA_DE_CIERRE.md) §6.
 
@@ -125,8 +125,8 @@ El detalle, la causa y lo que pasó en el proceso están en [`INFORME_CIERRE_SPR
 
 | Cifra | Consulta |
 |---|---|
-| Ítems del proyecto: 764; en Done: 742 | `project = SCRUM` y `project = SCRUM AND statusCategory = Done` |
-| Historias: 135; en Done: 134 | `project = SCRUM AND issuetype = Historia` (y con `statusCategory = Done`) |
+| Ítems del proyecto: 764; en Done: 744 | `project = SCRUM` y `project = SCRUM AND statusCategory = Done` |
+| Historias: 135; en Done: 135 | `project = SCRUM AND issuetype = Historia` (y con `statusCategory = Done`) |
 | Ítems por sprint | `project = SCRUM AND sprint = <id>`, con ids 3, 36, 37, 70, 71 (sprints 1 a 5) y `sprint in openSprints()` (sprint 6) |
 | Escenarios de calidad | Columna Resultado del [SDD §8](../../wiki/02-arquitectura/SDD.md) y su vista operativa [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../../wiki/07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md) |
 | Discrepancias | [`VALIDACION_HU-VAL-01.md`](../../wiki/06-gobernanza/VALIDACION_HU-VAL-01.md) |

@@ -2,7 +2,7 @@
 
 Paquete de la entrega final. Cada documento está en Markdown (fuente) y en PDF. Los documentos que viven en la wiki (SAD, SDD, modelo de datos, infraestructura y calidad) se incluyen como PDF generado el 24 de noviembre de 2026; su fuente viva sigue en `wiki/`.
 
-**Corte de las cifras:** 24 de noviembre de 2026, 5:15 p. m. Se actualizan el día del cierre con las consultas del [informe de proyecto](INFORME_DE_PROYECTO.md) §10.
+**Corte de las cifras:** 24 de noviembre de 2026, 5:25 p. m. Se actualizan el día del cierre con las consultas del [informe de proyecto](INFORME_DE_PROYECTO.md) §10.
 
 | # | Entregable | Archivos | Estado |
 |---|---|---|---|

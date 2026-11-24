@@ -766,7 +766,7 @@ MANI no controla maquinaria ni procesos donde un fallo de software implique dire
 
 # 8. Escenarios de calidad priorizados
 
-Esta sección operacionaliza la priorización definida en la sección 7 mediante **un escenario de calidad por cada subcaracterística de ISO/IEC 25010:2023 que la sección 7 prioriza (40 escenarios) y cinco escenarios transversales que no pertenecen a una sola subcaracterística (45 en total)**. Cada escenario identifica la fuente del estímulo, el estímulo, el entorno de ejecución, el artefacto afectado, la respuesta esperada, el umbral esperado, el mecanismo mediante el cual QA debe verificarlo y el resultado más reciente de esa verificación.
+Esta sección operacionaliza la priorización definida en la sección 7 mediante **un escenario de calidad por cada subcaracterística de ISO/IEC 25010:2023 que la sección 7 prioriza (40 escenarios) y cinco escenarios transversales que no pertenecen a una sola subcaracterística (45 en total)**. Cada escenario identifica la fuente del estímulo, el estímulo, el entorno de ejecución, el artefacto afectado, la respuesta esperada, el umbral esperado, el mecanismo mediante el cual QA debe verificarlo y el resultado más reciente de esa verificación (§8.13).
 
 Los identificadores **QAS-01 a QAS-09** son los de los nueve escenarios originales, uno por característica, y se conservan porque los citan el backlog, el plan de pruebas, los scripts de k6 y Newman y la evidencia ya archivada. **QAS-10 a QAS-40** cubren las demás subcaracterísticas de la sección 7 y **QAS-41 a QAS-45** son transversales. Los números no siguen el orden de las características: cada característica lista sus escenarios en su propia subsección.
 
@@ -902,6 +902,65 @@ Cuatro propiedades más que la verificación debe incluir, porque protegen el me
 | P5 | Un cliente no fabrica contexto | `authenticated` y `anon` no pueden ejecutar `app.set_context` |
 
 Evidencia exigida por caso (Políticas DevOps §13.4): reporte de Newman con la versión del servicio y la fecha, salida SQL de la verificación del motor con el `X-Correlation-ID` de la petición, y ausencia de datos de T2 en ambas.
+
+## 8.13 Estado de los escenarios
+
+Resultado más reciente de QA para cada escenario, con corte del **24 de noviembre de 2026** en MANI-QA, salvo que la fila diga otra cosa. **Conteo:** Cumple 35 · Parcial 4 · No cumple 5 · No medido 1. La herramienta y la posible solución de cada uno están en [`QAS_45_ESTADO_METODO_EVIDENCIA.md`](../07-calidad/QAS_45_ESTADO_METODO_EVIDENCIA.md).
+
+| Estado | Significa |
+|---|---|
+| **Cumple** | QA ejecutó el método y se cumple el umbral |
+| **Parcial** | QA midió una parte del umbral o de los casos, y lo medido cumple; falta el resto |
+| **No cumple** | QA midió, o la verificación documental muestra, que no se cumple |
+| **No medido** | QA no ha ejecutado el método |
+
+| ID | Subcaracterística | Estado | Corte | Evidencia | Qué falta o límite |
+|---|---|---|---|---|---|
+| **QAS-01** | Confidencialidad | **Cumple** | 2026-11-23 | [informe y corrida](../07-calidad/monitoreo/evidencia/20261113T003051Z_t41_roles_servicio/informe_qas01_qas20.md), [corrida del 23 nov](../07-calidad/monitoreo/evidencia/20261124T012400Z_remedicion_qas/t41/t41_23nov_2346z.txt) | — |
+| **QAS-02** | Tolerancia a fallos | **Cumple** | 2026-11-24 | [corrida](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/qas02/qas02_tarde_real_24nov_2133z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/informe_remedicion.md) | Límite: Dispatch ofrece en serie y cada elegible suma unos 3,5 s si el push no responde; con muchos elegibles no se midió. |
+| **QAS-03** | Comportamiento temporal | **No cumple** | 2026-11-22 | [carga del cierre](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/carga/qas_carga_22nov_1930z.txt) | Con SCRUM-1651 desplegado ya no hay 5xx, pero `eligible-allies` con 300 VUs tiene p95 de 8.212 ms (umbral 500 ms): las peticiones esperan al Core. Sin carga, 540 ms. |
+| **QAS-04** | Capacidad para ser modificado | **Cumple** | 2026-11-21 | [PR y consumidores](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas04_rules_pr13.txt) | — |
+| **QAS-05** | Escalabilidad | **No medido** | 2026-11-22 | [informe del barrido](../07-calidad/monitoreo/evidencia/20261122T025500Z_barrido_qas/informe_barrido.md) | Escalar con `docker compose --scale` cambia el QA compartido. |
+| **QAS-06** | Interoperabilidad | **Parcial** | 2026-11-24 | [tabla API ↔ contrato](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas06/tabla_api_contrato.csv) | `/api/v1/dispatch/metrics` y `/api/v1/rules/metrics` se publican sin contrato. |
+| **QAS-07** | Corrección funcional | **Cumple** | 2026-11-22 | [ranking y tarifa en QA](../07-calidad/monitoreo/evidencia/20261122T013000Z_t46_concurrencia/qas07_ranking_vivo_22nov_0155z.txt) | — |
+| **QAS-08** | Protección contra errores de usuario | **Cumple** | 2026-11-21 | [pruebas por escenario](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/flutter_test_interaccion.md) | — |
+| **QAS-09** | Protección ante fallos | **Cumple** | 2026-11-24 | [corrida](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas02_qas09/qas02_09_real_24nov_1503z.txt), [recuperación](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas02_qas09/qas02_09_real_recuperacion_24nov_1508z.txt) | No se probó un Storage que no responde ni la falla simultánea de la limpieza. |
+| **QAS-10** | Integridad | **Cumple** | 2026-11-22 | [corrida T-27](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t27_22nov_1927z.txt) | — |
+| **QAS-11** | No repudio | **Cumple** | 2026-11-22 | [prueba por API](../07-calidad/monitoreo/evidencia/20261122T025500Z_barrido_qas/qas11_37_42_api_22nov_0318z.txt) | — |
+| **QAS-12** | Responsabilidad / accountability | **Parcial** | 2026-11-22 | [informe del cierre](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/informe_cierre.md) | La aprobación de aliado no guarda actor ni correlation ID; SCRUM-1657 no la cubre. |
+| **QAS-13** | Autenticidad | **Cumple** | 2026-11-21 | [corrida sin 429](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas13_tokens_vigente_21nov_1654z.txt) | — |
+| **QAS-14** | Resistencia | **Cumple** | 2026-11-22 | [informe de QAS-14](../07-calidad/monitoreo/evidencia/20261122T032900Z_qas14_dast_sast/informe_qas14.md) | — |
+| **QAS-15** | Ausencia de fallos | **Cumple** | 2026-11-22 | [carga del cierre](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/carga/qas_carga_22nov_1930z.txt) | — |
+| **QAS-16** | Disponibilidad | **Cumple** | 2026-11-22 | [Prometheus](../07-calidad/monitoreo/evidencia/20261122T025500Z_barrido_qas/vm_calidad_prometheus_22nov_0258z.txt) | — |
+| **QAS-17** | Recuperabilidad | **Cumple** | 2026-11-21 | [`08-infraestructura/04-respaldos-y-restauracion.md`](../08-infraestructura/04-respaldos-y-restauracion.md) | — |
+| **QAS-18** | Utilización de recursos | **Cumple** | 2026-11-24 | [carga y series](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas18_qas27/qas18_27_real_24nov_0444z.txt) | Máximo 43,0 % (`promtail`) y Core 37,7 %, con 37,3 req/s de los 50 pedidos. |
+| **QAS-19** | Capacidad | **No cumple** | 2026-11-22 | [carga del cierre](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/carga/qas_carga_22nov_1930z.txt) | 36,4 req/s sostenidas (objetivo 50) con p95 de 7 a 12 s; CPU del Core alrededor del 66 %: el cuello es la base y el pool. |
+| **QAS-20** | Modularidad | **Cumple** | 2026-11-24 | [corrida](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas01_qas20/qas01_qas20_24nov_0350z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) | — |
+| **QAS-21** | Reusabilidad | **Parcial** | 2026-11-24 | [medición](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas21/qas21_24nov_0331z.txt) | `comisionValida()` en Core repite el límite de la comisión que está en Rules. |
+| **QAS-22** | Analizabilidad | **Cumple** | 2026-11-24 | [logs por servicio](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas22/qas22_logs_24nov_0359z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) | — |
+| **QAS-23** | Capacidad para ser probado | **Cumple** | 2026-11-24 | [medición](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas23/qas23_24nov_0400z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) | — |
+| **QAS-24** | Adaptabilidad | **Cumple** | 2026-11-24 | [tabla de digests](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/qas24/tabla_digests.md), [salida de PROD](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/qas24/digests_prod_24nov_2152z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/informe_remedicion.md) | Límites: medido entre QA y PROD, porque SCRUM-1723 deja fuera DEV; la lectura en PROD la ejecutó DevOps. En Flutter, PROD corre `220c2c9`, el merge a `main` de `21ffe92` (QA): mismo contenido, otro commit. |
+| **QAS-25** | Instalabilidad | **Cumple** | 2026-11-22 | [despliegue y rollback](../08-infraestructura/03-despliegue-y-rollback.md) | — |
+| **QAS-26** | Reemplazabilidad | **Cumple** | 2026-11-24 | [pruebas](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas26/pruebas.txt), [diff](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas26/diff_stat_node148.txt) | — |
+| **QAS-27** | Coexistencia | **Cumple** | 2026-11-24 | [carga y series](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas18_qas27/qas18_27_real_24nov_0444z.txt) | Rules 99,5 % y Core 99,6 % de su límite; vecinos con p95 de 23 ms o menos. La memoria no llegó a su tope y no se saturaron Gateway ni Dispatch. |
+| **QAS-28** | Completitud funcional | **Cumple** | 2026-11-21 | [historia ↔ caso](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas28_historia_caso.md) | — |
+| **QAS-29** | Pertinencia funcional | **Cumple** | 2026-11-21 | [ruta ↔ historia](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas29_ruta_historia.md) | — |
+| **QAS-30** | Reconocibilidad | **Cumple** | 2026-11-24 | [pantallas con sesión](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas30/qas30_sesion_24nov.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) | Límite: revisión de experto; ventana de referencia 800x865. |
+| **QAS-31** | Aprendizabilidad | **Cumple** | 2026-11-23 | [lista de chequeo](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/lista_chequeo_heuristica.md) | — |
+| **QAS-32** | Operabilidad | **Cumple** | 2026-11-23 | [lista de chequeo](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/lista_chequeo_heuristica.md) | 8 de 8 tareas críticas tras corregir el registro de aliado (MANI-APIGateway#100, MANI-Flutter#159 y #161); en el primer intento fueron 7 de 8. Pagar no se ejecutó. |
+| **QAS-33** | Involucración | **No cumple** | 2026-11-24 | [conteo](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas33/qas33_a98fa12_24nov.txt) | Los 6 PR nuevos agregan 0 nativos, pero quedan 83 en 31 pantallas tocadas desde la regla. |
+| **QAS-34** | Inclusividad | **No cumple** | 2026-11-24 | [Landing](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/qas34/landing_qa.txt), [app](../07-calidad/monitoreo/evidencia/20261124T213300Z_remedicion_tarde/qas34/app_qa.txt), [revisión completa](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas34/qas34_flutter_24nov_0334z.txt) | Corregidos y comprobados en QA: idioma `es-CO`, contraste de la Landing y movimiento reducido. Faltan los campos nombrados por su ejemplo, el zoom en un celular real (solo emulado) y el criterio WCAG 2.2 AA en el SDD §7.9. No se repitió la revisión completa. |
+| **QAS-35** | Asistencia al usuario | **No cumple** | 2026-11-24 | [revisión del 24 nov](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas35/qas35_a98fa12_24nov.md) | 579 de 579 pruebas de mensajes pasan. No orientan la redirección por rol, los 5xx de verificación ni el archivo grande del registro; la solicitud cancelada sin cotización pide esperar al aliado. |
+| **QAS-36** | Auto-descriptividad | **Cumple** | 2026-11-21 | [recorrido en QA](../07-calidad/monitoreo/evidencia/20261121T154000Z_t43_solo_medicion/qas35_qas36_qas39_recorrido_qa.md) | — |
+| **QAS-37** | Restricción operativa | **Cumple** | 2026-11-22 | [prueba por API](../07-calidad/monitoreo/evidencia/20261122T025500Z_barrido_qas/qas11_37_42_api_22nov_0318z.txt) | — |
+| **QAS-38** | Identificación de riesgos | **Cumple** | 2026-11-23 | [operación ↔ riesgo del 23 nov](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas38/qas38_operacion_riesgo_23nov.md) | — |
+| **QAS-39** | Advertencia de peligro | **Cumple** | 2026-11-22 | [recorrido](../07-calidad/monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/t45/qas39_qa_1991221_22nov.txt) | — |
+| **QAS-40** | Integración segura | **Cumple** | 2026-11-24 | [corrida](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas40/qas40_24nov_0352z.txt), [informe](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) | — |
+| **QAS-41** | Concurrencia de asignación | **Cumple** | 2026-11-22 | [rondas](../07-calidad/monitoreo/evidencia/20261122T013000Z_t46_concurrencia/qas41_rondas_22nov_0147z.txt) | — |
+| **QAS-42** | Idempotencia de reintentos | **Cumple** | 2026-11-22 | [prueba por API](../07-calidad/monitoreo/evidencia/20261122T025500Z_barrido_qas/qas11_37_42_api_22nov_0318z.txt) | — |
+| **QAS-43** | Confidencialidad en tránsito (TLS) | **Parcial** | 2026-11-24 | [medición](../07-calidad/monitoreo/evidencia/20261124T040000Z_remedicion_qas/qas43/qas43_tls_24nov_0329z.txt) | QA cumple. PROD servía la app en el 8080 por HTTP (03:29Z); tras el despliegue del 24 nov ese puerto redirige a HTTPS (301, comprobación puntual de las 21:51Z). Falta medir TLS en PROD. |
+| **QAS-44** | Reversión de despliegue | **Cumple** | 2026-11-24 | [corrida](../07-calidad/monitoreo/evidencia/20261124T012400Z_remedicion_qas/qas40_qas44/qas40_44_24nov_0123z.txt), [informe de la remedición](../07-calidad/monitoreo/evidencia/20261124T012400Z_remedicion_qas/informe_remedicion.md) | — |
+| **QAS-45** | Quality Gate de código nuevo | **Cumple** | 2026-11-15 | [informe T-44](../07-calidad/monitoreo/evidencia/20261115T182000Z_t44_quality_gate/informe_qas45.md) | — |
 
 ---
 

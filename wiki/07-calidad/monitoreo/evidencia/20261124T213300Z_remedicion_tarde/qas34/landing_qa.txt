@@ -1,0 +1,6 @@
+2026-11-24T21:24:54Z
+Landing de QA http://10.43.100.141:3001 (73bf7cf)
+1366x768 {"n":342,"mal":[],"sin":22}
+390x844 {"n":337,"mal":[],"sin":22}
+reducido {"video":{"paused":true,"autoplay":false,"t":0},"animaciones":0,"scroll":"auto","pulse":["1e-05s","1e-05s"]}
+normal {"video":{"paused":true,"autoplay":true},"anim":2,"scroll":"smooth"}

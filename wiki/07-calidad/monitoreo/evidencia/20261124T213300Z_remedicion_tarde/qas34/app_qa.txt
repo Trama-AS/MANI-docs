@@ -1,0 +1,9 @@
+2026-11-24T21:29:04Z
+Flutter de QA 21ffe92 por tunel SSH al contenedor (HTTP interno)
+/login {"u":"/login","lang":"es-CO","vp":["width=device-width, initial-scale=1"],"ta":"pinch-zoom","inline":"none"}
+  escala tras arrastre 1 tras pellizco 2.000000476837158
+/register-cliente-empresa {"u":"/register-cliente-empresa","lang":"es-CO","vp":["width=device-width, initial-scale=1"],"ta":"pinch-zoom","inline":"none"}
+  escala tras arrastre 1 tras pellizco 1.999999761581421
+captura 1710x931 /register-cliente-empresa
+captura 800x600 /register-cliente-empresa
+captura 390x844 /register-cliente-empresa

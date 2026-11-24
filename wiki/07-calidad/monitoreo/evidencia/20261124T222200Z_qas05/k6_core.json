@@ -1,0 +1,1 @@
+{"servicio":"core","rps":10,"peticiones":4282,"no_200":0,"fallas_5xx":0,"descartadas":0,"por_ruta":{"perfil":{"med_ms":670,"p95_ms":844.514,"max_ms":2479.504,"peticiones":1427},"sitios":{"med_ms":546.881,"p95_ms":626.6663,"max_ms":1718.736,"peticiones":1428},"tarifa":{"med_ms":547.455,"p95_ms":641.8271,"max_ms":1618.818,"peticiones":1427}}}

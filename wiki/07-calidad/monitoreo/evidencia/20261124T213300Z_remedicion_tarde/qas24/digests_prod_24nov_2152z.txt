@@ -1,0 +1,44 @@
+================================================================================
+EVIDENCIA LITERAL QAS-24 (SCRUM-1723) - VM DE PROD
+Host: NBIG09 (10.43.98.203)
+Fecha UTC: 2026-11-24T21:52:30Z
+Fecha local: 2026-11-24 16:52:30 -05
+================================================================================
+
+=== COMANDO 1: Los 6 servicios en ejecucion en PROD (imagen, digest y commit) ===
+$ for c in mani-core-service mani-rules-service mani-dispatch-service mani-api-gateway mani-flutter-web mani-landing-web; do ...; done
+container=mani-core-service | status=running (started 2026-11-24T21:40:26.265959797Z) | image=ghcr.io/trama-as/mani-node:latest | digest=ghcr.io/trama-as/mani-node@sha256:a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c90915970d60be97d0 | commit=b7e021753410d045f7e5831718c88a87bf9cbf94 | version=release | created=2026-11-24T21:07:51.230Z
+container=mani-rules-service | status=running (started 2026-11-24T21:40:24.851387709Z) | image=ghcr.io/trama-as/mani-java:latest | digest=ghcr.io/trama-as/mani-java@sha256:72254656d35e255166a30afd08a41de9c14881e50bb00edc57f4e602d43a77ac | commit=51081c40b1b7847c3f5e2e43acc67875770b4e01 | version=release | created=2026-11-24T21:08:20.487Z
+container=mani-dispatch-service | status=running (started 2026-11-24T21:40:26.99612124Z) | image=ghcr.io/trama-as/mani-dotnet:latest | digest=ghcr.io/trama-as/mani-dotnet@sha256:94fbedb6f7432101f87bcc55edaefd77006d6fd1b41804508e806783c4b36bfb | commit=93cafdef7d0ee1ae0354212775110134dd670ec7 | version=release | created=2026-11-24T21:09:19.385Z
+container=mani-api-gateway | status=running (started 2026-11-24T21:40:27.99798925Z) | image=ghcr.io/trama-as/mani-apigateway:latest | digest=ghcr.io/trama-as/mani-apigateway@sha256:9870ef40465bb1b27eff04c55874fc2756e375b756dfc98d22901a6a0a554c88 | commit=3c27b81cc6388b6905d8550ad8385f03e322e4d9 | version=release | created=2026-11-24T21:06:26.114Z
+container=mani-flutter-web | status=running (started 2026-11-24T21:40:25.488040259Z) | image=ghcr.io/trama-as/mani-flutter:latest | digest=ghcr.io/trama-as/mani-flutter@sha256:3c3b49f1b0adde2f5bd6841e7af1670a33c548671c1a8fc02e4709eeed2d3fb2 | commit=220c2c9c5cebf89b664342357119cdd7d4176daf | version=main | created=2026-11-24T21:32:25.068Z
+container=mani-landing-web | status=running (started 2026-11-24T21:40:24.143678291Z) | image=ghcr.io/trama-as/mani-landing:latest | digest=ghcr.io/trama-as/mani-landing@sha256:7767b7395197f6d1bcd1e9f8d1c56780f166c89eccb3583823c2a092bac420c0 | commit=61d42ae9174ba8dc91ee3f769a43eedca64acc2b | version=1.0.5 | created=2026-11-24T21:33:35.005Z
+
+=== COMANDO 2: :staging y :latest en GHCR (Core, Rules, Dispatch mani-dotnet y mani-net, Gateway) ===
+$ for repo in mani-node mani-java mani-dotnet mani-net mani-apigateway; do for tag in staging latest; do docker buildx imagetools inspect ghcr.io/trama-as/${repo}:${tag}; done; done
+ghcr.io/trama-as/mani-node:staging -> sha256:a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c90915970d60be97d0
+ghcr.io/trama-as/mani-node:latest -> sha256:a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c90915970d60be97d0
+ghcr.io/trama-as/mani-java:staging -> sha256:72254656d35e255166a30afd08a41de9c14881e50bb00edc57f4e602d43a77ac
+ghcr.io/trama-as/mani-java:latest -> sha256:72254656d35e255166a30afd08a41de9c14881e50bb00edc57f4e602d43a77ac
+ghcr.io/trama-as/mani-dotnet:staging -> sha256:94fbedb6f7432101f87bcc55edaefd77006d6fd1b41804508e806783c4b36bfb
+ghcr.io/trama-as/mani-dotnet:latest -> sha256:94fbedb6f7432101f87bcc55edaefd77006d6fd1b41804508e806783c4b36bfb
+ghcr.io/trama-as/mani-net:staging -> sha256:94fbedb6f7432101f87bcc55edaefd77006d6fd1b41804508e806783c4b36bfb
+ghcr.io/trama-as/mani-net:latest -> sha256:94fbedb6f7432101f87bcc55edaefd77006d6fd1b41804508e806783c4b36bfb
+ghcr.io/trama-as/mani-apigateway:staging -> sha256:9870ef40465bb1b27eff04c55874fc2756e375b756dfc98d22901a6a0a554c88
+ghcr.io/trama-as/mani-apigateway:latest -> sha256:9870ef40465bb1b27eff04c55874fc2756e375b756dfc98d22901a6a0a554c88
+
+=== COMANDO 3: Flutter en PROD (/assets/.env sin claves - solo API_GATEWAY_URL y TENANT_SLUG) ===
+$ curl -sk https://10.43.98.203:8080/assets/.env | grep -E "^(API_GATEWAY_URL|TENANT_SLUG)="
+API_GATEWAY_URL=https://10.43.98.203:8080
+TENANT_SLUG=acme-servicios
+$ docker exec mani-flutter-web grep -E "^(API_GATEWAY_URL|TENANT_SLUG)=" /usr/share/nginx/html/assets/.env
+API_GATEWAY_URL=https://10.43.98.203:8080
+TENANT_SLUG=acme-servicios
+
+=== PUNTO 4: Digests de Flutter y Landing en GHCR (:latest vs :1.0.5) y corriendo en PROD ===
+GHCR ghcr.io/trama-as/mani-flutter:latest -> sha256:3c3b49f1b0adde2f5bd6841e7af1670a33c548671c1a8fc02e4709eeed2d3fb2
+GHCR ghcr.io/trama-as/mani-flutter:1.0.5 -> sha256:cdf4c4cf05d0ef86fb924ec0e235ab1c53a6c8a83c9a1cff97450ccdd78fd20c
+GHCR ghcr.io/trama-as/mani-landing:latest -> sha256:7767b7395197f6d1bcd1e9f8d1c56780f166c89eccb3583823c2a092bac420c0
+GHCR ghcr.io/trama-as/mani-landing:1.0.5 -> sha256:7767b7395197f6d1bcd1e9f8d1c56780f166c89eccb3583823c2a092bac420c0
+PROD mani-flutter-web -> ghcr.io/trama-as/mani-flutter@sha256:3c3b49f1b0adde2f5bd6841e7af1670a33c548671c1a8fc02e4709eeed2d3fb2 | commit=220c2c9c5cebf89b664342357119cdd7d4176daf | version=main | created=2026-11-24T21:32:25.068Z
+PROD mani-landing-web -> ghcr.io/trama-as/mani-landing@sha256:7767b7395197f6d1bcd1e9f8d1c56780f166c89eccb3583823c2a092bac420c0 | commit=61d42ae9174ba8dc91ee3f769a43eedca64acc2b | version=1.0.5 | created=2026-11-24T21:33:35.005Z

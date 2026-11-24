@@ -1,0 +1,95 @@
+== QAS-02 y QAS-09 en MANI-QA con copias desechables (2026-11-24T21:33:16Z)
+  mani-core-service rev=b7e0217
+  mani-dispatch-service rev=93cafde
+  mani-rules-service rev=51081c4
+  mani-api-gateway rev=3c27b81
+  red mani-network; memoria disponible 2685 MB
+  tenant de prueba: acme-servicios
+  residuos antes (lectura de prueba): {"auth.users": 0, "usuario": 0, "aliado": 0, "aliado_categoria_huerfana": 0, "documento_kyc_huerfano": 0, "consentimiento_huerfano": 0, "storage_kyc_nuevo": 0}
+  IP de flutter-web en la red: 172.18.0.3
+  sesiones listas; categoria de prueba: si
+
+-- SCRUM-1634 foto de perfil (solo lectura)
+PASA  | FOTO | cliente | photoUrl firmada y se abre como imagen | perfil 200; firmada True; descarga 200 image/jpeg 39392 bytes
+  aliado.t1: 200; sin photoUrl en la respuesta
+PASA  | FOTO | admin | photoUrl firmada y se abre como imagen | perfil 200; firmada True; descarga 200 image/jpeg 39392 bytes
+
+-- Cobertura de aliado.t1 antes: ["20000000-0000-4000-8000-000000000002"]
+  cobertura temporal: 200  zona Suba
+  elegibles en el sitio de prueba: 2
+
+-- QAS-02 control: {'PUSH_PROVIDER': 'mock'}
+PASA  | QAS-02 | control | orquestar no se revierte | 200  en 2.78 s
+PASA  | QAS-02 | control | aceptar queda confirmado | 200  en 2.27 s; estado en base ASIGNADA
+PASA  | QAS-02 | control | cancelar queda confirmado | 200  en 1.30 s; estado en base CANCELADA
+PASA  | QAS-02 | control | avisos persistidos | {"OFERTA_DESPACHO": "2", "SOLICITUD_ASIGNADA": "1", "SOLICITUD_CANCELADA": "1"}
+PASA  | QAS-02 | control | orquestar deja una oferta por elegible y responde en menos de 10 s | 2 ofertas; 2.78 s
+PASA  | QAS-02 | control | aviso disponible en la bandeja del cliente | 200
+PASA  | QAS-02 | control | aviso disponible en la bandeja del aliado | 200
+    intentos por aviso: SOLICITUD_ASIGNADA ['entregado']; SOLICITUD_CANCELADA ['entregado']
+    intentos de oferta: ["entregado", "entregado"]
+PASA  | QAS-02 | control | reintento: 1 intento(s) por aviso con la misma clave | [1, 1]
+PASA  | QAS-02 | control | el proveedor recibe el correlation ID de la operacion | 2 de 2
+    entrega_fallida: []
+PASA  | QAS-02 | control | sin lineas de falla (todo se entrego) | 0
+
+-- QAS-02 caida: {'PUSH_PROVIDER': 'mock_falla', 'PUSH_MOCK_FALLAS': 'siempre'}
+PASA  | QAS-02 | caida | orquestar no se revierte | 200  en 2.85 s
+PASA  | QAS-02 | caida | aceptar queda confirmado | 200  en 2.29 s; estado en base ASIGNADA
+PASA  | QAS-02 | caida | cancelar queda confirmado | 200  en 1.36 s; estado en base CANCELADA
+PASA  | QAS-02 | caida | avisos persistidos | {"OFERTA_DESPACHO": "2", "SOLICITUD_ASIGNADA": "1", "SOLICITUD_CANCELADA": "1"}
+PASA  | QAS-02 | caida | orquestar deja una oferta por elegible y responde en menos de 10 s | 2 ofertas; 2.85 s
+PASA  | QAS-02 | caida | aviso disponible en la bandeja del cliente | 200
+PASA  | QAS-02 | caida | aviso disponible en la bandeja del aliado | 200
+    intentos por aviso: SOLICITUD_ASIGNADA ['falla_PushProviderError', 'falla_PushProviderError']; SOLICITUD_CANCELADA ['falla_PushProviderError', 'falla_PushProviderError']
+    intentos de oferta: ["falla_PushProviderError", "falla_PushProviderError", "falla_PushProviderError", "falla_PushProviderError", "falla_PushProviderError", "falla_PushProviderError"]
+PASA  | QAS-02 | caida | reintento: 2 intento(s) por aviso con la misma clave | [2, 2]
+PASA  | QAS-02 | caida | el proveedor recibe el correlation ID de la operacion | 4 de 4
+    entrega_fallida: [{"causa": "UNAVAILABLE", "canal": "PUSH", "proveedor": "mock_falla", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}, {"causa": "UNAVAILABLE", "canal": "PUSH", "proveedor": "mock_falla", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}, {"causa": "UNAVAILABLE", "canal": "PUSH", "proveedor": "mock_falla", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}, {"causa": "UNAVAILABLE", "canal": "PUSH", "proveedor": "mock_falla", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}]
+PASA  | QAS-02 | caida | una linea de falla por aviso no entregado (ofertas, asignada y cancelada) | 4 de 4
+PASA  | QAS-02 | caida | cada linea lleva el correlation ID de la operacion | 4 de 4
+PASA  | QAS-02 | caida | sin payload ni descripcion de la solicitud | 1540 caracteres
+
+-- QAS-02 error y reintento: {'PUSH_PROVIDER': 'mock_falla', 'PUSH_MOCK_FALLAS': '1'}
+PASA  | QAS-02 | error y reintento | orquestar no se revierte | 200  en 2.72 s
+PASA  | QAS-02 | error y reintento | aceptar queda confirmado | 200  en 2.31 s; estado en base ASIGNADA
+PASA  | QAS-02 | error y reintento | cancelar queda confirmado | 200  en 1.35 s; estado en base CANCELADA
+PASA  | QAS-02 | error y reintento | avisos persistidos | {"OFERTA_DESPACHO": "2", "SOLICITUD_ASIGNADA": "1", "SOLICITUD_CANCELADA": "1"}
+PASA  | QAS-02 | error y reintento | orquestar deja una oferta por elegible y responde en menos de 10 s | 2 ofertas; 2.72 s
+PASA  | QAS-02 | error y reintento | aviso disponible en la bandeja del cliente | 200
+PASA  | QAS-02 | error y reintento | aviso disponible en la bandeja del aliado | 200
+    intentos por aviso: SOLICITUD_ASIGNADA ['falla_PushProviderError', 'entregado']; SOLICITUD_CANCELADA ['falla_PushProviderError', 'entregado']
+    intentos de oferta: ["falla_PushProviderError", "entregado", "falla_PushProviderError", "entregado"]
+PASA  | QAS-02 | error y reintento | reintento: 2 intento(s) por aviso con la misma clave | [2, 2]
+PASA  | QAS-02 | error y reintento | el proveedor recibe el correlation ID de la operacion | 4 de 4
+    entrega_fallida: []
+PASA  | QAS-02 | error y reintento | sin lineas de falla (todo se entrego) | 0
+
+-- QAS-02 timeout: {'PUSH_PROVIDER': 'mock', 'QAS02_CUELGA': '1'}
+PASA  | QAS-02 | timeout | orquestar no se revierte | 200  en 9.00 s
+PASA  | QAS-02 | timeout | aceptar queda confirmado | 200  en 4.29 s; estado en base ASIGNADA
+PASA  | QAS-02 | timeout | cancelar queda confirmado | 200  en 3.35 s; estado en base CANCELADA
+PASA  | QAS-02 | timeout | avisos persistidos | {"OFERTA_DESPACHO": "2", "SOLICITUD_ASIGNADA": "1", "SOLICITUD_CANCELADA": "1"}
+PASA  | QAS-02 | timeout | orquestar deja una oferta por elegible y responde en menos de 10 s | 2 ofertas; 9.00 s
+PASA  | QAS-02 | timeout | aviso disponible en la bandeja del cliente | 200
+PASA  | QAS-02 | timeout | aviso disponible en la bandeja del aliado | 200
+    intentos por aviso: SOLICITUD_ASIGNADA ['sin_respuesta', 'sin_respuesta']; SOLICITUD_CANCELADA ['sin_respuesta', 'sin_respuesta']
+    intentos de oferta: ["sin_respuesta", "sin_respuesta", "sin_respuesta", "sin_respuesta", "sin_respuesta", "sin_respuesta"]
+PASA  | QAS-02 | timeout | reintento: 2 intento(s) por aviso con la misma clave | [2, 2]
+PASA  | QAS-02 | timeout | el proveedor recibe el correlation ID de la operacion | 4 de 4
+    entrega_fallida: [{"causa": "TIMEOUT", "canal": "PUSH", "proveedor": "mock", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}, {"causa": "TIMEOUT", "canal": "PUSH", "proveedor": "mock", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}, {"causa": "TIMEOUT", "canal": "PUSH", "proveedor": "mock", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}, {"causa": "TIMEOUT", "canal": "PUSH", "proveedor": "mock", "campos": ["canal", "causa", "correlationId", "correlation_id", "event", "level", "notificacion_id", "proveedor", "service", "tenant_id", "timestamp"]}]
+PASA  | QAS-02 | timeout | una linea de falla por aviso no entregado (ofertas, asignada y cancelada) | 4 de 4
+PASA  | QAS-02 | timeout | cada linea lleva el correlation ID de la operacion | 4 de 4
+PASA  | QAS-02 | timeout | sin payload ni descripcion de la solicitud | 1500 caracteres
+
+== Limpieza
+  cobertura de aliado.t1 restaurada: 200; filas identicas a las de antes: si
+  contenedores temporales borrados: si
+  servicios de QA sin cambios (imagen, arranque y reinicios): si
+  200 /health
+  200 /api/v1/core/health
+  200 /api/v1/dispatch/health
+  200 /api/v1/rules/health
+== QAS-02: 44 PASA, 0 FALLA, 0 REVISAR
+== FOTO: 2 PASA, 0 FALLA, 0 REVISAR
+== Fin (2026-11-24T21:35:29Z)

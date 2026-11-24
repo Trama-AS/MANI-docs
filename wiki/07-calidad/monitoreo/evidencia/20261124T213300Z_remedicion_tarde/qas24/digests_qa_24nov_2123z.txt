@@ -1,0 +1,19 @@
+== Pools en los contenedores
+DATABASE_POOL_MAX=30
+Maximum Pool Size=5
+== Compose sin cambios: si
+== Digests finales
+  mani-core-service ghcr.io/trama-as/mani-node@sha256:a19d87701e633bf1b789e58f9432d20f6e5ddfa1096591c90915970d60be97d0
+  mani-dispatch-service ghcr.io/trama-as/mani-dotnet@sha256:94fbedb6f7432101f87bcc55edaefd77006d6fd1b41804508e806783c4b36bfb
+  mani-flutter-web ghcr.io/trama-as/mani-flutter@sha256:db230a40c0c3a6753187a302746f82492da90aa8d80ded28ec93b7343d889b6b
+  mani-api-gateway ghcr.io/trama-as/mani-apigateway@sha256:9870ef40465bb1b27eff04c55874fc2756e375b756dfc98d22901a6a0a554c88
+  mani-rules-service ghcr.io/trama-as/mani-java@sha256:72254656d35e255166a30afd08a41de9c14881e50bb00edc57f4e602d43a77ac
+  mani-landing-web ghcr.io/trama-as/mani-landing@sha256:63f5fa6e6c4e4634565cd6dda0af6bc9f2beb9c0cf184588a0b4bffa8cd9b075
+== Revisiones finales
+  mani-core-service b7e0217
+  mani-dispatch-service 93cafde
+  mani-flutter-web 21ffe92
+  mani-api-gateway 3c27b81
+  mani-rules-service 51081c4
+  mani-landing-web 73bf7cf
+== Fin (2026-11-24T21:23:40Z)

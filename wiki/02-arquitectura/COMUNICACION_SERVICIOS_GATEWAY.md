@@ -181,13 +181,13 @@ Patrón único para toda llamada servicio → servicio, fijado por [`ADR-0030`](
 | Llamador | Llamado | Para qué | Alternativa prohibida |
 |---|---|---|---|
 | Dispatch | Core | elegibilidad por categoría y zona | leer `core.aliado_cobertura` o `core.disponibilidad` |
-| Dispatch | Core | bandeja de ofertas y solicitudes asignadas (`GET /allies/me/offers`) | leer directamente `solicitud`, `tenant` o `zona` (`SCRUM-1660`, migración `0043`) |
+| Dispatch | Core | bandeja de ofertas y solicitudes asignadas (`GET /allies/me/offers`) | leer directamente `solicitud`, `tenant` o `zona` (`SCRUM-1660`, migración `0046`) |
 | Dispatch | Rules | orden del listado | leer `reglas.tarifario` |
 | Dispatch | Core | notificación al usuario | integrar FCM/APNs por su cuenta |
 | Core | Rules | veredicto de tarifa | escribir `reglas.*` |
 | Rules | — | devuelve el veredicto; **Core** escribe `fuera_de_rango` | escribir `servicio.cotizacion` |
 
-La frontera es exigible por el motor de base de datos: con la migración `0043_retirar_lecturas_core_en_dispatch.sql`, el rol `mani_dispatch_svc` tiene únicamente `SELECT, INSERT` sobre `solicitud_rechazo` y cero permisos sobre las tablas de Core (`solicitud`, `tenant`, `zona`, `aliado`, `usuario`, `notificacion`).
+La frontera es exigible por el motor de base de datos: con la migración `0046_retirar_lecturas_core_en_dispatch.sql`, el rol `mani_dispatch_svc` tiene únicamente `SELECT, INSERT` sobre `solicitud_rechazo` y cero permisos sobre las tablas de Core (`solicitud`, `tenant`, `zona`, `aliado`, `usuario`, `notificacion`).
 
 ### 4.5 Cobertura de Contratos OpenAPI y Contract Tests en CI (SCRUM-1661 / QAS-06 y QAS-23)
 * Los cuatro contratos OpenAPI en `MANI-APIGateway/docs/openapi/` cubren el **100 % de las operaciones de los tres servicios**:

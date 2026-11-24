@@ -18,6 +18,8 @@ Esta carpeta responde a **quién decide**, **bajo qué políticas**, **sobre qu�
 | **Barrido de secretos** | 2026-11-22: **sin credenciales en la carpeta**, repetido sobre los doce documentos y este README. Ver [§5](#5-barrido-de-secretos). |
 | **Estado del cierre de HU-WIKI-08** | **Criterios cumplidos al 2026-11-22, con una reserva sobre el acta A/B; pendiente de la decisión de cierre de la SM.** Ver [§6](#6-qué-falta-para-cerrar-hu-wiki-08). |
 
+**Entrega final:** el índice de los ocho entregables está en [`ENTREGA_FINAL.md`](ENTREGA_FINAL.md).
+
 ## 1. Orden de lectura
 
 Seis pasos, de la autoridad a la evidencia. Quien llega nuevo los recorre en orden; quien busca un dato concreto va directo a [§3](#3-documentos).

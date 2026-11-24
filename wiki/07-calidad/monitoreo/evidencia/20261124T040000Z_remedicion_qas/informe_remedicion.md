@@ -2,14 +2,16 @@
 
 > Evidencia de QA. Resultado en el [SDD §8](../../../../02-arquitectura/SDD.md). Mantiene: QA (Santiago Hernández).
 
-QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z; QAS-33 y 35, 04:05Z a 04:26Z.
+QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flutter `a98fa12`, Landing `73b1625`, con las migraciones [0045](despliegue/aplicar_0045_24nov_0323z.txt) y [0046](despliegue/aplicar_0046_24nov_0325z.txt) ([despliegue](despliegue/despliegue_release_24nov_0324z.txt)). Medición del 24 de noviembre, 03:24Z a 04:00Z; QAS-33 y 35, 04:05Z a 04:26Z; QAS-18 y 27, 04:46Z a 05:09Z.
 
 | QAS | Antes | Ahora |
 |---|---|---|
+| 18 | No medido | **Cumple** |
 | 20 | Cumple (con un permiso sobrante) | Cumple |
 | 21 | No cumple | **Parcial** |
 | 22 | Parcial | **Cumple** |
 | 23 | Parcial | **Cumple** |
+| 27 | No medido | **Cumple** |
 | 30 | Cumple | Cumple |
 | 33 | No cumple | No cumple |
 | 34 | No cumple | No cumple |
@@ -17,7 +19,32 @@ QA: Core `3bb3dd3`, Dispatch `1fce80e`, Rules `ce513cb`, Gateway `71558b8`, Flut
 | 40 | Parcial | **Cumple** |
 | 43 | Parcial | Parcial |
 
-**Conteo:** Cumple 29 · Parcial 7 · No cumple 6 · No medido 3.
+**Conteo:** Cumple 31 · Parcial 7 · No cumple 6 · No medido 1 (05).
+
+## QAS-18: Cumple
+
+[Carga y series](qas18_qas27/qas18_27_real_24nov_0444z.txt) ([corredor](qas18_qas27/correr_qas18_27.sh), [k6](qas18_qas27/k6_qas18.js), [consultas](qas18_qas27/prom_qas18_27.py)). cAdvisor v0.55.1 exporta los 13 contenedores de QA y Prometheus los lee. 300 VUs, 1 min de rampa y 5 min sostenidos con las mismas rutas de QAS-19; k6 entró por un túnel SSH al Gateway porque el certificado de QA no incluye un nombre verificable. Porcentaje del límite de cada contenedor:
+
+| Contenedor | Media | Máximo |
+|---|---|---|
+| promtail | 37,7 % | 43,0 % |
+| Core | 35,1 % | 37,7 % |
+| Dispatch | 17,9 % | 20,2 % |
+| Gateway | 8,4 % | 9,0 % |
+| Rules | 4,2 % | 5,2 % |
+
+Límite: el sistema sostuvo 37,3 req/s de los 50 pedidos, con 0 % de fallos y p95 de 6 a 12 s. La CPU no es el cuello. No cambia QAS-03, 15 ni 19.
+
+## QAS-27: Cumple
+
+Misma [corrida](qas18_qas27/qas18_27_real_24nov_0444z.txt), con el [script de saturación](qas18_qas27/qas27_coexistencia.py) en la VM de QA.
+
+| Saturado | CPU (Prometheus) | p95 de los vecinos, antes y durante | Fallos |
+|---|---|---|---|
+| Rules | 99,5 % | Gateway 4 y 5 ms; Core 20 y 23 ms; Dispatch 6 y 8 ms | 0 |
+| Core | 99,6 % | Gateway 4 y 5 ms; Rules 6 y 7 ms; Dispatch 5 y 8 ms | 0 |
+
+Los contenedores no se reiniciaron ni hubo OOM. El aviso «NO, 80 %» de Rules en la salida sale de una muestra anterior a la saturación; la serie de Prometheus, con la ventana completa adentro, da 99,5 %. Límites: la memoria no llegó a su tope (22 y 13 %); no se saturaron Gateway ni Dispatch; los vecinos se midieron con sondas de salud y métricas; la saturación la hizo un script Python y no k6. Las rutas con sesión dependen de Core, así que su latencia con Core saturado no es coexistencia y no se midió.
 
 ## QAS-20: Cumple (y QAS-01, regresión)
 

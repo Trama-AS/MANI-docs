@@ -4,9 +4,9 @@
 
 ## 1. Resultado
 
-**Conteo final de los 45 QAS:** Cumple 29 · Parcial 7 · No cumple 6 · No medido 3. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
+**Conteo final de los 45 QAS:** Cumple 31 · Parcial 7 · No cumple 6 · No medido 1. Al cierre del Sprint 5 eran 9 Cumple. En el primer corte del 22 nov eran 18 Cumple y 6 No medido.
 
-Los 3 No medido (05, 18 y 27) dependen de DevOps. Los 6 No cumple tienen causa y responsable en el §5.
+El No medido (05) depende de DevOps. Los 6 No cumple tienen causa y responsable en el §5.
 
 La remedición del 22 de noviembre (19:20Z a 00:30Z) se hizo sobre lo promovido ese día a `release` y desplegado en QA: Core `cdebf74`, Dispatch `ba460e4`, Flutter `95a3e42`, Gateway `e454bcf` y Rules `348f6d9`. Detalle en el [informe del cierre](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/informe_cierre.md).
 
@@ -33,7 +33,7 @@ La remedición del 24 de noviembre (03:24Z a 04:00Z) se hizo sobre Core `3bb3dd3
 | QAS-34 y 35 (23 nov) | Accesibilidad y asistencia al usuario | Siguen **No cumple**. 34: el criterio WCAG 2.2 AA ya existe en Flutter, pero fallan idioma, nombre de campos, zoom en celular y foco visible, y la Landing tiene contraste bajo. 35: 3 de 6 casos no orientan | [revisión del 23 nov](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas34_qas35/revision_qas34_qas35.md) |
 | QAS-38 (23 nov) | Riesgos de las operaciones sensibles | **Cumple**: 12 de 12 en SAD §23.1 (MANI-docs#91), con el control verificado en el código de QA | [operación ↔ riesgo](monitoreo/evidencia/20261122T230000Z_cierre_sprint6_qas/qas38/qas38_operacion_riesgo_23nov.md) |
 | Remedición del 23 y 24 nov | 01, 20, 22, 30, 34 (Landing), 40, 44 | 30 y 44 pasan a **Cumple**. 01 y 20 siguen en Cumple tras la 0044. 22 y 40 siguen Parcial (falta Core). 34 sigue No cumple (Landing: 18 textos bajo el umbral, antes 33) | [informe de la remedición](monitoreo/evidencia/20261124T012400Z_remedicion_qas/informe_remedicion.md) |
-| Remedición del 24 nov | 01, 20, 21, 22, 23, 30, 33, 34, 35, 40, 43 | 22, 23 y 40 pasan a **Cumple**; 21 a **Parcial**; 20 y 30 siguen en Cumple; 33, 34 y 35 siguen en No cumple y 43 en Parcial (PROD por HTTP) | [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) |
+| Remedición del 24 nov | 01, 18, 20, 21, 22, 23, 27, 30, 33, 34, 35, 40, 43 | 18, 22, 23, 27 y 40 pasan a **Cumple**; 21 a **Parcial**; 20 y 30 siguen en Cumple; 33, 34 y 35 siguen en No cumple y 43 en Parcial (PROD por HTTP) | [informe](monitoreo/evidencia/20261124T040000Z_remedicion_qas/informe_remedicion.md) |
 | SCRUM-1719 | 44 (rollback con despliegue fallido a propósito) | **Cumple**: rollback en 6 s y aceptación sin duplicado | [corrida](monitoreo/evidencia/20261124T012400Z_remedicion_qas/qas40_qas44/qas40_44_24nov_0123z.txt) |
 
 ## 3. Bugs abiertos (Jira, 23 nov)
@@ -80,7 +80,6 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
 
 - **DevOps:**
   - ventana para escalar en QA (05);
-  - cAdvisor por contenedor (18, 27);
   - `mock_falla` y `STORAGE_FALLA` activos en QA (02, 09);
   - llevar a PROD el TLS del 8080 (43);
   - promover el mismo digest a `staging` y `latest` (24);
@@ -103,6 +102,6 @@ Gate `MANI ADR-0005` sobre código nuevo: 0 issues nuevos, 100 % de hotspots rev
   - fusionar MANI-docs#81 (06).
 - **QA:**
   - remedir 02, 09 y PROD (43) cuando DevOps habilite cada caso;
-  - repetir 05, 18 y 27 con el cAdvisor por contenedor.
+  - medir 05 cuando DevOps dé la ventana y repetir 18 al resolver el cuello de QAS-19.
 
 El detalle de cada pendiente, con su posible solución, está en la [tabla de los 45 QAS](QAS_45_ESTADO_METODO_EVIDENCIA.md).

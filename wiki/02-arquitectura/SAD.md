@@ -113,7 +113,7 @@ Los diagramas de alto nivel de este documento se dibujan a mano y se mantienen a
 | # | Diagrama | Pregunta que responde | Archivo | Dónde se desarrolla |
 |---|---|---|---|---|
 | 1 | **Arquitectura general** | ¿Cómo está construida MANI? | [`MANI_Arquitectura_SaaS_Multi-Tenant.png`](diagrams/AltoNivel/MANI_Arquitectura_SaaS_Multi-Tenant.png) | §5, §6 y §7 |
-| 2 | **Infraestructura, CI/CD y operación** | ¿Cómo se desarrolla, despliega y opera MANI? | [`02-despliegue-infraestructura.png`](diagrams/AltoNivel/actualizados/02-despliegue-infraestructura.png) | §16, §17 y §18 |
+| 2 | **Infraestructura, CI/CD y operación** | ¿Cómo se desarrolla, despliega y opera MANI? | [`MANI_Despliegue_e_Infraestructura.png`](diagrams/AltoNivel/MANI_Despliegue_e_Infraestructura.png) | §16, §17 y §18 |
 | 3 | **Arquitectura de datos** | ¿Qué dominios de datos hay y quién accede a cuáles? | [`03-arquitectura-datos.png`](diagrams/AltoNivel/actualizados/03-arquitectura-datos.png) | §14 |
 | 4 | **Tech Radar** | ¿Qué tecnologías se adoptan, se evalúan o se descartan? | — | [`TECH_RADAR.md`](TECH_RADAR.md) |
 
@@ -678,9 +678,9 @@ El modelo dimensional se especifica en `ModeloDatos.md`.
 
 # 16. Vista de despliegue
 
-[![Vista de alto nivel de la infraestructura de MANI por ambiente](diagrams/AltoNivel/actualizados/02-despliegue-infraestructura.png)](diagrams/AltoNivel/actualizados/02-despliegue-infraestructura.png)
+[![Despliegue e infraestructura de MANI: CI/CD, ambientes, monitoreo y respaldo](diagrams/AltoNivel/MANI_Despliegue_e_Infraestructura.png)](diagrams/AltoNivel/MANI_Despliegue_e_Infraestructura.png)
 
-> **Figura 2 — Infraestructura de alto nivel.** Archivo: [`diagrams/AltoNivel/actualizados/02-despliegue-infraestructura.png`](diagrams/AltoNivel/actualizados/02-despliegue-infraestructura.png). La vista C4 de despliegue está en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
+> **Figura 2 — Infraestructura de alto nivel.** Archivo: [`diagrams/AltoNivel/MANI_Despliegue_e_Infraestructura.png`](diagrams/AltoNivel/MANI_Despliegue_e_Infraestructura.png). La vista C4 de despliegue está en SDD §9.1. Los demás ambientes comparten esa topología y cambian escalado, secretos y datos (SDD §10).
 
 MANI mantiene tres ambientes:
 

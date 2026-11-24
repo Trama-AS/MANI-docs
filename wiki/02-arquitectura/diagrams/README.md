@@ -6,7 +6,8 @@ Estructura definida por [ADR-0008 — Organización y versionado de diagramas t�
 diagrams/
 ├── AltoNivel/
 │   ├── MANI_Arquitectura_SaaS_Multi-Tenant.png   arquitectura de alto nivel del SAD
-│   └── actualizados/        despliegue y datos del SAD (PNG, SVG y PDF)
+│   ├── MANI_Despliegue_e_Infraestructura.png     despliegue e infraestructura del SAD
+│   └── actualizados/        arquitectura de datos del SAD (PNG, SVG y PDF)
 ├── c4/
 │   ├── workspace.dsl        fuente editable del modelo C4 (Structurizr DSL)
 │   ├── contexto/            C4 N1 y panorama

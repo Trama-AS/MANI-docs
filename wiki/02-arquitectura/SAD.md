@@ -667,7 +667,7 @@ Supabase / PostgreSQL (OLTP) → CDC / ELT incremental → Data Warehouse → Da
 
 Esto evita ejecutar consultas analíticas intensivas directamente sobre las tablas operacionales.
 
-El modelo dimensional se especifica en `ModeloDatos.md`.
+`ModeloDatos.md` describe solo el modelo operacional; la analítica es un diseño separado y no está en ese documento.
 
 ---
 
@@ -860,7 +860,7 @@ La priorización no es declarativa: condiciona el diseño descrito en este docum
 | Fiabilidad P1 | exclusión concurrente por actualización condicional atómica en Dispatch | §7.2, §11 |
 | Fiabilidad P1 | efectos secundarios por eventos: un fallo de push no revierte una operación confirmada | §12, §21 |
 | Desempeño P1 | índice de búsqueda de elegibilidad por categoría, zona, fecha y estado | §7.3, §10 |
-| Mantenibilidad P1 | propiedad de datos por dominio; ningún servicio escribe el esquema de otro | §14, ModeloDatos §13 |
+| Mantenibilidad P1 | propiedad de datos por dominio; ningún servicio escribe el esquema de otro | §14, ModeloDatos §9 |
 | Flexibilidad P1 | configuración por tenant como datos, no como código ni como rama | §9 |
 | Flexibilidad P1 | artefactos OCI inmutables y configuración externa, para que la orquestación pueda cambiar | §18 |
 

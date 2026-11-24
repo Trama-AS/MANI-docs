@@ -1,10 +1,11 @@
 # MANI — Modelo de Datos
-## Modelo conceptual, lógico, físico, DDL, diccionario de datos y plataforma analítica
 
-**Plataforma operacional:** Supabase  
-**Motor de base de datos:** PostgreSQL  
-**Arquitectura de datos:** multi-tenant con propiedad por dominio  
-**Origen:** el modelo de las secciones 3 a 8 se obtiene de la base resultante de aplicar la serie única de migraciones de Core (`MANI-Node/db/migrations`) sobre el esquema base de `MANI-APIGateway/database`. Describe las 37 tablas del esquema `public`.  
+## Modelo conceptual, lógico, físico, DDL y diccionario de datos
+
+**Plataforma operacional:** Supabase
+**Motor de base de datos:** PostgreSQL
+**Arquitectura de datos:** multi-tenant con propiedad por dominio
+**Origen:** el modelo de las secciones 3 a 8 se obtiene de la base resultante de aplicar la serie única de migraciones de Core (`MANI-Node/db/migrations`) sobre el esquema base de `MANI-APIGateway/database`. Describe las 37 tablas del esquema `public`.
 
 ---
 
@@ -18,11 +19,7 @@
 6. Modelo físico
 7. DDL operacional
 8. Diccionario de datos
-9. Data Warehouse
-10. Modelo dimensional
-11. DDL del Data Warehouse
-12. Calidad de datos y controles
-13. Relación datos ↔ servicios
+9. Relación datos ↔ servicios
 
 ---
 
@@ -33,7 +30,7 @@ Este documento es la fuente de verdad del **modelo de datos** de MANI. No redefi
 La separación es intencional:
 
 - **SAD y SDD:** cómo está organizado y desplegado el software.
-- **Modelo de Datos:** qué información existe, cómo se relaciona, cómo se persiste, quién la escribe y cómo se transforma para analítica.
+- **Modelo de Datos:** qué información existe, cómo se relaciona, cómo se persiste y quién la escribe.
 
 ## 1.1 Decisiones de persistencia
 
@@ -51,37 +48,31 @@ Este glosario define los términos que se utilizan de forma recurrente en el mod
 El glosario general de negocio y metodología del proyecto continúa siendo la fuente autoritativa
 para conceptos que no sean específicamente de datos.
 
-| Término | Definición |
-|---|---|
-| **Tenant** | Empresa independiente que utiliza MANI y cuyos datos, usuarios y configuración deben permanecer aislados de los demás tenants. |
-| **Usuario** | Identidad registrada en MANI que puede asumir uno o varios roles dentro del contexto autorizado. |
-| **Cliente** | Actor que solicita un servicio. Puede ser persona natural o empresa. |
-| **Aliado** | Prestador habilitado para atender servicios dentro de las categorías y zonas declaradas. |
-| **KYC** | Información y documentación utilizada para verificar un aliado. |
-| **Categoría** | Tipo de servicio ofrecido dentro de MANI. |
-| **Zona** | Unidad administrativa del catálogo geográfico utilizada para definir cobertura. |
-| **Cobertura** | Conjunto de zonas en las que un aliado declara prestar servicios. Es una declaración estable del aliado y no depende del calendario. |
-| **Disponibilidad** | Franja de agenda concreta (fecha y horas) en la que un aliado puede atender servicios. **No es lo mismo que cobertura:** la cobertura dice *dónde*, la disponibilidad dice *cuándo*. |
-| **Sitio de servicio** | Ubicación registrada por un cliente empresa donde se presta el servicio. Tiene siempre una zona asignada y puede declarar reglas y condiciones propias visibles al aliado. |
-| **Tarifario** | Tabla de referencia por tenant y categoría con valores mínimo, típico y máximo, usada para alertar cotizaciones fuera de rango. No fija el precio: lo contrasta. |
-| **Calificación** | Valoración que una parte emite sobre la otra al finalizar el servicio. Es bidireccional y condición de cierre. |
-| **Conversación** | Hilo de mensajería asociado a una solicitud, consultable después de cerrada. |
-| **Mensaje** | Entrada individual de una conversación. |
-| **Queja** | Reclamación registrada sobre un servicio. Pertenece al segundo incremento. |
-| **Solicitud** | Petición de servicio creada por un cliente para un sitio y una categoría determinados. |
-| **Cotización** | Propuesta económica asociada a una solicitud, diferenciando los componentes definidos por el negocio. |
-| **Asignación** | Vinculación efectiva entre una solicitud y el aliado que obtuvo la aceptación válida. |
-| **Regla de tenant** | Configuración de negocio que modifica el comportamiento operacional de MANI para un tenant sin requerir despliegue de código específico. |
-| **RLS** | *Row-Level Security* de PostgreSQL utilizada como barrera adicional de aislamiento de filas entre tenants. |
-| **OLTP** | Modelo de datos operacional orientado al procesamiento transaccional de MANI. |
-| **Data Warehouse (DW)** | Repositorio analítico separado del OLTP, orientado a consultas históricas y métricas. |
-| **Dimensión** | Entidad descriptiva del modelo dimensional utilizada para contextualizar hechos analíticos. |
-| **Hecho** | Evento o medición registrada en una tabla de hechos del Data Warehouse. |
-| **Grano** | Nivel exacto de detalle que representa una fila de una tabla de hechos. |
-| **SCD** | *Slowly Changing Dimension*; estrategia para conservar cambios históricos en dimensiones. |
-| **CDC** | *Change Data Capture*; mecanismo para capturar de forma incremental cambios del sistema operacional. |
-| **DDL** | *Data Definition Language*; sentencias SQL utilizadas para crear y modificar estructuras de base de datos. |
-| **Diccionario de datos (DD)** | Catálogo estructurado de tablas, atributos, tipos, restricciones y significado funcional de los datos. |
+| Término                            | Definición                                                                                                                                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Tenant**                    | Empresa independiente que utiliza MANI y cuyos datos, usuarios y configuración deben permanecer aislados de los demás tenants.                                                                 |
+| **Usuario**                   | Identidad registrada en MANI que puede asumir uno o varios roles dentro del contexto autorizado.                                                                                                 |
+| **Cliente**                   | Actor que solicita un servicio. Puede ser persona natural o empresa.                                                                                                                             |
+| **Aliado**                    | Prestador habilitado para atender servicios dentro de las categorías y zonas declaradas.                                                                                                        |
+| **KYC**                       | Información y documentación utilizada para verificar un aliado.                                                                                                                                |
+| **Categoría**                | Tipo de servicio ofrecido dentro de MANI.                                                                                                                                                        |
+| **Zona**                      | Unidad administrativa del catálogo geográfico utilizada para definir cobertura.                                                                                                                |
+| **Cobertura**                 | Conjunto de zonas en las que un aliado declara prestar servicios. Es una declaración estable del aliado y no depende del calendario.                                                            |
+| **Disponibilidad**            | Franja de agenda concreta (fecha y horas) en la que un aliado puede atender servicios. **No es lo mismo que cobertura:** la cobertura dice *dónde*, la disponibilidad dice *cuándo*. |
+| **Sitio de servicio**         | Ubicación registrada por un cliente empresa donde se presta el servicio. Tiene siempre una zona asignada y puede declarar reglas y condiciones propias visibles al aliado.                      |
+| **Tarifario**                 | Tabla de referencia por tenant y categoría con valores mínimo, típico y máximo, usada para alertar cotizaciones fuera de rango. No fija el precio: lo contrasta.                             |
+| **Calificación**             | Valoración que una parte emite sobre la otra al finalizar el servicio. Es bidireccional y condición de cierre.                                                                                 |
+| **Conversación**             | Hilo de mensajería asociado a una solicitud, consultable después de cerrada.                                                                                                                   |
+| **Mensaje**                   | Entrada individual de una conversación.                                                                                                                                                         |
+| **Queja**                     | Reclamación registrada sobre un servicio. Pertenece al segundo incremento.                                                                                                                      |
+| **Solicitud**                 | Petición de servicio creada por un cliente para un sitio y una categoría determinados.                                                                                                         |
+| **Cotización**               | Propuesta económica asociada a una solicitud, diferenciando los componentes definidos por el negocio.                                                                                           |
+| **Asignación**               | Vinculación efectiva entre una solicitud y el aliado que obtuvo la aceptación válida.                                                                                                         |
+| **Regla de tenant**           | Configuración de negocio que modifica el comportamiento operacional de MANI para un tenant sin requerir despliegue de código específico.                                                      |
+| **RLS**                       | *Row-Level Security* de PostgreSQL utilizada como barrera adicional de aislamiento de filas entre tenants.                                                                                     |
+| **OLTP**                      | Modelo de datos operacional orientado al procesamiento transaccional de MANI.                                                                                                                    |
+| **DDL**                       | *Data Definition Language*; sentencias SQL utilizadas para crear y modificar estructuras de base de datos.                                                                                     |
+| **Diccionario de datos (DD)** | Catálogo estructurado de tablas, atributos, tipos, restricciones y significado funcional de los datos.                                                                                          |
 
 ---
 
@@ -161,14 +152,14 @@ erDiagram
 
 ## 3.1 Dominios
 
-| Dominio | Entidades | Dueño de escritura |
-|---|---|---|
-| Identidad y acceso | `tenant`, `usuario`, `aliado`, `documento_kyc`, `cliente`, `sitio`, `documento_legal`, `consentimiento_usuario`, `tenant_estado_cambio` | Core |
-| Catálogo, cobertura y reglas | `zona`, `geometria_territorial`, `categoria_servicio`, `aliado_categoria`, `cobertura_aliado`, `aliado_ausencia`, `tarifa_referencia`, `regla_tenant`, `politica_cancelacion_tenant` | Core |
-| Ciclo del servicio | `solicitud`, `solicitud_foto`, `solicitud_rechazo`, `cotizacion`, `adicion_servicio`, `evento_servicio`, `calificacion` | Core; `solicitud_rechazo`, Dispatch |
-| Comunicaciones | `mensaje`, `consulta_conversacion`, `notificacion`, `queja`, `queja_transicion` | Core |
-| Pagos | `pago`, `transaccion_evento`, `retencion_fondos`, `comision_tenant`, `liquidacion` | Core |
-| Integración y control | `outbox_evento`, `schema_migrations` | Core |
+| Dominio                       | Entidades                                                                                                                                                                                              | Dueño de escritura                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
+| Identidad y acceso            | `tenant`, `usuario`, `aliado`, `documento_kyc`, `cliente`, `sitio`, `documento_legal`, `consentimiento_usuario`, `tenant_estado_cambio`                                              | Core                                  |
+| Catálogo, cobertura y reglas | `zona`, `geometria_territorial`, `categoria_servicio`, `aliado_categoria`, `cobertura_aliado`, `aliado_ausencia`, `tarifa_referencia`, `regla_tenant`, `politica_cancelacion_tenant` | Core                                  |
+| Ciclo del servicio            | `solicitud`, `solicitud_foto`, `solicitud_rechazo`, `cotizacion`, `adicion_servicio`, `evento_servicio`, `calificacion`                                                                  | Core; `solicitud_rechazo`, Dispatch |
+| Comunicaciones                | `mensaje`, `consulta_conversacion`, `notificacion`, `queja`, `queja_transicion`                                                                                                              | Core                                  |
+| Pagos                         | `pago`, `transaccion_evento`, `retencion_fondos`, `comision_tenant`, `liquidacion`                                                                                                           | Core                                  |
+| Integración y control        | `outbox_evento`, `schema_migrations`                                                                                                                                                               | Core                                  |
 
 ---
 
@@ -982,14 +973,14 @@ erDiagram
 
 Una base PostgreSQL por ambiente. Las 37 tablas de negocio viven en el esquema `public`; el esquema `app` contiene las funciones de contexto de identidad y las del outbox, y no se expone por PostgREST. La propiedad de los datos se ejerce **por tabla**, no por esquema ([ADR-0030](adr/ADR-0030-propiedad-esquema-y-frontera-de-datos.md)):
 
-| Dominio | Tablas | Escribe |
-|---|---|---|
-| Identidad y acceso | `tenant`, `usuario`, `aliado`, `documento_kyc`, `cliente`, `sitio`, `documento_legal`, `consentimiento_usuario`, `tenant_estado_cambio` | Core |
-| Catálogo, cobertura y reglas | `zona`, `geometria_territorial`, `categoria_servicio`, `aliado_categoria`, `cobertura_aliado`, `aliado_ausencia`, `tarifa_referencia`, `regla_tenant`, `politica_cancelacion_tenant` | Core |
-| Ciclo del servicio | `solicitud`, `solicitud_foto`, `solicitud_rechazo`, `cotizacion`, `adicion_servicio`, `evento_servicio`, `calificacion` | Core; `solicitud_rechazo`, Dispatch |
-| Comunicaciones | `mensaje`, `consulta_conversacion`, `notificacion`, `queja`, `queja_transicion` | Core |
-| Pagos | `pago`, `transaccion_evento`, `retencion_fondos`, `comision_tenant`, `liquidacion` | Core |
-| Integración y control | `outbox_evento`, `schema_migrations` | Core |
+| Dominio                       | Tablas                                                                                                                                                                                                 | Escribe                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
+| Identidad y acceso            | `tenant`, `usuario`, `aliado`, `documento_kyc`, `cliente`, `sitio`, `documento_legal`, `consentimiento_usuario`, `tenant_estado_cambio`                                              | Core                                  |
+| Catálogo, cobertura y reglas | `zona`, `geometria_territorial`, `categoria_servicio`, `aliado_categoria`, `cobertura_aliado`, `aliado_ausencia`, `tarifa_referencia`, `regla_tenant`, `politica_cancelacion_tenant` | Core                                  |
+| Ciclo del servicio            | `solicitud`, `solicitud_foto`, `solicitud_rechazo`, `cotizacion`, `adicion_servicio`, `evento_servicio`, `calificacion`                                                                  | Core; `solicitud_rechazo`, Dispatch |
+| Comunicaciones                | `mensaje`, `consulta_conversacion`, `notificacion`, `queja`, `queja_transicion`                                                                                                              | Core                                  |
+| Pagos                         | `pago`, `transaccion_evento`, `retencion_fondos`, `comision_tenant`, `liquidacion`                                                                                                           | Core                                  |
+| Integración y control        | `outbox_evento`, `schema_migrations`                                                                                                                                                               | Core                                  |
 
 Core es el único escritor de `solicitud`, incluido su estado después de la asignación (decisión 6A, [ADR-0035](adr/ADR-0035-frontera-de-asignacion-6a.md)). Dispatch solo escribe `solicitud_rechazo` y no tiene acceso a ninguna otra tabla. Rules no accede a la base: sus reglas y tarifas las persiste y sirve Core.
 
@@ -1006,89 +997,89 @@ Separar físicamente las bases por servicio exige un ADR nuevo que revise ADR-00
 
 Hay dos roles de servicio, ambos `NOLOGIN NOBYPASSRLS` en la migración (el `LOGIN` y la contraseña los asigna operaciones fuera de git, [ADR-0031](adr/ADR-0031-politica-configuracion-jwt-ambientes.md) §5): `mani_core_svc` para Core y `mani_dispatch_svc` para Dispatch. Ninguno es dueño de tablas ni miembro de `authenticated`. Privilegios por tabla:
 
-| Tabla | Dueño | `mani_core_svc` | `mani_dispatch_svc` |
-|---|---|---|---|
-| `adicion_servicio` | Core | INSERT, SELECT, UPDATE | — |
-| `aliado` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `aliado_ausencia` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `aliado_categoria` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `calificacion` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `categoria_servicio` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `cliente` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `cobertura_aliado` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `comision_tenant` | Core | INSERT, SELECT, UPDATE | — |
-| `consentimiento_usuario` | Core | DELETE, INSERT, SELECT | — |
-| `consulta_conversacion` | Core | INSERT, SELECT | — |
-| `cotizacion` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `documento_kyc` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `documento_legal` | Core | INSERT, SELECT | — |
-| `evento_servicio` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `geometria_territorial` | Core | SELECT | — |
-| `liquidacion` | Core | INSERT, SELECT | — |
-| `mensaje` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `notificacion` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `outbox_evento` | Core | INSERT, SELECT | — |
-| `pago` | Core | INSERT, SELECT | — |
-| `politica_cancelacion_tenant` | Core | INSERT, SELECT, UPDATE | — |
-| `queja` | Core | INSERT, SELECT, UPDATE | — |
-| `queja_transicion` | Core | INSERT, SELECT | — |
-| `regla_tenant` | Core | INSERT, SELECT, UPDATE | — |
-| `retencion_fondos` | Core | INSERT, SELECT, UPDATE | — |
-| `schema_migrations` | Core | — | — |
-| `sitio` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `solicitud` | Core | INSERT, SELECT, UPDATE | — |
-| `solicitud_foto` | Core | INSERT, SELECT | — |
-| `solicitud_rechazo` | Dispatch | — | INSERT, SELECT |
-| `tarifa_referencia` | Core | INSERT, SELECT, UPDATE | — |
-| `tenant` | Core | SELECT | — |
-| `tenant_estado_cambio` | Core | INSERT, SELECT | — |
-| `transaccion_evento` | Core | INSERT, SELECT | — |
-| `usuario` | Core | DELETE, INSERT, SELECT, UPDATE | — |
-| `zona` | Core | SELECT | — |
+| Tabla                           | Dueño   | `mani_core_svc`              | `mani_dispatch_svc` |
+| ------------------------------- | -------- | ------------------------------ | --------------------- |
+| `adicion_servicio`            | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `aliado`                      | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `aliado_ausencia`             | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `aliado_categoria`            | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `calificacion`                | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `categoria_servicio`          | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `cliente`                     | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `cobertura_aliado`            | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `comision_tenant`             | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `consentimiento_usuario`      | Core     | DELETE, INSERT, SELECT         | —                    |
+| `consulta_conversacion`       | Core     | INSERT, SELECT                 | —                    |
+| `cotizacion`                  | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `documento_kyc`               | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `documento_legal`             | Core     | INSERT, SELECT                 | —                    |
+| `evento_servicio`             | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `geometria_territorial`       | Core     | SELECT                         | —                    |
+| `liquidacion`                 | Core     | INSERT, SELECT                 | —                    |
+| `mensaje`                     | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `notificacion`                | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `outbox_evento`               | Core     | INSERT, SELECT                 | —                    |
+| `pago`                        | Core     | INSERT, SELECT                 | —                    |
+| `politica_cancelacion_tenant` | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `queja`                       | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `queja_transicion`            | Core     | INSERT, SELECT                 | —                    |
+| `regla_tenant`                | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `retencion_fondos`            | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `schema_migrations`           | Core     | —                             | —                    |
+| `sitio`                       | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `solicitud`                   | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `solicitud_foto`              | Core     | INSERT, SELECT                 | —                    |
+| `solicitud_rechazo`           | Dispatch | —                             | INSERT, SELECT        |
+| `tarifa_referencia`           | Core     | INSERT, SELECT, UPDATE         | —                    |
+| `tenant`                      | Core     | SELECT                         | —                    |
+| `tenant_estado_cambio`        | Core     | INSERT, SELECT                 | —                    |
+| `transaccion_evento`          | Core     | INSERT, SELECT                 | —                    |
+| `usuario`                     | Core     | DELETE, INSERT, SELECT, UPDATE | —                    |
+| `zona`                        | Core     | SELECT                         | —                    |
 
 Las FK entre tablas no requieren `SELECT`. Los roles `anon` y `authenticated` conservan los privilegios que las migraciones heredadas les conceden para el camino PostgREST en retiro ([ADR-0027](adr/ADR-0027-alcance-supabase-cliente-flutter.md)); RLS es lo que limita su alcance.
 
 ## 6.4 RLS: estado por tabla y reglas
 
-| Tabla | RLS | `FORCE` | Políticas |
-|---|:---:|:---:|---|
-| `adicion_servicio` | sí | sí | `adicion_servicio_tenant` (ALL, a mani_core_svc) |
-| `aliado` | sí | sí | `aliado_tenant` (ALL, a authenticated,mani_core_svc) |
-| `aliado_ausencia` | sí | sí | `aliado_ausencia_tenant` (ALL, a authenticated,mani_core_svc) |
-| `aliado_categoria` | sí | sí | `aliado_categoria_tenant` (ALL, a authenticated,mani_core_svc) |
-| `calificacion` | sí | sí | `calificacion_tenant` (ALL, a authenticated,mani_core_svc) |
-| `categoria_servicio` | sí | sí | `categoria_servicio_tenant` (ALL, a authenticated,mani_core_svc) |
-| `cliente` | sí | sí | `cliente_tenant` (ALL, a authenticated,mani_core_svc) |
-| `cobertura_aliado` | sí | sí | `cobertura_aliado_tenant` (ALL, a authenticated,mani_core_svc) |
-| `comision_tenant` | sí | sí | `comision_tenant_tenant` (ALL, a mani_core_svc) |
-| `consentimiento_usuario` | sí | sí | `consentimiento_usuario_alta` (INSERT, a authenticated,mani_core_svc); `consentimiento_usuario_borrado` (DELETE, a mani_core_svc); `consentimiento_usuario_propio` (SELECT, a authenticated,mani_core_svc) |
-| `consulta_conversacion` | sí | sí | `consulta_conversacion_tenant` (ALL, a mani_core_svc) |
-| `cotizacion` | sí | sí | `cotizacion_tenant` (ALL, a authenticated,mani_core_svc) |
-| `documento_kyc` | sí | sí | `documento_kyc_alta` (INSERT, a authenticated,mani_core_svc); `documento_kyc_alta_admin_empleado_directo` (INSERT, a mani_core_svc); `documento_kyc_borrado` (DELETE, a authenticated,mani_core_svc); `documento_kyc_lectura` (SELECT, a authenticated,mani_core_svc); `documento_kyc_resolucion_admin` (UPDATE, a authenticated,mani_core_svc) |
-| `documento_legal` | sí | sí | `documento_legal_alta` (INSERT, a mani_core_svc); `documento_legal_lectura` (SELECT, a anon,authenticated,mani_core_svc) |
-| `evento_servicio` | sí | sí | `evento_servicio_tenant` (ALL, a authenticated,mani_core_svc) |
-| `geometria_territorial` | sí | sí | `geometria_territorial_lectura` (SELECT, a mani_core_svc) |
-| `liquidacion` | sí | sí | `liquidacion_tenant` (ALL, a mani_core_svc) |
-| `mensaje` | sí | sí | `mensaje_tenant` (ALL, a authenticated,mani_core_svc) |
-| `notificacion` | sí | sí | `notificacion_tenant` (ALL, a authenticated,mani_core_svc) |
-| `outbox_evento` | sí | no | `outbox_evento_tenant` (ALL, a mani_core_svc) |
-| `pago` | sí | sí | `pago_tenant` (ALL, a mani_core_svc) |
-| `politica_cancelacion_tenant` | sí | sí | `politica_cancelacion_tenant_isolation` (ALL, a mani_core_svc) |
-| `queja` | sí | sí | `queja_alta_cliente` (INSERT, a mani_core_svc); `queja_gestion_admin` (UPDATE, a mani_core_svc); `queja_lectura` (SELECT, a mani_core_svc) |
-| `queja_transicion` | sí | sí | `queja_transicion_alta` (INSERT, a mani_core_svc); `queja_transicion_lectura` (SELECT, a mani_core_svc) |
-| `regla_tenant` | sí | sí | `regla_tenant_isolation` (ALL, a mani_core_svc) |
-| `retencion_fondos` | sí | sí | `retencion_fondos_tenant` (ALL, a mani_core_svc) |
-| `schema_migrations` | no | no | — |
-| `sitio` | sí | sí | `sitio_tenant` (ALL, a authenticated,mani_core_svc) |
-| `solicitud` | sí | sí | `solicitud_alta_cliente` (INSERT, a authenticated,mani_core_svc); `solicitud_lectura` (SELECT, a authenticated,mani_core_svc); `solicitud_transicion_core` (UPDATE, a mani_core_svc) |
-| `solicitud_foto` | sí | sí | `solicitud_foto_tenant` (ALL, a authenticated,mani_core_svc) |
-| `solicitud_rechazo` | sí | sí | `solicitud_rechazo_aliado` (ALL, a authenticated,mani_dispatch_svc); `solicitud_rechazo_lectura_despacho` (SELECT, a mani_dispatch_svc) |
-| `tarifa_referencia` | sí | sí | `tarifa_referencia_tenant` (ALL, a mani_core_svc) |
-| `tenant` | sí | no | `tenant_estado_plataforma` (UPDATE, a mani_core_svc); `tenant_lectura` (SELECT, a authenticated,mani_core_svc) |
-| `tenant_estado_cambio` | sí | sí | `tenant_estado_cambio_plataforma` (ALL, a mani_core_svc) |
-| `transaccion_evento` | sí | sí | `transaccion_evento_tenant` (ALL, a mani_core_svc) |
-| `usuario` | sí | sí | `usuario_tenant` (ALL, a authenticated,mani_core_svc) |
-| `zona` | sí | no | `zona_lectura` (SELECT, a authenticated,mani_core_svc) |
+| Tabla                           | RLS | `FORCE` | Políticas                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------- | :-: | :-------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `adicion_servicio`            | sí |    sí    | `adicion_servicio_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                        |
+| `aliado`                      | sí |    sí    | `aliado_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                    |
+| `aliado_ausencia`             | sí |    sí    | `aliado_ausencia_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                           |
+| `aliado_categoria`            | sí |    sí    | `aliado_categoria_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                          |
+| `calificacion`                | sí |    sí    | `calificacion_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                              |
+| `categoria_servicio`          | sí |    sí    | `categoria_servicio_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                        |
+| `cliente`                     | sí |    sí    | `cliente_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                   |
+| `cobertura_aliado`            | sí |    sí    | `cobertura_aliado_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                          |
+| `comision_tenant`             | sí |    sí    | `comision_tenant_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                         |
+| `consentimiento_usuario`      | sí |    sí    | `consentimiento_usuario_alta` (INSERT, a authenticated,mani_core_svc); `consentimiento_usuario_borrado` (DELETE, a mani_core_svc); `consentimiento_usuario_propio` (SELECT, a authenticated,mani_core_svc)                                                                                                                                          |
+| `consulta_conversacion`       | sí |    sí    | `consulta_conversacion_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                   |
+| `cotizacion`                  | sí |    sí    | `cotizacion_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                |
+| `documento_kyc`               | sí |    sí    | `documento_kyc_alta` (INSERT, a authenticated,mani_core_svc); `documento_kyc_alta_admin_empleado_directo` (INSERT, a mani_core_svc); `documento_kyc_borrado` (DELETE, a authenticated,mani_core_svc); `documento_kyc_lectura` (SELECT, a authenticated,mani_core_svc); `documento_kyc_resolucion_admin` (UPDATE, a authenticated,mani_core_svc) |
+| `documento_legal`             | sí |    sí    | `documento_legal_alta` (INSERT, a mani_core_svc); `documento_legal_lectura` (SELECT, a anon,authenticated,mani_core_svc)                                                                                                                                                                                                                              |
+| `evento_servicio`             | sí |    sí    | `evento_servicio_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                           |
+| `geometria_territorial`       | sí |    sí    | `geometria_territorial_lectura` (SELECT, a mani_core_svc)                                                                                                                                                                                                                                                                                               |
+| `liquidacion`                 | sí |    sí    | `liquidacion_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                             |
+| `mensaje`                     | sí |    sí    | `mensaje_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                   |
+| `notificacion`                | sí |    sí    | `notificacion_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                              |
+| `outbox_evento`               | sí |    no    | `outbox_evento_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                           |
+| `pago`                        | sí |    sí    | `pago_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                                    |
+| `politica_cancelacion_tenant` | sí |    sí    | `politica_cancelacion_tenant_isolation` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                          |
+| `queja`                       | sí |    sí    | `queja_alta_cliente` (INSERT, a mani_core_svc); `queja_gestion_admin` (UPDATE, a mani_core_svc); `queja_lectura` (SELECT, a mani_core_svc)                                                                                                                                                                                                          |
+| `queja_transicion`            | sí |    sí    | `queja_transicion_alta` (INSERT, a mani_core_svc); `queja_transicion_lectura` (SELECT, a mani_core_svc)                                                                                                                                                                                                                                               |
+| `regla_tenant`                | sí |    sí    | `regla_tenant_isolation` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                         |
+| `retencion_fondos`            | sí |    sí    | `retencion_fondos_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                        |
+| `schema_migrations`           | no |    no    | —                                                                                                                                                                                                                                                                                                                                                        |
+| `sitio`                       | sí |    sí    | `sitio_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                     |
+| `solicitud`                   | sí |    sí    | `solicitud_alta_cliente` (INSERT, a authenticated,mani_core_svc); `solicitud_lectura` (SELECT, a authenticated,mani_core_svc); `solicitud_transicion_core` (UPDATE, a mani_core_svc)                                                                                                                                                                |
+| `solicitud_foto`              | sí |    sí    | `solicitud_foto_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                            |
+| `solicitud_rechazo`           | sí |    sí    | `solicitud_rechazo_aliado` (ALL, a authenticated,mani_dispatch_svc); `solicitud_rechazo_lectura_despacho` (SELECT, a mani_dispatch_svc)                                                                                                                                                                                                               |
+| `tarifa_referencia`           | sí |    sí    | `tarifa_referencia_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                       |
+| `tenant`                      | sí |    no    | `tenant_estado_plataforma` (UPDATE, a mani_core_svc); `tenant_lectura` (SELECT, a authenticated,mani_core_svc)                                                                                                                                                                                                                                        |
+| `tenant_estado_cambio`        | sí |    sí    | `tenant_estado_cambio_plataforma` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                |
+| `transaccion_evento`          | sí |    sí    | `transaccion_evento_tenant` (ALL, a mani_core_svc)                                                                                                                                                                                                                                                                                                      |
+| `usuario`                     | sí |    sí    | `usuario_tenant` (ALL, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                   |
+| `zona`                        | sí |    no    | `zona_lectura` (SELECT, a authenticated,mani_core_svc)                                                                                                                                                                                                                                                                                                  |
 
 Reglas que se derivan de [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md):
 
@@ -1104,23 +1095,23 @@ Decidido en [ADR-0032](adr/ADR-0032-identidad-de-servicio-en-base-de-datos.md). 
 
 ### Componentes en el motor
 
-| Componente | Definición | Notas |
-|---|---|---|
-| `mani_core_svc`, `mani_dispatch_svc` | `NOLOGIN NOBYPASSRLS` en migración (`LOGIN` lo asigna operaciones fuera de git, ADR-0031 §5); no dueños, no miembros de `authenticated` | contraseña por ambiente en `/opt/mani/.env.{dev,qa,prod}`. Rules no tiene rol en este incremento: sus *overrides* por tenant viven en la configuración del servicio, y `mani_rules_svc` (§6.3) solo se crearía si el tarifario pasa a persistirse desde Rules |
-| `GRANT USAGE ON SCHEMA auth` + `EXECUTE` sobre `auth.uid()` y `auth.jwt()` | a ambos roles | sin esto toda consulta falla con `permission denied for schema auth`, hallazgo de la PoC |
-| Esquema `app` | `REVOKE ALL FROM PUBLIC`; `USAGE` a `authenticated` y a los roles de servicio | no se expone en PostgREST |
-| `app.tenant_id()`, `app.user_id()`, `app.user_role()` | `STABLE`, `search_path = ''`, leen `auth.jwt()` y `auth.uid()` | devuelven `NULL` ante claim ausente o malformado, sin error |
-| `app.set_context(uuid, uuid, text)` | `set_config('request.jwt.claims', …, true)`; rechaza tenant `NULL` con `MANI-RLS-400` | `EXECUTE` solo a los roles de servicio: un cliente no puede fabricar contexto |
+| Componente                                                                         | Definición                                                                                                                                      | Notas                                                                                                                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mani_core_svc`, `mani_dispatch_svc`                                           | `NOLOGIN NOBYPASSRLS` en migración (`LOGIN` lo asigna operaciones fuera de git, ADR-0031 §5); no dueños, no miembros de `authenticated` | contraseña por ambiente en `/opt/mani/.env.{dev,qa,prod}`. Rules no tiene rol en este incremento: sus *overrides* por tenant viven en la configuración del servicio, y `mani_rules_svc` (§6.3) solo se crearía si el tarifario pasa a persistirse desde Rules |
+| `GRANT USAGE ON SCHEMA auth` + `EXECUTE` sobre `auth.uid()` y `auth.jwt()` | a ambos roles                                                                                                                                    | sin esto toda consulta falla con `permission denied for schema auth`, hallazgo de la PoC                                                                                                                                                                              |
+| Esquema `app`                                                                    | `REVOKE ALL FROM PUBLIC`; `USAGE` a `authenticated` y a los roles de servicio                                                              | no se expone en PostgREST                                                                                                                                                                                                                                               |
+| `app.tenant_id()`, `app.user_id()`, `app.user_role()`                        | `STABLE`, `search_path = ''`, leen `auth.jwt()` y `auth.uid()`                                                                           | devuelven `NULL` ante claim ausente o malformado, sin error                                                                                                                                                                                                           |
+| `app.set_context(uuid, uuid, text)`                                              | `set_config('request.jwt.claims', …, true)`; rechaza tenant `NULL` con `MANI-RLS-400`                                                     | `EXECUTE` solo a los roles de servicio: un cliente no puede fabricar contexto                                                                                                                                                                                         |
 
 ### Qué contexto fija cada tipo de flujo
 
-| Flujo | `set_context(tenant, usuario, rol)` | Ejemplo |
-|---|---|---|
-| Autenticado vía Gateway | `X-Tenant-Id`, `X-User-Id`, `X-User-Role` | CRUD de categorías del Backoffice |
-| Interno servicio → servicio | los mismos encabezados que reenvía el llamador (ADR-0030 §2) | Dispatch pide a Core la elegibilidad |
-| Lectura pre-auth | tenant resuelto desde `X-Tenant-Slug`, usuario `NULL`, rol `anonimo` | `GET /catalog` del registro |
-| Registro pre-auth | tenant desde `X-Tenant-Slug`, usuario recién creado en Supabase Auth, rol registrado | registro de aliado: `createUser` → `set_context` → insertar `usuario`, `aliado`, `documento_kyc` |
-| Asíncrono (ADR-0029) | tenant y usuario del evento, rol `servicio` | consumidor de notificaciones |
+| Flujo                        | `set_context(tenant, usuario, rol)`                                                   | Ejemplo                                                                                                      |
+| ---------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Autenticado vía Gateway     | `X-Tenant-Id`, `X-User-Id`, `X-User-Role`                                         | CRUD de categorías del Backoffice                                                                           |
+| Interno servicio → servicio | los mismos encabezados que reenvía el llamador (ADR-0030 §2)                          | Dispatch pide a Core la elegibilidad                                                                         |
+| Lectura pre-auth             | tenant resuelto desde `X-Tenant-Slug`, usuario `NULL`, rol `anonimo`              | `GET /catalog` del registro                                                                                |
+| Registro pre-auth            | tenant desde `X-Tenant-Slug`, usuario recién creado en Supabase Auth, rol registrado | registro de aliado: `createUser` → `set_context` → insertar `usuario`, `aliado`, `documento_kyc` |
+| Asíncrono (ADR-0029)        | tenant y usuario del evento, rol `servicio`                                           | consumidor de notificaciones                                                                                 |
 
 Resolver el slug obliga a leer `tenant` **antes** de tener contexto; por eso `tenant` conserva una
 política de lectura `USING (true)` que expone solo `slug`, `nombre` y `estado` (ADR-0018).
@@ -1131,59 +1122,59 @@ Las políticas vigentes son las del §6.4. «Patrón T» = `USING (tenant_id = a
 
 ### Funciones del esquema `app` y funciones heredadas
 
-| Función | Esquema | `SECURITY DEFINER` | Para qué |
-|---|---|:---:|---|
-| `bloquear_modificacion_queja_transicion()` | app | no | Trigger: la transición de queja es inmutable |
-| `bloquear_modificacion_tenant_estado_cambio()` | app | no | Trigger: el cambio de estado del tenant es inmutable |
-| `es_aliado_del_usuario(p_aliado_id uuid)` | app | sí | Comprueba que el aliado pertenece al usuario |
-| `outbox_marcar_publicados(p_ids uuid[])` | app | sí | Marca eventos como publicados |
-| `outbox_registrar_fallo(p_ids uuid[], p_error text)` | app | sí | Registra un fallo de publicación |
-| `outbox_tomar_pendientes(p_limite integer)` | app | sí | El relay toma los eventos pendientes del outbox |
-| `proteger_inmutabilidad_regla_tenant()` | app | no | Trigger: las reglas de tenant no se editan |
-| `proteger_transicion_queja()` | app | no | Trigger: valida las transiciones de una queja |
-| `proteger_version_tarifa()` | app | no | Trigger: versiona la tarifa en lugar de editarla |
-| `set_context(p_tenant_id uuid, p_user_id uuid, p_user_role text)` | app | no | Fija tenant, usuario y rol de la transacción (`set_config(..., true)`); rechaza tenant nulo con `MANI-RLS-400` |
-| `tenant_id()` | app | no | Tenant del contexto actual |
-| `user_id()` | app | no | Usuario del contexto actual |
-| `user_role()` | app | no | Rol del contexto actual |
-| `validar_jerarquia_zona()` | app | sí | Trigger: valida la jerarquía de zonas |
-| `validar_tenant_cobertura_aliado()` | app | sí | Trigger: la cobertura del aliado es del mismo tenant |
-| `_cat_aliado_actual(OUT o_tenant uuid, OUT o_aliado uuid)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `_cat_json(p_categoria_id uuid)` | public | no | Trigger o función auxiliar |
-| `_cat_tenant_admin_actual()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `_cat_validar_tenant_aliado_categoria()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `_sol_aliado_actual(OUT o_tenant uuid, OUT o_aliado uuid, OUT o_verificado boolean)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `_sol_aliado_elegible(p_aliado_id uuid, p_solicitud_id uuid)` | public | no | Trigger o función auxiliar |
-| `_sol_json(p_solicitud_id uuid, p_aliado_id uuid)` | public | no | Trigger o función auxiliar |
-| `_sol_zona_cubierta(p_aliado_id uuid, p_zona_id uuid)` | public | no | Trigger o función auxiliar |
-| `_solc_cliente_actual(OUT o_tenant uuid, OUT o_cliente uuid)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `_solc_json(p_solicitud_id uuid)` | public | no | Trigger o función auxiliar |
-| `_ver_aliado_json(p_aliado_id uuid)` | public | no | Trigger o función auxiliar |
-| `_ver_tenant_admin_actual()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `_zona_activa(p_estado text)` | public | no | Trigger o función auxiliar |
-| `aceptar_solicitud(p_solicitud_id uuid)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `bloquear_modificacion_consulta_conversacion()` | public | no | Trigger o función auxiliar |
-| `bloquear_modificacion_evento_servicio()` | public | no | Trigger o función auxiliar |
-| `bloquear_modificacion_transaccion_evento()` | public | no | Trigger o función auxiliar |
-| `buscar_zonas_cliente(p_texto text)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `crear_categoria_servicio(p_nombre text, p_flujo_operativo text, p_activa boolean)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `crear_solicitud(p_categoria_id uuid, p_descripcion text, p_sitio_id uuid, p_direccion text, p_zona_id uuid, p_fotos text[], p_clave_idempotencia uuid)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `gist_translate_cmptype_btree(integer)` | public | no | Trigger o función auxiliar |
-| `guardar_mis_categorias(p_categoria_ids uuid[])` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `listar_aliados_verificacion()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `listar_categorias_admin()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `listar_categorias_cliente()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `listar_categorias_tenant()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `listar_mis_sitios()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `listar_solicitudes_aliado()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `obtener_aliado_verificacion(p_aliado_id uuid)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `obtener_mis_categorias()` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `rechazar_solicitud(p_solicitud_id uuid, p_motivo text)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `registrar_aliado_empresa(p_usuario_id uuid, p_tenant_id uuid, p_email text, p_razon_social text, p_nit text, p_nombre_representante text, p_doc_representante text, p_telefono_contacto text, p_categoria_id uuid, p_documentos jsonb)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `registrar_aliado_persona_natural(p_usuario_id uuid, p_tenant_id uuid, p_email text, p_nombre_completo text, p_categoria_id uuid, p_documentos jsonb)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `registrar_cliente_persona_natural(p_usuario_id uuid, p_tenant_id uuid, p_email text, p_nombre_completo text, p_telefono text, p_direccion_hogar text)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `resolver_verificacion_aliado(p_aliado_id uuid, p_decision text, p_motivo text)` | public | sí | Función heredada del camino PostgREST (se retira según ADR-0022) |
-| `tstz_dist(timestamp with time zone, timestamp with time zone)` | public | no | Trigger o función auxiliar |
+| Función                                                                                                                                                                                                                                   | Esquema | `SECURITY DEFINER` | Para qué                                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- | :------------------: | ------------------------------------------------------------------------------------------------------------------- |
+| `bloquear_modificacion_queja_transicion()`                                                                                                                                                                                               | app     |          no          | Trigger: la transición de queja es inmutable                                                                       |
+| `bloquear_modificacion_tenant_estado_cambio()`                                                                                                                                                                                           | app     |          no          | Trigger: el cambio de estado del tenant es inmutable                                                                |
+| `es_aliado_del_usuario(p_aliado_id uuid)`                                                                                                                                                                                                | app     |         sí         | Comprueba que el aliado pertenece al usuario                                                                        |
+| `outbox_marcar_publicados(p_ids uuid[])`                                                                                                                                                                                                 | app     |         sí         | Marca eventos como publicados                                                                                       |
+| `outbox_registrar_fallo(p_ids uuid[], p_error text)`                                                                                                                                                                                     | app     |         sí         | Registra un fallo de publicación                                                                                   |
+| `outbox_tomar_pendientes(p_limite integer)`                                                                                                                                                                                              | app     |         sí         | El relay toma los eventos pendientes del outbox                                                                     |
+| `proteger_inmutabilidad_regla_tenant()`                                                                                                                                                                                                  | app     |          no          | Trigger: las reglas de tenant no se editan                                                                          |
+| `proteger_transicion_queja()`                                                                                                                                                                                                            | app     |          no          | Trigger: valida las transiciones de una queja                                                                       |
+| `proteger_version_tarifa()`                                                                                                                                                                                                              | app     |          no          | Trigger: versiona la tarifa en lugar de editarla                                                                    |
+| `set_context(p_tenant_id uuid, p_user_id uuid, p_user_role text)`                                                                                                                                                                        | app     |          no          | Fija tenant, usuario y rol de la transacción (`set_config(..., true)`); rechaza tenant nulo con `MANI-RLS-400` |
+| `tenant_id()`                                                                                                                                                                                                                            | app     |          no          | Tenant del contexto actual                                                                                          |
+| `user_id()`                                                                                                                                                                                                                              | app     |          no          | Usuario del contexto actual                                                                                         |
+| `user_role()`                                                                                                                                                                                                                            | app     |          no          | Rol del contexto actual                                                                                             |
+| `validar_jerarquia_zona()`                                                                                                                                                                                                               | app     |         sí         | Trigger: valida la jerarquía de zonas                                                                              |
+| `validar_tenant_cobertura_aliado()`                                                                                                                                                                                                      | app     |         sí         | Trigger: la cobertura del aliado es del mismo tenant                                                                |
+| `_cat_aliado_actual(OUT o_tenant uuid, OUT o_aliado uuid)`                                                                                                                                                                               | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `_cat_json(p_categoria_id uuid)`                                                                                                                                                                                                         | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `_cat_tenant_admin_actual()`                                                                                                                                                                                                             | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `_cat_validar_tenant_aliado_categoria()`                                                                                                                                                                                                 | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `_sol_aliado_actual(OUT o_tenant uuid, OUT o_aliado uuid, OUT o_verificado boolean)`                                                                                                                                                     | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `_sol_aliado_elegible(p_aliado_id uuid, p_solicitud_id uuid)`                                                                                                                                                                            | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `_sol_json(p_solicitud_id uuid, p_aliado_id uuid)`                                                                                                                                                                                       | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `_sol_zona_cubierta(p_aliado_id uuid, p_zona_id uuid)`                                                                                                                                                                                   | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `_solc_cliente_actual(OUT o_tenant uuid, OUT o_cliente uuid)`                                                                                                                                                                            | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `_solc_json(p_solicitud_id uuid)`                                                                                                                                                                                                        | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `_ver_aliado_json(p_aliado_id uuid)`                                                                                                                                                                                                     | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `_ver_tenant_admin_actual()`                                                                                                                                                                                                             | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `_zona_activa(p_estado text)`                                                                                                                                                                                                            | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `aceptar_solicitud(p_solicitud_id uuid)`                                                                                                                                                                                                 | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `bloquear_modificacion_consulta_conversacion()`                                                                                                                                                                                          | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `bloquear_modificacion_evento_servicio()`                                                                                                                                                                                                | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `bloquear_modificacion_transaccion_evento()`                                                                                                                                                                                             | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `buscar_zonas_cliente(p_texto text)`                                                                                                                                                                                                     | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `crear_categoria_servicio(p_nombre text, p_flujo_operativo text, p_activa boolean)`                                                                                                                                                      | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `crear_solicitud(p_categoria_id uuid, p_descripcion text, p_sitio_id uuid, p_direccion text, p_zona_id uuid, p_fotos text[], p_clave_idempotencia uuid)`                                                                                 | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `gist_translate_cmptype_btree(integer)`                                                                                                                                                                                                  | public  |          no          | Trigger o función auxiliar                                                                                         |
+| `guardar_mis_categorias(p_categoria_ids uuid[])`                                                                                                                                                                                         | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `listar_aliados_verificacion()`                                                                                                                                                                                                          | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `listar_categorias_admin()`                                                                                                                                                                                                              | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `listar_categorias_cliente()`                                                                                                                                                                                                            | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `listar_categorias_tenant()`                                                                                                                                                                                                             | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `listar_mis_sitios()`                                                                                                                                                                                                                    | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `listar_solicitudes_aliado()`                                                                                                                                                                                                            | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `obtener_aliado_verificacion(p_aliado_id uuid)`                                                                                                                                                                                          | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `obtener_mis_categorias()`                                                                                                                                                                                                               | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `rechazar_solicitud(p_solicitud_id uuid, p_motivo text)`                                                                                                                                                                                 | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `registrar_aliado_empresa(p_usuario_id uuid, p_tenant_id uuid, p_email text, p_razon_social text, p_nit text, p_nombre_representante text, p_doc_representante text, p_telefono_contacto text, p_categoria_id uuid, p_documentos jsonb)` | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `registrar_aliado_persona_natural(p_usuario_id uuid, p_tenant_id uuid, p_email text, p_nombre_completo text, p_categoria_id uuid, p_documentos jsonb)`                                                                                   | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `registrar_cliente_persona_natural(p_usuario_id uuid, p_tenant_id uuid, p_email text, p_nombre_completo text, p_telefono text, p_direccion_hogar text)`                                                                                  | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `resolver_verificacion_aliado(p_aliado_id uuid, p_decision text, p_motivo text)`                                                                                                                                                         | public  |         sí         | Función heredada del camino PostgREST (se retira según ADR-0022)                                                  |
+| `tstz_dist(timestamp with time zone, timestamp with time zone)`                                                                                                                                                                          | public  |          no          | Trigger o función auxiliar                                                                                         |
 
 Storage mantiene `kyc_isolation`, que ya toma el tenant del claim. Las políticas del bucket
 `solicitudes`, que hoy solo comparan `auth.uid()`, pasan a exigir también la carpeta del tenant.
@@ -1209,14 +1200,14 @@ Tres reglas verificables en CI:
 
 ### Riesgos del cambio
 
-| Riesgo | Mitigación |
-|---|---|
-| Un repositorio accede fuera de `withTenantContext` y, con el rol nuevo, ve 0 filas | falla cerrada: aparece como defecto funcional en QA, no como fuga; lo atrapan las reglas de CI de arriba |
-| Latencia por la sentencia extra en cada transacción | medirla en la ruta de QAS-03 después del paso 5 |
-| Storage sigue escribiéndose con `service_role` | la ruta se construye desde el contexto, y el caso cross-tenant 6 incluye el objeto de Storage |
-| Funciones `SECURITY DEFINER` heredadas omiten RLS | no se conceden a los roles de servicio y se retiran según ADR-0022 |
-| Drift entre el repositorio y QA, como `tenant_isolation_solicitud` | correr la consulta de confirmación de §6.4 en QA antes del paso 1 |
-| Usuarios con `tenant_id NULL`, por ejemplo un superadmin, quedan invisibles para los servicios | intencional; un caso multi-tenant de ese tipo exige un ADR propio |
+| Riesgo                                                                                           | Mitigación                                                                                              |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Un repositorio accede fuera de `withTenantContext` y, con el rol nuevo, ve 0 filas             | falla cerrada: aparece como defecto funcional en QA, no como fuga; lo atrapan las reglas de CI de arriba |
+| Latencia por la sentencia extra en cada transacción                                             | medirla en la ruta de QAS-03 después del paso 5                                                         |
+| Storage sigue escribiéndose con `service_role`                                                | la ruta se construye desde el contexto, y el caso cross-tenant 6 incluye el objeto de Storage            |
+| Funciones `SECURITY DEFINER` heredadas omiten RLS                                              | no se conceden a los roles de servicio y se retiran según ADR-0022                                      |
+| Drift entre el repositorio y QA, como `tenant_isolation_solicitud`                             | correr la consulta de confirmación de §6.4 en QA antes del paso 1                                      |
+| Usuarios con `tenant_id NULL`, por ejemplo un superadmin, quedan invisibles para los servicios | intencional; un caso multi-tenant de ese tipo exige un ADR propio                                        |
 
 ---
 
@@ -2013,51 +2004,51 @@ CREATE TABLE schema_migrations (
 
 Empresa que usa MANI. Es la raíz del aislamiento: casi toda tabla de negocio lleva su `tenant_id`.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `nombre` | text | no |  | Nombre |
-| `slug` | text | no |  | UNIQUE. Slug |
-| `estado` | text | no |  | estado ∈ {ACTIVO, SUSPENDIDO, INACTIVO}. Estado |
-| `fecha_alta` | timestamptz | no | `now()` | Fecha de alta |
+| Columna        | Tipo        | Nulo | Por omisión          | Restricciones y descripción                     |
+| -------------- | ----------- | :--: | --------------------- | ------------------------------------------------ |
+| `id`         | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                |
+| `nombre`     | text        |  no  |                       | Nombre                                           |
+| `slug`       | text        |  no  |                       | UNIQUE. Slug                                     |
+| `estado`     | text        |  no  |                       | estado ∈ {ACTIVO, SUSPENDIDO, INACTIVO}. Estado |
+| `fecha_alta` | timestamptz |  no  | `now()`             | Fecha de alta                                    |
 
 ### `usuario`
 
 Cuenta de acceso de una persona dentro de un tenant, con su rol (cliente, aliado, administrador). Se corresponde con el usuario de Supabase Auth.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | sí |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `email` | text | no |  | Correo electrónico |
-| `rol` | text | no |  | Rol |
-| `estado` | text | no |  | Estado |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `telefono` | text | sí |  | Teléfono |
-| `direccion` | text | sí |  | Direccion |
-| `foto_url` | text | sí |  | Foto url |
-| `nombre` | text | sí |  | Nombre |
+| Columna        | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| -------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`         | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`  | uuid        | sí |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `email`      | text        |  no  |                       | Correo electrónico                                                                      |
+| `rol`        | text        |  no  |                       | Rol                                                                                      |
+| `estado`     | text        |  no  |                       | Estado                                                                                   |
+| `created_at` | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
+| `telefono`   | text        | sí |                       | Teléfono                                                                                |
+| `direccion`  | text        | sí |                       | Direccion                                                                                |
+| `foto_url`   | text        | sí |                       | Foto url                                                                                 |
+| `nombre`     | text        | sí |                       | Nombre                                                                                   |
 
 ### `aliado`
 
 Perfil del aliado que presta el servicio: persona natural, empresa o empleado directo, con su estado de verificación.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `usuario_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE; UNIQUE. Referencia a `usuario` |
-| `tipo` | text | no |  | Tipo |
-| `nombre_razon_social` | text | no |  | Nombre razon social |
-| `estado_verificacion` | text | no |  | Estado verificacion |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `motivo_rechazo` | text | sí |  | Motivo rechazo |
-| `verificado_por` | uuid | sí |  | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario` |
-| `fecha_verificacion` | timestamptz | sí |  | Fecha de verificacion |
-| `tipo_documento_identidad` | text | sí |  | Tipo documento identidad |
-| `numero_documento_identidad` | text | sí |  | Numero documento identidad |
-| `nombre_representante_legal` | text | sí |  | Nombre representante legal |
-| `documento_representante_legal` | text | sí |  | Documento representante legal |
+| Columna                           | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| --------------------------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`                            | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`                     | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `usuario_id`                    | uuid        |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE; UNIQUE. Referencia a `usuario`                |
+| `tipo`                          | text        |  no  |                       | Tipo                                                                                     |
+| `nombre_razon_social`           | text        |  no  |                       | Nombre razon social                                                                      |
+| `estado_verificacion`           | text        |  no  |                       | Estado verificacion                                                                      |
+| `created_at`                    | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
+| `motivo_rechazo`                | text        | sí |                       | Motivo rechazo                                                                           |
+| `verificado_por`                | uuid        | sí |                       | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario`                       |
+| `fecha_verificacion`            | timestamptz | sí |                       | Fecha de verificacion                                                                    |
+| `tipo_documento_identidad`      | text        | sí |                       | Tipo documento identidad                                                                 |
+| `numero_documento_identidad`    | text        | sí |                       | Numero documento identidad                                                               |
+| `nombre_representante_legal`    | text        | sí |                       | Nombre representante legal                                                               |
+| `documento_representante_legal` | text        | sí |                       | Documento representante legal                                                            |
 
 Restricciones de tabla: `aliado_numero_documento_identidad_tenant_unique` — UNIQUE (tenant_id, numero_documento_identidad); `ux_aliado_id_tenant` — UNIQUE (id, tenant_id).
 
@@ -2065,30 +2056,30 @@ Restricciones de tabla: `aliado_numero_documento_identidad_tenant_unique` — UN
 
 Documento de verificación (KYC) que sube un aliado; el archivo vive en Storage y aquí queda su ruta y estado.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado` |
-| `tipo_documento` | text | no |  | Tipo documento |
-| `ruta_storage` | text | no |  | Ruta storage |
-| `estado` | text | no |  | Estado |
-| `fecha_carga` | timestamptz | no | `now()` | Fecha de carga |
+| Columna            | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ------------------ | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`             | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`      | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `aliado_id`      | uuid        |  no  |                       | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado`                          |
+| `tipo_documento` | text        |  no  |                       | Tipo documento                                                                           |
+| `ruta_storage`   | text        |  no  |                       | Ruta storage                                                                             |
+| `estado`         | text        |  no  |                       | Estado                                                                                   |
+| `fecha_carga`    | timestamptz |  no  | `now()`             | Fecha de carga                                                                           |
 
 ### `cliente`
 
 Perfil del cliente que solicita servicios: persona natural o empresa.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `usuario_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE; UNIQUE. Referencia a `usuario` |
-| `tipo` | text | no |  | Tipo |
-| `razon_social` | text | sí |  | Razon social |
-| `nit` | text | sí |  | Nit |
-| `telefono` | text | sí |  | Teléfono |
-| `nombre_representante` | text | sí |  | Nombre representante |
+| Columna                  | Tipo | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ------------------------ | ---- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`                   | uuid |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`            | uuid |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `usuario_id`           | uuid |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE; UNIQUE. Referencia a `usuario`                |
+| `tipo`                 | text |  no  |                       | Tipo                                                                                     |
+| `razon_social`         | text | sí |                       | Razon social                                                                             |
+| `nit`                  | text | sí |                       | Nit                                                                                      |
+| `telefono`             | text | sí |                       | Teléfono                                                                                |
+| `nombre_representante` | text | sí |                       | Nombre representante                                                                     |
 
 Restricciones de tabla: `cliente_nit_tenant_unique` — UNIQUE (tenant_id, nit).
 
@@ -2096,20 +2087,20 @@ Restricciones de tabla: `cliente_nit_tenant_unique` — UNIQUE (tenant_id, nit).
 
 Sede o lugar de servicio de un cliente, con su zona, contacto y reglas de acceso.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `cliente_id` | uuid | no |  | FK → `cliente(id)` ON DELETE CASCADE. Referencia a `cliente` |
-| `zona_id` | uuid | no |  | FK → `zona(id)` ON DELETE RESTRICT. Referencia a `zona` |
-| `direccion` | text | no |  | Direccion |
-| `reglas` | jsonb | sí |  | Reglas |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `nombre` | text | sí |  | Nombre |
-| `contacto_nombre` | text | sí |  | Contacto nombre |
-| `contacto_telefono` | text | sí |  | Contacto telefono |
-| `latitud` | numeric(9,6) | sí |  | Latitud declarada de la sede, WGS84 (EPSG 4326). NULL si no se ha capturado; no se infiere de la dirección. |
-| `longitud` | numeric(9,6) | sí |  | Longitud declarada de la sede, WGS84 (EPSG 4326). NULL si no se ha capturado. |
+| Columna               | Tipo         | Nulo | Por omisión          | Restricciones y descripción                                                                                 |
+| --------------------- | ------------ | :--: | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `id`                | uuid         |  no  | `gen_random_uuid()` | PK. Identificador                                                                                            |
+| `tenant_id`         | uuid         |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS                     |
+| `cliente_id`        | uuid         |  no  |                       | FK → `cliente(id)` ON DELETE CASCADE. Referencia a `cliente`                                            |
+| `zona_id`           | uuid         |  no  |                       | FK → `zona(id)` ON DELETE RESTRICT. Referencia a `zona`                                                 |
+| `direccion`         | text         |  no  |                       | Direccion                                                                                                    |
+| `reglas`            | jsonb        | sí |                       | Reglas                                                                                                       |
+| `created_at`        | timestamptz  |  no  | `now()`             | Fecha de alta                                                                                                |
+| `nombre`            | text         | sí |                       | Nombre                                                                                                       |
+| `contacto_nombre`   | text         | sí |                       | Contacto nombre                                                                                              |
+| `contacto_telefono` | text         | sí |                       | Contacto telefono                                                                                            |
+| `latitud`           | numeric(9,6) | sí |                       | Latitud declarada de la sede, WGS84 (EPSG 4326). NULL si no se ha capturado; no se infiere de la dirección. |
+| `longitud`          | numeric(9,6) | sí |                       | Longitud declarada de la sede, WGS84 (EPSG 4326). NULL si no se ha capturado.                                |
 
 Restricciones de tabla: `sitio_coordenadas_completas` — ((latitud IS NULL) = (longitud IS NULL)) NOT VALID; `sitio_coordenadas_rango` — (((latitud IS NULL) OR ((latitud >= ('-90'::integer)::numeric) AND (latitud <= (90)::numeric))) AND ((longitud IS NULL) OR ((longitud >= ('-180'::integer)::numeric) AND (longitud <= (180)::numeric)))) NOT VALID.
 
@@ -2117,29 +2108,29 @@ Restricciones de tabla: `sitio_coordenadas_completas` — ((latitud IS NULL) = (
 
 Documento legal vigente de un tenant (términos, política de datos) que el usuario debe aceptar.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | sí |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `tipo` | text | no |  | Tipo |
-| `version` | text | no |  | Version |
-| `contenido` | text | sí |  | Contenido |
-| `is_active` | boolean | sí | `true` | Is active |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna        | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| -------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`         | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`  | uuid        | sí |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `tipo`       | text        |  no  |                       | Tipo                                                                                     |
+| `version`    | text        |  no  |                       | Version                                                                                  |
+| `contenido`  | text        | sí |                       | Contenido                                                                                |
+| `is_active`  | boolean     | sí | `true`              | Is active                                                                                |
+| `created_at` | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
 
 ### `consentimiento_usuario`
 
 Registro de aceptación de un documento legal por un usuario (habeas data).
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `usuario_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario` |
-| `documento_legal_id` | uuid | no |  | FK → `documento_legal(id)` ON DELETE CASCADE. Referencia a `documento_legal` |
-| `ip_address` | text | sí |  | Ip address |
-| `user_agent` | text | sí |  | User agent |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna                | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ---------------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`                 | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`          | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `usuario_id`         | uuid        |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario`                        |
+| `documento_legal_id` | uuid        |  no  |                       | FK → `documento_legal(id)` ON DELETE CASCADE. Referencia a `documento_legal`        |
+| `ip_address`         | text        | sí |                       | Ip address                                                                               |
+| `user_agent`         | text        | sí |                       | User agent                                                                               |
+| `created_at`         | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
 
 Restricciones de tabla: `consentimiento_usuario_usuario_id_documento_legal_id_key` — UNIQUE (usuario_id, documento_legal_id).
 
@@ -2147,18 +2138,18 @@ Restricciones de tabla: `consentimiento_usuario_usuario_id_documento_legal_id_ke
 
 Historial inmutable de los cambios de estado de un tenant, con su actor.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
-| `estado_anterior` | text | no |  | Estado anterior |
-| `estado_nuevo` | text | no |  | estado_nuevo ∈ {ACTIVO, SUSPENDIDO, INACTIVO}. Estado nuevo |
-| `motivo` | text | no |  | ((motivo = btrim(motivo)) AND ((char_length(motivo) >= 10) AND (char_length(motivo) <= 500))). Motivo |
-| `actor_id` | uuid | no |  | Actor id |
-| `actor_rol` | text | no |  | Actor rol |
-| `actor_tenant_id` | uuid | no |  | Actor tenant id |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna             | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                                          |
+| ------------------- | ----------- | :--: | --------------------- | ----------------------------------------------------------------------------------------------------- |
+| `id`              | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                                     |
+| `tenant_id`       | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS             |
+| `estado_anterior` | text        |  no  |                       | Estado anterior                                                                                       |
+| `estado_nuevo`    | text        |  no  |                       | estado_nuevo ∈ {ACTIVO, SUSPENDIDO, INACTIVO}. Estado nuevo                                          |
+| `motivo`          | text        |  no  |                       | ((motivo = btrim(motivo)) AND ((char_length(motivo) >= 10) AND (char_length(motivo) <= 500))). Motivo |
+| `actor_id`        | uuid        |  no  |                       | Actor id                                                                                              |
+| `actor_rol`       | text        |  no  |                       | Actor rol                                                                                             |
+| `actor_tenant_id` | uuid        |  no  |                       | Actor tenant id                                                                                       |
+| `correlation_id`  | text        | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                             |
+| `created_at`      | timestamptz |  no  | `now()`             | Fecha de alta                                                                                         |
 
 Restricciones de tabla: `tenant_estado_cambio_check` — (estado_anterior <> estado_nuevo).
 
@@ -2168,13 +2159,13 @@ Restricciones de tabla: `tenant_estado_cambio_check` — (estado_anterior <> est
 
 Catálogo global de zonas geográficas en jerarquía ciudad → localidad → barrio.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `nivel` | text | no |  | nivel ∈ {CIUDAD, LOCALIDAD, BARRIO}. Nivel |
-| `nombre` | text | no |  | Nombre |
-| `zona_padre_id` | uuid | sí |  | FK → `zona(id)` ON DELETE SET NULL. Referencia a `zona` |
-| `estado` | text | no |  | Estado |
+| Columna           | Tipo | Nulo | Por omisión          | Restricciones y descripción                                 |
+| ----------------- | ---- | :--: | --------------------- | ------------------------------------------------------------ |
+| `id`            | uuid |  no  | `gen_random_uuid()` | PK. Identificador                                            |
+| `nivel`         | text |  no  |                       | nivel ∈ {CIUDAD, LOCALIDAD, BARRIO}. Nivel                  |
+| `nombre`        | text |  no  |                       | Nombre                                                       |
+| `zona_padre_id` | uuid | sí |                       | FK → `zona(id)` ON DELETE SET NULL. Referencia a `zona` |
+| `estado`        | text |  no  |                       | Estado                                                       |
 
 Restricciones de tabla: `zona_barrio_exige_padre` — ((nivel <> 'BARRIO') OR (zona_padre_id IS NOT NULL)) NOT VALID.
 
@@ -2182,70 +2173,70 @@ Restricciones de tabla: `zona_barrio_exige_padre` — ((nivel <> 'BARRIO') OR (z
 
 Límite geográfico de una zona como GeoJSON en JSONB. No hay PostGIS: no hay consultas espaciales.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `zona_id` | uuid | no |  | FK → `zona(id)` ON DELETE CASCADE; UNIQUE. Referencia a `zona` |
-| `geometria` | jsonb | no |  | ((jsonb_typeof((geometria -> 'coordinates')) = 'array') AND (jsonb_array_length((geometria -> 'coordinates')) > 0)); ((geometria ->> 'type') = ANY (ARRAY['Polygon', 'MultiPolygon'])). Objeto GeoJSON Polygon o MultiPolygon, WGS84 (EPSG 4326), coordenadas en orden longitud-latitud. |
-| `fuente` | text | no |  | Fuente |
-| `codigo_fuente` | text | sí |  | Codigo fuente |
-| `licencia` | text | no |  | Licencia |
-| `atribucion` | text | no |  | Texto de atribución que la interfaz debe mostrar; lo exige la licencia de la fuente. |
-| `fuente_fecha` | date | sí |  | Fuente fecha |
-| `actualizado_en` | timestamptz | no | `now()` | Actualizado en |
+| Columna            | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                                                                                                                                                                                                                             |
+| ------------------ | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`             | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                                                                                                                                                                                                                        |
+| `zona_id`        | uuid        |  no  |                       | FK → `zona(id)` ON DELETE CASCADE; UNIQUE. Referencia a `zona`                                                                                                                                                                                                                      |
+| `geometria`      | jsonb       |  no  |                       | ((jsonb_typeof((geometria -> 'coordinates')) = 'array') AND (jsonb_array_length((geometria -> 'coordinates')) > 0)); ((geometria ->> 'type') = ANY (ARRAY['Polygon', 'MultiPolygon'])). Objeto GeoJSON Polygon o MultiPolygon, WGS84 (EPSG 4326), coordenadas en orden longitud-latitud. |
+| `fuente`         | text        |  no  |                       | Fuente                                                                                                                                                                                                                                                                                   |
+| `codigo_fuente`  | text        | sí |                       | Codigo fuente                                                                                                                                                                                                                                                                            |
+| `licencia`       | text        |  no  |                       | Licencia                                                                                                                                                                                                                                                                                 |
+| `atribucion`     | text        |  no  |                       | Texto de atribución que la interfaz debe mostrar; lo exige la licencia de la fuente.                                                                                                                                                                                                    |
+| `fuente_fecha`   | date        | sí |                       | Fuente fecha                                                                                                                                                                                                                                                                             |
+| `actualizado_en` | timestamptz |  no  | `now()`             | Actualizado en                                                                                                                                                                                                                                                                           |
 
 ### `categoria_servicio`
 
 Categoría de servicio que ofrece un tenant y su flujo operativo (con cotización o tarifa estándar).
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `nombre` | text | no |  | Nombre |
-| `estado` | text | no |  | estado ∈ {ACTIVO, INACTIVO}. Estado |
-| `flujo_operativo` | text | sí |  | flujo_operativo ∈ {COTIZACION_PREVIA, TARIFA_ESTANDAR}. Flujo operativo |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `creado_por` | uuid | sí |  | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario` |
+| Columna             | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ------------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`              | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`       | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `nombre`          | text        |  no  |                       | Nombre                                                                                   |
+| `estado`          | text        |  no  |                       | estado ∈ {ACTIVO, INACTIVO}. Estado                                                     |
+| `flujo_operativo` | text        | sí |                       | flujo_operativo ∈ {COTIZACION_PREVIA, TARIFA_ESTANDAR}. Flujo operativo                 |
+| `created_at`      | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
+| `creado_por`      | uuid        | sí |                       | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario`                       |
 
 ### `aliado_categoria`
 
 Categorías que atiende cada aliado.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado` |
-| `categoria_id` | uuid | no |  | FK → `categoria_servicio(id)` ON DELETE CASCADE. Referencia a `categoria_servicio` |
+| Columna          | Tipo | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ---------------- | ---- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`           | uuid |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`    | uuid |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `aliado_id`    | uuid |  no  |                       | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado`                          |
+| `categoria_id` | uuid |  no  |                       | FK → `categoria_servicio(id)` ON DELETE CASCADE. Referencia a `categoria_servicio`  |
 
 ### `cobertura_aliado`
 
 Zonas en las que el aliado declara cobertura; es única por aliado y zona.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado` |
-| `zona_id` | uuid | no |  | FK → `zona(id)` ON DELETE CASCADE. Referencia a `zona` |
-| `fecha_declaracion` | timestamptz | no | `now()` | Fecha de declaracion |
+| Columna               | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| --------------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`                | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`         | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `aliado_id`         | uuid        |  no  |                       | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado`                          |
+| `zona_id`           | uuid        |  no  |                       | FK → `zona(id)` ON DELETE CASCADE. Referencia a `zona`                              |
+| `fecha_declaracion` | timestamptz |  no  | `now()`             | Fecha de declaracion                                                                     |
 
 ### `aliado_ausencia`
 
 Ausencias programadas del aliado; no se solapan entre sí.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado` |
-| `inicio` | timestamptz | no |  | Inicio |
-| `fin` | timestamptz | no |  | Fin |
-| `motivo` | text | no |  | motivo ∈ {VACACIONES, ENFERMEDAD, OTRO}. Motivo |
-| `nota` | text | sí |  | ((nota IS NULL) OR (char_length(nota) <= 280)). Nota |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `updated_at` | timestamptz | no | `now()` | Fecha de última modificación |
+| Columna        | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| -------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`         | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`  | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `aliado_id`  | uuid        |  no  |                       | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado`                          |
+| `inicio`     | timestamptz |  no  |                       | Inicio                                                                                   |
+| `fin`        | timestamptz |  no  |                       | Fin                                                                                      |
+| `motivo`     | text        |  no  |                       | motivo ∈ {VACACIONES, ENFERMEDAD, OTRO}. Motivo                                         |
+| `nota`       | text        | sí |                       | ((nota IS NULL) OR (char_length(nota) <= 280)). Nota                                     |
+| `created_at` | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
+| `updated_at` | timestamptz |  no  | `now()`             | Fecha de última modificación                                                           |
 
 Restricciones de tabla: `ck_aliado_ausencia_rango` — (inicio < fin); `ex_aliado_ausencia_solapamiento` — EXCLUDE USING gist (aliado_id WITH =, tstzrange(inicio, fin, '[)'::text) WITH &&).
 
@@ -2253,25 +2244,25 @@ Restricciones de tabla: `ck_aliado_ausencia_rango` — (inicio < fin); `ex_aliad
 
 Tarifa de referencia por categoría y tenant, con mínimo, típico y máximo y versionada.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `categoria_id` | uuid | no |  | FK → `categoria_servicio(id)` ON DELETE CASCADE. Referencia a `categoria_servicio` |
-| `valor_min` | numeric(12,2) | no |  | Importe: valor min |
-| `valor_tipico` | numeric(12,2) | no |  | Importe: valor tipico |
-| `valor_max` | numeric(12,2) | no |  | Importe: valor max |
-| `moneda` | text | no | `'COP'` | (moneda ~ '^[A-Z]{3}$'). Moneda |
-| `vigencia_desde` | date | no | `CURRENT_DATE` | Vigencia desde |
-| `vigencia_hasta` | date | sí |  | Vigencia hasta |
-| `condiciones` | text | sí |  | ((condiciones IS NULL) OR (char_length(condiciones) <= 500)). Condiciones |
-| `version` | integer | no | `1` | (version > 0). Version |
-| `estado` | text | no | `'ACTIVA'` | estado ∈ {ACTIVA, REEMPLAZADA}. Estado |
-| `reemplaza_id` | uuid | sí |  | FK → `tarifa_referencia(id)` ON DELETE RESTRICT. Referencia a `tarifa_referencia` |
-| `creado_por` | uuid | sí |  | Creado por |
-| `actor_rol` | text | sí |  | Actor rol |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna            | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ------------------ | ------------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`             | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`      | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `categoria_id`   | uuid          |  no  |                       | FK → `categoria_servicio(id)` ON DELETE CASCADE. Referencia a `categoria_servicio`  |
+| `valor_min`      | numeric(12,2) |  no  |                       | Importe: valor min                                                                       |
+| `valor_tipico`   | numeric(12,2) |  no  |                       | Importe: valor tipico                                                                    |
+| `valor_max`      | numeric(12,2) |  no  |                       | Importe: valor max                                                                       |
+| `moneda`         | text          |  no  | `'COP'`             | (moneda ~ '^[A-Z]{3}$'). Moneda                                                          |
+| `vigencia_desde` | date          |  no  | `CURRENT_DATE`      | Vigencia desde                                                                           |
+| `vigencia_hasta` | date          | sí |                       | Vigencia hasta                                                                           |
+| `condiciones`    | text          | sí |                       | ((condiciones IS NULL) OR (char_length(condiciones) <= 500)). Condiciones                |
+| `version`        | integer       |  no  | `1`                 | (version > 0). Version                                                                   |
+| `estado`         | text          |  no  | `'ACTIVA'`          | estado ∈ {ACTIVA, REEMPLAZADA}. Estado                                                  |
+| `reemplaza_id`   | uuid          | sí |                       | FK → `tarifa_referencia(id)` ON DELETE RESTRICT. Referencia a `tarifa_referencia`   |
+| `creado_por`     | uuid          | sí |                       | Creado por                                                                               |
+| `actor_rol`      | text          | sí |                       | Actor rol                                                                                |
+| `correlation_id` | text          | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                |
+| `created_at`     | timestamptz   |  no  | `now()`             | Fecha de alta                                                                            |
 
 Restricciones de tabla: `ck_tarifa_referencia_valores` — ((valor_min >= (0)::numeric) AND (valor_min <= valor_tipico) AND (valor_tipico <= valor_max) AND (valor_min < valor_max)) NOT VALID; `ck_tarifa_referencia_vigencia` — ((vigencia_hasta IS NULL) OR (vigencia_hasta >= vigencia_desde)); `ex_tarifa_referencia_vigencia_activa` — EXCLUDE USING gist (tenant_id WITH =, categoria_id WITH =, daterange(vigencia_desde, vigencia_hasta, '[]'::text) WITH &&) WHERE ((estado = 'ACTIVA'::text)).
 
@@ -2279,17 +2270,17 @@ Restricciones de tabla: `ck_tarifa_referencia_valores` — ((valor_min >= (0)::n
 
 Regla operativa configurable por tenant (comisión, penalización, ventanas), inmutable y versionada.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
-| `version` | integer | no |  | Version |
-| `reglas` | jsonb | no |  | Reglas |
-| `estado` | text | no | `'VIGENTE'` | estado ∈ {VIGENTE, HISTORICA}. Estado |
-| `creado_por` | uuid | no |  | Creado por |
-| `actor_rol` | text | no |  | Actor rol |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna            | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                              |
+| ------------------ | ----------- | :--: | --------------------- | ----------------------------------------------------------------------------------------- |
+| `id`             | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                         |
+| `tenant_id`      | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
+| `version`        | integer     |  no  |                       | Version                                                                                   |
+| `reglas`         | jsonb       |  no  |                       | Reglas                                                                                    |
+| `estado`         | text        |  no  | `'VIGENTE'`         | estado ∈ {VIGENTE, HISTORICA}. Estado                                                    |
+| `creado_por`     | uuid        |  no  |                       | Creado por                                                                                |
+| `actor_rol`      | text        |  no  |                       | Actor rol                                                                                 |
+| `correlation_id` | text        | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                 |
+| `created_at`     | timestamptz |  no  | `now()`             | Fecha de alta                                                                             |
 
 Restricciones de tabla: `uq_regla_tenant_version` — UNIQUE (tenant_id, version).
 
@@ -2297,16 +2288,16 @@ Restricciones de tabla: `uq_regla_tenant_version` — UNIQUE (tenant_id, version
 
 Política de cancelación y penalización de un tenant.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `tenant_id` | uuid | no |  | PK; FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `activa` | boolean | no | `false` | Activa |
-| `ventana_gratuita_minutos` | integer | no | `15` | (ventana_gratuita_minutos >= 0). Ventana gratuita minutos |
-| `tipo_cobro` | text | no | `'MONTO_FIJO'` | tipo_cobro ∈ {MONTO_FIJO, PORCENTAJE}. Tipo cobro |
-| `valor` | numeric(12,2) | no | `0` | (valor >= (0)::numeric). Valor |
-| `estados_gravables` | text[] | no | `ARRAY['ASIGNADA', 'COTIZANDO', 'ACEPTADA']` | Estados gravables |
-| `updated_by` | uuid | sí |  | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario` |
-| `updated_at` | timestamptz | no | `now()` | Fecha de última modificación |
+| Columna                      | Tipo          | Nulo | Por omisión                                   | Restricciones y descripción                                                                 |
+| ---------------------------- | ------------- | :--: | ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `tenant_id`                | uuid          |  no  |                                                | PK; FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `activa`                   | boolean       |  no  | `false`                                      | Activa                                                                                       |
+| `ventana_gratuita_minutos` | integer       |  no  | `15`                                         | (ventana_gratuita_minutos >= 0). Ventana gratuita minutos                                    |
+| `tipo_cobro`               | text          |  no  | `'MONTO_FIJO'`                               | tipo_cobro ∈ {MONTO_FIJO, PORCENTAJE}. Tipo cobro                                           |
+| `valor`                    | numeric(12,2) |  no  | `0`                                          | (valor >= (0)::numeric). Valor                                                               |
+| `estados_gravables`        | text[]        |  no  | `ARRAY['ASIGNADA', 'COTIZANDO', 'ACEPTADA']` | Estados gravables                                                                            |
+| `updated_by`               | uuid          | sí |                                                | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario`                           |
+| `updated_at`               | timestamptz   |  no  | `now()`                                      | Fecha de última modificación                                                               |
 
 Restricciones de tabla: `ck_politica_cancelacion_porcentaje` — ((tipo_cobro <> 'PORCENTAJE') OR (valor <= (100)::numeric)).
 
@@ -2316,38 +2307,38 @@ Restricciones de tabla: `ck_politica_cancelacion_porcentaje` — ((tipo_cobro <>
 
 Solicitud de servicio. Core es su único escritor, también del estado después de la asignación (decisión 6A).
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `cliente_id` | uuid | no |  | FK → `cliente(id)` ON DELETE CASCADE. Referencia a `cliente` |
-| `sitio_id` | uuid | no |  | FK → `sitio(id)` ON DELETE RESTRICT. Referencia a `sitio` |
-| `categoria_id` | uuid | no |  | FK → `categoria_servicio(id)` ON DELETE RESTRICT. Referencia a `categoria_servicio` |
-| `zona_id` | uuid | no |  | FK → `zona(id)` ON DELETE RESTRICT. Referencia a `zona` |
-| `aliado_id` | uuid | sí |  | FK → `aliado(id)` ON DELETE SET NULL. Referencia a `aliado` |
-| `estado` | text | no |  | estado ∈ {PENDIENTE, ASIGNADA, COTIZANDO, ACEPTADA, RECHAZADA, EN_EJECUCION, FINALIZADA, CERRADA, CANCELADA}. Estado |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `updated_at` | timestamptz | no | `now()` | Fecha de última modificación |
-| `descripcion` | text | sí |  | Descripcion |
-| `clave_idempotencia` | uuid | sí |  | Clave de idempotencia |
-| `huella_idempotencia` | text | sí |  | sha256 hex del cuerpo canónico de la creación (categoría, descripción, sitio o dirección y zona, fotos); NULL en filas previas a 0018 |
-| `cerrada_at` | timestamptz | sí |  | Fecha de cerrada |
-| `penalizacion_aplicada` | boolean | no | `false` | Penalizacion aplicada |
-| `penalizacion_monto` | numeric(12,2) | no | `0` | (penalizacion_monto >= (0)::numeric) NOT VALID. Penalizacion monto |
-| `penalizacion_motivo` | text | sí |  | Penalizacion motivo |
+| Columna                   | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                                                                               |
+| ------------------------- | ------------- | :--: | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                    | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                                                                          |
+| `tenant_id`             | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS                                                   |
+| `cliente_id`            | uuid          |  no  |                       | FK → `cliente(id)` ON DELETE CASCADE. Referencia a `cliente`                                                                          |
+| `sitio_id`              | uuid          |  no  |                       | FK → `sitio(id)` ON DELETE RESTRICT. Referencia a `sitio`                                                                             |
+| `categoria_id`          | uuid          |  no  |                       | FK → `categoria_servicio(id)` ON DELETE RESTRICT. Referencia a `categoria_servicio`                                                   |
+| `zona_id`               | uuid          |  no  |                       | FK → `zona(id)` ON DELETE RESTRICT. Referencia a `zona`                                                                               |
+| `aliado_id`             | uuid          | sí |                       | FK → `aliado(id)` ON DELETE SET NULL. Referencia a `aliado`                                                                           |
+| `estado`                | text          |  no  |                       | estado ∈ {PENDIENTE, ASIGNADA, COTIZANDO, ACEPTADA, RECHAZADA, EN_EJECUCION, FINALIZADA, CERRADA, CANCELADA}. Estado                      |
+| `created_at`            | timestamptz   |  no  | `now()`             | Fecha de alta                                                                                                                              |
+| `updated_at`            | timestamptz   |  no  | `now()`             | Fecha de última modificación                                                                                                             |
+| `descripcion`           | text          | sí |                       | Descripcion                                                                                                                                |
+| `clave_idempotencia`    | uuid          | sí |                       | Clave de idempotencia                                                                                                                      |
+| `huella_idempotencia`   | text          | sí |                       | sha256 hex del cuerpo canónico de la creación (categoría, descripción, sitio o dirección y zona, fotos); NULL en filas previas a 0018 |
+| `cerrada_at`            | timestamptz   | sí |                       | Fecha de cerrada                                                                                                                           |
+| `penalizacion_aplicada` | boolean       |  no  | `false`             | Penalizacion aplicada                                                                                                                      |
+| `penalizacion_monto`    | numeric(12,2) |  no  | `0`                 | (penalizacion_monto >= (0)::numeric) NOT VALID. Penalizacion monto                                                                         |
+| `penalizacion_motivo`   | text          | sí |                       | Penalizacion motivo                                                                                                                        |
 
 ### `solicitud_foto`
 
 Fotos que el cliente adjunta a la solicitud.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `ruta_storage` | text | no |  | Ruta storage |
-| `orden` | smallint | no |  | Orden |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna          | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ---------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`           | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`    | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `solicitud_id` | uuid        |  no  |                       | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                    |
+| `ruta_storage` | text        |  no  |                       | Ruta storage                                                                             |
+| `orden`        | smallint    |  no  |                       | Orden                                                                                    |
+| `created_at`   | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
 
 Restricciones de tabla: `ux_solicitud_foto_orden` — UNIQUE (solicitud_id, orden).
 
@@ -2355,15 +2346,15 @@ Restricciones de tabla: `ux_solicitud_foto_orden` — UNIQUE (solicitud_id, orde
 
 Rechazo de una oferta por un aliado, con motivo. Es de Dispatch y la única tabla con la que escribe.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado` |
-| `motivo` | text | sí |  | motivo ∈ {FUERA_DE_ZONA, SIN_DISPONIBILIDAD, NO_ES_MI_ESPECIALIDAD, OTRO}; (motivo IS NOT NULL) NOT VALID. Motivo |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `detalle` | text | sí |  | ((detalle IS NULL) OR ((detalle = btrim(detalle)) AND ((char_length(detalle) >= 3) AND (char_length(detalle) <= 280)))). Detalle |
+| Columna          | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                                                                     |
+| ---------------- | ----------- | :--: | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                                                                |
+| `tenant_id`    | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS                                         |
+| `solicitud_id` | uuid        |  no  |                       | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                                                            |
+| `aliado_id`    | uuid        |  no  |                       | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado`                                                                  |
+| `motivo`       | text        | sí |                       | motivo ∈ {FUERA_DE_ZONA, SIN_DISPONIBILIDAD, NO_ES_MI_ESPECIALIDAD, OTRO}; (motivo IS NOT NULL) NOT VALID. Motivo               |
+| `created_at`   | timestamptz |  no  | `now()`             | Fecha de alta                                                                                                                    |
+| `detalle`      | text        | sí |                       | ((detalle IS NULL) OR ((detalle = btrim(detalle)) AND ((char_length(detalle) >= 3) AND (char_length(detalle) <= 280)))). Detalle |
 
 Restricciones de tabla: `ux_solicitud_rechazo` — UNIQUE (solicitud_id, aliado_id); `ck_solicitud_rechazo_detalle_otro` — ((motivo = 'OTRO') = (detalle IS NOT NULL)) NOT VALID.
 
@@ -2371,38 +2362,38 @@ Restricciones de tabla: `ux_solicitud_rechazo` — UNIQUE (solicitud_id, aliado_
 
 Cotización versionada del aliado, con mano de obra y materiales separados y el resultado de la validación tarifaria.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado` |
-| `valor_mano_obra` | numeric(12,2) | no |  | Importe: valor mano obra |
-| `valor_materiales` | numeric(12,2) | no |  | Importe: valor materiales |
-| `estado` | text | no |  | estado ∈ {PENDIENTE, ACEPTADA, RECHAZADA, AJUSTE_SOLICITADO}. Estado |
-| `version` | integer | no | `1` | Version |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna              | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| -------------------- | ------------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`               | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`        | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `solicitud_id`     | uuid          |  no  |                       | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                    |
+| `aliado_id`        | uuid          |  no  |                       | FK → `aliado(id)` ON DELETE CASCADE. Referencia a `aliado`                          |
+| `valor_mano_obra`  | numeric(12,2) |  no  |                       | Importe: valor mano obra                                                                 |
+| `valor_materiales` | numeric(12,2) |  no  |                       | Importe: valor materiales                                                                |
+| `estado`           | text          |  no  |                       | estado ∈ {PENDIENTE, ACEPTADA, RECHAZADA, AJUSTE_SOLICITADO}. Estado                    |
+| `version`          | integer       |  no  | `1`                 | Version                                                                                  |
+| `created_at`       | timestamptz   |  no  | `now()`             | Fecha de alta                                                                            |
 
 ### `adicion_servicio`
 
 Adición de monto por imprevisto durante la ejecución, que el cliente acepta o rechaza.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `cotizacion_id` | uuid | no |  | FK → `cotizacion(id)` ON DELETE RESTRICT. Referencia a `cotizacion` |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE RESTRICT. Referencia a `aliado` |
-| `motivo` | text | no |  | ((char_length(motivo) >= 10) AND (char_length(motivo) <= 500)). Motivo |
-| `valor_mano_obra` | numeric(12,2) | no |  | (valor_mano_obra >= (0)::numeric). Importe: valor mano obra |
-| `valor_materiales` | numeric(12,2) | no |  | (valor_materiales >= (0)::numeric). Importe: valor materiales |
-| `tiempo_adicional_minutos` | integer | sí |  | (tiempo_adicional_minutos > 0). Tiempo adicional minutos |
-| `estado` | text | no | `'PENDIENTE'` | estado ∈ {PENDIENTE, ACEPTADA, RECHAZADA}. Estado |
-| `comentario_cliente` | text | sí |  | ((comentario_cliente IS NULL) OR (char_length(comentario_cliente) <= 500)). Comentario cliente |
-| `respondida_por` | uuid | sí |  | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario` |
-| `respondida_at` | timestamptz | sí |  | Fecha de respondida |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna                      | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                                   |
+| ---------------------------- | ------------- | :--: | --------------------- | ---------------------------------------------------------------------------------------------- |
+| `id`                       | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                              |
+| `tenant_id`                | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS       |
+| `solicitud_id`             | uuid          |  no  |                       | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                          |
+| `cotizacion_id`            | uuid          |  no  |                       | FK → `cotizacion(id)` ON DELETE RESTRICT. Referencia a `cotizacion`                       |
+| `aliado_id`                | uuid          |  no  |                       | FK → `aliado(id)` ON DELETE RESTRICT. Referencia a `aliado`                               |
+| `motivo`                   | text          |  no  |                       | ((char_length(motivo) >= 10) AND (char_length(motivo) <= 500)). Motivo                         |
+| `valor_mano_obra`          | numeric(12,2) |  no  |                       | (valor_mano_obra >= (0)::numeric). Importe: valor mano obra                                    |
+| `valor_materiales`         | numeric(12,2) |  no  |                       | (valor_materiales >= (0)::numeric). Importe: valor materiales                                  |
+| `tiempo_adicional_minutos` | integer       | sí |                       | (tiempo_adicional_minutos > 0). Tiempo adicional minutos                                       |
+| `estado`                   | text          |  no  | `'PENDIENTE'`       | estado ∈ {PENDIENTE, ACEPTADA, RECHAZADA}. Estado                                             |
+| `comentario_cliente`       | text          | sí |                       | ((comentario_cliente IS NULL) OR (char_length(comentario_cliente) <= 500)). Comentario cliente |
+| `respondida_por`           | uuid          | sí |                       | FK → `usuario(id)` ON DELETE SET NULL. Referencia a `usuario`                             |
+| `respondida_at`            | timestamptz   | sí |                       | Fecha de respondida                                                                            |
+| `created_at`               | timestamptz   |  no  | `now()`             | Fecha de alta                                                                                  |
 
 Restricciones de tabla: `ck_adicion_servicio_respuesta` — ((estado = 'PENDIENTE') = (respondida_at IS NULL)); `ck_adicion_servicio_total_positivo` — ((valor_mano_obra + valor_materiales) > (0)::numeric).
 
@@ -2410,35 +2401,35 @@ Restricciones de tabla: `ck_adicion_servicio_respuesta` — ((estado = 'PENDIENT
 
 Bitácora inmutable del servicio: transiciones de estado y eventos de ejecución, con hora de captura y evidencia.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `actor_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario` |
-| `tipo_evento` | text | no |  | Tipo evento |
-| `descripcion` | text | sí |  | Descripcion |
-| `timestamp` | timestamptz | no | `now()` | Timestamp |
-| `evidencia_ruta` | text | sí |  | Evidencia ruta |
-| `clave_idempotencia` | uuid | sí |  | Clave de idempotencia |
-| `ocurrido_en` | timestamptz | sí |  | Hora de captura del evento, tomada por el dispositivo |
-| `actor_rol` | text | sí | `app.user_role()` | Rol (vocabulario del claim) de quien originó el evento; NULL en filas previas a 0042 |
-| `correlation_id` | text | sí | `NULLIF(current_setting('app.correlation_id', true), '')` | X-Correlation-ID de la petición que originó el evento; NULL en filas previas a 0042 o sin petición HTTP |
+| Columna                | Tipo        | Nulo | Por omisión                                                | Restricciones y descripción                                                                               |
+| ---------------------- | ----------- | :--: | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `id`                 | uuid        |  no  | `gen_random_uuid()`                                       | PK. Identificador                                                                                          |
+| `tenant_id`          | uuid        |  no  |                                                             | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS                   |
+| `solicitud_id`       | uuid        |  no  |                                                             | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                                      |
+| `actor_id`           | uuid        |  no  |                                                             | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario`                                          |
+| `tipo_evento`        | text        |  no  |                                                             | Tipo evento                                                                                                |
+| `descripcion`        | text        | sí |                                                             | Descripcion                                                                                                |
+| `timestamp`          | timestamptz |  no  | `now()`                                                   | Timestamp                                                                                                  |
+| `evidencia_ruta`     | text        | sí |                                                             | Evidencia ruta                                                                                             |
+| `clave_idempotencia` | uuid        | sí |                                                             | Clave de idempotencia                                                                                      |
+| `ocurrido_en`        | timestamptz | sí |                                                             | Hora de captura del evento, tomada por el dispositivo                                                      |
+| `actor_rol`          | text        | sí | `app.user_role()`                                         | Rol (vocabulario del claim) de quien originó el evento; NULL en filas previas a 0042                      |
+| `correlation_id`     | text        | sí | `NULLIF(current_setting('app.correlation_id', true), '')` | X-Correlation-ID de la petición que originó el evento; NULL en filas previas a 0042 o sin petición HTTP |
 
 ### `calificacion`
 
 Calificación bidireccional entre cliente y aliado al cerrar el servicio.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `autor_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario` |
-| `destinatario_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario` |
-| `puntaje` | integer | no |  | ((puntaje >= 1) AND (puntaje <= 5)) NOT VALID. Puntaje |
-| `comentario` | text | sí |  | ((comentario IS NULL) OR (char_length(comentario) <= 500)) NOT VALID. Comentario |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna             | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ------------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`              | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`       | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `solicitud_id`    | uuid        |  no  |                       | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                    |
+| `autor_id`        | uuid        |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario`                        |
+| `destinatario_id` | uuid        |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario`                        |
+| `puntaje`         | integer     |  no  |                       | ((puntaje >= 1) AND (puntaje <= 5)) NOT VALID. Puntaje                                   |
+| `comentario`      | text        | sí |                       | ((comentario IS NULL) OR (char_length(comentario) <= 500)) NOT VALID. Comentario         |
+| `created_at`      | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
 
 Restricciones de tabla: `ck_calificacion_actores_distintos` — (autor_id <> destinatario_id) NOT VALID.
 
@@ -2448,85 +2439,85 @@ Restricciones de tabla: `ck_calificacion_actores_distintos` — (autor_id <> des
 
 Mensaje de la conversación de un servicio entre cliente y aliado.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud` |
-| `remitente_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario` |
-| `contenido` | text | no |  | Contenido |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `leido_at` | timestamptz | sí |  | Fecha de leido |
-| `clave_idempotencia` | uuid | sí |  | Clave de idempotencia |
+| Columna                | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ---------------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`                 | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`          | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `solicitud_id`       | uuid        |  no  |                       | FK → `solicitud(id)` ON DELETE CASCADE. Referencia a `solicitud`                    |
+| `remitente_id`       | uuid        |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario`                        |
+| `contenido`          | text        |  no  |                       | Contenido                                                                                |
+| `created_at`         | timestamptz |  no  | `now()`             | Fecha de alta                                                                            |
+| `leido_at`           | timestamptz | sí |                       | Fecha de leido                                                                           |
+| `clave_idempotencia` | uuid        | sí |                       | Clave de idempotencia                                                                    |
 
 ### `consulta_conversacion`
 
 Registro inmutable de las consultas administrativas a una conversación.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud` |
-| `actor_id` | uuid | no |  | Actor id |
-| `actor_rol` | text | no |  | Actor rol |
-| `motivo` | text | no |  | ((char_length(motivo) >= 5) AND (char_length(motivo) <= 500)). Motivo |
-| `queja_ref` | text | sí |  | ((queja_ref IS NULL) OR ((char_length(queja_ref) >= 1) AND (char_length(queja_ref) <= 100))). Queja ref |
-| `mensajes_vistos` | integer | no |  | (mensajes_vistos >= 0). Mensajes vistos |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna             | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                                            |
+| ------------------- | ----------- | :--: | --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `id`              | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                                       |
+| `tenant_id`       | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS               |
+| `solicitud_id`    | uuid        |  no  |                       | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud`                                  |
+| `actor_id`        | uuid        |  no  |                       | Actor id                                                                                                |
+| `actor_rol`       | text        |  no  |                       | Actor rol                                                                                               |
+| `motivo`          | text        |  no  |                       | ((char_length(motivo) >= 5) AND (char_length(motivo) <= 500)). Motivo                                   |
+| `queja_ref`       | text        | sí |                       | ((queja_ref IS NULL) OR ((char_length(queja_ref) >= 1) AND (char_length(queja_ref) <= 100))). Queja ref |
+| `mensajes_vistos` | integer     |  no  |                       | (mensajes_vistos >= 0). Mensajes vistos                                                                 |
+| `correlation_id`  | text        | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                               |
+| `created_at`      | timestamptz |  no  | `now()`             | Fecha de alta                                                                                           |
 
 ### `notificacion`
 
 Notificación a un usuario, incluida la oferta de despacho a cada aliado (una por aliado y solicitud).
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `usuario_id` | uuid | no |  | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario` |
-| `tipo` | text | no |  | Tipo |
-| `canal` | text | no |  | Canal |
-| `payload` | jsonb | sí |  | Payload |
-| `enviado_at` | timestamptz | no | `now()` | Fecha de enviado |
-| `leido_at` | timestamptz | sí |  | Fecha de leido |
-| `clave_evento` | text | sí |  | Clave evento |
+| Columna          | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ---------------- | ----------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`           | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`    | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `usuario_id`   | uuid        |  no  |                       | FK → `usuario(id)` ON DELETE CASCADE. Referencia a `usuario`                        |
+| `tipo`         | text        |  no  |                       | Tipo                                                                                     |
+| `canal`        | text        |  no  |                       | Canal                                                                                    |
+| `payload`      | jsonb       | sí |                       | Payload                                                                                  |
+| `enviado_at`   | timestamptz |  no  | `now()`             | Fecha de enviado                                                                         |
+| `leido_at`     | timestamptz | sí |                       | Fecha de leido                                                                           |
+| `clave_evento` | text        | sí |                       | Clave evento                                                                             |
 
 ### `queja`
 
 Queja de un usuario sobre un servicio.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud` |
-| `cliente_id` | uuid | no |  | FK → `cliente(id)` ON DELETE RESTRICT. Referencia a `cliente` |
-| `motivo` | text | no |  | motivo ∈ {CALIDAD_DEL_SERVICIO, INCUMPLIMIENTO_DE_HORARIO, COBRO_INDEBIDO, TRATO_INADECUADO, DANO_A_LA_PROPIEDAD, OTRO}. Motivo |
-| `descripcion` | text | no |  | ((descripcion = btrim(descripcion)) AND ((char_length(descripcion) >= 10) AND (char_length(descripcion) <= 1000))). Descripcion |
-| `estado` | text | no | `'ABIERTA'` | estado ∈ {ABIERTA, EN_REVISION, RESUELTA, RECHAZADA}. Estado |
-| `respuesta` | text | sí |  | ((respuesta IS NULL) OR ((char_length(respuesta) >= 5) AND (char_length(respuesta) <= 1000))). Respuesta |
-| `creado_por` | uuid | no |  | Creado por |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `updated_at` | timestamptz | no | `now()` | Fecha de última modificación |
+| Columna            | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                                                                     |
+| ------------------ | ----------- | :--: | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`             | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                                                                |
+| `tenant_id`      | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS                                        |
+| `solicitud_id`   | uuid        |  no  |                       | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud`                                                           |
+| `cliente_id`     | uuid        |  no  |                       | FK → `cliente(id)` ON DELETE RESTRICT. Referencia a `cliente`                                                               |
+| `motivo`         | text        |  no  |                       | motivo ∈ {CALIDAD_DEL_SERVICIO, INCUMPLIMIENTO_DE_HORARIO, COBRO_INDEBIDO, TRATO_INADECUADO, DANO_A_LA_PROPIEDAD, OTRO}. Motivo |
+| `descripcion`    | text        |  no  |                       | ((descripcion = btrim(descripcion)) AND ((char_length(descripcion) >= 10) AND (char_length(descripcion) <= 1000))). Descripcion  |
+| `estado`         | text        |  no  | `'ABIERTA'`         | estado ∈ {ABIERTA, EN_REVISION, RESUELTA, RECHAZADA}. Estado                                                                    |
+| `respuesta`      | text        | sí |                       | ((respuesta IS NULL) OR ((char_length(respuesta) >= 5) AND (char_length(respuesta) <= 1000))). Respuesta                         |
+| `creado_por`     | uuid        |  no  |                       | Creado por                                                                                                                       |
+| `correlation_id` | text        | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                                                        |
+| `created_at`     | timestamptz |  no  | `now()`             | Fecha de alta                                                                                                                    |
+| `updated_at`     | timestamptz |  no  | `now()`             | Fecha de última modificación                                                                                                   |
 
 ### `queja_transicion`
 
 Historial inmutable de las transiciones de estado de una queja.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
-| `queja_id` | uuid | no |  | FK → `queja(id)` ON DELETE RESTRICT. Referencia a `queja` |
-| `estado_anterior` | text | sí |  | estado_anterior ∈ {ABIERTA, EN_REVISION, RESUELTA, RECHAZADA}. Estado anterior |
-| `estado_nuevo` | text | no |  | estado_nuevo ∈ {ABIERTA, EN_REVISION, RESUELTA, RECHAZADA}. Estado nuevo |
-| `actor_id` | uuid | no |  | Actor id |
-| `actor_rol` | text | no |  | Actor rol |
-| `nota` | text | sí |  | ((nota IS NULL) OR ((char_length(nota) >= 5) AND (char_length(nota) <= 1000))). Nota |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna             | Tipo        | Nulo | Por omisión          | Restricciones y descripción                                                              |
+| ------------------- | ----------- | :--: | --------------------- | ----------------------------------------------------------------------------------------- |
+| `id`              | uuid        |  no  | `gen_random_uuid()` | PK. Identificador                                                                         |
+| `tenant_id`       | uuid        |  no  |                       | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
+| `queja_id`        | uuid        |  no  |                       | FK → `queja(id)` ON DELETE RESTRICT. Referencia a `queja`                            |
+| `estado_anterior` | text        | sí |                       | estado_anterior ∈ {ABIERTA, EN_REVISION, RESUELTA, RECHAZADA}. Estado anterior           |
+| `estado_nuevo`    | text        |  no  |                       | estado_nuevo ∈ {ABIERTA, EN_REVISION, RESUELTA, RECHAZADA}. Estado nuevo                 |
+| `actor_id`        | uuid        |  no  |                       | Actor id                                                                                  |
+| `actor_rol`       | text        |  no  |                       | Actor rol                                                                                 |
+| `nota`            | text        | sí |                       | ((nota IS NULL) OR ((char_length(nota) >= 5) AND (char_length(nota) <= 1000))). Nota      |
+| `correlation_id`  | text        | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                 |
+| `created_at`      | timestamptz |  no  | `now()`             | Fecha de alta                                                                             |
 
 ## Pagos
 
@@ -2534,61 +2525,61 @@ Historial inmutable de las transiciones de estado de una queja.
 
 Pago de un cliente por una cotización; hoy simulado, con clave de idempotencia y huella del cuerpo.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `cotizacion_id` | uuid | no |  | FK → `cotizacion(id)` ON DELETE RESTRICT. Referencia a `cotizacion` |
-| `cliente_id` | uuid | no |  | FK → `cliente(id)` ON DELETE RESTRICT. Referencia a `cliente` |
-| `monto` | numeric(12,2) | no |  | (monto > (0)::numeric). Importe: monto |
-| `moneda` | text | no | `'COP'` | Moneda |
-| `estado` | text | no |  | estado ∈ {APROBADO, RECHAZADO, PENDIENTE}. Estado |
-| `proveedor` | text | no |  | Proveedor |
-| `simulado` | boolean | no | `true` | Simulado |
-| `referencia_proveedor` | text | no |  | Referencia proveedor |
-| `motivo` | text | sí |  | Motivo |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `clave_idempotencia` | uuid | sí |  | Clave de idempotencia |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `huella_idempotencia` | text | sí |  | sha256 hex del cuerpo canónico del cobro (cotización y escenario); NULL en filas previas a 0041 o sin clave de idempotencia |
-| `actor_usuario_id` | uuid | sí | `app.user_id()` | Usuario que realizó el pago (app.user_id() de la transacción); NULL en filas previas a 0042 |
-| `actor_rol` | text | sí | `app.user_role()` | Rol del usuario que realizó el pago; NULL en filas previas a 0042 |
+| Columna                  | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                                                                  |
+| ------------------------ | ------------- | :--: | --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                                                             |
+| `tenant_id`            | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS                                      |
+| `cotizacion_id`        | uuid          |  no  |                       | FK → `cotizacion(id)` ON DELETE RESTRICT. Referencia a `cotizacion`                                                      |
+| `cliente_id`           | uuid          |  no  |                       | FK → `cliente(id)` ON DELETE RESTRICT. Referencia a `cliente`                                                            |
+| `monto`                | numeric(12,2) |  no  |                       | (monto > (0)::numeric). Importe: monto                                                                                        |
+| `moneda`               | text          |  no  | `'COP'`             | Moneda                                                                                                                        |
+| `estado`               | text          |  no  |                       | estado ∈ {APROBADO, RECHAZADO, PENDIENTE}. Estado                                                                            |
+| `proveedor`            | text          |  no  |                       | Proveedor                                                                                                                     |
+| `simulado`             | boolean       |  no  | `true`              | Simulado                                                                                                                      |
+| `referencia_proveedor` | text          |  no  |                       | Referencia proveedor                                                                                                          |
+| `motivo`               | text          | sí |                       | Motivo                                                                                                                        |
+| `correlation_id`       | text          | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                                                     |
+| `clave_idempotencia`   | uuid          | sí |                       | Clave de idempotencia                                                                                                         |
+| `created_at`           | timestamptz   |  no  | `now()`             | Fecha de alta                                                                                                                 |
+| `huella_idempotencia`  | text          | sí |                       | sha256 hex del cuerpo canónico del cobro (cotización y escenario); NULL en filas previas a 0041 o sin clave de idempotencia |
+| `actor_usuario_id`     | uuid          | sí | `app.user_id()`     | Usuario que realizó el pago (app.user_id() de la transacción); NULL en filas previas a 0042                                 |
+| `actor_rol`            | text          | sí | `app.user_role()`   | Rol del usuario que realizó el pago; NULL en filas previas a 0042                                                            |
 
 ### `transaccion_evento`
 
 Registro inmutable de los eventos de una transacción de pago.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
-| `pago_id` | uuid | no |  | FK → `pago(id)` ON DELETE RESTRICT. Referencia a `pago` |
-| `tipo` | text | no |  | (tipo ~ '^[A-Z][A-Z_]*$'). Tipo |
-| `estado` | text | no |  | Estado |
-| `monto` | numeric(12,2) | no |  | Importe: monto |
-| `moneda` | text | no |  | Moneda |
-| `actor_id` | uuid | no |  | Actor id |
-| `actor_rol` | text | no |  | Actor rol |
-| `correlation_id` | text | sí |  | `X-Correlation-ID` de la petición que originó la fila |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna            | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                              |
+| ------------------ | ------------- | :--: | --------------------- | ----------------------------------------------------------------------------------------- |
+| `id`             | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                         |
+| `tenant_id`      | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE RESTRICT. Tenant propietario; base del aislamiento por RLS |
+| `pago_id`        | uuid          |  no  |                       | FK → `pago(id)` ON DELETE RESTRICT. Referencia a `pago`                              |
+| `tipo`           | text          |  no  |                       | (tipo ~ '^[A-Z][A-Z_]*$'). Tipo                                                           |
+| `estado`         | text          |  no  |                       | Estado                                                                                    |
+| `monto`          | numeric(12,2) |  no  |                       | Importe: monto                                                                            |
+| `moneda`         | text          |  no  |                       | Moneda                                                                                    |
+| `actor_id`       | uuid          |  no  |                       | Actor id                                                                                  |
+| `actor_rol`      | text          |  no  |                       | Actor rol                                                                                 |
+| `correlation_id` | text          | sí |                       | `X-Correlation-ID` de la petición que originó la fila                                 |
+| `created_at`     | timestamptz   |  no  | `now()`             | Fecha de alta                                                                             |
 
 ### `retencion_fondos`
 
 Retención de fondos de un pago hasta que finaliza el servicio.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `pago_id` | uuid | no |  | FK → `pago(id)` ON DELETE RESTRICT. Referencia a `pago` |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud` |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE RESTRICT. Referencia a `aliado` |
-| `monto` | numeric(12,2) | no |  | (monto > (0)::numeric). Importe: monto |
-| `moneda` | text | no | `'COP'` | Moneda |
-| `estado` | text | no | `'RETENIDA'` | estado ∈ {RETENIDA, LIBERADA}. Estado |
-| `simulada` | boolean | no | `true` | Simulada |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
-| `liberada_at` | timestamptz | sí |  | Fecha de liberada |
+| Columna          | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                             |
+| ---------------- | ------------- | :--: | --------------------- | ---------------------------------------------------------------------------------------- |
+| `id`           | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                        |
+| `tenant_id`    | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `pago_id`      | uuid          |  no  |                       | FK → `pago(id)` ON DELETE RESTRICT. Referencia a `pago`                             |
+| `solicitud_id` | uuid          |  no  |                       | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud`                   |
+| `aliado_id`    | uuid          |  no  |                       | FK → `aliado(id)` ON DELETE RESTRICT. Referencia a `aliado`                         |
+| `monto`        | numeric(12,2) |  no  |                       | (monto > (0)::numeric). Importe: monto                                                   |
+| `moneda`       | text          |  no  | `'COP'`             | Moneda                                                                                   |
+| `estado`       | text          |  no  | `'RETENIDA'`        | estado ∈ {RETENIDA, LIBERADA}. Estado                                                   |
+| `simulada`     | boolean       |  no  | `true`              | Simulada                                                                                 |
+| `created_at`   | timestamptz   |  no  | `now()`             | Fecha de alta                                                                            |
+| `liberada_at`  | timestamptz   | sí |                       | Fecha de liberada                                                                        |
 
 Restricciones de tabla: `ck_retencion_liberada_fecha` — ((estado = 'LIBERADA') = (liberada_at IS NOT NULL)).
 
@@ -2596,32 +2587,32 @@ Restricciones de tabla: `ck_retencion_liberada_fecha` — ((estado = 'LIBERADA')
 
 Comisión vigente de un tenant sobre los servicios.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `tenant_id` | uuid | no |  | PK; FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `porcentaje` | numeric(5,2) | no |  | ((porcentaje >= (0)::numeric) AND (porcentaje <= (100)::numeric)). Porcentaje |
-| `updated_at` | timestamptz | no | `now()` | Fecha de última modificación |
-| `updated_by` | uuid | sí |  | Updated by |
+| Columna        | Tipo         | Nulo | Por omisión | Restricciones y descripción                                                                 |
+| -------------- | ------------ | :--: | ------------ | -------------------------------------------------------------------------------------------- |
+| `tenant_id`  | uuid         |  no  |              | PK; FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `porcentaje` | numeric(5,2) |  no  |              | ((porcentaje >= (0)::numeric) AND (porcentaje <= (100)::numeric)). Porcentaje                |
+| `updated_at` | timestamptz  |  no  | `now()`    | Fecha de última modificación                                                               |
+| `updated_by` | uuid         | sí |              | Updated by                                                                                   |
 
 ### `liquidacion`
 
 Liquidación al aliado por un servicio, con comisión y neto.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `retencion_id` | uuid | no |  | FK → `retencion_fondos(id)` ON DELETE RESTRICT. Referencia a `retencion_fondos` |
-| `pago_id` | uuid | no |  | FK → `pago(id)` ON DELETE RESTRICT. Referencia a `pago` |
-| `solicitud_id` | uuid | no |  | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud` |
-| `aliado_id` | uuid | no |  | FK → `aliado(id)` ON DELETE RESTRICT. Referencia a `aliado` |
-| `monto_bruto` | numeric(12,2) | no |  | (monto_bruto > (0)::numeric). Importe: monto bruto |
-| `porcentaje_comision` | numeric(5,2) | no |  | ((porcentaje_comision >= (0)::numeric) AND (porcentaje_comision <= (100)::numeric)). Porcentaje comision |
-| `comision` | numeric(12,2) | no |  | (comision >= (0)::numeric). Comision |
-| `monto_neto` | numeric(12,2) | no |  | (monto_neto >= (0)::numeric). Importe: monto neto |
-| `moneda` | text | no | `'COP'` | Moneda |
-| `simulada` | boolean | no | `true` | Simulada |
-| `created_at` | timestamptz | no | `now()` | Fecha de alta |
+| Columna                 | Tipo          | Nulo | Por omisión          | Restricciones y descripción                                                                             |
+| ----------------------- | ------------- | :--: | --------------------- | -------------------------------------------------------------------------------------------------------- |
+| `id`                  | uuid          |  no  | `gen_random_uuid()` | PK. Identificador                                                                                        |
+| `tenant_id`           | uuid          |  no  |                       | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS                 |
+| `retencion_id`        | uuid          |  no  |                       | FK → `retencion_fondos(id)` ON DELETE RESTRICT. Referencia a `retencion_fondos`                     |
+| `pago_id`             | uuid          |  no  |                       | FK → `pago(id)` ON DELETE RESTRICT. Referencia a `pago`                                             |
+| `solicitud_id`        | uuid          |  no  |                       | FK → `solicitud(id)` ON DELETE RESTRICT. Referencia a `solicitud`                                   |
+| `aliado_id`           | uuid          |  no  |                       | FK → `aliado(id)` ON DELETE RESTRICT. Referencia a `aliado`                                         |
+| `monto_bruto`         | numeric(12,2) |  no  |                       | (monto_bruto > (0)::numeric). Importe: monto bruto                                                       |
+| `porcentaje_comision` | numeric(5,2)  |  no  |                       | ((porcentaje_comision >= (0)::numeric) AND (porcentaje_comision <= (100)::numeric)). Porcentaje comision |
+| `comision`            | numeric(12,2) |  no  |                       | (comision >= (0)::numeric). Comision                                                                     |
+| `monto_neto`          | numeric(12,2) |  no  |                       | (monto_neto >= (0)::numeric). Importe: monto neto                                                        |
+| `moneda`              | text          |  no  | `'COP'`             | Moneda                                                                                                   |
+| `simulada`            | boolean       |  no  | `true`              | Simulada                                                                                                 |
+| `created_at`          | timestamptz   |  no  | `now()`             | Fecha de alta                                                                                            |
 
 Restricciones de tabla: `ck_liquidacion_suma` — (monto_bruto = (comision + monto_neto)).
 
@@ -2631,473 +2622,46 @@ Restricciones de tabla: `ck_liquidacion_suma` — (monto_bruto = (comision + mon
 
 Outbox transaccional de Core: eventos de negocio pendientes de publicar en Kafka (ADR-0029).
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `id` | uuid | no |  | PK. Identificador |
-| `tenant_id` | uuid | no |  | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
-| `tipo_evento` | text | no |  | (tipo_evento ~ '^[A-Z][A-Za-z]*$'). Tipo evento |
-| `version_evento` | smallint | no |  | (version_evento >= 1). Version evento |
-| `topico` | text | no |  | Topico |
-| `clave_particion` | uuid | no |  | Clave particion |
-| `id_agregado` | uuid | no |  | Id agregado |
-| `correlation_id` | uuid | no |  | `X-Correlation-ID` de la petición que originó la fila |
-| `payload` | jsonb | no |  | Payload |
-| `fecha_ocurrencia` | timestamptz | no | `now()` | Fecha de ocurrencia |
-| `fecha_publicacion` | timestamptz | sí |  | Fecha de publicacion |
-| `intentos` | integer | no | `0` | Intentos |
-| `ultimo_error` | text | sí |  | Ultimo error |
+| Columna               | Tipo        | Nulo | Por omisión | Restricciones y descripción                                                             |
+| --------------------- | ----------- | :--: | ------------ | ---------------------------------------------------------------------------------------- |
+| `id`                | uuid        |  no  |              | PK. Identificador                                                                        |
+| `tenant_id`         | uuid        |  no  |              | FK → `tenant(id)` ON DELETE CASCADE. Tenant propietario; base del aislamiento por RLS |
+| `tipo_evento`       | text        |  no  |              | (tipo_evento ~ '^[A-Z][A-Za-z]*$'). Tipo evento                                          |
+| `version_evento`    | smallint    |  no  |              | (version_evento >= 1). Version evento                                                    |
+| `topico`            | text        |  no  |              | Topico                                                                                   |
+| `clave_particion`   | uuid        |  no  |              | Clave particion                                                                          |
+| `id_agregado`       | uuid        |  no  |              | Id agregado                                                                              |
+| `correlation_id`    | uuid        |  no  |              | `X-Correlation-ID` de la petición que originó la fila                                |
+| `payload`           | jsonb       |  no  |              | Payload                                                                                  |
+| `fecha_ocurrencia`  | timestamptz |  no  | `now()`    | Fecha de ocurrencia                                                                      |
+| `fecha_publicacion` | timestamptz | sí |              | Fecha de publicacion                                                                     |
+| `intentos`          | integer     |  no  | `0`        | Intentos                                                                                 |
+| `ultimo_error`      | text        | sí |              | Ultimo error                                                                             |
 
 ### `schema_migrations`
 
 Control de migraciones aplicadas.
 
-| Columna | Tipo | Nulo | Por omisión | Restricciones y descripción |
-|---|---|:---:|---|---|
-| `version` | varchar(50) | no |  | PK. Version |
-| `description` | text | no |  | Description |
-| `applied_at` | timestamptz | no | `now()` | Fecha de applied |
+| Columna         | Tipo        | Nulo | Por omisión | Restricciones y descripción |
+| --------------- | ----------- | :--: | ------------ | ---------------------------- |
+| `version`     | varchar(50) |  no  |              | PK. Version                  |
+| `description` | text        |  no  |              | Description                  |
+| `applied_at`  | timestamptz |  no  | `now()`    | Fecha de applied             |
 
 ---
 
-# 9. Data Warehouse
-
-## 9.1 Objetivo
-
-El Data Warehouse se utiliza para análisis histórico y BI sin degradar el OLTP.
-
-Preguntas que debe responder:
-
-- solicitudes por tenant, categoría, zona y periodo;
-- tiempo medio de asignación;
-- tasa de aceptación/rechazo;
-- aliados con mayor volumen y tasa de cumplimiento;
-- valores cotizados y pagados;
-- conversión solicitud → asignación → finalización;
-- comportamiento de disponibilidad;
-- desempeño por tenant y zona;
-- cotizaciones fuera del rango de referencia por período (RF-23);
-- satisfacción por aliado, categoría y zona a partir de las calificaciones.
-
-## 9.2 Flujo
-
-```mermaid
-flowchart LR
-    OLTP[(Supabase OLTP\nMotor PostgreSQL)]
-    CDC[CDC / extracción incremental]
-    STG[Staging]
-    TR[Transformación / calidad]
-    DWH[(Data Warehouse)]
-    SEM[Semantic / Metrics Layer]
-    BI[Dashboards / Analytics]
-
-    OLTP --> CDC --> STG --> TR --> DWH --> SEM --> BI
-```
-
-Principios:
-
-- el DW no escribe en OLTP;
-- consistencia eventual;
-- claves sustitutas en dimensiones;
-- historial cuando sea relevante;
-- PII minimizada;
-- controles de calidad antes de publicar hechos.
-
-## 9.3 Modelo dimensional
-
-```mermaid
-erDiagram
-    DIM_FECHA ||--o{ FACT_SOLICITUD : fecha
-    DIM_TENANT ||--o{ FACT_SOLICITUD : tenant
-    DIM_USUARIO ||--o{ FACT_SOLICITUD : cliente
-    DIM_CATEGORIA ||--o{ FACT_SOLICITUD : categoria
-    DIM_ZONA ||--o{ FACT_SOLICITUD : zona
-
-    DIM_FECHA ||--o{ FACT_COTIZACION : fecha
-    DIM_TENANT ||--o{ FACT_COTIZACION : tenant
-    DIM_ALIADO ||--o{ FACT_COTIZACION : aliado
-    DIM_CATEGORIA ||--o{ FACT_COTIZACION : categoria
-
-    DIM_FECHA ||--o{ FACT_ASIGNACION : fecha
-    DIM_TENANT ||--o{ FACT_ASIGNACION : tenant
-    DIM_ALIADO ||--o{ FACT_ASIGNACION : aliado
-    DIM_CATEGORIA ||--o{ FACT_ASIGNACION : categoria
-    DIM_ZONA ||--o{ FACT_ASIGNACION : zona
-
-    DIM_FECHA ||--o{ FACT_PAGO : fecha
-    DIM_TENANT ||--o{ FACT_PAGO : tenant
-
-    DIM_FECHA ||--o{ FACT_CALIFICACION : fecha
-    DIM_TENANT ||--o{ FACT_CALIFICACION : tenant
-    DIM_ALIADO ||--o{ FACT_CALIFICACION : aliado
-    DIM_CATEGORIA ||--o{ FACT_CALIFICACION : categoria
-
-    DIM_FECHA {
-      int fecha_key PK
-      date fecha
-      int anio
-      int mes
-      int dia
-      int trimestre
-      int dia_semana
-    }
-
-    DIM_TENANT {
-      bigint tenant_key PK
-      uuid tenant_id_natural
-      string nombre
-      string estado
-    }
-
-    DIM_USUARIO {
-      bigint usuario_key PK
-      uuid usuario_id_natural
-      string tipo_usuario
-      string estado
-    }
-
-    DIM_ALIADO {
-      bigint aliado_key PK
-      uuid aliado_id_natural
-      string nivel_verificacion
-      decimal calificacion
-      string estado
-    }
-
-    DIM_CATEGORIA {
-      bigint categoria_key PK
-      uuid categoria_id_natural
-      string nombre
-    }
-
-    DIM_ZONA {
-      bigint zona_key PK
-      uuid zona_id_natural
-      string nombre
-    }
-
-    FACT_SOLICITUD {
-      bigint fact_solicitud_key PK
-      uuid solicitud_id DD
-      int fecha_key FK
-      bigint tenant_key FK
-      bigint usuario_key FK
-      bigint categoria_key FK
-      bigint zona_key FK
-      string estado
-      decimal horas_hasta_asignacion
-      int cantidad
-    }
-
-    FACT_COTIZACION {
-      bigint fact_cotizacion_key PK
-      uuid cotizacion_id DD
-      int fecha_key FK
-      bigint tenant_key FK
-      bigint aliado_key FK
-      bigint categoria_key FK
-      decimal valor
-      decimal valor_mano_obra
-      decimal valor_materiales
-      boolean fuera_de_rango
-      string estado
-      int cantidad
-    }
-
-    FACT_CALIFICACION {
-      bigint fact_calificacion_key PK
-      uuid calificacion_id DD
-      int fecha_key FK
-      bigint tenant_key FK
-      bigint aliado_key FK
-      bigint categoria_key FK
-      string rol_autor
-      smallint puntaje
-      int cantidad
-    }
-
-    FACT_ASIGNACION {
-      bigint fact_asignacion_key PK
-      uuid asignacion_id DD
-      int fecha_key FK
-      bigint tenant_key FK
-      bigint aliado_key FK
-      bigint categoria_key FK
-      bigint zona_key FK
-      string estado
-      decimal segundos_respuesta
-      int cantidad
-    }
-
-    FACT_PAGO {
-      bigint fact_pago_key PK
-      uuid pago_id DD
-      int fecha_key FK
-      bigint tenant_key FK
-      decimal valor
-      string estado
-      int cantidad
-    }
-```
-
-`DD` indica dimensión degenerada: se conserva el identificador operacional en la tabla de hechos sin crear una dimensión adicional.
-
----
-
-## 9.4 Flujo total de datos
-
-```mermaid
-flowchart LR
-    F[Flutter]
-    G[API Gateway]
-    S[Servicios de negocio]
-    O[(OLTP por dominio)]
-    C[CDC / ELT]
-    W[(Data Warehouse)]
-    B[BI / Analytics]
-
-    F --> G --> S --> O
-    O -.incremental.-> C --> W --> B
-```
-
-La arquitectura operacional y la plataforma analítica están conectadas, pero desacopladas: el usuario no espera una carga de DW para completar una solicitud, una cotización o una asignación.
-
----
-
-# 10. Modelo dimensional
-
-El modelo dimensional organiza la información analítica en tablas de hechos y dimensiones.
-Se mantiene separado del OLTP para evitar que las consultas históricas y agregaciones degraden
-el flujo transaccional de la aplicación.
-
-## 10.1 Grano de las tablas de hechos
-
-| Hecho | Grano |
-|---|---|
-| `fact_solicitud` | una fila por solicitud |
-| `fact_cotizacion` | una fila por cotización emitida |
-| `fact_asignacion` | una fila por intento/registro de asignación |
-| `fact_calificacion` | una fila por calificación emitida, es decir dos por servicio cerrado |
-| `fact_pago` | una fila por transacción de pago |
-
-Definir el grano antes de las métricas evita duplicidades y sumas incorrectas.
-
----
-
-## 10.2 Dimensiones lentamente cambiantes
-
-Recomendación:
-
-- `dim_tenant`: SCD Tipo 2 si se requiere histórico de estado/configuración relevante.
-- `dim_aliado`: SCD Tipo 2 para nivel de verificación, estado y segmentos analíticos.
-- `dim_categoria`: Tipo 1 para correcciones simples; Tipo 2 si cambios semánticos deben conservar historia.
-- `dim_zona`: Tipo 2 si las delimitaciones cambian y deben analizarse históricamente.
-
-Campos típicos SCD2:
-
-```text
-valid_from
-valid_to
-is_current
-```
-
----
-
-## 10.3 Métricas analíticas
-
-| KPI | Definición |
-|---|---|
-| Solicitudes creadas | `COUNT(fact_solicitud)` |
-| Tasa de finalización | finalizadas / creadas |
-| Tiempo medio de asignación | `AVG(horas_hasta_asignacion)` |
-| Cotización promedio | `AVG(fact_cotizacion.valor)` |
-| Tasa de aceptación | cotizaciones/asignaciones aceptadas sobre total correspondiente |
-| Tiempo de respuesta de aliado | `AVG(segundos_respuesta)` |
-| GMV / valor procesado | suma de pagos aprobados |
-| Tasa de pago aprobado | pagos aprobados / intentos |
-| Solicitudes por zona | solicitudes agrupadas por `dim_zona` |
-| Solicitudes por categoría | solicitudes agrupadas por `dim_categoria` |
-| Cotizaciones fuera de rango | `COUNT(fact_cotizacion WHERE fuera_de_rango)` sobre total, por período (RF-23) |
-| Calificación media del aliado | `AVG(fact_calificacion.puntaje WHERE rol_autor = 'CLIENTE')` |
-| Calificación media del cliente | `AVG(fact_calificacion.puntaje WHERE rol_autor = 'ALIADO')` |
-
----
-
-# 11. DDL del Data Warehouse
-
-```sql
-CREATE SCHEMA IF NOT EXISTS dw;
-
-CREATE TABLE dw.dim_fecha (
-    fecha_key INTEGER PRIMARY KEY,
-    fecha DATE NOT NULL UNIQUE,
-    anio SMALLINT NOT NULL,
-    trimestre SMALLINT NOT NULL,
-    mes SMALLINT NOT NULL,
-    dia SMALLINT NOT NULL,
-    dia_semana SMALLINT NOT NULL
-);
-
-CREATE TABLE dw.dim_tenant (
-    tenant_key BIGSERIAL PRIMARY KEY,
-    tenant_id_natural UUID NOT NULL,
-    nombre VARCHAR(150) NOT NULL,
-    estado VARCHAR(20),
-    valid_from TIMESTAMPTZ NOT NULL,
-    valid_to TIMESTAMPTZ,
-    is_current BOOLEAN NOT NULL DEFAULT TRUE
-);
-
-CREATE TABLE dw.dim_usuario (
-    usuario_key BIGSERIAL PRIMARY KEY,
-    usuario_id_natural UUID NOT NULL,
-    tipo_usuario VARCHAR(30),
-    estado VARCHAR(20),
-    valid_from TIMESTAMPTZ NOT NULL,
-    valid_to TIMESTAMPTZ,
-    is_current BOOLEAN NOT NULL DEFAULT TRUE
-);
-
-CREATE TABLE dw.dim_aliado (
-    aliado_key BIGSERIAL PRIMARY KEY,
-    aliado_id_natural UUID NOT NULL,
-    nivel_verificacion VARCHAR(30),
-    calificacion NUMERIC(3,2),
-    estado VARCHAR(30),
-    valid_from TIMESTAMPTZ NOT NULL,
-    valid_to TIMESTAMPTZ,
-    is_current BOOLEAN NOT NULL DEFAULT TRUE
-);
-
-CREATE TABLE dw.dim_categoria (
-    categoria_key BIGSERIAL PRIMARY KEY,
-    categoria_id_natural UUID NOT NULL,
-    nombre VARCHAR(100) NOT NULL,
-    valid_from TIMESTAMPTZ NOT NULL,
-    valid_to TIMESTAMPTZ,
-    is_current BOOLEAN NOT NULL DEFAULT TRUE
-);
-
-CREATE TABLE dw.dim_zona (
-    zona_key BIGSERIAL PRIMARY KEY,
-    zona_id_natural UUID NOT NULL,
-    nombre VARCHAR(120) NOT NULL,
-    valid_from TIMESTAMPTZ NOT NULL,
-    valid_to TIMESTAMPTZ,
-    is_current BOOLEAN NOT NULL DEFAULT TRUE
-);
-
-CREATE TABLE dw.fact_solicitud (
-    fact_solicitud_key BIGSERIAL PRIMARY KEY,
-    solicitud_id UUID NOT NULL,
-    fecha_key INTEGER NOT NULL REFERENCES dw.dim_fecha(fecha_key),
-    tenant_key BIGINT NOT NULL REFERENCES dw.dim_tenant(tenant_key),
-    usuario_key BIGINT NOT NULL REFERENCES dw.dim_usuario(usuario_key),
-    categoria_key BIGINT NOT NULL REFERENCES dw.dim_categoria(categoria_key),
-    zona_key BIGINT NOT NULL REFERENCES dw.dim_zona(zona_key),
-    estado VARCHAR(30) NOT NULL,
-    horas_hasta_asignacion NUMERIC(12,2),
-    cantidad INTEGER NOT NULL DEFAULT 1
-);
-
-CREATE TABLE dw.fact_cotizacion (
-    fact_cotizacion_key BIGSERIAL PRIMARY KEY,
-    cotizacion_id UUID NOT NULL,
-    fecha_key INTEGER NOT NULL REFERENCES dw.dim_fecha(fecha_key),
-    tenant_key BIGINT NOT NULL REFERENCES dw.dim_tenant(tenant_key),
-    aliado_key BIGINT NOT NULL REFERENCES dw.dim_aliado(aliado_key),
-    categoria_key BIGINT NOT NULL REFERENCES dw.dim_categoria(categoria_key),
-    valor NUMERIC(14,2) NOT NULL,
-    valor_mano_obra NUMERIC(14,2),
-    valor_materiales NUMERIC(14,2),
-    fuera_de_rango BOOLEAN NOT NULL DEFAULT FALSE,
-    estado VARCHAR(20) NOT NULL,
-    cantidad INTEGER NOT NULL DEFAULT 1
-);
-
-CREATE TABLE dw.fact_calificacion (
-    fact_calificacion_key BIGSERIAL PRIMARY KEY,
-    calificacion_id UUID NOT NULL,
-    fecha_key INTEGER NOT NULL REFERENCES dw.dim_fecha(fecha_key),
-    tenant_key BIGINT NOT NULL REFERENCES dw.dim_tenant(tenant_key),
-    aliado_key BIGINT NOT NULL REFERENCES dw.dim_aliado(aliado_key),
-    categoria_key BIGINT NOT NULL REFERENCES dw.dim_categoria(categoria_key),
-    rol_autor VARCHAR(10) NOT NULL,
-    puntaje SMALLINT NOT NULL,
-    cantidad INTEGER NOT NULL DEFAULT 1
-);
-
-CREATE TABLE dw.fact_asignacion (
-    fact_asignacion_key BIGSERIAL PRIMARY KEY,
-    asignacion_id UUID NOT NULL,
-    fecha_key INTEGER NOT NULL REFERENCES dw.dim_fecha(fecha_key),
-    tenant_key BIGINT NOT NULL REFERENCES dw.dim_tenant(tenant_key),
-    aliado_key BIGINT NOT NULL REFERENCES dw.dim_aliado(aliado_key),
-    categoria_key BIGINT NOT NULL REFERENCES dw.dim_categoria(categoria_key),
-    zona_key BIGINT NOT NULL REFERENCES dw.dim_zona(zona_key),
-    estado VARCHAR(20) NOT NULL,
-    segundos_respuesta INTEGER,
-    cantidad INTEGER NOT NULL DEFAULT 1
-);
-
-CREATE TABLE dw.fact_pago (
-    fact_pago_key BIGSERIAL PRIMARY KEY,
-    pago_id UUID NOT NULL,
-    fecha_key INTEGER NOT NULL REFERENCES dw.dim_fecha(fecha_key),
-    tenant_key BIGINT NOT NULL REFERENCES dw.dim_tenant(tenant_key),
-    valor NUMERIC(14,2) NOT NULL,
-    estado VARCHAR(20) NOT NULL,
-    cantidad INTEGER NOT NULL DEFAULT 1
-);
-```
-
----
-
-# 12. Calidad de datos y controles
-
-Antes de publicar información analítica:
-
-- claves naturales no nulas en dimensiones críticas;
-- deduplicación por ID operacional;
-- reconciliación de conteos OLTP ↔ staging ↔ DW;
-- validación de estados conocidos;
-- validación de importes no negativos;
-- rechazo o cuarentena de registros huérfanos;
-- timestamps normalizados;
-- PII minimizada en dimensiones analíticas;
-- el contenido de `mensaje` no se replica al Data Warehouse: solo se publican
-  conteos y marcas de tiempo agregados, nunca el texto;
-- `fact_calificacion` no publica el comentario libre.
-
-Umbrales iniciales de **calidad de datos**. No son umbrales de atributos de calidad del producto:
-esos viven únicamente en [`SDD.md`](SDD.md) §7 y §8. Estos miden el pipeline analítico y los
-mantiene este documento, que es su dueño.
-
-| Control | Umbral |
-|---|---:|
-| duplicados por ID operacional en hechos | 0 |
-| registros huérfanos publicados | 0 |
-| cargas fallidas sin alerta | 0 |
-| reconciliación de conteos críticos | ≥ 99.9% |
-| frescura analítica objetivo | ≤ 15 min para incremental |
-| disponibilidad diaria del pipeline | ≥ 99.5% |
-
----
-
----
-
-# 13. Relación datos ↔ servicios
-
-| Dominio de datos | Tablas | Escribe | Repositorio |
-|---|---|---|---|
-| Identidad y acceso | `tenant`, `usuario`, `aliado`, `documento_kyc`, `cliente`, `sitio`, `documento_legal`, `consentimiento_usuario`, `tenant_estado_cambio` | Core Service | `MANI-Node` |
-| Catálogo, cobertura y reglas | `zona`, `geometria_territorial`, `categoria_servicio`, `aliado_categoria`, `cobertura_aliado`, `aliado_ausencia`, `tarifa_referencia`, `regla_tenant`, `politica_cancelacion_tenant` | Core Service | `MANI-Node` |
-| Ciclo del servicio | `solicitud`, `solicitud_foto`, `solicitud_rechazo`, `cotizacion`, `adicion_servicio`, `evento_servicio`, `calificacion` | Core Service; Dispatch Service solo `solicitud_rechazo` | `MANI-Node`; `MANI-.NET` |
-| Comunicaciones | `mensaje`, `consulta_conversacion`, `notificacion`, `queja`, `queja_transicion` | Core Service | `MANI-Node` |
-| Pagos | `pago`, `transaccion_evento`, `retencion_fondos`, `comision_tenant`, `liquidacion` | Core Service | `MANI-Node` |
-| Integración y control | `outbox_evento`, `schema_migrations` | Core Service | `MANI-Node` |
-| Analítica (`dw.*`) | esquema del Data Warehouse (§9 a §11) | Plataforma analítica | — |
-
-La propiedad implica **escritura exclusiva** del servicio responsable. Otros servicios acceden mediante API, evento o réplica analítica, no mediante escritura directa a tablas privadas.
+# 9. Relación datos ↔ servicios
+
+| Dominio de datos              | Tablas                                                                                                                                                                                                 | Escribe                                                   | Repositorio                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | ---------------------------- |
+| Identidad y acceso            | `tenant`, `usuario`, `aliado`, `documento_kyc`, `cliente`, `sitio`, `documento_legal`, `consentimiento_usuario`, `tenant_estado_cambio`                                              | Core Service                                              | `MANI-Node`                |
+| Catálogo, cobertura y reglas | `zona`, `geometria_territorial`, `categoria_servicio`, `aliado_categoria`, `cobertura_aliado`, `aliado_ausencia`, `tarifa_referencia`, `regla_tenant`, `politica_cancelacion_tenant` | Core Service                                              | `MANI-Node`                |
+| Ciclo del servicio            | `solicitud`, `solicitud_foto`, `solicitud_rechazo`, `cotizacion`, `adicion_servicio`, `evento_servicio`, `calificacion`                                                                  | Core Service; Dispatch Service solo `solicitud_rechazo` | `MANI-Node`; `MANI-.NET` |
+| Comunicaciones                | `mensaje`, `consulta_conversacion`, `notificacion`, `queja`, `queja_transicion`                                                                                                              | Core Service                                              | `MANI-Node`                |
+| Pagos                         | `pago`, `transaccion_evento`, `retencion_fondos`, `comision_tenant`, `liquidacion`                                                                                                           | Core Service                                              | `MANI-Node`                |
+| Integración y control        | `outbox_evento`, `schema_migrations`                                                                                                                                                               | Core Service                                              | `MANI-Node`                |
+
+La propiedad implica **escritura exclusiva** del servicio responsable. Otros servicios acceden mediante API o evento, no mediante escritura directa a tablas privadas.
 
 El outbox sigue la misma regla: `outbox_evento` lo escribe Core dentro de la transacción que cambia su propio agregado. El relay no es un servicio dueño: toma los pendientes y los marca publicados con las funciones `app.outbox_*`, sin permisos sobre tablas de negocio.
 
@@ -3108,11 +2672,8 @@ Dos lecturas cruzadas son explícitamente permitidas y solo de lectura:
 
 ---
 
-## 13.1 Criterios de evolución
+## 9.1 Criterios de evolución
 
 1. Eliminar progresivamente accesos directos del cliente a tablas de negocio.
 2. Separar físicamente bases por servicio si la escala o autonomía lo exige.
-3. Mantener IDs naturales estables para integración y claves sustitutas en DW.
-4. Incorporar CDC real cuando el volumen justifique dejar polling incremental.
-5. Implementar SCD Tipo 2 solo en dimensiones donde el histórico tenga valor analítico.
-6. No convertir el Data Warehouse en fuente de verdad transaccional.
+3. Mantener identificadores estables (`UUID`) para la integración entre servicios.

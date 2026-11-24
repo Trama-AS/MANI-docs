@@ -322,7 +322,7 @@ Dispatch consulta a Core la elegibilidad por categoría y zona, y a Rules el ord
 - Los servicios no acceden directamente a tablas propiedad de otro dominio.
 - Las integraciones externas se encapsulan mediante adaptadores.
 - El Data Warehouse no participa en transacciones operacionales.
-- El detalle de esquemas, entidades y modelo dimensional se encuentra en `ModeloDatos.md`.
+- El detalle de esquemas y entidades se encuentra en `ModeloDatos.md`.
 
 ---
 
@@ -1479,7 +1479,7 @@ Todo evento persistido en `outbox_evento` y publicado por el proceso relay (que 
 
 ### Principios de diseño del `payload` (`data`)
 1. **Frontera de datos estricta (`ADR-0030` §2):** El evento transporta únicamente identificadores estables (`UUID`), estados canónicos, marcas de tiempo e importes propios del agregado que cambió. Nunca incluye datos privados de otro esquema ni PII sensible (dirección física textual, reglas de acceso al inmueble, teléfono o documento de identidad).
-2. **Alineación con el modelo dimensional (`ModeloDatos.md` §9–§11):** Cada evento incluye las claves naturales (`id_solicitud`, `id_categoria`, `id_zona`, `id_aliado`, `id_cliente`) y métricas operativas (`segundos_respuesta`, `valor_mano_obra`, `valor_materiales`, `fuera_de_rango`) necesarias para poblar `dw.fact_solicitud`, `dw.fact_asignacion` y `dw.fact_cotizacion` sin consultas adicionales.
+2. **Alineación con la analítica:** Cada evento incluye las claves naturales (`id_solicitud`, `id_categoria`, `id_zona`, `id_aliado`, `id_cliente`) y métricas operativas (`segundos_respuesta`, `valor_mano_obra`, `valor_materiales`, `fuera_de_rango`) necesarias para poblar `dw.fact_solicitud`, `dw.fact_asignacion` y `dw.fact_cotizacion` sin consultas adicionales.
 
 ### 20.4.1 `SolicitudCreada` (`event_version: 1`)
 
@@ -1502,7 +1502,7 @@ Todo evento persistido en `outbox_evento` y publicado por el proceso relay (que 
 | `estado` | `string` (`enum`) | Sí | Constante `'PENDIENTE'` | Estado inicial canónico de la solicitud (`ModeloDatos.md` §7). |
 | `fecha_creacion` | `string` (`date-time`) | Sí | ISO-8601 UTC | Marca de tiempo de creación persistida en la solicitud. |
 
-> **Exclusión deliberada de PII:** `descripcion`, `direccion` y `reglas_acceso` **no** se publican en el bus de eventos ni en el Data Warehouse (`ModeloDatos.md` §12). Dispatch solo requiere `(tenant_id, id_solicitud, id_categoria, id_zona, fecha_servicio)` para orquestar la elegibilidad.
+> **Exclusión deliberada de PII:** `descripcion`, `direccion` y `reglas_acceso` **no** se publican en el bus de eventos ni en el Data Warehouse. Dispatch solo requiere `(tenant_id, id_solicitud, id_categoria, id_zona, fecha_servicio)` para orquestar la elegibilidad.
 
 #### Ejemplo canónico (`SolicitudCreada v1`)
 
